@@ -1,30 +1,34 @@
-//packages
-import { Box, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton, InputBase, Typography } from "@material-ui/core";
-import { FC, MouseEvent, Reducer, useCallback, useEffect, useMemo, useReducer, useState } from "react";
-//constants, interfaces, utils 
-import { NoDataIcon, SearchIcon } from "../../../../../assets/svgs";
+// packages block
+import { FC, Reducer, useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import {
-  ADD_PROBLEM, INITIAL_PAGE_LIMIT, NO_RECORDS, SEARCH_FOR_PROBLEMS, TYPE
-} from "../../../../../constants";
-import { IcdCodesPayload, IcdCodesWithSnowMedCode, useSearchIcdCodesLazyQuery } from "../../../../../generated/graphql";
-import { AddAllergyModalProps } from "../../../../../interfacesTypes";
-import { Action, ActionType, chartReducer, initialState, State } from "../../../../../reducers/chartReducer";
-import { useChartingStyles } from "../../../../../styles/chartingStyles";
-import { GRAY_SIX, GREY_SEVEN } from "../../../../../theme";
-//components
+  Box, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton, InputBase, Typography
+} from "@material-ui/core";
+// components block
 import ProblemModal from "./ProblemModal";
+// constants, interfaces, utils block 
+import { GRAY_SIX, GREY_SEVEN } from "../../../../../theme";
+import { NoDataIcon, SearchIcon } from "../../../../../assets/svgs";
+import { AddAllergyModalProps } from "../../../../../interfacesTypes";
+import { useChartingStyles } from "../../../../../styles/chartingStyles";
+import {
+  Action, ActionType, chartReducer, initialState, State
+} from "../../../../../reducers/chartReducer";
+import {
+  ADD_PROBLEM, ICD_10, INITIAL_PAGE_LIMIT, NO_RECORDS, SEARCH_FOR_PROBLEMS, SNOMED, TYPE
+} from "../../../../../constants";
+import {
+  IcdCodesPayload, IcdCodesWithSnowMedCode, useSearchIcdCodesLazyQuery
+} from "../../../../../generated/graphql";
 
 const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose, fetch }) => {
-  const chartingClasses = useChartingStyles()
-
-  const [{ isSubModalOpen, selectedItem, searchQuery, searchedData }, dispatch] =
-    useReducer<Reducer<State, Action>>(chartReducer, initialState)
-
   const tabs = useMemo(() => {
     return ['Common Terms', 'Covid Terms']
   }, [])
 
+  const chartingClasses = useChartingStyles()
   const [tab, setTab] = useState<string>(!!tabs ? tabs[0] : '');
+  const [{ isSubModalOpen, selectedItem, searchQuery, searchedData }, dispatch] =
+    useReducer<Reducer<State, Action>>(chartReducer, initialState)
 
   const closeSearchMenu = () => {
     dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: false })
@@ -54,9 +58,11 @@ const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
       }
     }
   });
+
   const handleICDSearch = useCallback(async (tabName: string, query: string) => {
-    const queryString = tabName === tabs[1] ? 'corona' : query
     try {
+      const queryString = tabName === tabs[1] ? 'corona' : query
+
       await searchIcdCodes({
         variables: {
           searchIcdCodesInput: {
@@ -84,7 +90,7 @@ const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
     }
   }, [handleICDSearch, tab])
 
-  const handleOpenForm = ({ currentTarget }: MouseEvent<HTMLElement>, item: IcdCodesWithSnowMedCode) => {
+  const handleOpenForm = (item: IcdCodesWithSnowMedCode) => {
     dispatch({ type: ActionType.SET_SELECTED_ITEM, selectedItem: item })
     dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: true })
   };
@@ -125,23 +131,21 @@ const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
               const { referencedComponentId } = snoMedCode || {}
 
               return (
-                <Box key={code} className='hoverClass pointer-cursor' my={0.2} 
-                  onClick={(event) => item && handleOpenForm(event, item as IcdCodesWithSnowMedCode)}
+                <Box key={`${code} | ${description} | ${snoMedCode?.id}`} my={0.2} className={chartingClasses.hoverClass}
+                  onClick={() => item && handleOpenForm(item as IcdCodesWithSnowMedCode)}
                 >
-                  <Box display="flex" flexDirection="column">
-                    <Typography  variant='body1'>{description}</Typography>
+                  <Box display="flex" flexDirection="column" px={2}>
+                    <Typography variant='body1'>{description}</Typography>
 
                     <Typography variant='caption'>
-                     {referencedComponentId? `snomed: ${referencedComponentId} | icd10: ${code}`: `icd10: ${code}`}
+                      {referencedComponentId ? `${SNOMED}: ${referencedComponentId} | ${ICD_10}: ${code}` : `ICD-10: ${code}`}
                     </Typography>
                   </Box>
 
                 </Box>
               )
-            }) :
-            <Box color={GREY_SEVEN} margin='auto' textAlign='center'>
+            }) : <Box color={GREY_SEVEN} margin='auto' textAlign='center'>
               <NoDataIcon />
-
               <Typography variant="h6">{NO_RECORDS}</Typography>
 
               <Box p={1} />
@@ -149,7 +153,7 @@ const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
         }
       </Box>
     )
-  }, [searchIcdCodesLoading, searchedData])
+  }, [chartingClasses.hoverClass, searchIcdCodesLoading, searchedData])
 
 
   return (
@@ -165,7 +169,7 @@ const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
           {!!tabs && renderTabs()}
         </Box>
 
-        <Box mb={2} className={chartingClasses.searchBox} display="flex">
+        {tab === tabs[0] && <Box mb={2} className={chartingClasses.searchBox} display="flex">
           <IconButton aria-label="search">
             <SearchIcon />
           </IconButton>
@@ -177,6 +181,7 @@ const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
             onChange={({ target: { value } }) => handleSearch(value)}
           />
         </Box>
+        }
 
         {renderSearchData()}
       </DialogContent>

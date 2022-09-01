@@ -1,38 +1,43 @@
 // packages block
-import { FC, useContext, useEffect } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, CircularProgress, Grid, Typography } from "@material-ui/core";
 // components block
 import history from '../../../../history';
 import Alert from '../../../common/Alert';
 import Selector from '../../../common/Selector';
-import PhoneField from '../../../common/PhoneInput';
-import PageHeader from '../../../common/PageHeader';
 import BackButton from '../../../common/BackButton';
+import PageHeader from '../../../common/PageHeader';
+import PhoneField from '../../../common/PhoneInput';
 import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
+import TaxonomySelector from '../../../common/Selector/TaxonomySelector';
+import CountryController from '../../../../controller/CountryController';
 // interfaces, graphql, constants block /styles
+import { formatEmail } from '../../../../utils';
 import { AuthContext, ListContext } from '../../../../context';
 import { CustomPracticeInputProps, GeneralFormProps } from '../../../../interfacesTypes';
-import { updatePracticeSchema, createPracticeSchema } from '../../../../validationSchemas';
+import { createPracticeSchema, updatePracticeSchema } from '../../../../validationSchemas';
 import {
   useCreatePracticeMutation, useGetPracticeLazyQuery, useUpdatePracticeMutation
 } from '../../../../generated/graphql';
 import {
   CONFLICT_EXCEPTION, PRACTICE_OR_FACILITY_ALREADY_EXISTS, SYSTEM_PASSWORD, SYSTEM_ROLES, ZIP_CODE,
-  PRACTICE_MANAGEMENT_TEXT, MAPPED_COUNTRIES, FORBIDDEN_EXCEPTION, PRACTICE_ADMIN_DETAILS_TEXT,
-  COUNTRY, PRACTICE_USER_ALREADY_EXISTS, NOT_FOUND_EXCEPTION, PRACTICE_NOT_FOUND, EIN, CHAMPUS,
+  PRACTICE_MANAGEMENT_TEXT, FORBIDDEN_EXCEPTION, PRACTICE_ADMIN_DETAILS_TEXT, GROUP_NPI, USA,
+  PRACTICE_USER_ALREADY_EXISTS, NOT_FOUND_EXCEPTION, PRACTICE_NOT_FOUND, EIN, CHAMPUS, TAXONOMY_CODE,
   LAST_NAME, PHONE, PRACTICE_DETAILS_TEXT, SAVE_TEXT, STATE, PRACTICE_IDENTIFIER, PRACTICE_BREAD,
   PRACTICE_EDIT_BREAD, FACILITY_NAME, FAX, FIRST_NAME, MEDICARE, UPIN, MAPPED_STATES, MEDICAID,
-  ADDRESS, ADDRESS_CTA, CITY, EMAIL, EMPTY_OPTION, FACILITY_DETAILS_TEXT, PRACTICE_MANAGEMENT_ROUTE,
-  PRACTICE_NEW_BREAD, PRACTICE_NAME,
+  ADDRESS_ONE, ADDRESS_TWO, CITY, EMAIL, EMPTY_OPTION, FACILITY_DETAILS_TEXT, PRACTICE_MANAGEMENT_ROUTE,
+  PRACTICE_NEW_BREAD, PRACTICE_NAME, TAX_ID_INFO, TAX_ID_DETAILS, GROUP_TAX_ID, NPI_INFO, 
 } from "../../../../constants";
 
 const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
   const { fetchAllFacilityList, setFacilityList, setRoleList } = useContext(ListContext)
   const { id: adminId } = user || {}
+  const [practiceAdminId, setPracticeAdminId] = useState<string>('')
+
   const methods = useForm<CustomPracticeInputProps>({
     mode: "all",
     resolver: yupResolver(isEdit ? updatePracticeSchema : createPracticeSchema)
@@ -53,22 +58,34 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       const { getPractice } = data || {};
 
       if (getPractice) {
-        const { response, practice } = getPractice
+        const { response, practice, practiceAdmin } = getPractice
 
         if (response) {
           const { status } = response
 
           if (practice && status && status === 200) {
-            const { name, phone, fax, ein, upin, medicaid, medicare, champus } = practice
+            const { name, phone, fax, ein, upin, medicaid, medicare, champus, npi, taxId, taxonomyCode } = practice
+            const { id: practiceAdminId, email, firstName, lastName, phone: practiceAdminPhone } = practiceAdmin || {}
 
             fax && setValue('fax', fax)
             ein && setValue('ein', ein)
+            npi && setValue('npi', npi)
             upin && setValue('upin', upin)
             name && setValue('name', name)
             phone && setValue('phone', phone)
+            taxId && setValue('taxId', taxId)
             champus && setValue('champus', champus)
             medicare && setValue('medicare', medicare)
             medicaid && setValue('medicaid', medicaid)
+            firstName && setValue('userFirstName', firstName)
+            lastName && setValue('userLastName', lastName)
+            email && setValue('userEmail', email)
+            taxonomyCode?.id && setValue('taxonomyCodeId', {
+              id: taxonomyCode.id,
+              name: `${taxonomyCode.code} | ${taxonomyCode.displayName}`
+            })
+            practiceAdminPhone && setValue('userPhone', practiceAdminPhone)
+            practiceAdminId && setPracticeAdminId(practiceAdminId)
           }
         }
       }
@@ -134,23 +151,30 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     const {
       name, phone, fax, upin, ein, medicaid, medicare, champus, facilityName,
       userFirstName, userLastName, userEmail, email,
-      userPhone, address, address2, city, state, country, zipCode
+      userPhone, address, address2, city, state, country, zipCode, npi, taxId, taxonomyCodeId
     } = inputs;
 
     const practiceInput = {
-      name, champus, ein, fax, medicaid, medicare, phone, upin
+      name, champus, ein, fax, medicaid, medicare, phone, upin, npi, taxId, taxonomyCodeId: taxonomyCodeId.id
     }
 
     if (isEdit) {
       id ?
         await updatePractice({
-          variables: { updatePracticeInput: { id, ...practiceInput } }
+          variables: {
+            updatePracticeInput: {
+              updatePracticeItemInput: { id, ...practiceInput },
+              updateUserInput: {
+                id: practiceAdminId, phone: userPhone, email: formatEmail(userEmail),
+                firstName: userFirstName, lastName: userLastName
+              }
+            }
+          }
         })
         :
         Alert.error(PRACTICE_NOT_FOUND)
     } else {
       const { id: selectedState } = state;
-      const { id: selectedCountry } = country;
 
       await createPractice({
         variables: {
@@ -158,19 +182,19 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             createPracticeItemInput: { ...practiceInput },
             createFacilityItemInput: { name: facilityName },
             createContactInput: {
-              firstName: userFirstName, lastName: userLastName, email: userEmail,
+              firstName: userFirstName, lastName: userLastName, email: formatEmail(userEmail),
               primaryContact: true
             },
 
             registerUserInput: {
-              isAdmin: true, email: userEmail, password: SYSTEM_PASSWORD, firstName: userFirstName || '',
-              lastName: userLastName, phone: userPhone || '', adminId: adminId || '',
-              roleType: SYSTEM_ROLES.PracticeAdmin,
+              isAdmin: true, email: formatEmail(userEmail), password: SYSTEM_PASSWORD, 
+              firstName: userFirstName || '', lastName: userLastName, phone: userPhone || '',
+               adminId: adminId || '', roleType: SYSTEM_ROLES.PracticeAdmin,
             },
 
             createFacilityContactInput: {
               primaryContact: true, email, address, address2, city, state: selectedState,
-              country: selectedCountry, zipCode,
+              country: country || USA, zipCode,
             }
           }
         }
@@ -205,9 +229,9 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
           <Box maxHeight="calc(100vh - 190px)" className="overflowY-auto">
             <Grid container spacing={3}>
-              <Grid item md={6}>
+              <Grid item md={6} sm={12} xs={12}>
                 <Grid container>
-                  <Grid md={12} item>
+                  <Grid item md={12}>
                     <CardComponent cardTitle={PRACTICE_DETAILS_TEXT}>
                       <Grid container spacing={3}>
                         <Grid item md={12} sm={12} xs={12}>
@@ -235,11 +259,50 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                             label={FAX} />
                         </Grid>
                       </Grid>
+                    </CardComponent>
+                  </Grid>
+
+                  <Box p={3} />
+
+                  <Grid item md={12}>
+                    <CardComponent cardTitle={TAX_ID_DETAILS}>
+                      <Grid container spacing={3}>
+                        <Grid item md={6} sm={12} xs={12}>
+                          <InputController
+                            isRequired
+                            fieldType="text"
+                            info={TAX_ID_INFO}
+                            controllerName="taxId"
+                            controllerLabel={GROUP_TAX_ID}
+                            loading={getPracticeLoading}
+                          />
+                        </Grid>
+
+                        <Grid item md={6} sm={12} xs={12}>
+                          <InputController
+                            isRequired
+                            info={NPI_INFO}
+                            fieldType="text"
+                            controllerName="npi"
+                            controllerLabel={GROUP_NPI}
+                            loading={getPracticeLoading}
+                          />
+                        </Grid>
+                      </Grid>
+
+                      <Grid item md={12} sm={12} xs={12}>
+                        <TaxonomySelector
+                          label={TAXONOMY_CODE}
+                          name="taxonomyCodeId"
+                          loading={getPracticeLoading}
+                          addEmpty
+                        />
+                      </Grid>
 
                       <Typography>{PRACTICE_IDENTIFIER}</Typography>
 
                       <Grid container spacing={3}>
-                        <Grid item md={2} sm={12} xs={12}>
+                        <Grid item md={2} sm={4} xs={12}>
                           <InputController
                             placeholder={EIN}
                             fieldType="text"
@@ -248,7 +311,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           />
                         </Grid>
 
-                        <Grid item md={2} sm={12} xs={12}>
+                        <Grid item md={2} sm={4} xs={12}>
                           <InputController
                             placeholder={UPIN}
                             fieldType="text"
@@ -257,7 +320,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           />
                         </Grid>
 
-                        <Grid item md={2} sm={12} xs={12}>
+                        <Grid item md={2} sm={4} xs={12}>
                           <InputController
                             placeholder={MEDICARE}
                             fieldType="text"
@@ -266,7 +329,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           />
                         </Grid>
 
-                        <Grid item md={2} sm={12} xs={12}>
+                        <Grid item md={2} sm={4} xs={12}>
                           <InputController
                             placeholder={MEDICAID}
                             fieldType="text"
@@ -275,7 +338,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           />
                         </Grid>
 
-                        <Grid item md={2} sm={12} xs={12}>
+                        <Grid item md={2} sm={4} xs={12}>
                           <InputController
                             placeholder={CHAMPUS}
                             fieldType="text"
@@ -289,51 +352,50 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                   <Box p={3} />
 
-                  <Grid md={12} item>
-                    {!isEdit &&
-                      <CardComponent cardTitle={PRACTICE_ADMIN_DETAILS_TEXT}>
-                        <Grid container spacing={3}>
-                          <Grid item md={6} sm={12} xs={12}>
-                            <InputController
-                              isRequired
-                              fieldType="text"
-                              controllerName="userFirstName"
-                              controllerLabel={FIRST_NAME}
-                            />
-                          </Grid>
-
-                          <Grid item md={6} sm={12} xs={12}>
-                            <InputController
-                              isRequired
-                              fieldType="text"
-                              controllerName="userLastName"
-                              controllerLabel={LAST_NAME}
-                            />
-                          </Grid>
+                  <Grid item md={12}>
+                    <CardComponent cardTitle={PRACTICE_ADMIN_DETAILS_TEXT}>
+                      <Grid container spacing={3}>
+                        <Grid item md={6} sm={12} xs={12}>
+                          <InputController
+                            isRequired
+                            fieldType="text"
+                            controllerName="userFirstName"
+                            controllerLabel={FIRST_NAME}
+                          />
                         </Grid>
 
-                        <Grid container spacing={3}>
-                          <Grid item md={6} sm={12} xs={12}>
-                            <InputController
-                              isRequired
-                              fieldType="email"
-                              controllerName="userEmail"
-                              controllerLabel={EMAIL}
-                            />
-                          </Grid>
-
-                          <Grid item md={6} sm={12} xs={12}>
-                            <PhoneField name="userPhone" label={PHONE} />
-                          </Grid>
+                        <Grid item md={6} sm={12} xs={12}>
+                          <InputController
+                            isRequired
+                            fieldType="text"
+                            controllerName="userLastName"
+                            controllerLabel={LAST_NAME}
+                          />
                         </Grid>
-                      </CardComponent>
-                    }
+
+                        <Grid item md={6} sm={12} xs={12}>
+                          <InputController
+                            isRequired
+                            fieldType="email"
+                            controllerName="userEmail"
+                            controllerLabel={EMAIL}
+                            disabled={isEdit}
+                          />
+                        </Grid>
+
+                        <Grid item md={6} sm={12} xs={12}>
+                          <PhoneField name="userPhone" label={PHONE} />
+                        </Grid>
+                      </Grid>
+                    </CardComponent>
                   </Grid>
+
+                  <Box p={1.5} />
                 </Grid>
               </Grid>
 
-              <Grid md={6} item>
-                <Grid container spacing={3}>
+              <Grid item md={6} sm={12} xs={12}>
+                <Grid container>
                   {!isEdit &&
                     <Grid md={12} item>
                       <CardComponent cardTitle={FACILITY_DETAILS_TEXT}>
@@ -354,7 +416,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                               isRequired
                               fieldType="text"
                               controllerName="address"
-                              controllerLabel={ADDRESS}
+                              controllerLabel={ADDRESS_ONE}
                             />
                           </Grid>
 
@@ -362,7 +424,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                             <InputController
                               fieldType="text"
                               controllerName="address2"
-                              controllerLabel={ADDRESS_CTA}
+                              controllerLabel={ADDRESS_TWO}
                             />
                           </Grid>
 
@@ -392,12 +454,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           </Grid>
 
                           <Grid item md={3} sm={12} xs={12}>
-                            <Selector
-                              value={EMPTY_OPTION}
-                              label={COUNTRY}
-                              name="country"
-                              options={MAPPED_COUNTRIES}
-                            />
+                            <CountryController controllerName="country" />
                           </Grid>
                         </Grid>
                       </CardComponent>

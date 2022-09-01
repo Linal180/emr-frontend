@@ -4,6 +4,8 @@ import {
   CardContent, Button, Dialog, DialogActions, DialogContent, DialogTitle, CircularProgress, PropTypes,
   FormControlLabel, Checkbox, Typography, Box
 } from "@material-ui/core";
+//components
+import Signature from "./signature";
 // interfaces/types block/theme/svgs/constants
 import { DeleteWarningIcon } from "../../assets/svgs";
 import { ConfirmationTypes } from "../../interfacesTypes";
@@ -13,7 +15,7 @@ import {
 } from "../../constants";
 
 const ConfirmationModal: FC<ConfirmationTypes> = ({
-  setOpen, isOpen, title, description, handleDelete, isLoading, actionText, success, isSign, isCalendar
+  setOpen, isOpen, title, description, handleDelete, isLoading, actionText, success, isSign, isCalendar, onSignatureEnd, cancelText, shouldDisplayCancel
 }): JSX.Element => {
   const [checked, setChecked] = useState(false);
 
@@ -36,7 +38,7 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({
   return (
     <Dialog open={isOpen} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" maxWidth="sm" fullWidth>
       <DialogTitle id="alert-dialog-title">
-        {isSign ? SIGN_PATIENT_DOCUMENT : isCalendar ? cancelRecordTitle(title || '') : deleteRecordTitle(title || '')}
+        {isSign ? SIGN_PATIENT_DOCUMENT : isCalendar ? cancelRecordTitle(title || '') : shouldDisplayCancel ? cancelRecordTitle(title || '') : deleteRecordTitle(title || '')}
       </DialogTitle>
 
       <DialogContent>
@@ -45,30 +47,38 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({
             <DeleteWarningIcon />
           </Box>
 
-          <CardContent>
-            <Typography variant="h5">
-              <strong>{isSign ? aboutToSign(title || '') : isCalendar ? aboutToCancel(title || '') : aboutToDelete(title || '')}</strong>
-            </Typography>
+          <Box flex={1}>
+            <CardContent>
+              <Typography variant="h5">
+                <strong>{isSign ? aboutToSign(title || '') : isCalendar ? aboutToCancel(title || '') : shouldDisplayCancel ? aboutToCancel(title || '') : aboutToDelete(title || '')}</strong>
+              </Typography>
 
-            <Box p={0.5} />
+              <Box p={0.5} />
 
-            <Typography variant="body1">
-              {isSign ? SIGN_RECORD_LEARN_MORE_TEXT : isCalendar ? CANCEL_RECORD_LEARN_MORE_TEXT : DELETE_RECORD_LEARN_MORE_TEXT}
-            </Typography>
-          </CardContent>
+              <Typography variant="body1">
+                {isSign ? SIGN_RECORD_LEARN_MORE_TEXT : isCalendar ? CANCEL_RECORD_LEARN_MORE_TEXT : shouldDisplayCancel ? CANCEL_RECORD_LEARN_MORE_TEXT : DELETE_RECORD_LEARN_MORE_TEXT}
+              </Typography>
+            </CardContent>
+          </Box>
         </Box>
       </DialogContent>
 
-      <Box display="flex" ml={4} pb={2}>
-        <FormControlLabel
+
+      {isSign ? <Box display="flex" ml={4} pb={2} mr={4}>
+        <Signature controllerName="signature" onSignatureEnd={(file) => {
+          setChecked(!!file)
+          onSignatureEnd && onSignatureEnd(file)
+        }} isController={false} />
+      </Box> :
+        <Box display="flex" ml={4} pb={2}><FormControlLabel
           control={<Checkbox color="primary" checked={checked} onChange={handleChange} />}
           label={description}
         />
-      </Box>
+        </Box>}
 
       <DialogActions>
         <Button onClick={handleClose} color="default" variant="text">
-          {CANCEL}
+          {cancelText || CANCEL}
         </Button>
 
         <Button onClick={onDelete} disabled={!checked || isLoading} variant="outlined" className={checked ? isSign ? 'success' : 'danger' : ''}>

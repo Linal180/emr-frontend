@@ -1,5 +1,5 @@
 // packages block
-import { FC, useContext, useEffect } from 'react';
+import { FC, useContext } from 'react';
 // components block
 import FacilityTable from "./FacilityTable";
 import PageHeader from "../../../common/PageHeader";
@@ -7,23 +7,13 @@ import PageHeader from "../../../common/PageHeader";
 import { isUserAdmin } from '../../../../utils';
 import { AuthContext } from '../../../../context';
 import {
-  ADD_FACILITY, FACILITIES_BREAD, FACILITIES_ROUTE, FACILITIES_TEXT, PERMISSION_DENIED, ROOT_ROUTE,
+  ADD_FACILITY, FACILITIES_BREAD, FACILITIES_ROUTE, FACILITIES_TEXT,
 } from "../../../../constants";
-import history from '../../../../history';
-import Alert from '../../../common/Alert';
 
 const FacilityComponent: FC = (): JSX.Element => {
   const { user } = useContext(AuthContext);
   const { roles } = user || {};
   const isAdmin = isUserAdmin(roles)
-  const showFacility = isUserAdmin(roles)
-
-  useEffect(() => {
-    if(!showFacility){
-      Alert.error(PERMISSION_DENIED)
-      history.push(ROOT_ROUTE)
-    }
-  }, [showFacility])
 
   return (
     <>

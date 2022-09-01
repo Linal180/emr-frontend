@@ -1,63 +1,35 @@
 // packages
+import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 import moment from "moment";
 import { useParams } from "react-router-dom";
-import { FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
 // components block
-import MediaCards from "../../../../common/AddMedia/MediaCards";
 import TextLoader from "../../../../common/TextLoader";
+import MediaCards from "../../../../common/AddMedia/MediaCards";
 // interfaces, reducers, constants and styles block
+import history from "../../../../../history";
+import { useProfileDetailsStyles } from "../../../../../styles/profileDetails";
+import { formatPhone, getFormattedDate, getTimestamps, renderMissing } from "../../../../../utils";
+import { ATTACHMENT_TITLES, DOCTORS_ROUTE, LESS_INFO, MORE_INFO, N_A } from "../../../../../constants";
+import { AtIcon, EditNewIcon, HashIcon, LocationIcon, ProfileUserIcon } from "../../../../../assets/svgs";
 import { Avatar, Box, Button, Card, CircularProgress, Collapse, Typography } from "@material-ui/core";
-import { AtIcon, HashIcon, LocationIcon, ProfileUserIcon } from "../../../../../assets/svgs";
-import { ATTACHMENT_TITLES, LESS_INFO, MORE_INFO, N_A } from "../../../../../constants";
 import {
-  AttachmentType, Contact, Doctor, useGetAttachmentLazyQuery, useGetDoctorLazyQuery
+  AttachmentType, Contact, Doctor, useGetDoctorLazyQuery
 } from "../../../../../generated/graphql";
 import { DoctorProfileHeroProps, ParamsType } from "../../../../../interfacesTypes";
-import { Action, ActionType, doctorReducer, initialState, State } from "../../../../../reducers/doctorReducer";
-import { 
-  Action as mediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer, State as mediaState 
+import {
+  Action, ActionType, doctorReducer, initialState, State
+} from "../../../../../reducers/doctorReducer";
+import {
+  Action as mediaAction, ActionType as mediaActionType, initialState as mediaInitialState,
+  mediaReducer, State as mediaState
 } from "../../../../../reducers/mediaReducer";
-import { useProfileDetailsStyles } from "../../../../../styles/profileDetails";
-import { formatPhone, getFormattedDate, getTimestamps } from "../../../../../utils";
 
 const DoctorProfileHero: FC<DoctorProfileHeroProps> = ({ setDoctor, setAttachmentsData }) => {
   const classes = useProfileDetailsStyles();
   const { id } = useParams<ParamsType>();
-  const [open, setOpen] = useState<boolean>(false)
-  const [{ doctor }, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
-  const [{ attachmentUrl, attachmentData, attachmentId }, mediaDispatch] =
+  const [{ doctor, openMoreInfo }, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
+  const [{ attachmentUrl, attachmentData, attachmentId, }, mediaDispatch] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
-
-  const [getAttachment, { loading: getAttachmentLoading }] = useGetAttachmentLazyQuery({
-    fetchPolicy: "network-only",
-    nextFetchPolicy: 'no-cache',
-    notifyOnNetworkStatusChange: true,
-
-    variables: { getMedia: { id } },
-
-    onError() {
-      return null
-    },
-
-    onCompleted(data) {
-      const { getAttachment } = data || {};
-
-      if (getAttachment) {
-        const { preSignedUrl } = getAttachment
-        preSignedUrl && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_URL, attachmentUrl: preSignedUrl })
-      }
-    },
-  });
-
-  const fetchAttachment = useCallback(async () => {
-    try {
-      await getAttachment({
-        variables: {
-          getMedia: { id: attachmentId }
-        },
-      })
-    } catch (error) { }
-  }, [attachmentId, getAttachment])
 
   const [getDoctor, { loading: getDoctorLoading }] = useGetDoctorLazyQuery({
     fetchPolicy: "network-only",
@@ -77,7 +49,9 @@ const DoctorProfileHero: FC<DoctorProfileHeroProps> = ({ setDoctor, setAttachmen
           const { attachments } = doctor || {}
           const profilePicture = attachments && attachments.filter(attachment =>
             attachment.title === ATTACHMENT_TITLES.ProfilePicture)[0]
-          const { id: attachmentId, } = profilePicture || {}
+          const { id: attachmentId, preSignedUrl} = profilePicture || {}
+
+          preSignedUrl &&  mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_URL, attachmentUrl: preSignedUrl })
 
           attachmentId &&
             mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId })
@@ -109,10 +83,6 @@ const DoctorProfileHero: FC<DoctorProfileHeroProps> = ({ setDoctor, setAttachmen
   useEffect(() => {
     id && fetchDoctor()
   }, [fetchDoctor, id])
-
-  useEffect(() => {
-    attachmentId && fetchAttachment();
-  }, [attachmentId, fetchAttachment, attachmentData])
 
   const {
     firstName, email: doctorEmail, lastName, dob, contacts, createdAt
@@ -159,14 +129,14 @@ const DoctorProfileHero: FC<DoctorProfileHeroProps> = ({ setDoctor, setAttachmen
     }
   ]
 
-  const isLoading = getDoctorLoading || getAttachmentLoading
+  const isLoading = getDoctorLoading
 
   return (
     <>
-      <Box className={` ${classes.profileCard} card-box-shadow`}>
+      <Box display="flex" className={` ${classes.profileCard} card-box-shadow`}>
         <Box key={attachmentId} display="flex" alignItems="center">
           <Box pl={1} pr={3.75} pb={0} mb={0} position="relative">
-            {getAttachmentLoading ?
+            {isLoading ?
               <Avatar variant="square" className={classes.profileImage}>
                 <CircularProgress size={20} color="inherit" />
               </Avatar>
@@ -187,30 +157,39 @@ const DoctorProfileHero: FC<DoctorProfileHeroProps> = ({ setDoctor, setAttachmen
         </Box>
 
         {isLoading ?
-          <TextLoader rows={[{ column: 1, size: 3 }, { column: 3, size: 3 }, { column: 1, size: 3 }]} />
+          <TextLoader rows={[{ column: 1, size: 3 }, { column: 3, size: 3 }]} />
           :
           <Box flex={1}>
-            <Box display="flex">
+            <Box display="flex" flexWrap="wrap">
               <Box flex={1} flexWrap="wrap">
-                <Box display="flex" alignItems="center">
+                <Box display="flex" alignItems="baseline" >
                   <Box className={classes.userName} mr={1}>
                     {`${firstName} ${lastName}`}
                   </Box>
+
+                  <Box className="icon-button-hover">
+                    <Button onClick={() => history.push(`${DOCTORS_ROUTE}/${id}`)}>
+                      <EditNewIcon />
+                    </Button>
+                  </Box>
                 </Box>
 
-                <Box display="flex" width="100%" pt={1} flexWrap="wrap">
+                <Box display="flex" width="100%" pt={1} flexWrap="wrap" alignItems='center'>
                   {ProfileDetails.map((item, index) => (
-                    <Box display="flex" flexWrap="wrap" key={`${item.description}-${index}`} className={classes.profileInfoItem}>
+                    <Box display="flex"
+                      key={`${item.description}-${index}`} className={classes.profileInfoItem}>
                       <Box>{item.icon}</Box>
-                      <Typography variant="body1">{item.description}</Typography>
+                      <Typography variant="body1">
+                        {!!item.description ? item.description : renderMissing() }
+                      </Typography>
                     </Box>
                   ))}
                 </Box>
               </Box>
 
               <Box display='flex' alignItems='flex-end' flexWrap='wrap'>
-                <Button onClick={() => setOpen(!open)} variant="text" className="btn-focus">
-                  {open ? <Typography variant="body2">... {LESS_INFO}</Typography>
+                <Button onClick={() => dispatch({ type: ActionType.SET_OPEN_MORE_INFO, openMoreInfo: !openMoreInfo })} variant="text" className="btn-focus">
+                  {openMoreInfo ? <Typography variant="body2">... {LESS_INFO}</Typography>
                     : <Typography variant="body2">... {MORE_INFO}</Typography>}
                 </Button>
               </Box>
@@ -219,7 +198,7 @@ const DoctorProfileHero: FC<DoctorProfileHeroProps> = ({ setDoctor, setAttachmen
         }
       </Box>
 
-      <Collapse in={open} mountOnEnter unmountOnExit>
+      <Collapse in={openMoreInfo} mountOnEnter unmountOnExit>
         <Box className="card-box-shadow" mt={3}>
           <Card>
             <Box display="flex" width="100%" py={3} px={4} flexWrap="wrap">

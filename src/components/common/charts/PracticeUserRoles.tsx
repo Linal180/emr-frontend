@@ -13,13 +13,13 @@ import HighchartsReact from "highcharts-react-official";
 import { PURPLE_TWO, WHITE } from "../../../theme";
 import { practiceChartOptions } from "../../../utils";
 import { PracticeChartProps } from "../../../interfacesTypes";
-import { useGetPracticeUserRolesCountLazyQuery  } from "../../../generated/graphql";
+import { useGetPracticeUserRolesCountLazyQuery } from "../../../generated/graphql";
 
 const PracticeUserRoles: FC<PracticeChartProps> = ({ practiceId }): JSX.Element => {
   const { credits, title, subtitle } = practiceChartOptions(PURPLE_TWO)
 
   const [chartOptions, setChartOptions] = useState<any>({
-    credits, title, subtitle, 
+    credits, title, subtitle,
     chart: {
       type: 'bar',
       backgroundColor: PURPLE_TWO,
@@ -77,7 +77,7 @@ const PracticeUserRoles: FC<PracticeChartProps> = ({ practiceId }): JSX.Element 
     }]
   });
 
-  const [findPracticeUserRoleCount, { loading }] = useGetPracticeUserRolesCountLazyQuery({
+  const [findPracticeUserRoleCount] = useGetPracticeUserRolesCountLazyQuery({
     onError() {
       return null;
     },
@@ -101,7 +101,7 @@ const PracticeUserRoles: FC<PracticeChartProps> = ({ practiceId }): JSX.Element 
                 xAxis: { ...chartOptions.xAxis, categories: roles as string[] },
                 series: [
                   { ...chartOptions.series, data: counts },
-               ],
+                ],
               })
             }
           }
@@ -123,13 +123,9 @@ const PracticeUserRoles: FC<PracticeChartProps> = ({ practiceId }): JSX.Element 
   }, [fetchPracticeUserRoleCount])
 
   return (
-    <>
-      {!loading &&
-        <Box className="practice-users-roles-container">
-          <HighchartsReact highcharts={Highcharts} options={chartOptions} />
-        </Box>
-      }
-    </>
+    <Box className="practice-users-roles-container">
+      <HighchartsReact highcharts={Highcharts} options={chartOptions} />
+    </Box>
   )
 };
 

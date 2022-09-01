@@ -1,7 +1,7 @@
 // packages block
-import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Box, Grid, Typography, } from "@material-ui/core";
+import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 // components block
 import DatePicker from "../../DatePicker";
@@ -10,32 +10,37 @@ import DropzoneImage from "../../DropZoneImage";
 import InputController from "../../../../controller";
 // import DoctorSelector from "../../Selector/DoctorSelector";
 // interfaces/types block, theme, svgs and constants
-import { mediaType, setRecord } from "../../../../utils";
 import { GREY_SIXTEEN } from "../../../../theme";
 import { AttachmentType } from "../../../../generated/graphql";
-import { addDocumentSchema } from "../../../../validationSchemas";
-import { AddDocumentModalProps, DocumentInputProps, FormForwardRef, SelectorOption } from "../../../../interfacesTypes";
-import {
-  ATTACHMENT_TITLES,
-  CANCEL, COMMENTS, DATE, DOCUMENT_DETAILS, DOCUMENT_NAME, DOCUMENT_TYPE, EMPTY_OPTION, ITEM_MODULE, PATIENT_NAME, SAVE_TEXT,
-} from "../../../../constants";
 import { ActionType } from "../../../../reducers/mediaReducer";
+import { addDocumentSchema } from "../../../../validationSchemas";
+import { getDocumentDateFromTimestamps, mediaType, setRecord } from "../../../../utils";
+import { AddDocumentModalProps, DocumentInputProps, FormForwardRef } from "../../../../interfacesTypes";
+import {
+  CANCEL, COMMENTS, DATE, DOCUMENT_DETAILS, DOCUMENT_NAME, DOCUMENT_TYPE, ITEM_MODULE,
+  PATIENT_NAME, SAVE_TEXT, ATTACHMENT_TITLES, PLEASE_SELECT_MEDIA,
+} from "../../../../constants";
 
 const AddDocumentModal: FC<AddDocumentModalProps> = ({
-  toggleSideDrawer, patientName, patientId, fetchDocuments, attachmentId, submitUpdate, attachment, state, dispatch
+  toggleSideDrawer, patientName, patientId, fetchDocuments, attachmentId, submitUpdate, attachment,
+  state, dispatch
 }): JSX.Element => {
   const dropZoneRef = useRef<FormForwardRef>(null);
-  const { files } = state || {}
+  const { files, documentTypeId } = state || {}
+  const [cameraOpen, setCameraOpen] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+
   const methods = useForm<DocumentInputProps>({
     mode: "all",
     resolver: yupResolver(addDocumentSchema)
   });
-  const { reset, handleSubmit, watch, setValue } = methods;
+
+  const { reset, handleSubmit, watch, setValue, formState: { errors } } = methods;
   const { attachmentName, documentType, provider, comments, date } = watch()
   const { name: providerName } = provider || {}
-  const { name: documentMeta, id: documentMetaId } = documentType || {}
 
-  const [documentTypeId, setDocumentTypeId] = useState<SelectorOption>(EMPTY_OPTION)
+  const validated = !!Object.keys(errors).length
+  const { name: documentMeta, id: documentMetaId } = documentType || {}
 
   const handleClose = useCallback(() => {
     reset();
@@ -52,21 +57,28 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
   }
 
   const setPreview = useCallback(() => {
-    const { attachmentMetadata, attachmentName } = attachment ?? {}
+    const { attachmentMetadata, attachmentName, createdAt } = attachment ?? {}
     const { comments, documentDate, documentType } = attachmentMetadata ?? {}
     const { id, type } = documentType ?? {}
-    // set form values in edit cases
-    setValue('attachmentName', attachmentName || '')
-    setValue('comments', comments || '')
-    setValue('date', documentDate || '')
-    setValue('documentType', setRecord(id || '', type || ''))
-    setDocumentTypeId(setRecord(id || '', type || ''))
-  }, [attachment, setValue])
+
+    comments && setValue('comments', comments)
+    setValue('date', documentDate ? documentDate : getDocumentDateFromTimestamps(createdAt || ''))
+    attachmentName && setValue('attachmentName', attachmentName)
+
+    if (id && type) {
+      dispatch && dispatch({ type: ActionType.SET_DOCUMENT_TYPE_ID, documentTypeId: setRecord(id, type) })
+      setValue('documentType', setRecord(id, type))
+    }
+  }, [attachment, setValue, dispatch])
 
   useEffect(() => {
     attachmentId && setPreview()
   }, [attachmentId, setPreview])
-  
+
+  const onUploading = (loading: boolean) => {
+    setLoading(loading)
+  }
+
   return (
     <Box maxWidth={500}>
       <FormProvider {...methods}>
@@ -78,13 +90,13 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
             <Typography variant='h3'>{DOCUMENT_DETAILS}</Typography>
 
             <Box display="flex" alignItems="center">
-              <Button onClick={handleClose} variant="text" color="inherit" className="danger">
+              <Button onClick={handleClose} variant="text" color="inherit" className="danger" disabled={loading}>
                 {CANCEL}
               </Button>
 
               <Box p={1} />
 
-              <Button type="submit" variant="contained" color="primary">{SAVE_TEXT}</Button>
+              <Button type="submit" variant="contained" color="primary" disabled={loading}>{SAVE_TEXT}</Button>
             </Box>
           </Box>
 
@@ -109,7 +121,7 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
               </Grid>
 
               <Grid item md={6} sm={12} xs={12}>
-                {attachmentId ? documentTypeId.id && <ItemSelector
+                {attachmentId ? documentTypeId?.id && <ItemSelector
                   isRequired
                   isEdit={!!attachmentId}
                   label={DOCUMENT_TYPE}
@@ -130,17 +142,7 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
                 <DatePicker label={DATE} name='date' isRequired />
               </Grid>
 
-              {/* <Grid item md={7} sm={12} xs={12}>
-                <DoctorSelector
-                  isRequired
-                  addEmpty
-                  facilityId={facilityId}
-                  label={PROVIDER}
-                  name="provider"
-                />
-              </Grid>
-
-              <Grid item md={5} sm={12} xs={12}>
+              {/*<Grid item md={5} sm={12} xs={12}>
                 <Box mt={2.5} display="flex" justifyContent="flex-end">
                   <Button variant="contained" color="secondary">{ASSIGN_TO_ME}</Button>
                 </Box>
@@ -162,18 +164,27 @@ const AddDocumentModal: FC<AddDocumentModalProps> = ({
                   ref={dropZoneRef}
                   attachmentId={''}
                   itemId={patientId}
-                  attachmentName={attachmentName || ''}
                   providerName={providerName || ''}
+                  attachmentName={attachmentName || ''}
                   imageModuleType={AttachmentType.Patient}
                   title={ATTACHMENT_TITLES.ProviderUploads}
-                  attachmentMetadata={{ documentTypeId: documentMetaId, documentTypeName: documentMeta, comments, documentDate: date  }}
-                  reload={() => fetchDocuments()}
-                  handleClose={handleClose}
-                  setAttachments={() => { }}
                   acceptableFilesType={mediaType(ATTACHMENT_TITLES.ProviderUploads)}
+                  attachmentMetadata={{
+                    documentTypeId: documentMetaId, documentTypeName: documentMeta, comments,
+                    documentDate: date
+                  }}
+                  setAttachments={() => { }}
+                  handleClose={handleClose}
+                  reload={() => fetchDocuments()}
                   setFiles={(files: File[]) => dispatch && dispatch({ type: ActionType.SET_FILES, files: files })}
-                  />
-                {!files?.length ? <Typography className='danger' variant="caption">Please select atleast one file</Typography> : ''}
+                  cameraOpen={cameraOpen}
+                  setCameraOpen={setCameraOpen}
+                  onUploading={onUploading}
+                />
+
+                {validated && !!!files?.length &&
+                  <Typography className='danger' variant="caption">{PLEASE_SELECT_MEDIA}</Typography>
+                }
               </Grid>}
             </Grid>
           </Box>

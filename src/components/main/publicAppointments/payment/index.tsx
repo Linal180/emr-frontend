@@ -9,11 +9,11 @@ import {
 // components block
 import Alert from '../../../common/Alert';
 import ACHPaymentComponent from '../achPayment'
-import BackdropLoader from '../../../common/Backdrop';
+import Loader from '../../../common/Loader';
 // constants and types block
-import { GREY } from '../../../../theme';
+import { GREY, WHITE } from '../../../../theme';
 import history from '../../../../history';
-import { AIMEDLOGO } from '../../../../assets/svgs';
+import { ACHIcon, AIMEDLOGO, PayLaterIcon } from '../../../../assets/svgs';
 import { ParamsType } from '../../../../interfacesTypes';
 import { appointmentChargesDescription } from '../../../../utils';
 import { useHeaderStyles } from '../../../../styles/headerStyles';
@@ -24,9 +24,8 @@ import {
   useChargeAfterAppointmentMutation, useGetAppointmentLazyQuery, useGetTokenLazyQuery, BillingStatus,
 } from '../../../../generated/graphql';
 import {
-  APPOINTMENT_BOOKED_SUCCESSFULLY, CHOOSE_YOUR_PAYMENT_METHOD, PAY, SLOT_CONFIRMATION,
+  APPOINTMENT_BOOKED_SUCCESSFULLY, CHOOSE_YOUR_PAYMENT_METHOD, PAY, SLOT_CONFIRMATION, PAY_VIA_ACH,
   PAY_VIA_PAYPAL, PAY_VIA_DEBIT_OR_CREDIT_CARD, CHECKOUT, USD, APPOINTMENT_NOT_EXIST, PAY_LATER,
-  PAY_VIA_ACH,
 } from '../../../../constants';
 
 const ExternalPaymentComponent = (): JSX.Element => {
@@ -94,7 +93,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
         const { status } = response;
 
         if (appointment && status && status === 200) {
-          const { appointmentType, patientId, provider, facility, billingStatus, } = appointment;
+          const { appointmentType, patientId, provider, facility, billingStatus, id } = appointment;
 
           if (billingStatus === BillingStatus.Due) {
             const { price } = appointmentType || {};
@@ -105,7 +104,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
             patientId && dispatch({ type: ActionType.SET_PATIENT_ID, patientId: patientId });
             providerId && dispatch({ type: ActionType.SET_PROVIDER_ID, providerId: providerId });
             facilityId && dispatch({ type: ActionType.SET_FACILITY_ID, facilityId: facilityId });
-
+            id && dispatch({ type: ActionType.SET_APPOINTMENT_ID, appointmentId: id })
             try {
               await getToken();
             } catch (error) { }
@@ -118,7 +117,9 @@ const ExternalPaymentComponent = (): JSX.Element => {
   });
 
   const fetchAppointment = useCallback(async () => {
-    id && await getAppointment({ variables: { getAppointment: { id } } });
+    try {
+      id && await getAppointment({ variables: { getAppointment: { id } } });
+    } catch (error) { }
   }, [getAppointment, id]);
 
   useEffect(() => {
@@ -241,6 +242,25 @@ const ExternalPaymentComponent = (): JSX.Element => {
                       onPaymentOptionSelected={onPaymentOptionSelected}
                       onInstance={(data) => dispatch({ type: ActionType.SET_INSTANCE, instance: data })}
                     />
+
+                    {!showPayBtn && <Grid container>
+                      <Grid item md={12} sm={12} xs={12}>
+                        <Box mb={4} onClick={achClickHandler} borderRadius={4} bgcolor={WHITE} minHeight={80} padding={1.2} display="flex" alignItems="center" className='ach-hover'>
+                          <ACHIcon />
+                          <Box m={2} />
+                          <Typography variant='body1'>{PAY_VIA_ACH}</Typography>
+                        </Box>
+                      </Grid>
+
+                      <Grid item md={12} sm={12} xs={12}>
+                        <Box mb={4} onClick={moveNext} borderRadius={4} bgcolor={WHITE} minHeight={80} padding={1.2} display="flex" alignItems="center" className='ach-hover'>
+                          <PayLaterIcon />
+                          <Box m={2} />
+                          <Typography variant='body1'>{PAY_LATER}</Typography>
+                        </Box>
+                      </Grid>
+                    </Grid>}
+
                     <Grid container justifyContent='flex-end'>
                       {showPayBtn && (
                         <Grid item md={12} sm={12}>
@@ -251,15 +271,6 @@ const ExternalPaymentComponent = (): JSX.Element => {
                           </Box>
                         </Grid>
                       )}
-
-                      <Grid item>
-                        <Box pr={2}>
-                          <Button variant='contained' onClick={achClickHandler} color={'primary'}>{PAY_VIA_ACH}</Button>
-                        </Box>
-                      </Grid>
-                      <Grid item>
-                        <Button variant='contained' onClick={moveNext}>{PAY_LATER}</Button>
-                      </Grid>
                     </Grid>
                   </Fragment>)}
 
@@ -267,7 +278,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
                     token={appointmentPaymentToken}
                     dispatcher={dispatch} states={state} moveNext={moveNext} />}
                 </Box>
-              ) : <BackdropLoader loading={true} />}
+              ) : <Loader loading={true} />}
             </Box>
           </Grid>
         </Grid>

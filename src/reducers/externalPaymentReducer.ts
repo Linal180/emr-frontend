@@ -3,53 +3,59 @@ import { AchAccountType } from "../interfacesTypes";
 
 export interface State {
   price: string;
-  appointmentPaymentToken: string;
+  loader: boolean
   patientId: string;
   facilityId: string;
   providerId: string;
   showPayBtn: boolean;
-  instance: Dropin | null;
   achPayment: boolean;
+  appointmentId: string;
+  instance: Dropin | null;
   ownershipType: AchAccountType;
-  loader: boolean
+  appointmentPaymentToken: string;
 }
 
 export const initialState: State = {
   price: '',
-  appointmentPaymentToken: '',
   patientId: '',
+  loader: false,
   facilityId: '',
   providerId: '',
-  showPayBtn: false,
   instance: null,
+  showPayBtn: false,
   achPayment: false,
+  appointmentId: '',
   ownershipType: 'personal',
-  loader: false
+  appointmentPaymentToken: '',
 }
 
 export enum ActionType {
   SET_PRICE = 'setPage',
-  SET_PAYMENT_TOKEN = 'setPaymentToken',
-  SET_PATIENT_ID = 'setPatientId',
-  SET_FACILITY_ID = 'setFacilityId',
-  SET_PROVIDER_ID = 'setProviderId',
-  SET_SHOW_PAY_BUTTON = 'setShowPayBtn',
+  SET_LOADER = 'setLoader',
   SET_INSTANCE = 'setInstance',
+  SET_PATIENT_ID = 'setPatientId',
+  SET_PROVIDER_ID = 'setProviderId',
   SET_ACH_PAYMENT = 'setAchPayment',
+  SET_FACILITY_ID = 'setFacilityId',
+  SET_PAYMENT_TOKEN = 'setPaymentToken',
+  SET_SHOW_PAY_BUTTON = 'setShowPayBtn',
   SET_OWNERSHIP_TYPE = 'setOwnershipType',
-  SET_LOADER = 'setLoader'
+  SET_APPOINTMENT_ID = 'setAppointmentId',
 }
 
-export type Action = { type: ActionType.SET_PRICE; price: string } |
-{ type: ActionType.SET_PAYMENT_TOKEN; appointmentPaymentToken: string } |
-{ type: ActionType.SET_PATIENT_ID; patientId: string } |
-{ type: ActionType.SET_FACILITY_ID; facilityId: string } |
-{ type: ActionType.SET_PROVIDER_ID; providerId: string } |
-{ type: ActionType.SET_SHOW_PAY_BUTTON; showPayBtn: boolean } |
-{ type: ActionType.SET_INSTANCE; instance: Dropin | null } |
-{ type: ActionType.SET_ACH_PAYMENT; achPayment: boolean } |
-{ type: ActionType.SET_OWNERSHIP_TYPE; ownershipType: AchAccountType } |
-{ type: ActionType.SET_LOADER; loader: boolean }
+export type Action =
+  | { type: ActionType.SET_PRICE; price: string }
+  | { type: ActionType.SET_LOADER; loader: boolean }
+  | { type: ActionType.SET_PATIENT_ID; patientId: string }
+  | { type: ActionType.SET_FACILITY_ID; facilityId: string }
+  | { type: ActionType.SET_PROVIDER_ID; providerId: string }
+  | { type: ActionType.SET_ACH_PAYMENT; achPayment: boolean }
+  | { type: ActionType.SET_INSTANCE; instance: Dropin | null }
+  | { type: ActionType.SET_SHOW_PAY_BUTTON; showPayBtn: boolean }
+  | { type: ActionType.SET_APPOINTMENT_ID; appointmentId: string }
+  | { type: ActionType.SET_OWNERSHIP_TYPE; ownershipType: AchAccountType }
+  | { type: ActionType.SET_PAYMENT_TOKEN; appointmentPaymentToken: string }
+  | { type: ActionType.SET_PAYMENT_TOKEN; appointmentPaymentToken: string }
 
 export const externalPaymentReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -106,10 +112,17 @@ export const externalPaymentReducer = (state: State, action: Action): State => {
         ...state,
         ownershipType: action.ownershipType
       }
+
     case ActionType.SET_LOADER:
       return {
         ...state,
         loader: action.loader
+      }
+
+    case ActionType.SET_APPOINTMENT_ID:
+      return {
+        ...state,
+        appointmentId: action.appointmentId
       }
   }
 }

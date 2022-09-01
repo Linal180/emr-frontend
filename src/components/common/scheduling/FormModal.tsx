@@ -1,14 +1,17 @@
 // packages block
-import { FC, useCallback, useContext, useEffect, useState } from "react";
+import { FC, useCallback, useContext, useEffect } from "react";
 import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import {
+  Box, Button, Checkbox, CircularProgress, Dialog, FormControl, FormControlLabel, FormGroup,
+  Grid, InputLabel, Typography
+} from "@material-ui/core";
 // components block
 import Alert from "../Alert";
 import DatePicker from "../DatePicker";
 import TimePicker from "../TimePicker";
 import CardComponent from "../CardComponent";
-import ViewDataLoader from "../ViewDataLoader";
 import ServiceSelector from "../Selector/ServiceSelector";
 // interfaces/types block, theme, svgs and constants
 import { AuthContext } from '../../../context';
@@ -24,38 +27,40 @@ import {
   multiOptionType, ParamsType, ScheduleFormProps, ScheduleInputProps
 } from "../../../interfacesTypes";
 import {
-  checkPermission, getDayFromTimestamps, getTimeString, renderItem, setTimeDay
+  checkPermission, getDayFromTimestamps, getTimeString, invalidMessage, renderItem,
+  renderLoading, setTimeDay, timeValidation
 } from "../../../utils";
 import {
-  Box, Button, Checkbox, CircularProgress, Dialog, FormControl, FormControlLabel, FormGroup, Grid,
-  InputLabel, Typography
-} from "@material-ui/core";
-import {
-  APPOINTMENT_TYPE, CANCEL, CANT_CREATE_SCHEDULE, CANT_UPDATE_SCHEDULE, CREATE_SCHEDULE, DAY,
-  DOCTOR_SCHEDULE, END_TIME, NO, PERMISSION_DENIED, PICK_DAY_TEXT, END_DATE, WEEK_DAYS, YES,
-  SCHEDULE_CREATED_SUCCESSFULLY, SCHEDULE_NOT_FOUND, SCHEDULE_UPDATED_SUCCESSFULLY, 
+  APPOINTMENT_TYPE, CANCEL, CREATE_SCHEDULE, DAY, END_DATE, WEEK_DAYS, YES, END_TIME,
+  SELECT_DAY_MESSAGE, CANT_UPDATE_SCHEDULE, CANT_CREATE_SCHEDULE, PICK_DAY_TEXT, NO,
+  SCHEDULE_CREATED_SUCCESSFULLY, SCHEDULE_NOT_FOUND, SCHEDULE_UPDATED_SUCCESSFULLY,
   START_TIME, UPDATE_SCHEDULE, USER_PERMISSIONS, WANT_RECURRING, FACILITY_SCHEDULE,
-  SELECT_DAY_MESSAGE,
+  DOCTOR_SCHEDULE, PERMISSION_DENIED,
 } from "../../../constants";
 
 const ScheduleModal: FC<ScheduleFormProps> = ({
-  isDoctor, id, scheduleDispatch, doctorFacilityId, isOpen, reload, isEdit
+  isDoctor, id, scheduleDispatch, doctorFacilityId, isOpen, reload, isEdit, state
 }) => {
   const classesToggle = usePublicAppointmentStyles();
   const { id: typeId } = useParams<ParamsType>();
-  const [ids, setIds] = useState<string[]>([])
+  const { currentUser, user } = useContext(AuthContext)
+  const { facility } = user || {}
+  const { scheduleIds, scheduleRecursion, serviceIds } = state || {}
+
+  const { id: currentDoctor } = currentUser || {}
+  const { id: facilityId } = facility || {}
   const { userPermissions } = useContext(AuthContext)
+
   const methods = useForm<ScheduleInputProps>({
     mode: "all",
-    resolver: yupResolver(scheduleSchema(isDoctor || false))
+    resolver: yupResolver(scheduleSchema(isDoctor || false, scheduleRecursion))
   });
-  const { reset, handleSubmit, setValue, control } = methods;
-  const [serviceIds, setServiceIds] = useState<multiOptionType[]>([])
-  const [shouldHaveRecursion, setShouldHaveRecursion] = useState<boolean>(true)
+  const { reset, handleSubmit, setValue, control, watch, setError, clearErrors } = methods;
+  const { startAt, endAt } = watch()
 
   const handleClose = useCallback(() => {
     reset();
-    setIds([])
+    scheduleDispatch && scheduleDispatch({ type: ActionType.SET_SCHEDULES_IDS, scheduleIds: [] })
 
     if (scheduleDispatch) {
       scheduleDispatch({ type: ActionType.SET_SCHEDULE_ID, scheduleId: '' })
@@ -99,7 +104,10 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
               }
             }) || []
 
-            setServiceIds(transformedScheduleServices)
+            scheduleDispatch && scheduleDispatch({
+              type: ActionType.SET_SERVICE_IDS,
+              serviceIds: transformedScheduleServices
+            })
             setValue('serviceId', transformedScheduleServices)
           }
 
@@ -107,8 +115,15 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
           startAt && setValue('startAt', getTimeString(startAt))
           recurringEndDate && setValue('recurringEndDate', recurringEndDate)
 
-          setShouldHaveRecursion(!!!recurringEndDate)
-          setIds([...ids, getDayFromTimestamps(startAt)])
+          scheduleDispatch && scheduleDispatch({
+            type: ActionType.SET_SCHEDULE_RECURSION,
+            scheduleRecursion: !!!recurringEndDate
+          })
+
+          scheduleDispatch && scheduleDispatch({
+            type: ActionType.SET_SCHEDULES_IDS,
+            scheduleIds: [...scheduleIds, getDayFromTimestamps(startAt)]
+          })
         }
       }
     }
@@ -171,22 +186,23 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
   const onSubmit: SubmitHandler<ScheduleInputProps> = async ({
     endAt, serviceId, startAt, recurringEndDate
   }) => {
-    if (!!!ids.length) return Alert.error(SELECT_DAY_MESSAGE)
+    if (!!!scheduleIds.length) return Alert.error(SELECT_DAY_MESSAGE)
 
-    const scheduleInput = ids.map((dayValue) => {
+    const scheduleInput = scheduleIds.map((dayValue) => {
       const selectedServices = isDoctor ?
         (serviceId as multiOptionType[]).map(service => service.value) : []
 
-      const recordId = isDoctor ? { doctorId: typeId } : { facilityId: typeId }
+      const recordId = isDoctor ? { doctorId: typeId || currentDoctor }
+        : { facilityId: !!typeId ? typeId : facilityId }
 
       return {
         ...recordId, servicesIds: isDoctor ? selectedServices : [], day: dayValue,
         startAt: setTimeDay(startAt, dayValue), endAt: setTimeDay(endAt, dayValue),
-        recurringEndDate: !shouldHaveRecursion ? recurringEndDate : null
+        recurringEndDate: !scheduleRecursion ? recurringEndDate : null
       }
     })
 
-    if (typeId) {
+    if (typeId || (!typeId && facilityId) || (isDoctor && currentDoctor)) {
       if (isEdit) {
         id ?
           await updateSchedule({
@@ -206,16 +222,36 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
 
   const handleChangeForCheckBox = (id: string) => {
     if (id) {
-      if (ids.includes(id)) setIds(ids.filter(permission => permission !== id))
-      else setIds([...ids, id])
+      if (scheduleIds.includes(id)) {
+        scheduleDispatch &&
+          scheduleDispatch({
+            type: ActionType.SET_SCHEDULES_IDS,
+            scheduleIds: scheduleIds.filter(permission => permission !== id)
+          })
+      }
+      else {
+        scheduleDispatch && scheduleDispatch({
+          type: ActionType.SET_SCHEDULES_IDS,
+          scheduleIds: [...scheduleIds, id]
+        })
+      }
     }
   };
+
+  useEffect(() => {
+    if (!!startAt) {
+      timeValidation(endAt, startAt) ?
+        clearErrors("endAt")
+        : setError("endAt", { message: invalidMessage(END_TIME) })
+    }
+  }, [clearErrors, endAt, setError, startAt])
 
   const disableSubmit = createScheduleLoading || updateScheduleLoading
 
   return (
-    <Dialog className="schedule-modal" open={isOpen} onClose={handleClose} aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description" maxWidth="sm" fullWidth
+    <Dialog className="schedule-modal" open={isOpen} onClose={handleClose}
+      aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description"
+      maxWidth="sm" fullWidth
     >
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -223,99 +259,105 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
             <Box px={1}>
               <Grid container spacing={3}>
                 <Grid item md={12} sm={12} xs={12}>
-                  {getScheduleLoading ?
-                    <ViewDataLoader rows={4} columns={6} hasMedia={false} /> : (
-                      <>
-                        <Grid container spacing={3}>
-                          <Grid item md={12} sm={12} xs={12}>
-                            {isEdit ? (
-                              ids.map(day => renderItem(DAY, day))
-                            ) : (
-                              <>
-                                <Typography variant="h6">{PICK_DAY_TEXT}</Typography>
-                                <FormGroup>
-                                  <Box mt={1} mb={2} className={classesToggle.daysBox}
-                                    display="flex" alignItems="center" flexWrap="wrap"
-                                  >
-                                    {WEEK_DAYS.map(({ id, name }) => <FormControlLabel
-                                      control={
-                                        <Checkbox disabled={isEdit} color="primary" checked={ids.includes(id || '')}
-                                          onChange={() => handleChangeForCheckBox(id || '')}
-                                        />
-                                      }
-                                      label={name}
-                                    />
-                                    )}
-                                  </Box>
-                                </FormGroup>
-                              </>
-                            )}
-                          </Grid>
-                        </Grid>
+                  <Grid container spacing={3}>
+                    <Grid item md={12} sm={12} xs={12}>
+                      {isEdit ?
+                        getScheduleLoading ? renderLoading(DAY)
+                          : scheduleIds.map(day => renderItem(DAY, day))
+                        : <>
+                          <Typography variant="h6">{PICK_DAY_TEXT}</Typography>
 
-                        <Grid container spacing={3}>
-                          <Grid item md={6} sm={12} xs={12}>
-                            <TimePicker
-                              isRequired
-                              label={START_TIME}
-                              name="startAt"
-                            />
-                          </Grid>
-
-                          <Grid item md={6} sm={12} xs={12}>
-                            <TimePicker
-                              isRequired
-                              label={END_TIME}
-                              name="endAt"
-                            />
-                          </Grid>
-                        </Grid>
-
-                        <Grid container spacing={3}>
-                          <Grid item md={6} sm={12} xs={12}>
-                            <Controller
-                              name='shouldHaveRecursion'
-                              control={control}
-                              render={() => (
-                                <FormControl fullWidth margin="normal" className={classesToggle.toggleContainer}>
-                                  <InputLabel shrink>{WANT_RECURRING}</InputLabel>
-
-                                  <label className="toggle-main">
-                                    <Box color={shouldHaveRecursion ? WHITE : GREY_SEVEN}>{YES}</Box>
-                                    <AntSwitch checked={shouldHaveRecursion}
-                                      onChange={({ target: { checked } }) =>
-                                        setShouldHaveRecursion(checked)} name='shouldHaveRecursion'
-                                    />
-                                    <Box color={shouldHaveRecursion ? GREY_SEVEN : WHITE}>{NO}</Box>
-                                  </label>
-                                </FormControl>
+                          <FormGroup>
+                            <Box mt={1} mb={2} className={classesToggle.daysBox}
+                              display="flex" alignItems="center" flexWrap="wrap"
+                            >
+                              {WEEK_DAYS.map(({ id, name }) => <FormControlLabel
+                                control={
+                                  <Checkbox disabled={isEdit} color="primary" checked={scheduleIds.includes(id || '')}
+                                    onChange={() => handleChangeForCheckBox(id || '')} className={classesToggle.checkBox}
+                                  />
+                                }
+                                label={name}
+                              />
                               )}
-                            />
-                          </Grid>
+                            </Box>
+                          </FormGroup>
+                        </>}
+                    </Grid>
+                  </Grid>
 
-                          {!shouldHaveRecursion && <Grid item md={6} sm={12} xs={12}>
-                            <DatePicker
-                              name="recurringEndDate"
-                              label={END_DATE}
-                              disableFuture={false}
-                              disablePast={true}
-                            />
-                          </Grid>}
-                        </Grid>
+                  <Grid container spacing={3}>
+                    <Grid item md={6} sm={6} xs={12}>
+                      <TimePicker
+                        isRequired
+                        name="startAt"
+                        label={START_TIME}
+                        loading={getScheduleLoading}
+                      />
+                    </Grid>
 
-                        {isDoctor &&
-                          <ServiceSelector
-                            isRequired
-                            name="serviceId"
-                            label={APPOINTMENT_TYPE}
-                            facilityId={doctorFacilityId}
-                            isEdit={isEdit}
-                            defaultValues={serviceIds}
-                            isMulti={true}
-                          />
-                        }
-                      </>
-                    )}
+                    <Grid item md={6} sm={6} xs={12}>
+                      <TimePicker
+                        isRequired
+                        name="endAt"
+                        label={END_TIME}
+                        loading={getScheduleLoading}
+                      />
+                    </Grid>
+                  </Grid>
+
+                  <Grid container spacing={3}>
+                    <Grid item md={6} sm={12} xs={12}>
+                      {getScheduleLoading ? renderLoading(WANT_RECURRING) :
+                        <Controller
+                          name='shouldHaveRecursion'
+                          control={control}
+                          render={() => (
+                            <FormControl fullWidth margin="normal" className={classesToggle.toggleContainer}>
+                              <InputLabel shrink>{WANT_RECURRING}</InputLabel>
+
+                              <label className="toggle-main">
+                                <Box color={scheduleRecursion ? WHITE : GREY_SEVEN}>{YES}</Box>
+                                <AntSwitch checked={scheduleRecursion}
+                                  name='shouldHaveRecursion'
+                                  onChange={({ target: { checked } }) =>
+                                    scheduleDispatch && scheduleDispatch({
+                                      type: ActionType.SET_SCHEDULE_RECURSION,
+                                      scheduleRecursion: checked
+                                    })}
+                                />
+                                <Box color={scheduleRecursion ? GREY_SEVEN : WHITE}>{NO}</Box>
+                              </label>
+                            </FormControl>
+                          )}
+                        />
+                      }
+                    </Grid>
+
+                    {!scheduleRecursion && <Grid item md={6} sm={12} xs={12}>
+                      <DatePicker
+                        disablePast
+                        label={END_DATE}
+                        disableFuture={false}
+                        name="recurringEndDate"
+                        loading={getScheduleLoading}
+                        isRequired={!scheduleRecursion}
+                      />
+                    </Grid>}
+                  </Grid>
+
+                  {isDoctor &&
+                    <ServiceSelector
+                      isMulti
+                      isRequired
+                      isEdit={isEdit}
+                      name="serviceId"
+                      label={APPOINTMENT_TYPE}
+                      defaultValues={serviceIds}
+                      loading={getScheduleLoading}
+                      facilityId={doctorFacilityId}
+                    />
+                  }
 
                   <Box pb={2} display='flex' justifyContent='flex-end' alignItems='center'>
                     <Button onClick={handleClose} color="default">

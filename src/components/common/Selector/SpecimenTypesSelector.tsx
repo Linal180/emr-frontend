@@ -1,13 +1,14 @@
 // packages block
-import { FC, useCallback, useEffect, useState } from "react";
+import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
+import { FC, useCallback, useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { renderSpecimenTypes, requiredLabel } from "../../../utils";
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
-import { FacilitySelectorProps } from "../../../interfacesTypes";
 import { TestSpecimenTypesPayload, useFindAllTestSpecimenTypesLazyQuery } from "../../../generated/graphql";
+import { FacilitySelectorProps } from "../../../interfacesTypes";
+import { renderSpecimenTypes, requiredLabel } from "../../../utils";
+import AutocompleteTextField from "../AutocompleteTextField";
 
 const SpecimenTypesSelector: FC<FacilitySelectorProps> = ({ name, label, disabled, isRequired, addEmpty }): JSX.Element => {
   const { control } = useFormContext()
@@ -15,7 +16,7 @@ const SpecimenTypesSelector: FC<FacilitySelectorProps> = ({ name, label, disable
   const [specimenTypes, setSpecimenTypes] = useState<TestSpecimenTypesPayload['specimenTypes']>([])
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderSpecimenTypes(specimenTypes ?? [])] : [...renderSpecimenTypes(specimenTypes ?? [])]
 
-  const [findAllSpecimenTypes] = useFindAllTestSpecimenTypesLazyQuery({
+  const [findAllSpecimenTypes, { loading: specimenTypesLoading }] = useFindAllTestSpecimenTypesLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -61,6 +62,7 @@ const SpecimenTypesSelector: FC<FacilitySelectorProps> = ({ name, label, disable
             value={field.value}
             disabled={disabled}
             disableClearable
+            getOptionSelected={(option, value) => option.id === value.id}
             getOptionLabel={(option) => option.name || ""}
             renderOption={(option) => option.name}
             renderInput={(params) => (
@@ -70,12 +72,12 @@ const SpecimenTypesSelector: FC<FacilitySelectorProps> = ({ name, label, disable
                     {isRequired ? requiredLabel(label) : label}
                   </InputLabel>
                 </Box>
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  error={field.value.id ? !field.value.id : invalid}
-                  className="selectorClass"
+
+                <AutocompleteTextField
+                  invalid={field.value.id ? !field.value.id : invalid}
                   onChange={(event) => setSearchQuery(event.target.value)}
+                  params={params}
+                  loading={specimenTypesLoading}
                 />
 
                 {!field.value.id && <FormHelperText>{message}</FormHelperText>}

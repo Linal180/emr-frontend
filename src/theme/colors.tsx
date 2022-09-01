@@ -77,11 +77,14 @@ export const GREY_THIRTEEN = "#7E7E7E"
 export const GREY_FOURTEEN = "#F4F4F4"
 export const GREY_FIFTEEN = "#5E6278"
 export const GREY_SIXTEEN = "#B3B3B3"
+export const GREY_SEVENTEEN = "#E5E7EB"
+export const GREY_EIGHTEEN = "#F9FAFA"
 
 export const WHITE = "#FFFFFF";
 
 export const RED = "#DD1010";
 export const RED_ONE = "#F64E60";
+export const RED_TWO = "#CA6B6E";
 
 export const PURPLE = "purple";
 export const PURPLE_ONE = "#7239EA";

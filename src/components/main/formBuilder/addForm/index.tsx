@@ -36,9 +36,9 @@ import {
 import {
   COL_TYPES, ITEMS, COL_TYPES_ARRAY, MAPPED_FORM_TYPES, EMPTY_OPTION, FORM_BUILDER_INITIAL_VALUES,
   FACILITY, FORBIDDEN_EXCEPTION, TRY_AGAIN, FORM_BUILDER_ROUTE, FORM_UPDATED, ADD_COLUMNS_TEXT, CLEAR_TEXT,
-  FORM_NAME, FORM_TYPE, FORM_BUILDER, PUBLISH, FORMS_EDIT_BREAD, DROP_FIELD, SAVE_DRAFT, FORM_TEXT, getFormInitialValues,
+  FORM_NAME, FORM_TYPE, FORM_BUILDER, PUBLISH, FORMS_EDIT_BREAD, SAVE_DRAFT, FORM_TEXT, getFormInitialValues,
   CREATE_FORM_BUILDER, NOT_FOUND_EXCEPTION, CREATE_TEMPLATE, CREATE_FORM_TEMPLATE, FORMS_BREAD, FORMS_ADD_BREAD,
-  PRE_DEFINED, ITEMS_ID, PRACTICE,
+  PRE_DEFINED, ITEMS_ID, PRACTICE, DRAG_FIELD, REMOVE_FACILITY_FIELD,
 } from '../../../../constants';
 import { formBuilderReducer, initialState, State, Action, ActionType } from '../../../../reducers/formBuilderReducer';
 import SwitchController from '../../../../controller/SwitchController';
@@ -259,7 +259,8 @@ const AddForm = () => {
               options: itemField?.options ?? [],
               textArea: itemField?.textArea ?? false,
               isMultiSelect: itemField?.isMultiSelect ?? false,
-              apiCall: itemField?.apiCall ?? ''
+              apiCall: itemField?.apiCall ?? '',
+              regex: itemField?.regex ?? ''
             };
 
             fields?.splice(destination.index, 0, newField);
@@ -281,14 +282,15 @@ const AddForm = () => {
       const tab = tabs && (tabs[0] || {})
       const { sections } = tab || {}
       const newSections = sections?.map((section) => {
-        const { fields, name, col } = section;
+        const { fields, name, col, sectionId } = section;
         const newFields = fields?.map((field) => ({ ...field, fieldId: uuid() }))
 
         return ({
           fields: newFields,
           name,
           id: uuid(),
-          col: col || 12
+          col: col || 12,
+          sectionId
         })
       })
       const newFormValues = formValues?.map((tab) => {
@@ -431,7 +433,29 @@ const AddForm = () => {
       return sections?.some((item) => item?.fields?.length > 0);
     })
 
-    if (isFieldFound) {
+    const { isPractice } = values
+
+    let isFacilityExist: null | boolean = null
+    formValues?.map((tab) => {
+      const { sections } = tab || {}
+      return sections?.map((item) => {
+        const { fields } = item || {}
+        fields?.map((field) => {
+          if (field?.columnName === "facilityId") {
+            isFacilityExist = true
+          }
+          return field
+        });
+        return item
+      }
+      );
+    })
+
+    if (!isPractice && !!isFacilityExist) {
+      Alert.error(REMOVE_FACILITY_FIELD)
+    }
+
+    else if (isFieldFound) {
       const { name, type, facilityId: selectedFacility, isPractice, practiceId: { id } } = values || {};
       const { id: typeId } = type;
       const { id: facility } = selectedFacility;
@@ -461,17 +485,17 @@ const AddForm = () => {
       }
       formId ? updateForm({ variables: { updateFormInput: { ...data, id: formId } } }) : createForm({ variables: { createFormInput: data } })
     }
-    else Alert.error(DROP_FIELD)
+    else Alert.error(DRAG_FIELD)
 
   };
   //select field for edit handler
   const changeValues = (id: string, item: FieldsInputs) => {
-    const { fieldId, label, type, name, css, column, placeholder, required, errorMsg, defaultValue, options, textArea } = item;
+    const { fieldId, label, type, name, css, column, placeholder, required, errorMsg, defaultValue, options, textArea, regex, futureEnable, pastEnable } = item;
 
     dispatch({
       type: ActionType.SET_SELECTED_FIELD, selected: {
         fieldId, label, type: type as ElementType, name, css, column, placeholder, required, errorMsg,
-        defaultValue, list: id, options, textArea
+        defaultValue, list: id, options, textArea, regex, futureEnable, pastEnable
       }
     })
   };
@@ -491,7 +515,10 @@ const AddForm = () => {
                 column: values?.column,
                 placeholder: values?.placeholder,
                 required: values?.required,
-                options: values?.options
+                options: values?.options,
+                regex: values?.regex,
+                futureEnable: values?.futureEnable,
+                pastEnable: values?.pastEnable
               }
               : field
           );
@@ -510,7 +537,7 @@ const AddForm = () => {
     dispatch({
       type: ActionType.SET_SELECTED_FIELD, selected: {
         fieldId: '', label: "", type: ElementType.Text, name: "", css: "", column: 12, placeholder: "", required: false,
-        errorMsg: '', defaultValue: "", list: '', options: [], textArea: false
+        errorMsg: '', defaultValue: "", list: '', options: [], textArea: false, regex: '', futureEnable: true, pastEnable: true
       }
     })
   }
@@ -544,14 +571,14 @@ const AddForm = () => {
     })
     if (isFieldFound) {
       dispatch({ type: ActionType.SET_OPEN_TEMPLATE, openTemplate: true })
-    } else Alert.error(DROP_FIELD)
+    } else Alert.error(DRAG_FIELD)
   }
 
   return (
     <DragDropContext onDragEnd={onDragEnd} enableDefaultSensors>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(saveHandler)}>
-          <Box py={2} display='flex' justifyContent='space-between'>
+          <Box py={2} display='flex' justifyContent='space-between' flexWrap='wrap'>
             <Box display='flex'>
               <BackButton to={`${FORM_BUILDER_ROUTE}`} />
 
@@ -563,28 +590,30 @@ const AddForm = () => {
               />
             </Box>
 
-            <Box display='flex' justifyContent='flex-start' alignItems="baseline">
-              <Button onClick={clearHandler} variant="outlined" color="default">
-                {CLEAR_TEXT}
-              </Button>
+            <Box display='flex' justifyContent='flex-start' alignItems="baseline" flexWrap='wrap'>
+              <Box m={1}>
+                <Button onClick={clearHandler} variant="outlined" color="default">
+                  {CLEAR_TEXT}
+                </Button>
+              </Box>
 
-              <Box mx={1} />
+              <Box m={1}>
+                <Button type='submit' onClick={() => dispatch({ type: ActionType.SET_ACTIVE, isActive: false })} variant='contained' className='blue-button-new' color='inherit' disabled={loading || updateLoading}>
+                  {loading && <CircularProgress size={20} color="inherit" />}  {SAVE_DRAFT}
+                </Button>
+              </Box>
 
-              <Button type='submit' onClick={() => dispatch({ type: ActionType.SET_ACTIVE, isActive: false })} variant='contained' className='blue-button-new' color='inherit' disabled={loading || updateLoading}>
-                {loading && <CircularProgress size={20} color="inherit" />}  {SAVE_DRAFT}
-              </Button>
+              <Box m={1}>
+                <Button type='button' onClick={templateCreateClick} variant={'contained'} color="secondary" disabled={createTemplateLoading}>
+                  {createTemplateLoading && <CircularProgress size={20} color="inherit" />} {CREATE_TEMPLATE}
+                </Button>
+              </Box>
 
-              <Box mx={1} />
-
-              <Button type='button' onClick={templateCreateClick} variant={'contained'} color="secondary" disabled={createTemplateLoading}>
-                {createTemplateLoading && <CircularProgress size={20} color="inherit" />} {CREATE_TEMPLATE}
-              </Button>
-
-              <Box mx={1} />
-
-              <Button type='submit' variant='contained' onClick={() => dispatch({ type: ActionType.SET_ACTIVE, isActive: true })} color='primary' disabled={loading || updateLoading}>
-                {(loading || updateLoading) && <CircularProgress size={20} color="inherit" />} {PUBLISH}
-              </Button>
+              <Box m={1}>
+                <Button type='submit' variant='contained' onClick={() => dispatch({ type: ActionType.SET_ACTIVE, isActive: true })} color='primary' disabled={loading || updateLoading}>
+                  {(loading || updateLoading) && <CircularProgress size={20} color="inherit" />} {PUBLISH}
+                </Button>
+              </Box>
             </Box>
           </Box>
 
@@ -643,11 +672,11 @@ const AddForm = () => {
 
             <Box mt={3}>
               <Grid container spacing={2}>
-                <Grid item md={2} sm={4} xs={12}>
+                <Grid item lg={2} md={4} sm={12} xs={12}>
                   <Sidebar dispatch={dispatch} formState={state} />
                 </Grid>
 
-                <Grid item md={7} sm={4} xs={12}>
+                <Grid item lg={7} md={4} sm={8} xs={12}>
                   <Box p={3} bgcolor={WHITE} borderRadius={6}>
                     {getFormLoader ? <ViewDataLoader rows={3} columns={3} hasMedia={false} /> :
                       <DropContainer
@@ -665,8 +694,10 @@ const AddForm = () => {
                           aria-label="widget's patient"
                           onClick={handleMenuOpen}
                         >
-                          <Box bgcolor={GREY_EIGHT} borderRadius={6} p={1} mr={1}>
-                            <FormAddIcon />
+                          <Box bgcolor={GREY_EIGHT} borderRadius={6} mr={1} py={1} px={0}>
+                            <Button>
+                              <FormAddIcon />
+                            </Button>
                           </Box>
 
                           <Typography variant="h4">
@@ -694,7 +725,7 @@ const AddForm = () => {
                   </Box>
                 </Grid>
 
-                <Grid item md={3} sm={4} xs={12}>
+                <Grid item lg={3} md={4} sm={4} xs={12}>
                   <Box className={classes.main}>
                     <TabProperties formState={state} dispatch={dispatch} />
                     <FieldProperties setFieldValuesHandler={setFieldValuesHandler} selected={selected} />

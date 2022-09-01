@@ -1,5 +1,5 @@
 // packages block
-import { FC, useEffect, useContext, useCallback } from 'react';
+import { FC, useEffect, useCallback, useState } from 'react';
 import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
@@ -10,36 +10,36 @@ import PageHeader from '../../../../common/PageHeader';
 import BackButton from '../../../../common/BackButton';
 import InputController from '../../../../../controller';
 import CardComponent from '../../../../common/CardComponent';
-import ViewDataLoader from '../../../../common/ViewDataLoader';
 import CheckboxController from '../../../../common/CheckboxController';
-import FacilitySelector from '../../../../common/Selector/FacilitySelector';
 // utils, interfaces and graphql block
 import history from '../../../../../history';
-import { setRecord } from '../../../../../utils';
-import { ListContext } from '../../../../../context';
 import { serviceSchema } from '../../../../../validationSchemas';
+import { excludeLeadingZero, renderItem, renderLoading, renderTextLoading } from '../../../../../utils';
 import { extendedServiceInput, GeneralFormProps, ParamsType } from '../../../../../interfacesTypes';
 import {
-  useCreateServiceMutation, useGetServiceLazyQuery, useUpdateServiceMutation
+  useCreateServiceMutation, useGetCurrentFacilityLazyQuery, useGetServiceLazyQuery,
+  FacilityPayload, useUpdateServiceMutation
 } from "../../../../../generated/graphql";
 import {
   ACTIVE_TEXT, CREATE_SERVICE, DURATION_TEXT, EMAIL_OR_USERNAME_ALREADY_EXISTS,
   FACILITY_SERVICES_ROUTE, SERVICE_UPDATED, UPDATE_SERVICE, FORBIDDEN_EXCEPTION,
-  PRICE_TEXT, SERVICE_CREATED, SERVICE_NAME_TEXT, SERVICE_NOT_FOUND, SERVICE_INFO,
+  SERVICE_CREATED, SERVICE_NAME_TEXT, SERVICE_NOT_FOUND, SERVICE_INFO,
   FACILITIES_ROUTE, FACILITY, NOT_FOUND_EXCEPTION, SELECT_COLOR_TEXT, FACILITIES_BREAD,
   FACILITY_SERVICES_TEXT, FACILITY_SERVICE_EDIT_BREAD, FACILITY_SERVICE_NEW_BREAD,
-  SERVICES_BREAD,
+  SERVICES_BREAD, SOMETHING_WENT_WRONG,
 } from "../../../../../constants";
 
 const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
   const { facilityId: currentFacility } = useParams<ParamsType>()
-  const { facilityList } = useContext(ListContext)
+  const [facility, setFacility] = useState<FacilityPayload['facility']>()
 
   const methods = useForm<extendedServiceInput>({
     mode: "all",
+    defaultValues: { isActive: true },
     resolver: yupResolver(serviceSchema)
   });
-  const { setValue, handleSubmit, formState: { errors } } = methods;
+  const { setValue, handleSubmit, watch } = methods;
+  const { isActive } = watch()
 
   const [getService, { loading: getServiceLoading }] = useGetServiceLazyQuery({
     fetchPolicy: "network-only",
@@ -61,14 +61,15 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
           const { status } = response
 
           if (service && status && status === 200) {
-            const { name, isActive, price, facilityId, duration, color } = service || {}
+            const { name, isActive, duration, color, facility } = service || {}
 
-            facilityId && setCurrentFacility(facilityId)
             name && setValue('name', name)
-            price && setValue('price', price)
+            // price && setValue('price', price)
             color && setValue('color', color)
             duration && setValue('duration', duration)
-            isActive && setValue('isActive', isActive as boolean)
+            setValue('isActive', isActive as boolean)
+
+            !!facility && setFacility(facility)
           }
         }
       }
@@ -115,11 +116,40 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
     }
   });
 
-  const setCurrentFacility = useCallback((id: string) => {
-    const selectedFacility = facilityList?.filter(facility => facility?.id === id)[0]
+  const [getFacility, { loading: getFacilityLoading }] = useGetCurrentFacilityLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
 
-    id && selectedFacility && setValue('facilityId', setRecord(id, selectedFacility.name))
-  }, [facilityList, setValue]);
+    onError({ message }) {
+      message !== NOT_FOUND_EXCEPTION && Alert.error(message)
+      history.push(FACILITIES_ROUTE)
+    },
+
+    onCompleted(data) {
+      const { getFacility } = data || {};
+
+      if (getFacility) {
+        const { response, facility } = getFacility
+
+        if (response) {
+          const { status } = response
+
+          if (facility && status && status === 200) {
+            setFacility(facility)
+          }
+        }
+      }
+    }
+  });
+
+  const setCurrentFacility = useCallback(async (id: string) => {
+    try {
+      id ? await getFacility({
+        variables: { getFacility: { id } }
+      }) : Alert.error(SOMETHING_WENT_WRONG)
+    } catch (error) { }
+  }, [getFacility]);
 
   useEffect(() => {
     if (isEdit) {
@@ -128,41 +158,36 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
           variables: { getService: { id } }
         })
       } else Alert.error(SERVICE_NOT_FOUND)
-    } else {
-      setCurrentFacility(currentFacility || '')
-    }
+    } else setCurrentFacility(currentFacility || '')
   }, [currentFacility, getService, id, isEdit, setCurrentFacility])
 
-  const onSubmit: SubmitHandler<extendedServiceInput> = async ({ duration, facilityId, name, price, color, isActive }) => {
-    const { id: selectedFacilityId } = facilityId
+  const onSubmit: SubmitHandler<extendedServiceInput> = async ({
+    duration, name, price, color, isActive
+  }) => {
     const serviceInput = {
-      name: name || '', duration: duration || "", isActive: isActive,
-      price: price || "", facilityId: selectedFacilityId || "", color: color || 'black'
+      name: name || '', duration: excludeLeadingZero(duration) || "", isActive,
+      price: excludeLeadingZero(price) || "", facilityId: currentFacility || '', color: color || 'black'
     };
 
-    if (isEdit) {
-      await updateService({
-        variables: {
-          updateServiceInput: { id: id || '', ...serviceInput }
-        }
-      })
-    } else {
-      await createService({
-        variables: {
-          createServiceInput: { ...serviceInput }
-        }
-      })
-    }
+    if (!!currentFacility) {
+      if (isEdit) {
+        await updateService({
+          variables: {
+            updateServiceInput: { id: id || '', ...serviceInput }
+          }
+        })
+      } else {
+        await createService({
+          variables: {
+            createServiceInput: { ...serviceInput }
+          }
+        })
+      }
+    } else Alert.error(SOMETHING_WENT_WRONG)
   };
 
-  const disableSubmit = createServiceLoading || updateServiceLoading || getServiceLoading
-
-  const {
-    name: { message: nameError } = {},
-    price: { message: priceError } = {},
-    facilityId: { id: facilityIdError } = {},
-    duration: { message: durationError } = {},
-  } = errors;
+  const isLoading = createServiceLoading || updateServiceLoading || getServiceLoading || getFacilityLoading
+  const { name: facilityName } = facility || {}
 
   return (
     <FormProvider {...methods}>
@@ -175,16 +200,19 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
 
             <PageHeader
               title={FACILITY_SERVICES_TEXT}
-              path={[FACILITIES_BREAD, SERVICES_BREAD(currentFacility || ''), isEdit ? FACILITY_SERVICE_EDIT_BREAD : FACILITY_SERVICE_NEW_BREAD]}
+              path={[
+                FACILITIES_BREAD, SERVICES_BREAD(currentFacility || ''),
+                isEdit ? FACILITY_SERVICE_EDIT_BREAD : FACILITY_SERVICE_NEW_BREAD
+              ]}
             />
           </Box>
 
           <Button type="submit" variant="contained" color="primary"
-            disabled={disableSubmit}
+            disabled={isLoading}
           >
             {isEdit ? UPDATE_SERVICE : CREATE_SERVICE}
 
-            {disableSubmit &&
+            {isLoading &&
               <CircularProgress size={20} color="inherit" />
             }
           </Button>
@@ -192,61 +220,67 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
 
         <Box maxHeight="calc(100vh - 190px)">
           <Grid container spacing={3}>
-            <Grid md={6} item>
+            <Grid lg={6} md={8} sm={12} xs={12} item>
               <CardComponent cardTitle={SERVICE_INFO}>
-                {getServiceLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <>
-                    <FacilitySelector
-                      addEmpty
-                      isRequired
-                      label={FACILITY}
-                      name="facilityId"
-                      error={facilityIdError?.message}
-                    />
+                <Grid container spacing={2}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    {getServiceLoading ?
+                      renderLoading(FACILITY) : renderItem(FACILITY, facilityName)
+                    }
+                  </Grid>
 
+                  <Grid item md={6} sm={12} xs={12}>
                     <InputController
                       isRequired
                       fieldType="text"
                       controllerName="name"
                       controllerLabel={SERVICE_NAME_TEXT}
-                      error={nameError}
+                      loading={getServiceLoading}
                     />
+                  </Grid>
+                </Grid>
 
-                    <Grid container spacing={2}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          isRequired
-                          fieldType="number"
-                          controllerName="duration"
-                          controllerLabel={DURATION_TEXT}
-                          error={durationError}
-                        />
-                      </Grid>
+                <Grid container spacing={2}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <InputController
+                      isRequired
+                      fieldType="number"
+                      controllerName="duration"
+                      loading={getServiceLoading}
+                      controllerLabel={DURATION_TEXT}
+                    />
+                  </Grid>
 
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          isRequired
-                          fieldType="text"
-                          controllerName="price"
-                          controllerLabel={PRICE_TEXT}
-                          error={priceError}
-                        />
-                      </Grid>
-                    </Grid>
+                  <Grid item md={3} sm={12} xs={12}>
+                    <InputController
+                      fieldType="color"
+                      controllerName="color"
+                      loading={getServiceLoading}
+                      controllerLabel={SELECT_COLOR_TEXT}
+                    />
+                  </Grid>
 
-                    <Grid item md={3} sm={12} xs={12}>
-                      <InputController
-                        fieldType="color"
-                        controllerName="color"
-                        controllerLabel={SELECT_COLOR_TEXT}
-                      />
-                    </Grid>
+                  {/* <Grid item md={6} sm={12} xs={12}>
+                    <InputController
+                      isRequired
+                      fieldType="text"
+                      controllerName="price"
+                      loading={getServiceLoading}
+                      controllerLabel={PRICE_TEXT}
+                    />
+                  </Grid> */}
+                </Grid>
 
-                    <Grid md={12} item>
-                      <CheckboxController controllerName="isActive" controllerLabel={ACTIVE_TEXT} margin="none" />
-                    </Grid>
-                  </>
-                )}
+
+                <Grid md={12} item>
+                  {getServiceLoading ? renderTextLoading() :
+                    <CheckboxController
+                      controllerName="isActive"
+                      controllerLabel={ACTIVE_TEXT}
+                      defaultValue={isActive as boolean}
+                    />
+                  }
+                </Grid>
               </CardComponent>
             </Grid>
           </Grid>

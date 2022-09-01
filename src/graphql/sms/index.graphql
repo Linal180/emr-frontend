@@ -1,0 +1,8 @@
+mutation SendSms($sendSmsInput: SendSmsInput!) {
+  sendSms(sendSmsInput: $sendSmsInput) {
+    response {
+      status
+      message
+    }
+  }
+}

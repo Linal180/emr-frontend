@@ -1,24 +1,25 @@
 // packages block
-import { FC, useContext, useState, MouseEvent } from "react";
-import { Link } from "react-router-dom";
+import { AppBar, Box, Button, Fade, Menu, MenuItem, Toolbar, Typography } from '@material-ui/core';
 import { Menu as MenuIcon } from "@material-ui/icons";
-import { AppBar, Typography, Box, Toolbar, IconButton, Menu, MenuItem, Fade, } from '@material-ui/core';
+import { MouseEvent, useContext, useState } from "react";
+import { Link } from "react-router-dom";
 // Components block
 import DropdownMenu from "./DropdownMenu";
 import ProfileDropdownMenu from "./ProfileDropdownMenu";
 // utils and header styles block
-import history from "../../history";
-import { AuthContext } from "../../context";
 import { AIMEDLOGO, SettingsIcon } from "../../assets/svgs";
-import { useHeaderStyles } from "../../styles/headerStyles";
-import { activeClass, checkPermission, getHigherRole, isSuperAdmin, isUserAdmin } from "../../utils";
 import {
-  APPOINTMENT_MENU_ITEMS, FACILITIES_TEXT, SUPER_ADMIN, USER_PERMISSIONS, AGREEMENTS_ROUTE, AGREEMENTS,
-  FACILITIES_ROUTE, ROOT_ROUTE, PRACTICE_MANAGEMENT_TEXT, PRACTICE_MANAGEMENT_ROUTE, SETTINGS_ROUTE,
-  SCHEDULE_TEXT, HOME_TEXT, PATIENTS_ROUTE, PATIENTS_TEXT,
+  APPOINTMENT_MENU_ITEMS, BILLING_MENU_ITEMS, BILLING_TEXT, FACILITIES_ROUTE, FACILITIES_TEXT, HOME_TEXT,
+  PATIENTS_ROUTE, PATIENTS_TEXT, PRACTICE_MANAGEMENT_ROUTE, PRACTICE_MANAGEMENT_TEXT, ROOT_ROUTE, SCHEDULE_TEXT,
+  SETTINGS_ROUTE, SUPER_ADMIN, USER_PERMISSIONS
 } from "../../constants";
+import { AuthContext } from "../../context";
+import history from "../../history";
+import { useHeaderStyles } from "../../styles/headerStyles";
+import { BLACK } from "../../theme";
+import { activeClass, checkPermission, getHigherRole, isBiller, isFacilityAdmin, isPracticeAdmin, isSuperAdmin } from "../../utils";
 
-const Header: FC = (): JSX.Element => {
+const Header = ({ url }: { url: string }): JSX.Element => {
   const classes = useHeaderStyles();
   const { user, currentUser, userPermissions, userRoles } = useContext(AuthContext);
   const { firstName, lastName } = currentUser || {}
@@ -27,18 +28,19 @@ const Header: FC = (): JSX.Element => {
   const { roles } = user || {};
   const currentRoute = activeClass(pathname || '');
   const roleName = getHigherRole(userRoles) || ''
-
-  const showFacility = isUserAdmin(roles)
   const isSuper = isSuperAdmin(roles)
+  const isFacAdmin = isFacilityAdmin(roles)
+  const isPraAdmin = isPracticeAdmin(roles)
+  const isBillerUser = isBiller(roles)
+
+  const isAdmin = isSuper || isFacAdmin || isPraAdmin
 
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState<null | HTMLElement>(null);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const handleMobileMenuOpen = ({ currentTarget }: MouseEvent<HTMLElement>) =>
     setMobileMoreAnchorEl(currentTarget);
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
-  };
+  const handleMobileMenuClose = () => setMobileMoreAnchorEl(null);
 
   const renderMobileMenu = (
     <Menu
@@ -57,7 +59,7 @@ const Header: FC = (): JSX.Element => {
           <Typography
             component={Link}
             to={ROOT_ROUTE}
-            className={currentRoute === 'inDashboard' ? ` ${classes.mobileMenuItem} active` : `${classes.mobileMenuItem}`}
+            className={currentRoute === 'inDashboard' ? `${classes.mobileMenuItem} active` : `${classes.mobileMenuItem}`}
           >
             {HOME_TEXT}
           </Typography>
@@ -82,24 +84,25 @@ const Header: FC = (): JSX.Element => {
             }
           </Box>
 
-          {checkPermission(userPermissions, USER_PERMISSIONS.fetchAllPatients) &&
+          {!isBillerUser && checkPermission(userPermissions, USER_PERMISSIONS.fetchAllPatients) &&
             <Typography
               component={Link}
               to={PATIENTS_ROUTE}
-              className={currentRoute === 'inPatient' ? ` ${classes.mobileMenuItem} active` : `${classes.mobileMenuItem}`}
+              className={currentRoute === 'inPatient' ? `${classes.mobileMenuItem} active` : `${classes.mobileMenuItem}`}
             >
               {PATIENTS_TEXT}
             </Typography>
           }
 
-          {/* <DropdownMenu
-            itemName={BILLING_TEXT}
-            menuItem={BILLING_MENU_ITEMS}
-            current={currentRoute === 'inBilling'}
-          /> */}
+          {isAdmin && <Box className={classes.mobileMenuItem}>
+            <DropdownMenu
+              itemName={BILLING_TEXT}
+              menuItem={BILLING_MENU_ITEMS}
+              current={currentRoute === 'inBilling'}
+            />
+          </Box>}
 
-          {checkPermission(userPermissions, USER_PERMISSIONS.findAllFacility)
-            && showFacility &&
+          {checkPermission(userPermissions, USER_PERMISSIONS.findAllFacility) &&
             <Typography
               component={Link}
               to={FACILITIES_ROUTE}
@@ -117,13 +120,13 @@ const Header: FC = (): JSX.Element => {
             {REPORTS}
           </Typography> */}
 
-          <Typography
+          {/* <Typography
             component={Link}
             to={AGREEMENTS_ROUTE}
             className={currentRoute === 'isAgreement' ? ` ${classes.mobileMenuItem} active` : `${classes.mobileMenuItem}`}
           >
             {AGREEMENTS}
-          </Typography>
+          </Typography> */}
         </Box>
       </MenuItem>
     </Menu>
@@ -133,9 +136,16 @@ const Header: FC = (): JSX.Element => {
     <>
       <AppBar className={classes.appBar}>
         <Toolbar className={classes.toolBar}>
-          <Link to={ROOT_ROUTE} className={classes.logo}>
-            <AIMEDLOGO />
-          </Link>
+          {
+            !url ? <Link to={ROOT_ROUTE} className={classes.logo}>
+              <AIMEDLOGO />
+            </Link> :
+              <Box onClick={() => history.push(ROOT_ROUTE)} width={200} height={64}>
+                {/* <Button onClick={()=>history.push(ROOT_ROUTE)}> */}
+                <img src={url} alt="practice-logo" className={classes.practiceLogo} />
+                {/* </Button> */}
+              </Box>
+          }
 
           <Box className={classes.grow} />
 
@@ -167,24 +177,23 @@ const Header: FC = (): JSX.Element => {
                 />
               }
 
-              {checkPermission(userPermissions, USER_PERMISSIONS.fetchAllPatients) &&
+              {!isBillerUser && checkPermission(userPermissions, USER_PERMISSIONS.fetchAllPatients) &&
                 <Typography
                   component={Link}
                   to={PATIENTS_ROUTE}
-                  className={currentRoute === 'inPatient' ? ` ${classes.menuItem} active` : `${classes.menuItem}`}
+                  className={currentRoute === 'inPatient' ? `${classes.menuItem} active` : `${classes.menuItem}`}
                 >
                   {PATIENTS_TEXT}
                 </Typography>
               }
 
-              {/* <DropdownMenu
-                      itemName={BILLING_TEXT}
-                      menuItem={BILLING_MENU_ITEMS}
-                      current={currentRoute === 'inBilling'}
-                    /> */}
+              {isAdmin && <DropdownMenu
+                itemName={BILLING_TEXT}
+                menuItem={BILLING_MENU_ITEMS}
+                current={currentRoute === 'inBilling'}
+              />}
 
-              {checkPermission(userPermissions, USER_PERMISSIONS.findAllFacility)
-                && showFacility &&
+              {!isBillerUser && checkPermission(userPermissions, USER_PERMISSIONS.findAllFacility) &&
                 <Typography
                   component={Link}
                   to={FACILITIES_ROUTE}
@@ -202,24 +211,22 @@ const Header: FC = (): JSX.Element => {
                       {REPORTS}
                     </Typography> */}
 
-              <Typography
+              {/* <Typography
                 component={Link}
                 to={AGREEMENTS_ROUTE}
                 className={currentRoute === 'isAgreement' ? ` ${classes.menuItem} active` : `${classes.menuItem}`}
               >
                 {AGREEMENTS}
-              </Typography>
+              </Typography> */}
             </Box>
           </Box>
 
           <Box className={classes.grow} />
 
-          <Box display="flex" alignItems="center">
-            <Link to={SETTINGS_ROUTE}>
-              <Box pt={0.8} />
-
+          <Box className="icon-button-hover" display="flex" alignItems="center">
+            <Button onClick={() => history.push(SETTINGS_ROUTE)}>
               <SettingsIcon />
-            </Link>
+            </Button>
 
             <Box px={2} />
 
@@ -228,18 +235,19 @@ const Header: FC = (): JSX.Element => {
                 flexDirection="column"
                 justifyContent="center"
                 alignItems="flex-end"
-                className={classes.profileItemName}
+                maxWidth='200px'
               >
                 {isSuper ?
-                  <Typography variant="h6">{SUPER_ADMIN}</Typography>
+                  <Typography variant="h6" color="textPrimary" noWrap>{SUPER_ADMIN}</Typography>
                   : (
-                    <>
-                      <Typography variant="h6">{firstName} {lastName}</Typography>
-
-                      <Box className={classes.roleName}>
-                        <Typography variant="body1" className="text-overflow max-width-200">{roleName}</Typography>
+                    <Box maxWidth="200px" textAlign="right">
+                      <Box color={BLACK} minWidth='30px'>
+                        <Box maxWidth={200}>
+                          <Typography variant="h6" noWrap>{firstName} {lastName}</Typography>
+                        </Box>
+                        <Typography variant="body1" noWrap>{roleName}</Typography>
                       </Box>
-                    </>
+                    </Box>
                   )}
               </Box>
 
@@ -248,7 +256,7 @@ const Header: FC = (): JSX.Element => {
           </Box>
 
           <Box className={classes.sectionMobile}>
-            <IconButton
+            <Button
               aria-label="dropdown menu"
               aria-controls="mobile-menu"
               aria-haspopup="true"
@@ -256,7 +264,7 @@ const Header: FC = (): JSX.Element => {
               onClick={(event) => handleMobileMenuOpen(event)}
             >
               <MenuIcon />
-            </IconButton>
+            </Button>
           </Box>
         </Toolbar>
       </AppBar>

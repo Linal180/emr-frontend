@@ -10,12 +10,12 @@ import { CardComponentType } from "../../interfacesTypes";
 
 const CardComponent: FC<CardComponentType> = ({
   children, cardTitle, isEdit, hasEdit, onEditClick, disableEditIcon, disableSaveIcon, hideSaveIcon,
-  saveBtn, state, disableSubmit, isFullHeight,
+  saveBtn, state, disableSubmit, isFullHeight, onSubmitClick
 }): JSX.Element => {
   const { activeStep } = state || {}
 
   return (
-    <Card className={`overflow-visible ${isFullHeight && true ? 'fullMinHeight card-box-shadow' : 'card-box-shadow'}`}>
+    <Card className={`${isFullHeight && true ? 'fullMinHeight card-box-shadow' : 'card-box-shadow'}`}>
       <CardHeader
         action={
           hasEdit ? (
@@ -40,10 +40,10 @@ const CardComponent: FC<CardComponentType> = ({
             </Box>
           ) : saveBtn
             ? typeof activeStep === 'number' &&
-            activeStep < 6 &&
             <Button
-              variant="contained" color='primary' type='submit'
+              variant="contained" color='primary' type={onSubmitClick ? 'button' : 'submit'}
               disabled={disableSubmit}
+              onClick={onSubmitClick ? () => onSubmitClick() : () => { }}
             >
               {SAVE_TEXT}
 

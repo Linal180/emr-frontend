@@ -1,5 +1,5 @@
 // packages block
-import { FC, useState, useEffect, useCallback, Reducer, useReducer, useRef } from "react";
+import { FC, useEffect, useCallback, Reducer, useReducer, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   Button, Dialog, DialogActions, DialogTitle, CircularProgress, DialogContent, Box, IconButton
@@ -7,11 +7,11 @@ import {
 // components block
 import DropzoneImage from "../DropZoneImage";
 // graphql and interfaces/types block
+import { mediaType } from "../../../utils";
+import { TrashNewIcon } from "../../../assets/svgs";
+import { CANCEL, EDIT_MEDIA, OPEN_CAMERA, UPDATE_MEDIA } from "../../../constants";
 import { ICreateMediaInput, MediaModalTypes } from "../../../interfacesTypes";
 import { Action, ActionType, mediaReducer, State, initialState } from "../../../reducers/mediaReducer";
-import { TrashNewIcon } from "../../../assets/svgs";
-import { CANCEL, EDIT_MEDIA, UPDATE_MEDIA } from "../../../constants";
-import { mediaType } from "../../../utils";
 
 const EditMediaModel: FC<MediaModalTypes> = ({
   imageModuleType, itemId, isOpen, setOpen, isEdit, setEdit, reload, setAttachments, attachment,
@@ -19,8 +19,10 @@ const EditMediaModel: FC<MediaModalTypes> = ({
 }): JSX.Element => {
   const dropZoneRef = useRef<any>();
   const { handleSubmit, setValue } = useForm<ICreateMediaInput>();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [{ fileUrl, attachmentId }, dispatch] =
+  const [cameraOpen, setCameraOpen] = useState<boolean>(false);
+  const [uploading, setUploading] = useState<boolean>(false);
+
+  const [{ fileUrl, attachmentId, loading }, dispatch] =
     useReducer<Reducer<State, Action>>(mediaReducer, initialState)
 
   const handlePreview = useCallback(() => {
@@ -40,11 +42,15 @@ const EditMediaModel: FC<MediaModalTypes> = ({
   };
 
   const handleMediaSubmit = async (data: ICreateMediaInput) => {
-    setLoading(true)
+    dispatch({ type: ActionType.SET_LOADING, loading: true })
     const { title } = data
     dropZoneRef && dropZoneRef.current && dropZoneRef.current.submit && dropZoneRef.current.submit()
     dispatch({ type: ActionType.SET_MEDIA_DATA, mediaData: { title } })
-    setLoading(false)
+    dispatch({ type: ActionType.SET_LOADING, loading: false })
+  }
+
+  const onUploading = (open: boolean) => {
+    setUploading(open)
   }
 
   return (
@@ -56,7 +62,23 @@ const EditMediaModel: FC<MediaModalTypes> = ({
       aria-labelledby="image-dialog-title"
       aria-describedby="image-dialog-description"
     >
-      <DialogTitle id="image-dialog-title">{EDIT_MEDIA}</DialogTitle>
+      <DialogTitle id="image-dialog-title">
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Box>
+            {EDIT_MEDIA}
+          </Box>
+          {(!fileUrl || !cameraOpen) && <Box>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => setCameraOpen(!cameraOpen)}
+              disabled={loading || (fileUrl !== '') || uploading}
+            >
+              {OPEN_CAMERA}
+            </Button>
+          </Box>}
+        </Box>
+      </DialogTitle>
       <form onSubmit={handleSubmit((data) => handleMediaSubmit(data))}>
         <DialogContent>
 
@@ -85,26 +107,29 @@ const EditMediaModel: FC<MediaModalTypes> = ({
               setAttachments={setAttachments}
               imageModuleType={imageModuleType}
               acceptableFilesType={mediaType(title)}
+              cameraOpen={cameraOpen}
+              setCameraOpen={setCameraOpen}
+              onUploading={onUploading}
             />
           }
         </DialogContent>
 
         <DialogActions>
-          <Box  py={1} display="flex">
-            <Button                             
+          <Box py={1} display="flex">
+            <Button
               type="button"
-              onClick={handleClose}               
+              onClick={handleClose}
             >
               {CANCEL}
             </Button>
 
             <Box px={1} />
-            
+
             <Button
               variant="contained"
               color="primary"
               type="submit"
-              disabled={loading || (fileUrl !== '')}
+              disabled={loading || (fileUrl !== '') || uploading}
             >
               {loading && (
                 <CircularProgress size={20} />

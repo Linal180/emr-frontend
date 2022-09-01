@@ -6,7 +6,7 @@ import { Dialog, DialogContent, Grid, Box, DialogTitle } from '@material-ui/core
 import FieldController from '../../../common/FormFieldController';
 //interfaces & constants
 import { FormBuilderPreviewProps } from '../../../../interfacesTypes'
-import { parseColumnGrid } from '../../../../utils';
+import { parseColumnGrid, parseXmGrid } from '../../../../utils';
 //styles
 import { usePreviewModalStyles } from '../../../../styles/formbuilder/previewModalStyles'
 import CardComponent from '../../../common/CardComponent';
@@ -21,28 +21,30 @@ const FormPreview = ({ open, closeModalHandler, data, formName }: FormBuilderPre
   }
   //render
   return (
-    <Dialog open={!!open} onClose={closeModalHandler} fullWidth maxWidth={'md'}>
+    <Dialog open={!!open} onClose={closeModalHandler} fullWidth maxWidth={'lg'}>
       <DialogTitle>{formName}</DialogTitle>
+
       <DialogContent dividers>
         <Box className={classes.main}>
           <FormProvider {...methods}>
             <form onSubmit={handleSubmit(submitHandler)}>
-              <Grid container spacing={2}>
+              <Grid container spacing={3} direction="row">
                 {data?.map((tab, i) => {
                   const { sections } = tab || {}
 
                   return sections?.map((item, index) => {
                     const { col, fields, id, name } = item || {}
                     return (
-                      <Grid item md={parseColumnGrid(col)} key={`${id}-${index}`}>
+                      <Grid item md={parseColumnGrid(col)} xs={parseXmGrid(col)} key={`${id}-${index}`}>
                         <CardComponent cardTitle={name}>
-                          <Grid container spacing={3}>
+                          <Grid container spacing={3} direction="row">
                             {fields?.map((field) => {
                               const { fieldId, column } = field
                               return (
                                 <Grid
                                   item
                                   md={parseColumnGrid(column)}
+                                  xs={parseXmGrid(column)}
                                   key={`${id}-${fieldId}`}
                                 >
                                   <FieldController item={field} isCreating={true} />
@@ -54,7 +56,6 @@ const FormPreview = ({ open, closeModalHandler, data, formName }: FormBuilderPre
                         </CardComponent>
                       </Grid>
                     )
-
                   })
                 }
                 )}

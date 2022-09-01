@@ -1,33 +1,42 @@
 //packages block
 import { FC } from "react"
-import { Box, Grid } from "@material-ui/core"
+import { Box, FormControl, FormGroup, FormLabel, Grid } from "@material-ui/core"
 //components
 import CheckboxController from "../CheckboxController"
-//constants
+//constants, styles
+import { useExternalPatientStyles } from "../../../styles/publicAppointmentStyles/externalPatientStyles";
 import {
-  CONSENT_TO_CALL, CONSENT_TO_MESSAGES, CONSENT_TO_MESSAGES_DESCRIPTION, GRANTED_TEXT, MEDICATION_HISTORY_AUTHORITY,
-  NOTICE_ON_FILE, PRIVACY_NOTICE, RELEASE_OF_BILLING_INFO
+  CELL_PHONE_PERMISSION, CONSENTS, IMMUNIZATION_CONSENT, MEDICAL_PERMISSION, MEDICATION_HISTORY_CONSENT,
+  PERMISSIONS_TEXT, PHONE_EMAIL_PERMISSION, RESULT_CONSENT
 } from "../../../constants"
 
 const ConsentForm: FC = (): JSX.Element => {
+  const classes = useExternalPatientStyles()
   return <Box my={3}>
     <Grid container spacing={3}>
-      <Grid item xs={12}>
-        <Box>{NOTICE_ON_FILE}</Box>
-        <CheckboxController controllerName="privacyNotice" controllerLabel={PRIVACY_NOTICE} margin="none" />
-        <CheckboxController controllerName="releaseOfInfoBill" controllerLabel={RELEASE_OF_BILLING_INFO} margin="none" />
-      </Grid>
-      <Grid item xs={3}>
-        <CheckboxController controllerName="phonePermission" controllerLabel={GRANTED_TEXT} title={CONSENT_TO_CALL} />
-      </Grid>
-      <Grid item xs={4}>
-        <CheckboxController controllerName="medicationHistoryAuthority" controllerLabel={GRANTED_TEXT}
-          title={MEDICATION_HISTORY_AUTHORITY} />
-      </Grid>
+      <Grid item md={12} sm={12} xs={12}>
+        <FormControl component="fieldset">
+          <FormLabel className={classes.privacyLabelHeader} component="li">{PERMISSIONS_TEXT}</FormLabel>
+          <FormGroup className={classes.privacyFormGroup}>
+            <CheckboxController className={classes.privacyLabelDescription} controllerName="phoneEmailPermission" controllerLabel={PHONE_EMAIL_PERMISSION} margin="none" />
+            <CheckboxController className={classes.privacyLabelDescription} controllerName="cellPhonePermission" controllerLabel={CELL_PHONE_PERMISSION} margin="none" />
+            <CheckboxController className={classes.privacyLabelDescription} controllerName="medicalPermission" controllerLabel={MEDICAL_PERMISSION} margin="none" />
+          </FormGroup>
+        </FormControl>
 
-      <Grid item xs={12}>
-        <CheckboxController controllerName="smsPermission" controllerLabel={CONSENT_TO_MESSAGES_DESCRIPTION}
-          title={CONSENT_TO_MESSAGES} />
+        <Box>
+          <FormControl component="fieldset">
+            <FormGroup>
+              <Box mr={3} mb={2} mt={2}>
+                <FormLabel className={classes.privacyLabelHeader} component="li">{CONSENTS}</FormLabel>
+                <CheckboxController className={classes.privacyLabelDescription} controllerName="resultConsent" controllerLabel={RESULT_CONSENT} margin="none" />
+                <CheckboxController className={classes.privacyLabelDescription} controllerName="immunizationConsent" controllerLabel={IMMUNIZATION_CONSENT} margin="none" />
+                <CheckboxController className={classes.privacyLabelDescription} controllerName="medicationHistoryConsent" controllerLabel={MEDICATION_HISTORY_CONSENT} margin="none" />
+              </Box>
+            </FormGroup>
+          </FormControl>
+        </Box>
+
       </Grid>
     </Grid>
   </Box>

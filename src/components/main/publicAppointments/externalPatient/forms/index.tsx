@@ -51,7 +51,7 @@ import {
   DOCUMENT_VERIFICATION, CONTACT_METHOD, FRONT_SIDE, BACK_SIDE, PATIENT_APPOINTMENT_SUCCESS, NAME,
   MAPPED_STATES, MAPPED_COUNTRIES, NEXT, ATTACHMENT_TITLES, PATIENT_NOT_FOUND, DEMOGRAPHICS,
   APARTMENT_SUITE_OTHER, EMERGENCY_CONTACT, RELATIONSHIP_TO_PATIENT, PHONE, DRIVING_LICENSE, INSURANCE_CARD,
-  YES_TEXT, CONSENT_TO_MESSAGES_DESCRIPTION,
+  YES_TEXT, PAGE_LIMIT,
 } from "../../../../../constants";
 
 const PatientFormComponent: FC = (): JSX.Element => {
@@ -63,7 +63,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const {
     basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId,
-    activeStep, isAppointment, isBilling, isSms, facilityId
+    activeStep, isAppointment, isBilling, facilityId, patientEmail
   } = state
 
   const [{ drivingLicense1, drivingLicense2, insuranceCard1, insuranceCard2 }, mediaDispatch] =
@@ -101,7 +101,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
   const fetchDocuments = async () => {
     try {
       id && await getAttachments({
-        variables: { getAttachment: { typeId: id } }
+        variables: { getAttachment: { typeId: id, paginationOptions: { page: 1, limit: PAGE_LIMIT } } }
       })
     } catch (error) { }
   };
@@ -135,8 +135,8 @@ const PatientFormComponent: FC = (): JSX.Element => {
 
           if (patient) {
             const {
-              ssn, contacts, doctorPatients, facility, phonePermission, pharmacy, smsPermission,
-              preferredCommunicationMethod, releaseOfInfoBill, attachments
+              ssn, contacts, doctorPatients, facility, phoneEmailPermission, pharmacy,
+              preferredCommunicationMethod, releaseOfInfoBill, attachments, email
             } = patient;
 
             const { drivingLicense1, drivingLicense2, insuranceCard1, insuranceCard2 } = getDocumentByType(attachments)
@@ -177,14 +177,12 @@ const PatientFormComponent: FC = (): JSX.Element => {
 
             ssn && setValue("ssn", ssn)
             pharmacy && setValue("pharmacy", pharmacy)
-            phonePermission && setValue("phonePermission", phonePermission)
-            smsPermission && setValue("smsPermission", smsPermission)
+            phoneEmailPermission && setValue("phoneEmailPermission", phoneEmailPermission)
             preferredCommunicationMethod &&
               setValue("preferredCommunicationMethod",
                 setRecord(preferredCommunicationMethod, preferredCommunicationMethod))
-            dispatch({ type: ActionType.SET_IS_SMS, isSms: smsPermission as boolean })
             dispatch({ type: ActionType.SET_IS_BILLING, isBilling: releaseOfInfoBill as boolean })
-            dispatch({ type: ActionType.SET_IS_APPOINTMENT, isAppointment: phonePermission as boolean })
+            dispatch({ type: ActionType.SET_IS_APPOINTMENT, isAppointment: phoneEmailPermission as boolean })
 
             if (contacts) {
               const emergencyContact = contacts.filter(contact => contact.contactType === ContactType.Emergency)[0]
@@ -218,6 +216,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                 address2 && setValue("address2", address2)
                 state && setValue("state", setRecord(state, state))
                 country && setValue("country", setRecord(country, country))
+                email && dispatch({ type: ActionType.SET_PATIENT_EMAIL, patientEmail: email })
               }
             }
           }
@@ -251,8 +250,8 @@ const PatientFormComponent: FC = (): JSX.Element => {
   const onSubmit: SubmitHandler<ExternalPatientInputProps> = async (inputs) => {
     if (activeStep === 0) {
       const {
-        ssn, callToConsent, pharmacy, preferredCommunicationMethod, smsPermission, releaseOfInfoBill,
-        phonePermission, emergencyName, emergencyPhone, emergencyState, emergencyCity, emergencyAddress,
+        ssn, callToConsent, pharmacy, preferredCommunicationMethod, releaseOfInfoBill,
+        phoneEmailPermission, emergencyName, emergencyPhone, emergencyState, emergencyCity, emergencyAddress,
         emergencyAddress2, emergencyCountry, emergencyZipCode, emergencyRelationship, address, address2,
         state, city, country, zipCode, providerId
       } = inputs;
@@ -264,13 +263,13 @@ const PatientFormComponent: FC = (): JSX.Element => {
       const { id: selectedCommunicationMethod } = preferredCommunicationMethod
 
       const patientItemInput = {
-        ssn, releaseOfInfoBill, callToConsent, phonePermission, pharmacy, smsPermission,
+        ssn, releaseOfInfoBill, callToConsent, phoneEmailPermission, pharmacy,
         preferredCommunicationMethod: selectedCommunicationMethod as Communicationtype
       };
 
       const contactInput = {
         contactType: ContactType.Self, country: selectedCountry, city, zipCode: zipCode,
-        state: selectedState, address, address2,
+        state: selectedState, address, address2, email: patientEmail
       };
 
       const emergencyContactInput = {
@@ -323,14 +322,9 @@ const PatientFormComponent: FC = (): JSX.Element => {
         setValue('releaseOfInfoBill', checked)
         return;
 
-      case 'smsPermission':
-        dispatch({ type: ActionType.SET_IS_SMS, isSms: checked })
-        setValue('smsPermission', checked)
-        return;
-
-      case 'phonePermission':
+      case 'phoneEmailPermission':
         dispatch({ type: ActionType.SET_IS_APPOINTMENT, isAppointment: checked })
-        setValue('phonePermission', checked)
+        setValue('phoneEmailPermission', checked)
         return;
     }
   };
@@ -676,25 +670,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                         <Grid container spacing={3}>
                           <Grid item md={6} sm={12} xs={12}>
                             <Controller
-                              name='smsPermission'
-                              control={control}
-                              render={() => (
-                                <FormControl fullWidth margin="normal" className={toggleButtonClass.toggleContainer}>
-                                  <InputLabel shrink>{CONSENT_TO_MESSAGES_DESCRIPTION}</InputLabel>
-
-                                  <label className="toggle-main">
-                                    <Box color={isSms ? WHITE : GREY_SEVEN}>Yes</Box>
-                                    <AntSwitch checked={isSms} onChange={(event) => { handleChange(event) }} name='smsPermission' />
-                                    <Box color={isSms ? GREY_SEVEN : WHITE}>No</Box>
-                                  </label>
-                                </FormControl>
-                              )}
-                            />
-                          </Grid>
-
-                          <Grid item md={6} sm={12} xs={12}>
-                            <Controller
-                              name='phonePermission'
+                              name='phoneEmailPermission'
                               control={control}
                               render={() => (
                                 <FormControl fullWidth margin="normal" className={toggleButtonClass.toggleContainer}>
@@ -705,7 +681,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
 
                                     <AntSwitch checked={isAppointment}
                                       onChange={(event) => { handleChange(event) }}
-                                      name='phonePermission'
+                                      name='phoneEmailPermission'
                                     />
 
                                     <Box color={isAppointment ? GREY_SEVEN : WHITE}>{NO_TEXT}</Box>

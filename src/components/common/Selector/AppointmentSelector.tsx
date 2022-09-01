@@ -2,7 +2,7 @@
 import { FC, useReducer, Reducer, useCallback, useEffect } from "react";
 import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
-import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
+import { FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
 import { renderAppointments, requiredLabel, sortingValue } from "../../../utils";
 import {
@@ -11,6 +11,7 @@ import {
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
 import { FacilitySelectorProps } from "../../../interfacesTypes";
 import { AppointmentsPayload, useFindAllAppointmentsLazyQuery } from "../../../generated/graphql";
+import AutocompleteTextField from "../AutocompleteTextField";
 
 const AppointmentSelector: FC<FacilitySelectorProps> = ({
   name, label, disabled, isRequired, addEmpty, patientId
@@ -21,7 +22,7 @@ const AppointmentSelector: FC<FacilitySelectorProps> = ({
   const updatedOptions = addEmpty ?
     [EMPTY_OPTION, ...renderAppointments(appointments ?? [])] : [...renderAppointments(appointments ?? [])]
 
-  const [findAllAppointment,] = useFindAllAppointmentsLazyQuery({
+  const [findAllAppointment, { loading: appointmentsLoading }] = useFindAllAppointmentsLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -48,7 +49,11 @@ const AppointmentSelector: FC<FacilitySelectorProps> = ({
     try {
       const pageInputs = { paginationOptions: { page, limit: DROPDOWN_PAGE_LIMIT } }
       await findAllAppointment({
-        variables: { appointmentInput: { ...pageInputs, searchString: searchQuery, patientId, relationTable: 'Services' } }
+        variables: {
+          appointmentInput: {
+            ...pageInputs, searchString: searchQuery.trim(), patientId, relationTable: 'Services'
+          }
+        }
       })
     } catch (error) { }
   }, [page, findAllAppointment, searchQuery, patientId])
@@ -68,12 +73,13 @@ const AppointmentSelector: FC<FacilitySelectorProps> = ({
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
-          options={sortingValue(updatedOptions) ?? []}
-          value={field.value}
+            options={sortingValue(updatedOptions) ?? []}
+            value={field.value}
             disabled={disabled}
             disableClearable
             getOptionLabel={(option) => option.name || ""}
             renderOption={(option) => option.name}
+            getOptionSelected={(option, value) => option.id === value.id}
             renderInput={(params) => (
               <FormControl fullWidth margin='normal' error={Boolean(invalid)}>
                 <Box position="relative">
@@ -81,12 +87,12 @@ const AppointmentSelector: FC<FacilitySelectorProps> = ({
                     {isRequired ? requiredLabel(label) : label}
                   </InputLabel>
                 </Box>
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  error={invalid}
-                  className="selectorClass"
+
+                <AutocompleteTextField
+                  invalid={invalid}
                   onChange={(event) => dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: event.target.value })}
+                  params={params}
+                  loading={appointmentsLoading}
                 />
 
                 <FormHelperText>{message}</FormHelperText>

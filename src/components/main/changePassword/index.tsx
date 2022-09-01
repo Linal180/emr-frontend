@@ -31,12 +31,14 @@ const ChangePasswordComponent = (): JSX.Element => {
 
   const [updatePassword, { loading }] = useUpdatePasswordMutation({
     onError() {
+      reset()
       Alert.error(OLD_PASSWORD_DID_NOT_MATCH)
     },
 
     onCompleted({ updatePassword }) {
       const { response } = updatePassword;
       const { status } = response || {}
+
       if (status === 200) {
         Alert.success(SET_PASSWORD_SUCCESS);
         reset()
@@ -54,8 +56,8 @@ const ChangePasswordComponent = (): JSX.Element => {
   };
 
   useEffect(() => {
-    password === repeatPassword ?
-    clearErrors("repeatPassword")
+    password === repeatPassword || !!!repeatPassword ?
+      clearErrors("repeatPassword")
       : setError("repeatPassword", { message: PASSWORDS_MUST_MATCH })
   }, [clearErrors, password, repeatPassword, setError, watch])
 

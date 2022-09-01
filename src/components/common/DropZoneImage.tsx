@@ -1,32 +1,36 @@
 // packages block
-import { Box, Button, CircularProgress, IconButton } from "@material-ui/core";
-import { Edit } from "@material-ui/icons";
-import axios from "axios";
-import { DropzoneArea } from "material-ui-dropzone";
 import { forwardRef, useContext, useImperativeHandle, useState } from "react";
+import axios from "axios";
+import { Edit } from "@material-ui/icons";
+import { DropzoneArea } from "material-ui-dropzone";
+import { Box, Button, CircularProgress, IconButton } from "@material-ui/core";
 // components block
 import Alert from "./Alert";
+import CameraComponent from "./Camera";
 // styles, utils, graphql, constants and interfaces/types block
-import { ACCEPTABLE_FILES, PLEASE_ADD_DOCUMENT, PLEASE_CLICK_TO_UPDATE_DOCUMENT } from "../../constants";
+import { getToken } from "../../utils";
 import { AuthContext } from "../../context";
 import { AttachmentType } from "../../generated/graphql";
+import { useDropzoneStyles } from "../../styles/dropzoneStyles";
 import {
   DropzoneImageType, FormForwardRef, MediaDoctorDataType, MediaPatientDataType, MediaPracticeDataType,
   MediaStaffDataType, MediaUserDataType
 } from "../../interfacesTypes";
-import { useDropzoneStyles } from "../../styles/dropzoneStyles";
-import { getToken, handleLogout } from "../../utils";
+import {
+  ACCEPTABLE_FILES, PLEASE_ADD_DOCUMENT, PLEASE_CLICK_TO_UPDATE_DOCUMENT, PLEASE_SELECT_MEDIA, SOMETHING_WENT_WRONG
+} from "../../constants";
 
 const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
   imageModuleType, isEdit, attachmentId, itemId, handleClose, setAttachments, isDisabled, attachment,
-  reload, title, providerName, filesLimit, attachmentMetadata, attachmentName, acceptableFilesType, setFiles: setAttachmentFiles
+  reload, title, providerName, filesLimit, attachmentMetadata, attachmentName, acceptableFilesType,
+  setFiles: setAttachmentFiles, numberOfFiles, cameraOpen, setCameraOpen, onUploading
 }, ref): JSX.Element => {
-  const { setIsLoggedIn, setUser } = useContext(AuthContext)
   const classes = useDropzoneStyles();
+  const { logoutUser } = useContext(AuthContext)
   const [loading, setLoading] = useState<boolean>(false);
+
   const [imageEdit, setImageEdit] = useState<boolean>(false);
   const [files, setFiles] = useState<File[]>();
-
   const token = getToken();
   let moduleRoute = "";
 
@@ -63,8 +67,9 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
   }));
 
   const handleFileChange = async () => {
-    files && files.map(async (file) => {
+    !!files?.length ? files.map(async (file) => {
       const formData = new FormData();
+
       file && formData.append("file", file);
       title && formData.append("title", title);
       itemId && formData.append("typeId", itemId);
@@ -79,6 +84,7 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
       }
 
       setLoading(true);
+      onUploading && onUploading(true)
       await axios.post(
         isEdit ?
           `${process.env.REACT_APP_API_BASE_URL}/${moduleRoute}/image/update`
@@ -88,10 +94,12 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            pathname: window.location.pathname
           },
         }
       ).then(response => {
         const { status, data } = response;
+        onUploading && onUploading(false)
 
         if (status === 201 && data) {
           switch (imageModuleType) {
@@ -165,30 +173,41 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
               break;
           }
         } else {
-          Alert.error("Something went wrong!");
+          Alert.error(SOMETHING_WENT_WRONG);
+          setLoading(false);
+          handleModalClose();
 
           if (status === 401) {
-            setIsLoggedIn(false)
-            setUser(null)
-            handleLogout();
+            logoutUser()
           }
         }
-      }).then(data => {
-
-      }).catch(error => {
-        // const { response } = error || {}
-        // const { data } = response || {}
-        // const { error: errorMessage } = data || {}
-        // // Alert.error(errorMessage);
-      });
-    })
+      }).then(data => { }).catch(error => {
+        setLoading(false);
+        onUploading && onUploading(false)
+        handleModalClose();
+        // Alert.error(SOMETHING_WENT_WRONG);  //Attachment is uploaded successfully, But it still come in error
+        });
+    }) : numberOfFiles ? numberOfFiles === 0 && Alert.error(PLEASE_SELECT_MEDIA) : Alert.error(PLEASE_SELECT_MEDIA)
   }
 
   const handleUpdateImage = () => setImageEdit(true)
 
+  const sendFileHandler = (file: File) => {
+    if (file) {
+      setFiles([file])
+      setAttachmentFiles && setAttachmentFiles([file])
+    }
+  }
+
+  const invisibleHandler = (open: boolean) => {
+    setCameraOpen(open)
+    setFiles([])
+    setAttachmentFiles && setAttachmentFiles(files)
+  }
+
   return (
     <>
-      {loading && (
+      {!cameraOpen && <>{loading && (
         <Box className={classes.dropZoneUploadedImage}>
           <Box className={classes.loadingText}>
             <CircularProgress size={40} />
@@ -196,57 +215,61 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
         </Box>
       )}
 
-      {attachment?.url && !loading && !imageEdit ? (
-        <Box className={classes.dropZoneUploadedImage}>
-          {isDisabled && <Box className={classes.disabledDropzone} />}
-
-          <img src={attachment.url} alt="option icon" />
-          {!isDisabled && (
-            <Box className={classes.updateOverlay}>
-              <Box>
-                <IconButton onClick={handleUpdateImage} aria-label="Edit image">
-                  <Edit />
-                </IconButton>
-              </Box>
-            </Box>
-          )}
-        </Box>
-      ) : (
-        !loading && (
-          <Box position="relative">
+        {attachment?.url && !loading && !imageEdit ? (
+          <Box className={classes.dropZoneUploadedImage}>
             {isDisabled && <Box className={classes.disabledDropzone} />}
 
-            {imageEdit && !isDisabled && (
-              <Box position="absolute" zIndex={3} right={10} top={5}>
-                <Button
-                  className={''}
-                  variant="text"
-                  color="primary"
-                  onClick={() => setImageEdit(false)}
-                >
-                  Go Back
-                </Button>
+            <img src={attachment.url} alt="option icon" />
+            {!isDisabled && (
+              <Box className={classes.updateOverlay}>
+                <Box>
+                  <IconButton onClick={handleUpdateImage} aria-label="Edit image">
+                    <Edit />
+                  </IconButton>
+                </Box>
               </Box>
             )}
-
-            <Box className="dropzone-area-preview-list">
-              <DropzoneArea
-                previewGridClasses={{ item: 'media-inner-image' }}
-                filesLimit={filesLimit ?? 1}
-                maxFileSize={5000000}
-                acceptedFiles={acceptableFilesType ?? ACCEPTABLE_FILES}
-                onChange={(files) => {
-                  setFiles(files)
-                  setAttachmentFiles && setAttachmentFiles(files)
-                }}
-                alertSnackbarProps={{ autoHideDuration: 3000 }}
-                dropzoneText={imageEdit ?
-                  PLEASE_CLICK_TO_UPDATE_DOCUMENT : (files && files?.length === 0 ? PLEASE_ADD_DOCUMENT : "")}
-              />
-            </Box>
           </Box>
-        )
-      )}
+        ) : (
+          !loading && (
+            <Box position="relative">
+              {isDisabled && <Box className={classes.disabledDropzone} />}
+
+              {imageEdit && !isDisabled && (
+                <Box position="absolute" zIndex={3} right={10} top={5}>
+                  <Button
+                    className={''}
+                    variant="text"
+                    color="primary"
+                    onClick={() => setImageEdit(false)}
+                  >
+                    Go Back
+                  </Button>
+                </Box>
+              )}
+
+              <Box className={classes.dropzoneAreaPreviewList}>
+                <DropzoneArea
+                  previewGridClasses={{ item: classes.mediaInnerImage }}
+                  filesLimit={filesLimit ?? 1}
+                  maxFileSize={5000000}
+                  acceptedFiles={acceptableFilesType ?? ACCEPTABLE_FILES}
+                  onChange={(files) => {
+                    setFiles(files)
+                    setAttachmentFiles && setAttachmentFiles(files)
+                  }}
+                  alertSnackbarProps={{ autoHideDuration: 3000 }}
+                  dropzoneText={imageEdit ?
+                    PLEASE_CLICK_TO_UPDATE_DOCUMENT : (files && files?.length === 0 ? PLEASE_ADD_DOCUMENT : "")}
+                />
+              </Box>
+            </Box>
+          )
+        )}
+      </>}
+
+      {cameraOpen && <CameraComponent sendFile={sendFileHandler} open={cameraOpen} invisibleHandler={invisibleHandler} />}
+
     </>
   );
 });

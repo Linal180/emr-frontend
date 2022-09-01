@@ -1,81 +1,87 @@
-import {
-  AgreementsPayload
-} from "../generated/graphql";
+import { AgreementsPayload } from "../generated/graphql";
 
 export interface State {
-  agreements: AgreementsPayload['agreements']
-  agreementUrl: string
-  pages: number
   page: number
-  openDelete: boolean
-  agreementToRemove: string
-  searchQuery: string
-  isFileModalOpen: boolean
+  pages: number
   files: File[]
-  signatureRequired: boolean
-  viewAgreementBeforeAgreeing: boolean
-  agreementBody: string
-  agreementId: string
-  descriptionType: string
   isLoaded: boolean
   withFile: boolean
+  bodyStatus: boolean
+  openDelete: boolean
+  searchQuery: string
+  agreementId: string
+  agreementUrl: string
+  agreementBody: string
+  descriptionType: string
+  isFileModalOpen: boolean
+  agreementToRemove: string
+  signatureRequired: boolean
+  viewAgreementBeforeAgreeing: boolean
+  agreements: AgreementsPayload['agreements']
+  cameraOpen: boolean;
 }
 
 export const initialState: State = {
-  agreements: [],
-  agreementUrl: '',
-  pages: 0,
   page: 1,
-  openDelete: false,
-  agreementToRemove: '',
-  searchQuery: '',
-  isFileModalOpen: false,
+  pages: 0,
   files: [],
-  signatureRequired: false,
-  viewAgreementBeforeAgreeing: false,
-  agreementBody: '',
+  agreements: [],
+  searchQuery: '',
   agreementId: '',
-  descriptionType: 'Text Editor',
   isLoaded: false,
   withFile: false,
+  agreementUrl: '',
+  bodyStatus: false,
+  openDelete: false,
+  agreementBody: '',
+  agreementToRemove: '',
+  isFileModalOpen: false,
+  signatureRequired: false,
+  descriptionType: 'Text Editor',
+  viewAgreementBeforeAgreeing: false,
+  cameraOpen: false
 }
 
 export enum ActionType {
-  SET_AGREEMENTS = 'SET_AGREEMENTS',
-  SET_AGREEMENT_URL = 'SET_AGREEMENT_URL',
-  SET_PAGES = 'SET_PAGES',
-  SET_PAGE = 'SET_PAGE',
-  SET_OPEN_DELETE = 'SET_OPEN_DELETE',
-  SET_AGREEMENT_TO_REMOVE = 'SET_AGREEMENT_TO_REMOVE',
-  SET_SEARCH_QUERY = 'SET_SEARCH_QUERY',
-  SET_IS_FILE_MODAL_OPEN = 'SET_IS_FILE_MODAL_OPEN',
-  SET_FILES = 'SET_FILES',
-  SET_SIGNATURE_REQUIRED = 'SET_SIGNATURE_REQUIRED',
-  SET_VIEW_AGREEMENT_BEFORE_AGREEING = 'SET_VIEW_AGREEMENT_BEFORE_AGREEING',
-  SET_AGREEMENT_BODY = 'SET_AGREEMENT_BODY',
-  SET_AGREEMENT_ID = 'SET_AGREEMENT_ID',
-  SET_DESCRIPTION_TYPE = 'SET_DESCRIPTION_TYPE',
-  SET_IS_LOADED = 'SET_IS_LOADED',
-  SET_WITH_FILE = 'SET_WITH_FILE'
+  SET_PAGE = 'setPage',
+  SET_FILES = 'setFiles',
+  SET_PAGES = 'setPages',
+  SET_IS_LOADED = 'setIsLoaded',
+  SET_WITH_FILE = 'setWithFile',
+  SET_AGREEMENTS = 'setAgreements',
+  SET_BODY_STATUS = 'setBodyStatus',
+  SET_CAMERA_OPEN = 'setCameraOpen',
+  SET_OPEN_DELETE = 'setOpenDelete',
+  SET_SEARCH_QUERY = 'setSearchQuery',
+  SET_AGREEMENT_ID = 'setAgreementId',
+  SET_AGREEMENT_URL = 'setAgreementUrl',
+  SET_AGREEMENT_BODY = 'setAgreementBody',
+  SET_DESCRIPTION_TYPE = 'setDescriptionType',
+  SET_IS_FILE_MODAL_OPEN = 'setIsFileModalOpen',
+  SET_SIGNATURE_REQUIRED = 'setSignatureRequired',
+  SET_AGREEMENT_TO_REMOVE = 'setAgreementToRemove',
+  SET_VIEW_AGREEMENT_BEFORE_AGREEING = 'setViewAgreementBeforeAgreeing',
 }
 
 export type Action =
-  | { type: ActionType.SET_AGREEMENTS, agreements: AgreementsPayload['agreements'] }
-  | { type: ActionType.SET_AGREEMENT_URL, agreementUrl: string }
-  | { type: ActionType.SET_PAGES, pages: number }
   | { type: ActionType.SET_PAGE, page: number }
-  | { type: ActionType.SET_OPEN_DELETE, openDelete: boolean }
-  | { type: ActionType.SET_AGREEMENT_TO_REMOVE, agreementToRemove: string }
-  | { type: ActionType.SET_SEARCH_QUERY, searchQuery: string }
-  | { type: ActionType.SET_IS_FILE_MODAL_OPEN, isFileModalOpen: boolean }
+  | { type: ActionType.SET_PAGES, pages: number }
   | { type: ActionType.SET_FILES, files: File[] }
-  | { type: ActionType.SET_SIGNATURE_REQUIRED, signatureRequired: boolean }
-  | { type: ActionType.SET_VIEW_AGREEMENT_BEFORE_AGREEING, viewAgreementBeforeAgreeing: boolean }
-  | { type: ActionType.SET_AGREEMENT_BODY, agreementBody: string }
-  | { type: ActionType.SET_AGREEMENT_ID, agreementId: string }
-  | { type: ActionType.SET_DESCRIPTION_TYPE, descriptionType: string }
   | { type: ActionType.SET_IS_LOADED, isLoaded: boolean }
   | { type: ActionType.SET_WITH_FILE, withFile: boolean }
+  | { type: ActionType.SET_CAMERA_OPEN, cameraOpen: boolean }
+  | { type: ActionType.SET_OPEN_DELETE, openDelete: boolean }
+  | { type: ActionType.SET_BODY_STATUS, bodyStatus: boolean }
+  | { type: ActionType.SET_SEARCH_QUERY, searchQuery: string }
+  | { type: ActionType.SET_AGREEMENT_ID, agreementId: string }
+  | { type: ActionType.SET_AGREEMENT_URL, agreementUrl: string }
+  | { type: ActionType.SET_AGREEMENT_BODY, agreementBody: string }
+  | { type: ActionType.SET_DESCRIPTION_TYPE, descriptionType: string }
+  | { type: ActionType.SET_IS_FILE_MODAL_OPEN, isFileModalOpen: boolean }
+  | { type: ActionType.SET_AGREEMENT_TO_REMOVE, agreementToRemove: string }
+  | { type: ActionType.SET_SIGNATURE_REQUIRED, signatureRequired: boolean }
+  | { type: ActionType.SET_AGREEMENTS, agreements: AgreementsPayload['agreements'] }
+  | { type: ActionType.SET_VIEW_AGREEMENT_BEFORE_AGREEING, viewAgreementBeforeAgreeing: boolean }
 
 export const agreementReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -173,6 +179,18 @@ export const agreementReducer = (state: State, action: Action): State => {
       return {
         ...state,
         withFile: action.withFile
+      }
+
+    case ActionType.SET_BODY_STATUS:
+      return {
+        ...state,
+        bodyStatus: action.bodyStatus
+      }
+
+    case ActionType.SET_CAMERA_OPEN:
+      return {
+        ...state,
+        cameraOpen: action.cameraOpen
       }
   }
 };

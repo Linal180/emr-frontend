@@ -1,42 +1,41 @@
 // packages block
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
-import { useParams } from 'react-router';
+import { Box, Button, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
 import { Add } from '@material-ui/icons';
 import { Pagination } from "@material-ui/lab";
+import { ChangeEvent, FC, Reducer, useCallback, useEffect, useMemo, useReducer } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { Box, Table, TableBody, TableHead, TableRow, TableCell, Button, IconButton, } from "@material-ui/core";
+import { useParams } from 'react-router';
 // components block
+import history from "../../../../history";
+import { AddLabOrdersComponent } from "../../../main/labOrders/addOrder";
+import ResultDownloadLink from "../../../main/reports/labResult/ResultDownloadLink";
 import Alert from "../../Alert";
+import NoDataFoundComponent from "../../NoDataFoundComponent";
 import Search from "../../Search";
 import Selector from "../../Selector";
-import NoDataFoundComponent from "../../NoDataFoundComponent";
+import SideDrawer from "../../SideDrawer";
 // constant, utils and styles block
-import history from "../../../../history";
-import { EyeIcon, OutlinedAddIcon, PrinterIcon } from "../../../../assets/svgs";
-import { useTableStyles } from "../../../../styles/tableStyles";
-import { LabOrderInput, ParamsType, SelectorOption } from "../../../../interfacesTypes";
-import { renderTh, appointmentStatus, convertDateFromUnix, formatValue } from "../../../../utils";
+import { OutlinedAddIcon, PrintGrayIcon } from "../../../../assets/svgs";
 import {
-  LabTestPayload, LabTestsPayload, useFindAllLabTestLazyQuery, useUpdateLabTestMutation, LabTestStatus
-} from "../../../../generated/graphql";
-import {
-  MANUAL_ENTRY, APPOINTMENT, TESTS, DATE, STATUS, CREATE_LAB_ORDERS_ROUTE, RESULTS, PAGE_LIMIT,
-  ADD_LAB_ORDERS_RESULTS_ROUTE, EDIT_LAB_ORDERS_ROUTE, ORDER_NUM, EMPTY_OPTION, LAB_TEST_STATUSES,
-  NOT_FOUND_EXCEPTION, USER_NOT_FOUND_EXCEPTION_MESSAGE, RESULTS_ENTERED
+  ADD_LAB_ORDERS_RESULTS_ROUTE, APPOINTMENT, DATE, EMPTY_OPTION, LAB_TEST_STATUSES, MANUAL_ENTRY, NOT_FOUND_EXCEPTION,
+  ORDER_NUM, PAGE_LIMIT, RESULTS, RESULTS_ENTERED, STATUS, TESTS, USER_NOT_FOUND_EXCEPTION_MESSAGE
 } from "../../../../constants";
+import {
+  LabTestPayload, LabTests, LabTestsPayload, LabTestStatus, useFindAllLabTestLazyQuery, useUpdateLabTestMutation
+} from "../../../../generated/graphql";
+import { LabOrderInput, LabOrdersTableProps, ParamsType, SelectorOption } from "../../../../interfacesTypes";
+import { Action, ActionType, initialState, labReducer, State } from "../../../../reducers/labReducer";
+import { useTableStyles } from "../../../../styles/tableStyles";
+import { appointmentStatus, convertDateFromUnix, formatValue, renderTh } from "../../../../utils";
+import LabTestModal from "../../../main/reports/labResultsListing/LabTestModal";
 
-const LabOrdersTable = (): JSX.Element => {
+const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Element => {
   const classes = useTableStyles();
-  const [labOrders, setLabOrders] = useState<LabTestsPayload['labTests']>([])
-  const [isEdit, setIsEdit] = useState<boolean>(false)
-  const [orderNum, setOrderNum] = useState<string>('')
-  const [labTestIds, setLabTestIds] = useState<string[]>([])
-  const [page, setPage] = useState<number>(1);
-  const [pages, setPages] = useState<number>(0);
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(labReducer, initialState)
+  const { isStickerModalOpen, labOrders, page, pages, searchQuery, stickerOrder, isEdit, drawerOpened, labTestIds, labTestsToEdit, orderNum } = state
+
   const { textColor } = appointmentStatus('' || '')
-  const { id } = useParams<ParamsType>()
-  const [searchQuery, setSearchQuery] = useState<string>('')
+  const { id, appointmentId } = useParams<ParamsType>()
 
   const methods = useForm<LabOrderInput>({ mode: "all" });
 
@@ -47,7 +46,7 @@ const LabOrdersTable = (): JSX.Element => {
     fetchPolicy: "network-only",
 
     onError() {
-      setLabOrders(null)
+      dispatch({ type: ActionType.SET_LAB_ORDERS, labOrders: null })
     },
 
     onCompleted(data) {
@@ -55,11 +54,11 @@ const LabOrdersTable = (): JSX.Element => {
 
       if (findAllLabTest) {
         const { pagination, labTests } = findAllLabTest
-        labTests && setLabOrders(labTests as LabTestsPayload['labTests'])
+        labTests && dispatch({ type: ActionType.SET_LAB_ORDERS, labOrders: labTests as LabTestsPayload['labTests'] })
 
         if (pagination) {
           const { totalPages } = pagination
-          typeof totalPages === 'number' && setPages(totalPages)
+          typeof totalPages === 'number' && dispatch({ type: ActionType.SET_TOTAL_PAGES, pages: totalPages })
         }
       }
     }
@@ -89,25 +88,30 @@ const LabOrdersTable = (): JSX.Element => {
       return []
     }
 
-    return labOrders.reduce<Record<string, any>>((acc, labOrder) => {
+    return labOrders.reduce<Record<string, LabTests[]>>((acc, labOrder) => {
       const orderNum = labOrder?.orderNumber ?? ''
+      const shouldFilterRecords = appointmentInfo ? appointmentInfo.id !== labOrder?.appointmentId : false
+      if (shouldFilterRecords) {
+        return acc
+      }
+      const transformedLabOrder = labOrder ? labOrder : []
       if (acc[orderNum]) {
-        acc[orderNum] = [...acc[orderNum], labOrder]
+        acc[orderNum] = [...acc[orderNum], transformedLabOrder as LabTests]
         return acc
       }
 
-      acc[orderNum] = [labOrder]
+      acc[orderNum] = [transformedLabOrder as LabTests]
       return acc
     }, {})
-  }, [labOrders])
+  }, [appointmentInfo, labOrders])
 
-  const handleChange = (_: ChangeEvent<unknown>, value: number) => setPage(value)
+  const handleChange = (_: ChangeEvent<unknown>, value: number) => dispatch({ type: ActionType.SET_PAGE, page: value })
 
   const handleEdit = (orderNum: string, name: string, labTestIds: string[]) => {
     if (orderNum) {
-      setLabTestIds(labTestIds)
-      setOrderNum(orderNum)
-      setIsEdit(true)
+      dispatch({ type: ActionType.SET_LAB_TEST_IDS, labTestIds: labTestIds })
+      dispatch({ type: ActionType.SET_ORDER_NUM, orderNum: orderNum })
+      dispatch({ type: ActionType.SET_IS_EDIT, isEdit: true })
       setValue('status', {
         id: formatValue(name),
         name: formatValue(name)
@@ -116,9 +120,9 @@ const LabOrdersTable = (): JSX.Element => {
   }
 
   const search = (query: string) => {
-    setSearchQuery(query)
-    setPages(0)
-    setPage(1)
+    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
+    dispatch({ type: ActionType.SET_TOTAL_PAGES, pages: 0 })
+    dispatch({ type: ActionType.SET_PAGE, page: 1 })
   }
 
   const [updateLabTest] = useUpdateLabTestMutation({
@@ -148,9 +152,22 @@ const LabOrdersTable = (): JSX.Element => {
       });
     })
 
-    setIsEdit(false)
-    setOrderNum('')
-    setLabTestIds([])
+    dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
+    dispatch({ type: ActionType.SET_ORDER_NUM, orderNum: '' })
+    dispatch({ type: ActionType.SET_LAB_TEST_IDS, labTestIds: [] })
+  }
+  const toggleSideDrawer = () => { dispatch({ type: ActionType.SET_DRAWER_OPENED, drawerOpened: !drawerOpened }) }
+
+  const handleReload = () => {
+    dispatch({ type: ActionType.SET_DRAWER_OPENED, drawerOpened: false })
+    fetchLabTests()
+    dispatch({ type: ActionType.SET_ORDER_NUM, orderNum: '' })
+    dispatch({ type: ActionType.SET_LAB_TESTS_TO_EDIT, labTestsToEdit: [] })
+  }
+  const handleLabOrderEdit = (orderNumber: string, labOrder: LabTests[]) => {
+    dispatch({ type: ActionType.SET_LAB_TESTS_TO_EDIT, labTestsToEdit: labOrder })
+    dispatch({ type: ActionType.SET_ORDER_NUM, orderNum: orderNumber })
+    toggleSideDrawer()
   }
 
   return (
@@ -158,16 +175,34 @@ const LabOrdersTable = (): JSX.Element => {
       <Box className={classes.mainTableContainer}>
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(() => { })}>
-            <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
-              <Search search={search} />
+            <Box display="flex" flexWrap="wrap" justifyContent="space-between" alignItems="center">
+              <Box mb={2}>
+                <Search search={search} />
+              </Box>
 
-              <Button variant="outlined" color="inherit" className='blue-button-new' startIcon={<Add />} component={Link} to={`${CREATE_LAB_ORDERS_ROUTE}/${id}`}>
-                {MANUAL_ENTRY}
-              </Button>
+              <Box mb={2}>
+                <Button variant="outlined" color="inherit" className='blue-button-new' startIcon={<Add />} onClick={toggleSideDrawer}>
+                  {MANUAL_ENTRY}
+                </Button>
+              </Box>
             </Box>
 
+
+            <SideDrawer
+              drawerOpened={drawerOpened}
+              toggleSideDrawer={toggleSideDrawer} >
+              {drawerOpened && <AddLabOrdersComponent
+                toggleSideDrawer={handleReload}
+                isEdit={!!labTestsToEdit?.length}
+                labTestsToEdit={labTestsToEdit}
+                orderNumber={orderNum}
+                appointmentInfo={appointmentInfo}
+              />}
+            </SideDrawer>
+
+
             <Box className="table-overflow">
-              <Table aria-label="customized table">
+              <Table aria-label="customized table" className={classes.table}>
                 <TableHead>
                   <TableRow>
                     {renderTh(ORDER_NUM)}
@@ -188,9 +223,14 @@ const LabOrdersTable = (): JSX.Element => {
                     return (
                       <TableRow>
                         <TableCell scope="row">
-                          <Link to={`${EDIT_LAB_ORDERS_ROUTE}/${id}/${orderNumber}`}>
-                            {orderNumber}
-                          </Link>
+                          <Box className="pointer-cursor" onClick={() => handleLabOrderEdit(orderNumber || '', labOrders)}>
+                            <Typography color='secondary'>
+                              {orderNumber}
+                            </Typography>
+                          </Box>
+                          {/* <Link to={`${EDIT_LAB_ORDERS_ROUTE}/${id}/${orderNumber}`}>
+                              {orderNumber}
+                            </Link> */}
                         </TableCell>
                         <TableCell scope="row">
                           {appointmentType?.name ? `${appointmentType?.name ?? ''}  ${convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm:ss')}` : '- -'}
@@ -215,7 +255,7 @@ const LabOrdersTable = (): JSX.Element => {
                           </>
                             :
                             <Box className={classes.status} component='span' color={textColor}
-                              onClick={() => handleEdit(orderNumber || '', labTestStatus || '', labOrders?.map((labOrder: LabTestPayload['labTest']) => labOrder?.id))}
+                              onClick={() => handleEdit(orderNumber || '', labTestStatus || '', (labOrders)?.map((labOrder: LabTestPayload['labTest']) => labOrder?.id || ''))}
                             >
                               {formatValue(labTestStatus ?? '')}
                             </Box>
@@ -225,21 +265,31 @@ const LabOrdersTable = (): JSX.Element => {
                           {testObservations?.length ? convertDateFromUnix(testObservations?.[0]?.createdAt, 'MM-DD-YYYY hh:mm:ss a') : '- -'}
                         </TableCell>
                         <TableCell scope="row">
-                          <IconButton onClick={() => history.push(`${ADD_LAB_ORDERS_RESULTS_ROUTE}/${id}/${orderNumber}`)}>
-                            <OutlinedAddIcon />
-                          </IconButton>
+                          <Box display="flex" alignItems="center">
+                            <IconButton onClick={() => history.push(appointmentId ? `${ADD_LAB_ORDERS_RESULTS_ROUTE}/${id}/${orderNumber}/${appointmentId}` : `${ADD_LAB_ORDERS_RESULTS_ROUTE}/${id}/${orderNumber}`)}>
+                              <OutlinedAddIcon />
+                            </IconButton>
 
-                          <IconButton>
-                            <EyeIcon />
-                          </IconButton>
+                            {/* <IconButton>
+                                <EyeIcon />
+                              </IconButton> */}
+                            <ResultDownloadLink orderNumber={orderNumber || ''} />
 
-                          <IconButton onClick={() => window.print()}>
-                            <PrinterIcon />
-                          </IconButton>
+                            <Box>
+                              <IconButton onClick={() => {
+                                dispatch({ type: ActionType.SET_IS_STICKER_MODAL_OPEN, isStickerModalOpen: true });
+                                dispatch({ type: ActionType.SET_STICKER_ORDER, stickerOrder: orderNumber || '' })
+                              }}>
+                                <PrintGrayIcon />
+                              </IconButton>
+                            </Box>
+                          </Box>
                         </TableCell>
                       </TableRow>
                     )
-                  })}
+                  })
+                    // )
+                  }
                 </TableBody>
               </Table>
             </Box>
@@ -247,7 +297,7 @@ const LabOrdersTable = (): JSX.Element => {
         </FormProvider>
       </Box>
 
-      {((!loading && labOrders?.length === 0) || error) && (
+      {((!loading && Object.keys(transformedLabOrders)?.length === 0) || error) && (
         <Box display="flex" justifyContent="center" pb={12} pt={5}>
           <NoDataFoundComponent />
         </Box>
@@ -264,6 +314,12 @@ const LabOrdersTable = (): JSX.Element => {
           />
         </Box>
       }
+
+      {isStickerModalOpen && <LabTestModal
+        handleClose={() => dispatch({ type: ActionType.SET_IS_STICKER_MODAL_OPEN, isStickerModalOpen: false })}
+        isOpen={isStickerModalOpen}
+        labTests={labOrders?.filter((labOrder) => labOrder?.orderNumber === stickerOrder)}
+      />}
     </>
   );
 };

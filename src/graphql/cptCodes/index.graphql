@@ -1,0 +1,22 @@
+query FindAllCptCodes($findAllCptCodesInput: FindAllCPTCodesInput!) {
+  findAllCptCodes(findAllCptCodesInput: $findAllCptCodesInput) {
+    cptCodes {
+      id
+      code
+      description
+      longDescription
+      shortDescription
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+
+    response {
+      error
+      status
+      message
+    }
+  }
+}

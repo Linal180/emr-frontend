@@ -16,15 +16,6 @@ query FindAllRoles($roleInput: RoleInput!) {
       role
       description
       customRole
-
-      rolePermissions {
-        id
-
-        permission {
-          id
-          name
-        }
-      }
     }
   }
 }

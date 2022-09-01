@@ -1,41 +1,47 @@
 // packages block
 import { FC, useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import { Box, Card, colors, Grid, Typography, Button, CircularProgress } from "@material-ui/core";
 // components block
-import Selector from '../../../common/Selector';
-import InputController from '../../../../controller';
-// interfaces, graphql, constants block
-import { GeneralFormProps, LabOrdersCreateFormInput, multiOptionType, ParamsType } from "../../../../interfacesTypes";
-import {
-  ADD_ANOTHER_TEST, APPOINTMENT_TEXT, DIAGNOSES, EDIT_LAB_ORDER, EMPTY_OPTION, LAB_TEST_STATUSES, NOT_FOUND_EXCEPTION,
-  REMOVE_TEST, SAVE_TEXT, STATUS, TEST, TEST_DATE, TEST_FIELD_INITIAL_VALUES, TEST_NOTES, TEST_TIME, USER_NOT_FOUND_EXCEPTION_MESSAGE
-} from '../../../../constants';
-import AppointmentSelector from '../../../common/Selector/AppointmentSelector';
-import DiagnosesSelector from '../../../common/Selector/DiagnosesSelector';
-import TestsSelector from '../../../common/Selector/TestSelector';
-import DatePicker from '../../../common/DatePicker';
-import LabOrdersSpecimenTypeForm from '../addOrder/LabOrdersSpecimenTypeForm';
-import { createLabOrdersSchema } from '../../../../validationSchemas';
-import { yupResolver } from '@hookform/resolvers/yup';
-import TimePicker from '../../../common/TimePicker';
-import {
-  LabTestStatus, useCreateLabTestMutation, useFindLabTestsByOrderNumLazyQuery, useRemoveLabTestMutation, useUpdateLabTestMutation
-} from '../../../../generated/graphql';
-import { useParams } from 'react-router';
-import history from '../../../../history';
 import Alert from '../../../common/Alert';
+import Selector from '../../../common/Selector';
+import TimePicker from '../../../common/TimePicker';
+import DatePicker from '../../../common/DatePicker';
+import InputController from '../../../../controller';
+import TestsSelector from '../../../common/Selector/TestSelector';
+import DiagnosesSelector from '../../../common/Selector/DiagnosesSelector';
+import LabOrdersSpecimenTypeForm from '../addOrder/LabOrdersSpecimenTypeForm';
+import AppointmentSelector from '../../../common/Selector/AppointmentSelector';
+// interfaces, graphql, constants block
+import history from '../../../../history';
+import { createLabOrdersSchema } from '../../../../validationSchemas';
 import { convertDateFromUnix, formatValue, getFormatDateString } from '../../../../utils';
+import {
+  GeneralFormProps, LabOrdersCreateFormInput, multiOptionType, ParamsType
+} from "../../../../interfacesTypes";
+import {
+  LabTestStatus, useCreateLabTestMutation, useFindLabTestsByOrderNumLazyQuery, useRemoveLabTestMutation,
+  useUpdateLabTestMutation
+} from '../../../../generated/graphql';
+import {
+  ADD_ANOTHER_TEST, APPOINTMENT_TEXT, DIAGNOSES, EDIT_LAB_ORDER, EMPTY_OPTION, LAB_TEST_STATUSES,
+  NOT_FOUND_EXCEPTION, REMOVE_TEST, SAVE_TEXT, SOMETHING_WENT_WRONG, STATUS, TEST, TEST_DATE, TEST_FIELD_INITIAL_VALUES,
+  TEST_NOTES, TEST_TIME, USER_NOT_FOUND_EXCEPTION_MESSAGE
+} from '../../../../constants';
+import Loader from '../../../common/Loader';
 
 const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
   const { orderNum, patientId } = useParams<ParamsType>();
   const [testsToRemove, setTestsToRemove] = useState<string[]>([])
   const [accessionNumber, setAccessionNumber] = useState<string>('')
   const [diagnosesIds, setDiagnosesIds] = useState<multiOptionType[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
   const methods = useForm<LabOrdersCreateFormInput>({
     mode: "all",
-    resolver: yupResolver(createLabOrdersSchema)
+    resolver: yupResolver(createLabOrdersSchema())
   });
   const { control, handleSubmit, setValue } = methods
 
@@ -75,7 +81,7 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
         setAccessionNumber(accessionNumber || '')
 
         const transformedLabTests = labTests?.map((labTest) => {
-          const { test, testNotes, testTime, testDate, testSpecimens, id: testId } = labTest ?? {}
+          const { test, testNotes, testTime, testDate, testSpecimens, id: testId, diagnoses } = labTest ?? {}
           const { id, loincNum, component } = test ?? {}
 
           const transformedTestSpecimens = testSpecimens?.map((testSpecimen) => {
@@ -100,40 +106,47 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
               id: id ?? '',
               name: `${loincNum} | ${component}`
             },
+
             testDate: testDate ?? '',
             testTime: testTime ?? '',
             testNotes: testNotes ?? '',
-            specimenTypeField: transformedTestSpecimens
+            specimenTypeField: transformedTestSpecimens,
+            diagnosesIds: diagnoses?.map((value) => {
+              return {
+                label: `${value?.code} | ${value?.description}`,
+                value: value?.id || ''
+              }
+            }) ?? []
           }
         }) ?? []
 
-        setValue('testField', transformedLabTests)
+        setValue('testFieldValues', transformedLabTests)
+        setIsLoading(false)
       }
     }
   });
 
-  const fetchlabTests = useCallback(async () => {
+  const fetchLabTests = useCallback(async () => {
     try {
-      await findLabTestsByOrderNum({
+      orderNum ? await findLabTestsByOrderNum({
         variables: {
           labTestByOrderNumInput: {
-            orderNumber: orderNum ?? ''
+            orderNumber: orderNum
           }
         }
-      });
+      }) : Alert.error(SOMETHING_WENT_WRONG)
     } catch (error) { }
   }, [findLabTestsByOrderNum, orderNum])
 
   useEffect(() => {
-    fetchlabTests()
-  }, [fetchlabTests])
+    fetchLabTests()
+  }, [fetchLabTests])
 
   const [createLabTest, { loading: createLoading }] = useCreateLabTestMutation({
     onError({ message }) {
       message === NOT_FOUND_EXCEPTION ?
         Alert.error(USER_NOT_FOUND_EXCEPTION_MESSAGE)
-        :
-        Alert.error(message)
+        : Alert.error(message)
     },
   });
 
@@ -141,8 +154,7 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
     onError({ message }) {
       message === NOT_FOUND_EXCEPTION ?
         Alert.error(USER_NOT_FOUND_EXCEPTION_MESSAGE)
-        :
-        Alert.error(message)
+        : Alert.error(message)
     },
   });
 
@@ -150,8 +162,7 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
     onError({ message }) {
       message === NOT_FOUND_EXCEPTION ?
         Alert.error(USER_NOT_FOUND_EXCEPTION_MESSAGE)
-        :
-        Alert.error(message)
+        : Alert.error(message)
     },
 
     onCompleted() {
@@ -159,25 +170,22 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
     }
   });
 
-  const { fields: testFields, remove: removeTestField, append: appendTestField } = useFieldArray({ control: control, name: "testField" });
+  const { fields: testFieldValues, remove: removeTestField, append: appendTestField } = useFieldArray({ control: control, name: "testFieldValues" });
 
   const handleTestCreation = (values: LabOrdersCreateFormInput) => {
-    const { appointment, labTestStatus, diagnosesIds, testField } = values
+    const { appointment, labTestStatus, diagnosesIds, testFieldValues } = values
     const { id: appointmentId } = appointment ?? {}
     const { id: testStatus } = labTestStatus ?? {}
 
-    testField.forEach(async (testFieldValues) => {
-      const { test, testDate, testNotes, testTime, specimenTypeField } = testFieldValues
+    testFieldValues.forEach(async (testFieldValue) => {
+      const { test, testDate, testNotes, testTime, specimenTypeField } = testFieldValue
 
       const createLabTestItemInput = {
         patientId: patientId ?? '',
         ...(appointmentId && { appointmentId }),
-        status: testStatus as LabTestStatus,
-        testNotes,
+        status: testStatus as LabTestStatus, testNotes, testTime,
         testDate: getFormatDateString(testDate, 'MM-DD-YYYY'),
-        testTime,
-        orderNumber: orderNum,
-        accessionNumber: accessionNumber
+        orderNumber: orderNum, accessionNumber: accessionNumber
       }
 
       const diagnoses = diagnosesIds.length ? diagnosesIds.map((diagnose) => diagnose.value) : undefined
@@ -187,6 +195,7 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
         createSpecimenItemInput = specimenTypeField.reduce((acc, specimenTypeFieldValues) => {
           const { collectionDate, collectionTime, specimenNotes, specimenType } = specimenTypeFieldValues
           const { id: testSpecimen } = specimenType
+
           acc.push({
             testSpecimen,
             specimenNotes,
@@ -229,15 +238,15 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
       })
     }
 
-    const { appointment, labTestStatus, diagnosesIds, testField } = values
+    const { appointment, labTestStatus, diagnosesIds, testFieldValues } = values
     const { id: appointmentId } = appointment ?? {}
     const { id: testStatus } = labTestStatus ?? {}
 
-    const newTests = testField.filter((testFieldValues) => !!testFieldValues?.newTest)
-    const oldTests = testField.filter((testFieldValues) => !testFieldValues?.newTest)
+    const newTests = testFieldValues.filter((testFieldValue) => !!testFieldValue?.newTest)
+    const oldTests = testFieldValues.filter((testFieldValue) => !testFieldValue?.newTest)
 
     if (newTests.length) {
-      handleTestCreation({ ...values, testField: newTests })
+      handleTestCreation({ ...values, testFieldValues: newTests })
     }
 
 
@@ -249,10 +258,8 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
         patientId: patientId ?? '',
         ...(appointmentId && { appointmentId }),
         status: testStatus as LabTestStatus,
-        testNotes,
+        testNotes, testTime, id: testId ?? '',
         testDate: getFormatDateString(testDate, 'MM-DD-YYYY'),
-        testTime,
-        id: testId ?? ''
       }
 
       const diagnoses = diagnosesIds.length ? diagnosesIds.map((diagnose) => diagnose.value) : undefined
@@ -264,10 +271,8 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
           const { id: testSpecimen } = specimenType
           acc.push({
             id: specimenId ?? '',
-            testSpecimen,
-            specimenNotes,
+            testSpecimen, specimenNotes, collectionTime,
             collectionDate: getFormatDateString(collectionDate, 'MM-DD-YYYY'),
-            collectionTime
           })
 
           return acc
@@ -293,24 +298,31 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
     })
   }
 
+  if(isLoading){
+    return <Loader loading loaderText='Fetching Order...'/>
+  }
+
   return (
     <Box mt={4}>
       {(!loading || error) && (
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <Card className='overflowVisible'>
+            <Card className='overflow-visible'>
               <Box p={2}>
-                <Box py={2} mb={4} display='flex' justifyContent='space-between' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`}>
+                <Box py={2} mb={4} display='flex' justifyContent='space-between'
+                  alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`}
+                >
                   <Typography variant='h4'>{EDIT_LAB_ORDER}</Typography>
                 </Box>
 
                 <Grid container spacing={3}>
                   <Grid item md={5} sm={12} xs={12}>
                     <AppointmentSelector
-                      label={APPOINTMENT_TEXT}
+                      addEmpty
+                      disabled
                       name="appointment"
                       patientId={patientId}
-                      addEmpty
+                      label={APPOINTMENT_TEXT}
                     />
                   </Grid>
 
@@ -337,15 +349,17 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
 
             <Box p={2} />
 
-            {testFields.map((testField, index) => {
+            {testFieldValues.map((testField, index) => {
               return (
                 <Box mb={4}>
                   <Card>
                     <Box p={2}>
-                      <Box py={2} mb={5} display='flex' justifyContent='space-between' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`}>
+                      <Box py={2} mb={5} display='flex' justifyContent='space-between'
+                        alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`}
+                      >
                         <Typography variant='h4'>{TEST}</Typography>
 
-                        {!!(testFields.length > 1 && index !== 0) && <Button onClick={() => {
+                        {!!(testFieldValues.length > 1 && index !== 0) && <Button onClick={() => {
                           setTestsToRemove([...testsToRemove, testField?.testId ?? ''])
                           removeTestField(index)
                         }} type="submit" variant="outlined" color="inherit" className='danger'>
@@ -357,20 +371,20 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
                         <Grid item md={6} sm={12} xs={12}>
                           <TestsSelector
                             label={TEST}
-                            name={`testField.${index}.test`}
+                            name={`testFieldValues.${index}.test`}
                             addEmpty
                           />
                         </Grid>
 
                         <Grid item md={3} sm={12} xs={12}>
-                          <DatePicker name={`testField.${index}.testDate`} label={TEST_DATE} disableFuture={false} />
+                          <DatePicker name={`testFieldValues.${index}.testDate`} label={TEST_DATE} disableFuture={false} />
                         </Grid>
 
                         <Grid item md={3} sm={12} xs={12}>
                           <TimePicker
                             isRequired
                             label={TEST_TIME}
-                            name={`testField.${index}.testTime`}
+                            name={`testFieldValues.${index}.testTime`}
                           />
                         </Grid>
 
@@ -378,7 +392,7 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
                           <InputController
                             multiline
                             fieldType="text"
-                            controllerName={`testField.${index}.testNotes`}
+                            controllerName={`testFieldValues.${index}.testNotes`}
                             controllerLabel={TEST_NOTES}
                           />
                         </Grid>
@@ -394,12 +408,16 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
             })}
 
             <Box display='flex' justifyContent='flex-end'>
-              <Button onClick={() => appendTestField({ ...TEST_FIELD_INITIAL_VALUES, newTest: true })} type="submit" variant="outlined" color="secondary">
+              <Button onClick={() => appendTestField({ ...TEST_FIELD_INITIAL_VALUES, newTest: true })}
+                type="submit" variant="outlined" color="secondary"
+              >
                 {ADD_ANOTHER_TEST}
               </Button>
             </Box>
 
-            <Button type="submit" variant="contained" color="primary" disabled={createLoading || updateLoading || removeLoading}>
+            <Button type="submit" variant="contained" color="primary"
+              disabled={createLoading || updateLoading || removeLoading}
+            >
               {SAVE_TEXT} {(createLoading || updateLoading) && <CircularProgress size={20} color="inherit" />}
             </Button>
           </form>

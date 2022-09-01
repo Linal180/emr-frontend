@@ -1,14 +1,19 @@
 // packages block
 import React from 'react'
 import { Drawer } from '@material-ui/core';
-import { SideDrawerProps } from '../../interfacesTypes';
+import { SideDrawerCloseReason, SideDrawerProps } from '../../interfacesTypes';
 
-const SideDrawer:React.FC<SideDrawerProps> = ({ drawerOpened, toggleSideDrawer, children }: any) => {
-  const closeSideDrawer = () => toggleSideDrawer && toggleSideDrawer()
+const SideDrawer: React.FC<SideDrawerProps> = ({ drawerOpened, toggleSideDrawer, children, sideClickClose = false }) => {
+  const closeSideDrawer = (reason: SideDrawerCloseReason) => {
+    if (sideClickClose && reason === 'backdropClick') {
+      return;
+    }
+    toggleSideDrawer && toggleSideDrawer()
+  }
   return (
     <Drawer
       open={drawerOpened}
-      onClose={closeSideDrawer}
+      onClose={(_, reason) => closeSideDrawer(reason)}
       anchor="right"
     >
       {children}

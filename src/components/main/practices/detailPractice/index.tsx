@@ -1,48 +1,43 @@
 // packages block
-import { Reducer, useReducer, FC, useCallback, useContext, useEffect, useState } from 'react';
+import { Reducer, useReducer, FC, useCallback, useContext, useEffect } from 'react';
 import { Edit } from '@material-ui/icons';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { Avatar, Box, Button, Card, CircularProgress, Collapse, Grid, Typography } from '@material-ui/core';
-import LogoIcon from "../../../../assets/images/logo.svg";
 // component block
 import Alert from '../../../common/Alert';
 import PracticeData from './practiceData';
 import PhoneField from '../../../common/PhoneInput';
-import InputController from '../../../../controller';
 import MediaCards from '../../../common/AddMedia/MediaCards';
+import InputController from '../../../../controller';
 // constants block
+import LogoIcon from "../../../../assets/images/logo.svg";
 import history from '../../../../history';
 import { AuthContext } from '../../../../context';
-import { useProfileStyles } from '../../../../styles/profileStyles';
 import { updatePracticeSchema } from '../../../../validationSchemas';
 import { CustomPracticeInputProps } from '../../../../interfacesTypes';
-import {
-  Attachment, AttachmentType, PracticePayload, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery,
-   useGetPracticeLazyQuery, useUpdatePracticeMutation
-} from '../../../../generated/graphql';
+import { Attachment, AttachmentType, PracticePayload, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery, useGetPracticeLazyQuery, useUpdatePracticeMutation } from '../../../../generated/graphql';
 import {
   CANCEL, CHAMPUS, EDIT, EIN, FAX, MEDICAID, MEDICARE, NOT_FOUND_EXCEPTION, PHONE, UPIN,
-  PRACTICE_IDENTIFIER, PRACTICE_NAME, SAVE_TEXT, SETTINGS_ROUTE, UPLOAD_LOGO, NO_ASSOCIATED_PRACTICE,
-  ATTACHMENT_TITLES,
+  PRACTICE_IDENTIFIER, PRACTICE_NAME, SAVE_TEXT, SETTINGS_ROUTE, NO_ASSOCIATED_PRACTICE,
+  ATTACHMENT_TITLES, TAX_ID_INFO, GROUP_TAX_ID, NPI_INFO, GROUP_NPI, PRACTICE_DETAILS, UPLOAD_LOGO
 } from '../../../../constants';
 import {
   Action as MediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer,
   State as MediaState
 } from '../../../../reducers/mediaReducer';
+import { useProfileStyles } from '../../../../styles/profileStyles';
 
 const DetailPracticeComponent: FC = (): JSX.Element => {
-  const { user, setPracticeName } = useContext(AuthContext);
   const classes = useProfileStyles()
+  const { user, setPracticeName, fetchUser } = useContext(AuthContext);
   const { facility } = user || {};
   const { practice } = facility || {};
 
   const { id: practiceId } = practice || {};
-  const [edit, setEdit] = useState<boolean>(false);
   const [mediaState, mediaDispatch] = useReducer<Reducer<MediaState, MediaAction>>(mediaReducer, mediaInitialState)
-  const { attachmentUrl, attachmentId, attachmentData } = mediaState
+  const { isEdit, practiceData, attachmentId, attachmentData, attachmentUrl } = mediaState
 
-  const [practiceData, setPracticeData] = useState<PracticePayload['practice']>(null);
   const methods = useForm<CustomPracticeInputProps>({
     mode: "all",
     resolver: yupResolver(updatePracticeSchema)
@@ -73,23 +68,15 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
             const practiceAttachment = attachments?.find(({ title }) => title === ATTACHMENT_TITLES.PracticeLogo);
             const { id } = practiceAttachment || {}
 
-            id &&
-              mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId: id })
+            id && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId: id })
 
-            practiceAttachment &&
-              mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_DATA, attachmentData: practiceAttachment })
+            practiceAttachment && mediaDispatch({
+              type: mediaActionType.SET_ATTACHMENT_DATA,
+              attachmentData: practiceAttachment
+            })
 
-            setPracticeData(practice)
-            const { name, phone, fax, ein, upin, medicaid, medicare, champus } = practice
-
-            fax && setValue('fax', fax)
-            ein && setValue('ein', ein)
-            upin && setValue('upin', upin)
-            name && setValue('name', name.trim())
-            phone && setValue('phone', phone)
-            champus && setValue('champus', champus)
-            medicare && setValue('medicare', medicare)
-            medicaid && setValue('medicaid', medicaid)
+            mediaDispatch({ type: mediaActionType.SET_PRACTICE_DATA, practiceData: practice as PracticePayload['practice'] })
+            setEditData(practice as PracticePayload['practice']);
           }
         }
       }
@@ -125,50 +112,11 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
     },
   });
 
-  const [updatePractice, { loading: updatePracticeLoading }] = useUpdatePracticeMutation({
-    onError({ message }) {
-      Alert.error(message)
-    },
-
-    async onCompleted(data) {
-      const { updatePractice: { response, practice } } = data;
-
-      if (response) {
-        const { status, message } = response
-
-        if (practice && message && status && status === 200) {
-          const { name } = practice
-
-          name && setPracticeName(name)
-          Alert.success(message);
-          setEdit(!edit)
-        }
-      }
-    }
-  });
-
-  const fetchPractice = useCallback(async () => {
-    try {
-      await getPractice({
-        variables: { getPractice: { id: practiceId } }
-      });
-    } catch (error) { }
-  }, [getPractice, practiceId]);
-
   const fetchAttachments = async () => {
     practiceId && await getAttachments({
-      variables: { getAttachment: { typeId: practiceId, } }
+      variables: { getAttachment: { typeId: practiceId, paginationOptions: { limit: 10, page: 1 } } }
     })
   }
-
-  useEffect(() => {
-    if (practiceId) {
-      fetchPractice();
-    } else {
-      Alert.error(NO_ASSOCIATED_PRACTICE)
-      history.push(SETTINGS_ROUTE)
-    }
-  }, [practiceId, fetchPractice]);
 
   const [getAttachment, { loading: getAttachmentLoading }] = useGetAttachmentLazyQuery({
     fetchPolicy: "network-only",
@@ -199,19 +147,87 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
     attachmentId && attachmentData && fetchAttachment()
   }, [attachmentId, fetchAttachment, attachmentData])
 
+  const setEditData = (practice: PracticePayload['practice']) => {
+    const { name, phone, fax, ein, upin, medicaid, medicare, champus, npi, taxId } = practice || {};
+
+    fax && setValue('fax', fax)
+    ein && setValue('ein', ein)
+    upin && setValue('upin', upin)
+    name && setValue('name', name.trim())
+    phone && setValue('phone', phone)
+    champus && setValue('champus', champus)
+    medicare && setValue('medicare', medicare)
+    medicaid && setValue('medicaid', medicaid)
+    taxId && setValue('taxId', taxId)
+    npi && setValue('npi', npi)
+  }
+
+  const [updatePractice, { loading: updatePracticeLoading }] = useUpdatePracticeMutation({
+    onError({ message }) {
+      Alert.error(message)
+    },
+
+    async onCompleted(data) {
+      const { updatePractice: { response, practice } } = data;
+
+      if (response) {
+        const { status, message } = response
+
+        if (practice && message && status && status === 200) {
+          const { name } = practice
+
+          name && setPracticeName(name)
+          Alert.success(message);
+          mediaDispatch({ type: mediaActionType.SET_IS_EDIT, isEdit: !isEdit })
+          fetchPractice()
+        }
+      }
+    }
+  });
+
+  const fetchPractice = useCallback(async () => {
+    try {
+      await getPractice({
+        variables: { getPractice: { id: practiceId } }
+      });
+    } catch (error) { }
+  }, [getPractice, practiceId]);
+
+  useEffect(() => {
+    if (practiceId) {
+      fetchPractice();
+    } else {
+      Alert.error(NO_ASSOCIATED_PRACTICE)
+      history.push(SETTINGS_ROUTE)
+    }
+  }, [practiceId, fetchPractice]);
+
   const onSubmit: SubmitHandler<CustomPracticeInputProps> = async (inputs) => {
-    const { name, phone, fax, upin, ein, medicaid, medicare, champus } = inputs;
-    const practiceInput = { name, champus, ein, fax, medicaid, medicare, phone, upin }
+    const { name, phone, fax, upin, ein, medicaid, medicare, champus, npi, taxId } = inputs;
+    const practiceInput = { name, champus, ein, fax, medicaid, medicare, phone, upin, npi, taxId }
 
     practiceId && await updatePractice({
-      variables: { updatePracticeInput: { id: practiceId, ...practiceInput } }
+      variables: {
+        updatePracticeInput: {
+          updatePracticeItemInput: { id: practiceId, ...practiceInput }
+        }
+      }
     })
   };
 
-  const editHandler = () => setEdit(!edit)
+  const editHandler = () => {
+    mediaDispatch({ type: mediaActionType.SET_IS_EDIT, isEdit: !isEdit })
+    isEdit && setEditData(practiceData)
+  }
+
   const isLoading = loading || updatePracticeLoading
   const attachmentLoading = loading || getAttachmentLoading || getAttachmentsLoading
 
+  const handleReload = () => {
+    fetchAttachments();
+    fetchUser()
+  }
+  
   return (
     <Box p={4}>
       <Grid container justifyContent='center'>
@@ -241,17 +257,19 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
                       moduleType={AttachmentType.Practice}
                       title={ATTACHMENT_TITLES.PracticeLogo}
                       attachmentData={attachmentData || undefined}
-                      reload={() => fetchAttachments()}
+                      reload={() => handleReload()}
                     />
                   </Box>
                 </Grid>
 
-                <Grid item md={8} sm={12}>
+                <Grid item md={12} sm={12}>
                   <FormProvider {...methods}>
                     <form onSubmit={handleSubmit(onSubmit)}>
-                      <Box mb={3} display="flex" justifyContent="flex-end">
+                      <Box mb={3} display="flex" justifyContent="space-between">
+                        <Typography variant='h3'>{PRACTICE_DETAILS}</Typography>
+
                         <Box display='flex'>
-                          {edit ?
+                          {isEdit ?
                             <>
                               <Button onClick={editHandler} color="secondary">{CANCEL}</Button>
 
@@ -273,11 +291,11 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
                         </Box>
                       </Box>
 
-                      <Collapse in={!edit} mountOnEnter unmountOnExit>
+                      <Collapse in={!isEdit} mountOnEnter unmountOnExit>
                         <PracticeData practiceData={practiceData} loading={isLoading} />
                       </Collapse>
 
-                      <Collapse in={edit} mountOnEnter unmountOnExit>
+                      <Collapse in={isEdit} mountOnEnter unmountOnExit>
                         <Grid container spacing={3}>
                           <Grid item md={12} sm={12}>
                             <InputController
@@ -349,18 +367,34 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
                         </Grid>
 
                         <Grid container spacing={3}>
-                          <Grid item md={6} sm={12}>
-                            <Grid container spacing={3}>
-                              <Grid item md={6} sm={12}>
-                                <InputController
-                                  fieldType="text"
-                                  controllerName="champus"
-                                  controllerLabel={CHAMPUS}
-                                />
-                              </Grid>
-                            </Grid>
+                          <Grid item md={4} sm={12}>
+                            <InputController
+                              fieldType="text"
+                              controllerName="champus"
+                              controllerLabel={CHAMPUS}
+                            />
+                          </Grid>
+                          <Grid item md={4} sm={12} xs={12}>
+                            <InputController
+                              isRequired
+                              fieldType="text"
+                              info={TAX_ID_INFO}
+                              controllerName="taxId"
+                              controllerLabel={GROUP_TAX_ID}
+                            />
+                          </Grid>
+
+                          <Grid item md={4} sm={12} xs={12}>
+                            <InputController
+                              isRequired
+                              info={NPI_INFO}
+                              fieldType="text"
+                              controllerName="npi"
+                              controllerLabel={GROUP_NPI}
+                            />
                           </Grid>
                         </Grid>
+
                       </Collapse>
                     </form>
                   </FormProvider>

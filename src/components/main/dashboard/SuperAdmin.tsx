@@ -14,11 +14,11 @@ import {
   practiceReducer, Action, initialState, State
 } from "../../../reducers/practiceReducer";
 import {
-  BillingCardIcon, PlusRoundIcon, PracticeActiveIcon, PracticeInactiveIcon, RedirectIcon
+  MessageIcon, PlusRoundIcon, PracticeActiveIcon, PracticeInactiveIcon, RedirectIcon
 } from "../../../assets/svgs";
 import {
-  ACTIVE, CREATE_PRACTICE, INACTIVE, INVOICES_ROUTE, PRACTICES, PRACTICE_MANAGEMENT_ROUTE, QUICK_ACTIONS,
-  TOTAL_FACILITIES_PER_PRACTICE, TOTAL_TEXT, TOTAL_USERS_PER_PRACTICE, VIEW_BILLING, RECENT_PRACTICES,
+  ACTIVE, CREATE_PRACTICE, INACTIVE, PRACTICES, PRACTICE_MANAGEMENT_ROUTE, QUICK_ACTIONS, SEND_SMS, 
+  TOTAL_FACILITIES_PER_PRACTICE, TOTAL_TEXT, TOTAL_USERS_PER_PRACTICE, RECENT_PRACTICES, SEND_SMS_ROUTE,
 } from "../../../constants";
 import { Link } from "react-router-dom";
 
@@ -34,7 +34,7 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
 
   return (
     <>
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         <Grid item md={8} sm={12} xs={12}>
           <Card>
             <Box px={2} display='flex' justifyContent='space-between' alignItems='center'>
@@ -52,21 +52,23 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
             </Box>
           </Card>
 
-          <Box p={2} />
+          <Box p={1} />
 
           <Card>
-            <Box px={2} pt={2} color={WHITE} bgcolor={BLUE_TEN}>
-              <Typography variant="h4">{TOTAL_USERS_PER_PRACTICE}</Typography>
-            </Box>
+            <Box borderRadius={8} bgcolor={BLUE_TEN}>
+              <Box px={2} pt={2} color={WHITE}>
+                <Typography variant="h4">{TOTAL_USERS_PER_PRACTICE}</Typography>
+              </Box>
 
-            <PracticeUsers />
+              <PracticeUsers />
+            </Box>
           </Card>
 
-          <Box p={2} />
+          <Box p={1} />
 
           <Card>
-            <Box className="totalFacilitiesChartContainer">
-              <Box px={2} pt={2} color={WHITE} bgcolor={PURPLE_TWO}>
+            <Box borderRadius={8} bgcolor={PURPLE_TWO}>
+              <Box px={2} pt={2} color={WHITE}>
                 <Typography variant="h4">{TOTAL_FACILITIES_PER_PRACTICE}</Typography>
               </Box>
 
@@ -83,7 +85,7 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
               </Box>
             </Box>
 
-            <Box className={classes.cardContainer} display='flex' justifyContent='center' alignItems='center'>
+            <Box pb={3} className={classes.cardContainer} display='flex' justifyContent='center' alignItems='center'>
               <Box className={classes.cardBox} onClick={() => history.push(`${PRACTICE_MANAGEMENT_ROUTE}/new`)}>
                 <PlusRoundIcon />
                 <Box p={0.7} />
@@ -92,15 +94,13 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
 
               <Box p={1} />
 
-              <Box className={classes.cardBox} onClick={() => history.push(INVOICES_ROUTE)}>
-                <BillingCardIcon />
-                <Box p={1} />
-                <Typography variant="h6">{VIEW_BILLING}</Typography>
+              <Box className={classes.cardBox} onClick={() => history.push(SEND_SMS_ROUTE)}>
+                <MessageIcon />
+                <Box p={0.7} />
+                <Typography variant="h6">{SEND_SMS}</Typography>
               </Box>
             </Box>
           </Card>
-
-          <Box p={2} />
 
           <Card>
             <Box px={4} py={2} display='flex' justifyContent='space-between' alignItems='center'>
@@ -119,10 +119,10 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
               </Link>
             </Box>
 
-            <PieChart practices={practices} />
+            <PieChart practices={practices?.length} />
 
             <Box px={4} pb={2} display='flex' alignItems='center'>
-              <Grid container spacing={3}>
+              <Grid container spacing={2}>
                 <Grid item md={6} sm={12} xs={12}>
                   <Box display='flex'>
                     <PracticeActiveIcon />
@@ -156,10 +156,10 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
         </Grid>
       </Grid>
 
-      {/* <Box p={2} /> */}
+      {/* <Box p={1} /> */}
 
-      <Grid container spacing={0}>
-        {/* <Grid item md={6} sm={12} xs={12}>
+      {/* <Grid container spacing={0}>
+        <Grid item md={6} sm={12} xs={12}>
           <Card>
             <Box px={2} py={1}>
               <Box mb={2} display='flex' justifyContent='space-between' alignItems='center'>
@@ -175,8 +175,8 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
               <PracticesByYear year={year} />
             </Box>
           </Card>
-        </Grid> */}
-      </Grid>
+        </Grid>
+      </Grid> */}
     </>
   )
 };

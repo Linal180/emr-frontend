@@ -5,6 +5,7 @@ import {
   AttachmentPayload, AttachmentsPayload, HeadCircumferenceType, PatientPayload, PatientProviderPayload, PatientsPayload,
   PatientVitalPayload, PatientVitalsPayload, TempUnitType, UnitType, WeightType, AppointmentPayload
 } from "../generated/graphql"
+import { SmartyUserData } from "../interfacesTypes";
 
 export interface State {
   page: number;
@@ -27,12 +28,14 @@ export interface State {
   sameAddress: boolean;
   paymentMethod: string;
   attachmentUrl: string;
+  openMoreInfo: boolean;
   basicContactId: string;
   consentAgreed: boolean;
   isAppointment: boolean;
   optionalEmail: boolean;
   deletePatientId: string;
   guardianContactId: string;
+  openAdvancedSearch: boolean;
   guarantorContactId: string;
   emergencyContactId: string;
   anchorEl: HTMLElement | null;
@@ -74,37 +77,60 @@ export interface State {
   openVital: boolean,
   vitalPage: number,
   vitalTotalPages: number,
+  userData: SmartyUserData;
   vitalToEdit: PatientVitalPayload['patientVital'],
   patientVitals: PatientVitalsPayload['patientVitals'],
+  phoneEmailPermission: boolean;
+  cellPhonePermission: boolean;
+  medicalPermission: boolean;
+  resultConsent: boolean;
+  immunizationConsent: boolean;
+  medicationHistoryConsent: boolean;
+  patientEmail: string
 }
 
 export const initialState: State = {
   page: 1,
+  data: [],
+  doctorId: '',
+  vitalPage: 1,
   patients: [],
+  isEdit: false,
   totalPages: 0,
+  isSms: false,
   activeStep: 0,
   tabValue: '1',
   patientId: '',
+  facilityId: '',
+  doctorName: '',
   employerId: '',
   anchorEl: null,
-  isSms: false,
   selection: 'NO',
   searchQuery: '',
   isBilling: false,
   attachmentId: '',
+  openUnits: null,
+  isChecked: false,
+  isNoteOpen: null,
   facilityName: '',
-  facilityId: '',
-  doctorName: '',
   kinContactId: '',
   isEditCard: false,
   paymentMethod: '',
   attachmentUrl: '',
   openDelete: false,
+  openVital: false,
   openGraph: false,
+  vitalToEdit: null,
+  isHeadEdit: false,
+  isVerified: false,
+  patientVitals: [],
+  isTempEdit: false,
+  addressOpen: false,
   basicContactId: '',
   sameAddress: false,
   attachmentsData: [],
   deletePatientId: '',
+  openMoreInfo: true,
   consentAgreed: false,
   optionalEmail: true,
   isAppointment: false,
@@ -113,41 +139,36 @@ export const initialState: State = {
   emergencyContactId: '',
   guarantorContactId: '',
   patientData: undefined,
-  isChecked: false,
-  isVerified: false,
-  addressOpen: false,
-  data: [],
-  openUnits: null,
-  heightUnit: { id: UnitType.Inch, name: IN_TEXT },
-  prevHeightUnit: UnitType.Inch,
-  isHeightEdit: false,
-  weightUnit: { id: WeightType.Kg, name: KG_TEXT },
-  prevWeightUnit: WeightType.Kg,
   isWeightEdit: false,
-  headCircumferenceUnit: { id: HeadCircumferenceType.Inch, name: IN_TEXT },
-  prevHeadUnit: HeadCircumferenceType.Inch,
-  isHeadEdit: false,
-  feverUnit: { id: TempUnitType.DegF, name: formatValue(TempUnitType.DegF) },
-  prevFeverUnit: TempUnitType.DegF,
-  isTempEdit: false,
-  isNoteOpen: null,
+  isHeightEdit: false,
+  vitalTotalPages: 0,
+  doctorPatientId: '',
+  privacyNotice: false,
+  callToConsent: false,
+  smsPermission: false,
   patientNoteOpen: false,
   patientProvidersData: [],
-  privacyNotice: false,
+  openAdvancedSearch: false,
   releaseOfInfoBill: false,
-  callToConsent: false,
-  medicationHistoryAuthority: false,
-  smsPermission: false,
-  doctorPatientId: '',
-  doctorId: 'string',
-  isEdit: false,
   nextAppointment: undefined,
   lastAppointment: undefined,
-  openVital: false,
-  vitalPage: 1,
-  vitalTotalPages: 0,
-  vitalToEdit: null,
-  patientVitals: [],
+  prevHeightUnit: UnitType.Inch,
+  prevWeightUnit: WeightType.Kg,
+  prevFeverUnit: TempUnitType.DegF,
+  medicationHistoryAuthority: false,
+  userData: { street: '', address: '' },
+  prevHeadUnit: HeadCircumferenceType.Inch,
+  heightUnit: { id: UnitType.Inch, name: IN_TEXT },
+  weightUnit: { id: WeightType.Kg, name: KG_TEXT },
+  headCircumferenceUnit: { id: HeadCircumferenceType.Inch, name: IN_TEXT },
+  feverUnit: { id: TempUnitType.DegF, name: formatValue(TempUnitType.DegF) },
+  phoneEmailPermission: false,
+  cellPhonePermission: false,
+  medicalPermission: false,
+  resultConsent: false,
+  immunizationConsent: false,
+  medicationHistoryConsent: false,
+  patientEmail: ''
 }
 
 export enum ActionType {
@@ -156,6 +177,7 @@ export enum ActionType {
   SET_IS_SMS = 'setIsSms',
   SET_IS_OPEN = "setIsOpen",
   SET_IS_EDIT = 'setIsEdit',
+  SET_USER_DATA = 'setUserData',
   SET_PATIENTS = 'setPatients',
   SET_EDIT_HEAD = 'setEditHead',
   SET_EDIT_TEMP = 'setEditTemp',
@@ -189,6 +211,7 @@ export enum ActionType {
   SET_PRIVACY_NOTICE = 'setPrivacyNote',
   SET_ATTACHMENT_ID = 'setAttachmentId',
   SET_FACILITY_NAME = 'setFacilityName',
+  SET_OPEN_MORE_INFO = 'setOpenMoreInfo',
   SET_KIN_CONTACT_ID = 'setKinContactID',
   SET_SMS_PERMISSION = 'setSmsPermission',
   SET_IS_APPOINTMENT = 'setIsAppointment',
@@ -208,6 +231,7 @@ export enum ActionType {
   SET_PATIENT_PROVIDERS = 'setPatientProviders',
   SET_GUARDIAN_CONTACT_ID = 'setGuardianContactID',
   SET_RELEASE_OF_INFO_BILL = 'setReleaseOfInfoBill',
+  SET_OPEN_ADVANCED_SEARCH = 'setOpenAdvancedSearch',
   SET_GUARANTOR_CONTACT_ID = 'setGuarantorContactId',
   SET_EMERGENCY_CONTACT_ID = 'setEmergencyContactID',
   SET_PATIENT_PROVIDERS_DATA = 'setPatientProviderData',
@@ -218,6 +242,13 @@ export enum ActionType {
   SET_VITAL_TOTAL_PAGES = 'setVitalTotalPages',
   SET_VITAL_TO_EDIT = 'setVitalToEdit',
   SET_PATIENT_VITALS = 'setPatientVitals',
+  SET_PHONE_EMAIL_PERMISSION = 'setPhoneEmailPermission',
+  SET_CELL_PHONE_PERMISSION = 'setCellPhonePermission',
+  SET_MEDICAL_PERMISSION = 'setMedicalPermission',
+  SET_RESULT_CONSENT = 'setResultConsent',
+  SET_IMMUNIZATION_CONSENT = 'setImmunizationConsent',
+  SET_MEDICATION_HISTORY_CONSENT = 'setMedicationHistoryConsent',
+  SET_PATIENT_EMAIL='setPatientEmail'
 }
 
 export type Action =
@@ -247,6 +278,7 @@ export type Action =
   | { type: ActionType.SET_ADDRESS_OPEN; addressOpen: boolean }
   | { type: ActionType.SET_EDIT_WEIGHT; isWeightEdit: boolean }
   | { type: ActionType.SET_SAME_ADDRESS, sameAddress: boolean }
+  | { type: ActionType.SET_USER_DATA; userData: SmartyUserData }
   | { type: ActionType.SET_FACILITY_NAME; facilityName: string }
   | { type: ActionType.SET_KIN_CONTACT_ID; kinContactId: string }
   | { type: ActionType.SET_ATTACHMENT_URL; attachmentUrl: string }
@@ -266,6 +298,7 @@ export type Action =
   | { type: ActionType.SET_DELETE_PATIENT_ID; deletePatientId: string }
   | { type: ActionType.SET_PATIENT_NOTE_OPEN; patientNoteOpen: boolean }
   | { type: ActionType.SET_GUARDIAN_CONTACT_ID; guardianContactId: string }
+  | { type: ActionType.SET_OPEN_ADVANCED_SEARCH; openAdvancedSearch: boolean }
   | { type: ActionType.SET_PATIENTS, patients: PatientsPayload['patients'] }
   | { type: ActionType.SET_ATTACHMENT_ID; attachmentId: string | undefined }
   | { type: ActionType.SET_ATTACHMENT_ID; attachmentId: string | undefined }
@@ -285,9 +318,17 @@ export type Action =
   | { type: ActionType.SET_HEAD_CIRCUMFERENCE_UNIT; headCircumferenceUnit: { id: HeadCircumferenceType, name: string } }
   | { type: ActionType.SET_OPEN_VITAL; openVital: boolean }
   | { type: ActionType.SET_VITAL_PAGE; vitalPage: number }
+  | { type: ActionType.SET_OPEN_MORE_INFO; openMoreInfo: boolean }
   | { type: ActionType.SET_VITAL_TOTAL_PAGES; vitalTotalPages: number }
   | { type: ActionType.SET_VITAL_TO_EDIT; vitalToEdit: PatientVitalPayload['patientVital'] }
   | { type: ActionType.SET_PATIENT_VITALS; patientVitals: PatientVitalsPayload['patientVitals'] }
+  | { type: ActionType.SET_PHONE_EMAIL_PERMISSION; phoneEmailPermission: boolean }
+  | { type: ActionType.SET_CELL_PHONE_PERMISSION; cellPhonePermission: boolean }
+  | { type: ActionType.SET_MEDICAL_PERMISSION; medicalPermission: boolean }
+  | { type: ActionType.SET_RESULT_CONSENT; resultConsent: boolean }
+  | { type: ActionType.SET_IMMUNIZATION_CONSENT; immunizationConsent: boolean }
+  | { type: ActionType.SET_MEDICATION_HISTORY_CONSENT; medicationHistoryConsent: boolean }
+  | { type: ActionType.SET_PATIENT_EMAIL; patientEmail: string }
 
 export const patientReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -691,5 +732,66 @@ export const patientReducer = (state: State, action: Action): State => {
         ...state,
         patientVitals: action.patientVitals
       }
+
+    case ActionType.SET_OPEN_MORE_INFO:
+      return {
+        ...state,
+        openMoreInfo: action.openMoreInfo
+      }
+
+    case ActionType.SET_USER_DATA:
+      return {
+        ...state,
+        userData: action.userData
+      }
+
+    case ActionType.SET_OPEN_ADVANCED_SEARCH:
+      return {
+        ...state,
+        openAdvancedSearch: action.openAdvancedSearch
+      }
+
+    case ActionType.SET_PHONE_EMAIL_PERMISSION:
+      return {
+        ...state,
+        phoneEmailPermission: action.phoneEmailPermission
+      }
+
+    case ActionType.SET_CELL_PHONE_PERMISSION:
+      return {
+        ...state,
+        cellPhonePermission: action.cellPhonePermission
+      }
+
+    case ActionType.SET_MEDICAL_PERMISSION:
+      return {
+        ...state,
+        medicalPermission: action.medicalPermission
+      }
+
+    case ActionType.SET_RESULT_CONSENT:
+      return {
+        ...state,
+        resultConsent: action.resultConsent
+      }
+
+    case ActionType.SET_IMMUNIZATION_CONSENT:
+      return {
+        ...state,
+        immunizationConsent: action.immunizationConsent
+      }
+
+    case ActionType.SET_MEDICATION_HISTORY_CONSENT:
+      return {
+        ...state,
+        medicationHistoryConsent: action.medicationHistoryConsent
+      }
+
+    case ActionType.SET_PATIENT_EMAIL:
+      return {
+        ...state,
+        patientEmail: action.patientEmail
+      }
+
   }
 };

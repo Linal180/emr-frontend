@@ -3,12 +3,16 @@ query FindAllLabTest($labTestInput: LabTestInput!) {
     labTests{
       id
       orderNumber
+      accessionNumber
       labTestStatus
       testDate
       testTime
       patientId
       createdAt
       testNotes
+      receivedDate
+      collectedDate
+      appointmentId
       patient{
         doctorPatients{
           doctor{
@@ -17,23 +21,51 @@ query FindAllLabTest($labTestInput: LabTestInput!) {
           }
           currentProvider
         }
+        id
         firstName
+        dob
+        lastName
       }
       
-      diagnoses{
+      diagnoses {
+        id
         code
         description
       }
       
-      test{
+      test {
         id
         loincNum
         component
+      }
+
+      primaryProvider {
+        id
+        firstName
+        lastName
+      }
+
+      referringProvider {
+        id
+        firstName
+        lastName
+      }
+
+      testSpecimens {
+        id
+        collectionDate
+        collectionTime
+        specimenNotes
+        specimenTypes {
+          id
+          name
+        }
       }
       
       testObservations{
         createdAt
         doctorsSignOff
+        resultValue
         attachments {
           title
           id
@@ -54,6 +86,98 @@ query FindAllLabTest($labTestInput: LabTestInput!) {
     pagination {
       page
       totalPages
+    }
+    
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+query GetLabTest($getLabTest: GetLabTest!) {
+  getLabTest(getLabTest: $getLabTest) {
+    labTest{
+      id
+      orderNumber
+      accessionNumber
+      labTestStatus
+      testDate
+      testTime
+      patientId
+      createdAt
+      testNotes
+      receivedDate
+      collectedDate
+      appointmentId
+      patient{
+        doctorPatients{
+          doctor{
+            firstName
+            lastName
+          }
+          currentProvider
+        }
+        firstName
+        dob
+        lastName
+      }
+      
+      diagnoses {
+        id
+        code
+        description
+      }
+      
+      test {
+        id
+        loincNum
+        component
+      }
+
+      primaryProvider {
+        id
+        firstName
+        lastName
+      }
+
+      referringProvider {
+        id
+        firstName
+        lastName
+      }
+
+      testSpecimens {
+        id
+        collectionDate
+        collectionTime
+        specimenNotes
+        specimenTypes {
+          id
+          name
+        }
+      }
+      
+      testObservations{
+        createdAt
+        doctorsSignOff
+        resultValue
+        attachments {
+          title
+          id
+          attachmentName
+          url
+        }
+      }
+      
+      appointment{
+          id
+          appointmentType {
+            name
+        }
+        scheduleStartDateTime
+      }
     }
     
     response {
@@ -205,6 +329,104 @@ query FindLabTestsByOrderNum($labTestByOrderNumInput: LabTestByOrderNumInput!) {
   }
 }
 
+query FindLabResultInfo($orderNumber: String!) {
+  findLabResultInfo(orderNumber: $orderNumber) {
+    labTests {
+      id
+      labTestStatus
+      testDate
+      testTime
+      patientId
+      createdAt
+      testNotes
+      receivedDate
+      labName
+      vendorName
+      accessionNumber
+      orderNumber
+      collectedDate
+
+      patient {
+        id
+        firstName
+        lastName
+        dob
+        patientRecord
+        gender
+      
+        contacts {
+          primaryContact
+          phone
+        }
+
+        facility {
+          id
+          name
+          cliaIdNumber
+        
+          contacts {
+            primaryContact
+            address
+            city
+            state
+            zipCode
+            phone
+          }
+        }
+      }
+      
+      diagnoses{
+        id
+        code
+        description
+      }
+
+      primaryProvider {
+        id 
+        firstName
+        lastName
+      }
+      
+      test{
+        id
+        loincNum
+        component
+        unitsRequired
+      }
+      
+      testObservations{
+        id
+        doctorsSignOff
+        resultUnit
+        resultValue
+        normalRange
+        normalRangeUnit
+        abnormalFlag
+        attachments {
+          title
+          id
+          attachmentName
+          url
+        }
+      }
+      
+      appointment{
+          id
+          appointmentType {
+            name
+        }
+        scheduleStartDateTime
+      }
+    }
+    
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
 mutation CreateLabTest($createLabTestInput: CreateLabTestInput!){
   createLabTest(createLabTestInput: $createLabTestInput){
     response {
@@ -221,6 +443,16 @@ mutation CreateLabTest($createLabTestInput: CreateLabTestInput!){
 
 mutation UpdateLabTest($updateLabTestInput: UpdateLabTestInput!){
   updateLabTest(updateLabTestInput: $updateLabTestInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation SyncLabResults($updateObservationInput: UpdateObservationInput!) {
+  syncLabResults(updateObservationInput: $updateObservationInput) {
     response {
       error
       status

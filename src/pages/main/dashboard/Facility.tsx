@@ -1,6 +1,6 @@
 // packages block
 import { FC } from "react";
 // components block
-import FacilityAdminDashboardComponent from "../../../components/main/dashboard/facilityAdmin";
+import FacilityDashboardComponent from "../../../components/main/dashboard/Facility";
 
-export const FacilityDashboard: FC = (): JSX.Element => <FacilityAdminDashboardComponent />
+export const FacilityDashboard: FC = (): JSX.Element => <FacilityDashboardComponent />

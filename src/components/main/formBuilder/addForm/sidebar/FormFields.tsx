@@ -11,7 +11,7 @@ export const FormFields = () => {
   const classes = useFormBuilderSidebarStyles()
 
   return (
-    <Box mt={4} pt={1} maxHeight={500} className="overflowY-auto">
+    <Box mt={2} pt={1} maxHeight={650} className="overflowY-auto">
       <Droppable droppableId={ITEMS_ID} isDropDisabled={true}>
         {(provided, snapshot) => (
           <div

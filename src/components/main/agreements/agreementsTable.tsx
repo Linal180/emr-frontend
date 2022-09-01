@@ -1,49 +1,57 @@
 // packages block
 import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer } from 'react';
-import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { Pagination } from '@material-ui/lab';
+import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
 // components block
 import Alert from '../../common/Alert';
+import Search from '../../common/Search';
+import TableLoader from '../../common/TableLoader';
+import DocumentViewer from '../../common/DocumentViewer';
 import ConfirmationModal from '../../common/ConfirmationModal';
 import NoDataFoundComponent from '../../common/NoDataFoundComponent';
-import Search from '../../common/Search';
-import DocViewer from './DocViewer';
-import TableLoader from '../../common/TableLoader';
 //constants, types, interfaces, utils block
-import { EditNewIcon, EyeIcon, TrashNewIcon } from '../../../assets/svgs';
-import { 
-  ACTIONS, AGREEMENTS, AGREEMENTS_ROUTE, CANT_DELETE_AGREEMENT, CREATED_ON, DELETE_AGREEMENT_DESCRIPTION, NAME, PAGE_LIMIT 
-} from '../../../constants';
-import { 
-  useFetchAllAgreementsLazyQuery, useGetAttachmentsByAgreementIdLazyQuery, useRemoveAgreementMutation 
-} from '../../../generated/graphql';
-import { GeneralFormProps } from '../../../interfacesTypes';
-import { Action, ActionType, agreementReducer, initialState, State } from '../../../reducers/agreementReducer';
-import { useTableStyles } from '../../../styles/tableStyles';
-import { convertDateFromUnix, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh } from '../../../utils';
 import { AuthContext } from '../../../context';
+import { GeneralFormProps } from '../../../interfacesTypes';
+import { useTableStyles } from '../../../styles/tableStyles';
+import { EditNewIcon, EyeIcon, TrashNewIcon } from '../../../assets/svgs';
+import {
+  Action, ActionType, agreementReducer, initialState, State
+} from '../../../reducers/agreementReducer';
+import {
+  checkPermission, convertDateFromUnix, getPageNumber, isFacilityAdmin, isLast, isPracticeAdmin, isSuperAdmin, renderTh
+} from '../../../utils';
+import {
+  useFetchAllAgreementsLazyQuery, useGetAttachmentsByAgreementIdLazyQuery, useRemoveAgreementMutation
+} from '../../../generated/graphql';
+import {
+  ACTIONS, AGREEMENTS, AGREEMENTS_ROUTE, CANT_DELETE_AGREEMENT, CREATED_ON, NAME, PAGE_LIMIT,
+  DELETE_AGREEMENT_DESCRIPTION, SOMETHING_WENT_WRONG, NO_FILE_ASSOCIATED, USER_PERMISSIONS,
+} from '../../../constants';
 
 const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
   const classes = useTableStyles()
+  const { user, userPermissions } = useContext(AuthContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(agreementReducer, initialState)
-  const { agreementToRemove, agreementUrl, agreements, isFileModalOpen, openDelete, page, pages, searchQuery } = state
-  const { user } = useContext(AuthContext)
+  const {
+    agreementToRemove, agreementUrl, agreements, isFileModalOpen, openDelete, page, pages, searchQuery
+  } = state
+
+  const canDel = checkPermission(userPermissions, USER_PERMISSIONS.createAgreement)
+
   const { roles, facility } = user || {};
   const { id: facilityId, practice } = facility || {};
   const { id: practiceId } = practice || {}
 
   const isSuper = isSuperAdmin(roles)
-  const isPrac = isPracticeAdmin(roles)
+  const isPractice = isPracticeAdmin(roles)
   const isFac = isFacilityAdmin(roles)
 
-  const search = (query: string) => {
+  const search = (query: string) =>
     dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
-  };
 
-  const handleChange = (_: ChangeEvent<unknown>, page: number) => {
+  const handleChange = (_: ChangeEvent<unknown>, page: number) =>
     dispatch({ type: ActionType.SET_PAGE, page: page })
-  }
 
   const [fetchAllAgreements, { loading, error }] = useFetchAllAgreementsLazyQuery({
     fetchPolicy: "network-only",
@@ -52,6 +60,7 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
 
     onError() {
       dispatch({ type: ActionType.SET_AGREEMENTS, agreements: [] })
+      dispatch({ type: ActionType.SET_PAGES, pages: 0 })
     },
 
     onCompleted(data) {
@@ -62,12 +71,10 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
         if (pagination) {
           const { totalPages } = pagination
 
-
           typeof totalPages === 'number' && dispatch({ type: ActionType.SET_PAGES, pages: totalPages })
         }
 
         agreements && dispatch({ type: ActionType.SET_AGREEMENTS, agreements: agreements })
-
       }
     }
   });
@@ -75,7 +82,7 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
   const fetchAgreements = useCallback(async () => {
     try {
       const agreementInputs = isSuper ? {} :
-        isPrac ? { agreementPracticeId: practiceId } :
+        isPractice ? { agreementPracticeId: practiceId } :
           isFac ? { agreementPracticeId: practiceId, agreementFacilityId: facilityId } : undefined
 
       await fetchAllAgreements({
@@ -91,7 +98,7 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
         }
       })
     } catch (error) { }
-  }, [facilityId, fetchAllAgreements, isFac, isPrac, isSuper, page, practiceId, searchQuery])
+  }, [facilityId, fetchAllAgreements, isFac, isPractice, isSuper, page, practiceId, searchQuery])
 
   const [removeAgreement, { loading: deleteAgreementLoading }] = useRemoveAgreementMutation({
     onError() {
@@ -104,11 +111,16 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
 
         if (response) {
           const { message } = response
-
           message && Alert.success(message);
+
           try {
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
-            await fetchAgreements()
+
+            if (!!agreements && (agreements.length > 1 || isLast(agreements.length, page))) {
+              await fetchAgreements()
+            } else {
+              dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, agreements?.length || 0) })
+            }
           } catch (error) { }
         }
       }
@@ -127,13 +139,9 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
   };
 
   const handleAgreementDelete = async () => {
-    if (agreementToRemove) {
-      await removeAgreement({
-        variables: {
-          agreementId: agreementToRemove
-        }
-      })
-    }
+    agreementToRemove && await removeAgreement({
+      variables: { agreementId: agreementToRemove }
+    })
   };
 
   const [getAttachments] = useGetAttachmentsByAgreementIdLazyQuery({
@@ -152,9 +160,12 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
         if (getAttachmentsByAgreementId) {
           const { attachmentsWithPreSignedUrl } = getAttachmentsByAgreementId
           const { preSignedUrl } = attachmentsWithPreSignedUrl?.[0] ?? {}
+
           if (preSignedUrl) {
             dispatch({ type: ActionType.SET_AGREEMENT_URL, agreementUrl: preSignedUrl })
             dispatch({ type: ActionType.SET_IS_FILE_MODAL_OPEN, isFileModalOpen: true })
+          } else {
+            Alert.info(NO_FILE_ASSOCIATED)
           }
         }
       }
@@ -162,14 +173,13 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
   })
 
   const handleTitleClick = async (id: string) => {
-    await getAttachments({
+    id ? await getAttachments({
       variables: {
         getAttachmentsByAgreementId: {
-          agreementId: id,
-          typeId: id
+          agreementId: id, typeId: id
         }
       },
-    })
+    }) : Alert.error(SOMETHING_WENT_WRONG)
   }
 
   const handleModalClose = () => {
@@ -177,22 +187,15 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
     dispatch({ type: ActionType.SET_AGREEMENT_URL, agreementUrl: '' })
   }
 
-  useEffect(() => {
-    if (!agreements.length && page > 1) {
-      dispatch({ type: ActionType.SET_PAGE, page: page - 1 })
-    }
-  }, [agreements.length, page])
-
-
   return (
     <>
       <Box className={classes.mainTableContainer}>
-          <Box maxWidth={450}>
-            <Search search={search} />
-          </Box>
+        <Box maxWidth={450}>
+          <Search search={search} />
+        </Box>
 
         <Box className="table-overflow" mt={4}>
-          <Table aria-label="customized table">
+          <Table aria-label="customized table" className={classes.table}>
             <TableHead>
               <TableRow>
                 {renderTh(NAME)}
@@ -213,9 +216,10 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
                   const { title, createdAt, id, body } = agreement ?? {}
                   return (
                     <TableRow>
-                      <TableCell scope="row" >
+                      <TableCell scope="row">
                         {title}
                       </TableCell>
+
                       <TableCell scope="row">{convertDateFromUnix(createdAt, 'MM-DD-YYYY')}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
@@ -231,10 +235,10 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
                             </Box>
                           </Link>
 
-                          <Box className={classes.iconsBackground}
-                            onClick={() => id && onDeleteClick(id)}
-                          >
-                            <TrashNewIcon />
+                          <Box className={classes.iconsBackground}>
+                            <Button disabled={!canDel} onClick={() => id && onDeleteClick(id)}>
+                              <TrashNewIcon />
+                            </Button>
                           </Box>
                         </Box>
                       </TableCell>
@@ -262,26 +266,22 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
         setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
       />
 
-      {pages > 1 && (
-        <Box display="flex" justifyContent="flex-end" p={3}>
-          <Pagination
-            count={pages}
-            shape="rounded"
-            variant="outlined"
-            page={page}
-            onChange={handleChange}
-          />
-        </Box>
-      )}
-
-      {
-        isFileModalOpen && <DocViewer
-          handleClose={handleModalClose}
-          isOpen={isFileModalOpen}
-          url={agreementUrl}
-          title="Agreement"
+      {pages > 1 && <Box display="flex" justifyContent="flex-end" p={3}>
+        <Pagination
+          count={pages}
+          shape="rounded"
+          variant="outlined"
+          page={page}
+          onChange={handleChange}
         />
-      }
+      </Box>}
+
+      {isFileModalOpen && <DocumentViewer
+        title="Agreement"
+        url={agreementUrl}
+        isOpen={isFileModalOpen}
+        handleClose={handleModalClose}
+      />}
     </>
   )
 }

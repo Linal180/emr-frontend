@@ -2,34 +2,22 @@
 import { memo, ReactNode } from "react";
 import axios from "axios";
 import moment from "moment";
-import { pluck } from "underscore";
+import { Skeleton } from "@material-ui/lab";
+import { Collection, pluck, sortBy } from "underscore";
 import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import {
-  Backdrop, Box, capitalize, CircularProgress, GridSize, InputLabel, TableCell, Theme, Tooltip, Typography,
-  withStyles
+  Backdrop, Box, capitalize, CircularProgress, GridSize, InputLabel, TableCell, Theme, Tooltip,
+  Typography, withStyles
 } from "@material-ui/core";
+import states from 'states-us'
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
 import {
-  ACCEPTABLE_PDF_AND_IMAGES_FILES, ACCEPTABLE_PDF_FILES, AGREEMENTS_ROUTE, ATTACHMENT_TITLES, CALENDAR_ROUTE,
-  DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE, LAB_RESULTS_ROUTE,
-  LOCK_ROUTE, LOGIN_ROUTE, MISSING, N_A, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE, SUPER_ADMIN,
-  TABLE_SELECTOR_MODULES, TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE, CLAIMS_ROUTE, SYSTEM_ROLES,
-  ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES,
-} from "../constants";
-import {
-  AllDoctorPayload, AllergySeverity, AppointmentCreateType, AppointmentsPayload, AppointmentStatus,
-  DoctorPatient, DocumentType, ElementType, FacilitiesPayload, FormElement, HeadCircumferenceType, UnitType,
-  IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload, PracticeType,
-  PracticeUsersWithRoles, ProblemSeverity, ProblemType, ReactionsPayload, RolesPayload, Schedule, SchedulesPayload,
-  ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, UserForms, WeightType,
-  AttachmentType, AttachmentsPayload,
-} from "../generated/graphql";
-import {
-  AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType, SelectorOption,
-  StageStatusType, TableAlignType, TableCodesProps, UserFormType
+  AsyncSelectorOption, CptCodeSelectorOption, DaySchedule, FormAttachmentPayload, ItemSelectorOption,
+  LoaderProps, ModifiersSelectorOption, multiOptionType, Order, SelectorOption, StageStatusType,
+  TableAlignType, TableCodesProps, UserFormType
 } from "../interfacesTypes";
 import {
   ACUTE, BLUE, BLUE_SEVEN, BLUE_SEVEN_RGBA, DARK_GREEN, DARK_GREEN_RGBA, GRAY_SIMPLE, GRAY_SIMPLE_RGBA,
@@ -37,7 +25,24 @@ import {
   ORANGE_SIMPLE, ORANGE_SIMPLE_RGBA, PURPLE, PURPLE_ONE, PURPLE_RGBA, RED, RED_RGBA, RED_THREE,
   RED_THREE_RGBA, VERY_MILD, WHITE
 } from "../theme";
-import { Skeleton } from "@material-ui/lab";
+import {
+  ACCEPTABLE_PDF_AND_IMAGES_FILES, ACCEPTABLE_PDF_FILES, AGREEMENTS_ROUTE, ATTACHMENT_TITLES,
+  DASHBOARD_ROUTE, DAYS, EMAIL, EMPTY_OPTION, FACILITIES_ROUTE, INVOICES_ROUTE, ITEM_MODULE,
+  LOCK_ROUTE, LOGIN_ROUTE, MISSING, N_A, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE,
+  SUPER_ADMIN, TABLE_SELECTOR_MODULES, TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE,
+  ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES, ASC, CALENDAR_ROUTE, SYSTEM_ROLES, LAB_RESULTS_ROUTE,
+  CLAIM_FEED_ROUTE, CREATE_CLAIM, UPDATE_CLAIM, SUBMIT_CLAIM, CLAIM_STATUS_ROUTE, areaChartOne, areaChartTwo, BLOOD_PRESSURE_RANGES, Heart_RATE_RANGES, CANCEL_TIME_EXPIRED_MESSAGE
+} from "../constants";
+import {
+  AllDoctorPayload, AllergySeverity, AppointmentCreateType, AppointmentsPayload, AppointmentStatus,
+  DoctorPatient, DocumentType, ElementType, FacilitiesPayload, FormElement, HeadCircumferenceType,
+  IcdCodes, IcdCodesPayload, Insurance, LoincCodesPayload, Maybe, PatientsPayload, PracticesPayload,
+  PracticeUsersWithRoles, ProblemSeverity, ProblemType, ReactionsPayload, RolesPayload, Schedule,
+  ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, UserForms,
+  AttachmentType, AttachmentsPayload, UsersPayload, UnitType, PracticeType, SchedulesPayload,
+  WeightType, ClaimStatus, AllCptCodePayload, AllModifiersPayload, FeeSchedule, CptFeeSchedule,
+  AllCptFeeSchedulesPayload, Taxonomy, TaxonomyPayload,
+} from "../generated/graphql";
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);
@@ -53,15 +58,15 @@ export const upperToNormal = (value: string) =>
 export const formatValue = (value: string) => {
   let formatted = ''
 
-  value.split("_").map(term =>
+  value?.split("_").map(term =>
     formatted = `${formatted} ${term.charAt(0).toUpperCase()}${term.slice(1).toLowerCase()}`)
 
-  return formatted.trim();
+  return formatted?.trim();
 };
 
-export const formatServiceCode = (value: string) => {
+export const formatEnumMember = (value: string) => {
   const parts = value.split("_");
-  let formatted = `${parts[parts.length - 1]} - `;
+  let formatted = ''
 
   for (let index in parts) {
     if (parseInt(index) < parts.length - 1) {
@@ -69,7 +74,22 @@ export const formatServiceCode = (value: string) => {
     }
   }
 
+  formatted = `${formatted} - ${parts[parts.length - 1]}`;
   return formatted.trim();
+};
+
+export const formatToLeadingCode = (value: string) => {
+  const parts = value.split("_");
+  const code = parts[parts.length - 1]
+  let formatted = ''
+
+  for (let index in parts) {
+    if (parseInt(index) < parts.length - 1) {
+      formatted = `${formatted} ${parts[parseInt(index)].charAt(0).toUpperCase()}${parts[parseInt(index)].slice(1).toLowerCase()}`
+    }
+  }
+
+  return `${code} - ${formatted}`.trim();
 };
 
 export const renderLoading = (label: string | JSX.Element) => (
@@ -80,11 +100,26 @@ export const renderLoading = (label: string | JSX.Element) => (
       </InputLabel>
     </Box>
 
-    <Box display="flex" justifyContent="space-between" alignItems="center" borderRadius={4} className="skelton-input">
+    <Box
+      display="flex"
+      alignItems="center"
+      justifyContent="space-between"
+      borderRadius={4} className="skelton-input"
+    >
       <Skeleton animation="pulse" variant="rect" width={1000} height={48} />
     </Box>
   </>
 );
+
+export const renderTextLoading = () => (
+  <Box display="flex" pt={0.3}
+    justifyContent="space-between"
+    alignItems="center" borderRadius={4}
+    className="skelton-input"
+  >
+    <Skeleton animation="pulse" variant="rect" width={240} height={28} />
+  </Box>
+)
 
 export const renderItem = (
   label: string, value: Maybe<string> | number | ReactNode | undefined,
@@ -193,6 +228,25 @@ export const isUser = (currentUserRole: RolesPayload['roles'] | undefined) => {
     || userRoles.includes(SYSTEM_ROLES.OfficeManager)
     || userRoles.includes(SYSTEM_ROLES.DoctorAssistant)
     || userRoles.includes(SYSTEM_ROLES.NursePractitioner)
+    || userRoles.includes(SYSTEM_ROLES.Biller)
+}
+
+export const isStaff = (currentUserRole: RolesPayload['roles'] | undefined) => {
+  const userRoles = currentUserRole ? pluck(currentUserRole, 'role') : ['']
+
+  return userRoles.includes(SYSTEM_ROLES.Staff)
+    || userRoles.includes(SYSTEM_ROLES.Nurse)
+    || userRoles.includes(SYSTEM_ROLES.FrontDesk)
+    || userRoles.includes(SYSTEM_ROLES.OfficeManager)
+    || userRoles.includes(SYSTEM_ROLES.DoctorAssistant)
+    || userRoles.includes(SYSTEM_ROLES.NursePractitioner)
+    || userRoles.includes(SYSTEM_ROLES.Biller)
+}
+
+export const isBiller = (currentUserRole: RolesPayload['roles'] | undefined) => {
+  const userRoles = currentUserRole ? pluck(currentUserRole, 'role') : ['']
+
+  return userRoles.includes(SYSTEM_ROLES.Biller)
 }
 
 export const getUserRole = (roles: RolesPayload['roles']) => {
@@ -208,6 +262,7 @@ export const getUserRole = (roles: RolesPayload['roles']) => {
 }
 
 export const getToken = () => localStorage.getItem(TOKEN);
+export const getLockedEmail = () => localStorage.getItem(EMAIL);
 export const tooLong = (fieldName: string) => `${fieldName} is too long`;
 export const tooShort = (fieldName: string) => `${fieldName} is too short`;
 export const invalidMessage = (fieldName: string) => `${fieldName} is invalid`;
@@ -227,15 +282,26 @@ export const getPracticeType = (type: PracticeType): string => {
   }
 };
 
+export const getFormatLogsDate = (date: string | undefined): string => date ? moment(Number(date)).format('MM/DD/YYYY') : '';
+export const getFormatLogsTime = (date: string | undefined): string => date ? moment(Number(date)).format('hh:mm:ss A') : '';
+
 export const getTimestamps = (date: string): string =>
   date ? moment(date).format().toString() : moment().format().toString();
 
 export const getCurrentTimestamps = (existingDate: string, newDate: string | undefined | MaterialUiPickersDate) => {
-  const currentDate = moment(newDate).format(`MM-DD-YYYY`)
-  const existingTime = moment(existingDate).format(`hh:mm A`)
+  const currentDate = moment(newDate).format('MM-DD-YYYY')
+  const existingTime = moment(existingDate).format('hh:mm A')
   const date = moment(currentDate + ' ' + existingTime)
   const updateDate = moment(date).format().toString()
   return updateDate ? moment(updateDate).format().toString() : moment().format().toString()
+};
+
+export const getCurrentTimesFormbuilder = (existingDate: string, newDate: string | undefined | MaterialUiPickersDate) => {
+  const currentDate = moment(newDate).format('MM-DD-YYYY')
+  const existingTime = moment(existingDate).format('hh:mm A')
+  const date = moment(currentDate + ' ' + existingTime, 'MM-DD-YYYY hh:mm A')
+  const updateDate = moment(date).format()
+  return updateDate
 };
 
 export const getTimestampsForDob = (date: string): string => {
@@ -258,15 +324,20 @@ export const getDate = (date: string) => moment(date, "x").format("YYYY-MM-DD");
 export const getCurrentDate = (date: string) => moment(date).format(`YYYY-MM-DD hh:mm A`);
 export const getFormattedDateTime = (date: string) => moment(date, 'x').format(`YYYY-MM-DD hh:mm A`)
 export const signedDateTime = (date: string) => moment(new Date(date), 'x').format(`YYYY-MM-DD hh:mm A`)
+export const getFeeScheduleDate = (date: string) => moment(new Date(date)).format(`DD-MM-YY`)
 
 export const getFormattedDate = (date: string) =>
   moment(date, "x").format("ddd MMM. DD, YYYY hh:mm A");
 
 export const getDocumentDate = (date: string) =>
-  moment(new Date(date), 'x').format(`YYYY-MM-DD hh:mm A`)
+  moment(new Date(date), 'x').format(`YYYY-MM-DD`)
+
+
+export const getDocumentDateFromTimestamps = (date: string) =>
+  moment(new Date(parseInt(date)), 'x').format(`YYYY-MM-DD`)
 
 export const dateDifference = (startingDate: string) => {
-  let startDate = new Date(parseInt(startingDate.substring(6, 10)))
+  let startDate = new Date(startingDate)
   let now = new Date();
   if (startDate > now) {
     let swap = startDate;
@@ -301,6 +372,17 @@ export const dateDifference = (startingDate: string) => {
   let ageString = newYears === 0 ? newMonths === 0 ? `${newDays} Days` : `${newMonths} Months` : `${newYears} Years`
 
   return `${ageString} old`
+}
+
+export const timeDifference = (time: string) => {
+  const startTime = moment(time, "x")
+  const now = moment()
+
+  const days = now.diff(startTime, 'days')
+  const hours = now.diff(startTime, 'hours')
+  const minutes = now.diff(startTime, 'minutes')
+
+  return days > 1 ? `${days} days ago` : hours > 1 ? `${hours} hours ago` : `${minutes} minutes ago`
 }
 
 // export const calculateAge = (dateString: string) => {
@@ -386,6 +468,15 @@ export const dateDifference = (startingDate: string) => {
 export const getDateWithDay = (date: string) =>
   moment(date, "x").format("ddd MMM. DD, YYYY");
 
+export const getDateWithDayAndTime = (date: string) =>
+  moment(date, "x").format("ddd MMM DD, YYYY hh:mm A");
+
+export const isCurrentDay = (date: string) => {
+  if (!!!date) return false
+
+  return new Date().getDate().toLocaleString() === new Date(parseInt(date)).getDate().toLocaleString()
+};
+
 export const deleteRecordTitle = (recordType: string) => `Delete ${recordType} Record`;
 export const cancelRecordTitle = (recordType: string) => `Cancel ${recordType} Record`;
 export const UpdateRecordTitle = (recordType: string) => `Update ${recordType}`;
@@ -409,8 +500,22 @@ export const renderPractices = (practices: PracticesPayload['practices']) => {
     for (let practice of practices) {
       if (practice) {
         const { id, name } = practice;
-
         data.push({ id, name: name.trim() })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderTaxonomies = (taxonomies: TaxonomyPayload['taxonomies']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!taxonomies) {
+    for (let taxonomy of taxonomies) {
+      if (taxonomy) {
+        const { id, code, displayName } = taxonomy;
+        data.push({ id, name: `${code} | ${displayName}` })
       }
     }
   }
@@ -450,21 +555,20 @@ export const renderOfficeRoles = (roles: RolesPayload['roles']) => {
   return data;
 }
 
-export const renderStaffRoles = (roles: RolesPayload['roles'], isAdminUser: boolean) => {
+export const renderStaffRoles = (roles: RolesPayload['roles'], userRoles: string[]) => {
   const data: SelectorOption[] = [];
-  const rolesToEmit = [SYSTEM_ROLES.Patient, SUPER_ADMIN, SYSTEM_ROLES.Doctor, SYSTEM_ROLES.EmergencyAccess]
-  if (!isAdminUser) {
-    rolesToEmit.push(SYSTEM_ROLES.PracticeAdmin)
-  }
 
   if (!!roles) {
+    const rolesToEmit = [SYSTEM_ROLES.Patient, SUPER_ADMIN, SYSTEM_ROLES.Doctor, SYSTEM_ROLES.EmergencyAccess]
+
+    userRoles.includes(SYSTEM_ROLES.PracticeAdmin) && rolesToEmit.push(SYSTEM_ROLES.PracticeAdmin)
+    userRoles.some(role => [SYSTEM_ROLES.FacilityAdmin, SYSTEM_ROLES.Nurse, SYSTEM_ROLES.Staff, SYSTEM_ROLES.Doctor
+      , SYSTEM_ROLES.FrontDesk, SYSTEM_ROLES.OfficeManager, SYSTEM_ROLES.DoctorAssistant, SYSTEM_ROLES.NursePractitioner].includes(role as SYSTEM_ROLES)) && rolesToEmit.push(SYSTEM_ROLES.PracticeAdmin, SYSTEM_ROLES.FacilityAdmin)
     for (let role of roles) {
       if (role) {
         const { role: name } = role;
-        // && name !== SYSTEM_ROLES.FacilityAdmin
-        if (
-          !rolesToEmit.includes(name || '')
-        )
+
+        if (!rolesToEmit.includes(name || ''))
           name && data.push({ id: name.trim(), name: formatValue(name) })
       }
     }
@@ -565,6 +669,21 @@ export const renderPatient = (patients: PatientsPayload['patients']) => {
   return data;
 }
 
+export const renderUser = (users: UsersPayload['users']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!users) {
+    for (let user of users) {
+      if (user) {
+        const { id, email } = user;
+        data.push({ id, name: `${email}` })
+      }
+    }
+  }
+
+  return data;
+}
+
 export const renderAppointments = (appointments: AppointmentsPayload['appointments']) => {
   const data: SelectorOption[] = [];
 
@@ -574,7 +693,68 @@ export const renderAppointments = (appointments: AppointmentsPayload['appointmen
         const { id, appointmentType, scheduleStartDateTime } = appointment;
         data.push({
           id,
-          name: `${appointmentType?.name.trim() ?? ''} ${convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm:ss')}`.trim()
+          name: `${appointmentType?.name.trim() ?? ''} ${convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm A')}`.trim()
+        })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderCPTCodes = (cptCodes: AllCptCodePayload['cptCodes']) => {
+  const data: CptCodeSelectorOption[] = [];
+
+  if (!!cptCodes) {
+    for (let cptCode of cptCodes) {
+      if (cptCode) {
+        const { id, code, description, longDescription, shortDescription } = cptCode;
+        data.push({
+          id: id,
+          name: code,
+          description,
+          longDescription,
+          shortDescription
+        })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderFeeCPTCodes = (feeCptCodes: AllCptFeeSchedulesPayload['cptFeeSchedules']) => {
+  const data: ItemSelectorOption[] = [];
+
+  if (!!feeCptCodes) {
+    for (let feeCptCode of feeCptCodes) {
+      if (feeCptCode) {
+        const { id, code, shortDescription, serviceFee } = feeCptCode;
+        data.push({
+          id: id,
+          name: `${code} | ${shortDescription}`,
+          description: shortDescription || '',
+          code: code || '',
+          serviceFee: serviceFee || ''
+        })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderModifiers = (modifiers: AllModifiersPayload['modifiers']) => {
+  const data: ModifiersSelectorOption[] = [];
+
+  if (!!modifiers) {
+    for (let modifier of modifiers) {
+      if (modifier) {
+        const { code, description } = modifier;
+        data.push({
+          id: code || '',
+          name: code,
+          description,
         })
       }
     }
@@ -673,8 +853,22 @@ export const setRecord = (id: string, name: string, format = true): SelectorOpti
   return { id, name: value };
 };
 
-export const formatPhone = (phone: string): string =>
-  phone && phone ? `(${phone.substring(0, 3)})  ${phone.substring(3, 6)}-${phone.substring(6, 11)}` : '';
+export const setCTPCode = (id: string, name: string, description: string, longDescription: string, shortDescription: string): CptCodeSelectorOption => {
+  let value = ''
+  if (name) {
+    value = name
+  }
+
+  return { id, name: value, description, longDescription, shortDescription };
+};
+
+export const formatPhone = (phone: string | undefined | null): string =>
+  !!phone ? `(${phone.substring(0, 3)})  ${phone.substring(3, 6)}-${phone.substring(6, 11)}` : N_A;
+
+export const formatAddress = (address: string | undefined | null, city: string | undefined | null, state: string | undefined | null, zipCode: string | undefined | null) => {
+  const selfAddress = `${address ? address : ''} ${city ? city + ',' : ''} ${state ? state : ''} ${zipCode ? zipCode : ''}`
+  return selfAddress.trim() ? selfAddress : N_A
+}
 
 export const dateValidation = (endDate: string, startDate: string): boolean => {
   if (startDate && endDate) {
@@ -838,7 +1032,10 @@ export const activeClass = (pathname: string): string => {
       return "isAgreement"
 
     case INVOICES_ROUTE:
-    case CLAIMS_ROUTE:
+    case CLAIM_FEED_ROUTE:
+      return "inBilling"
+
+    case CLAIM_STATUS_ROUTE:
       return "inBilling"
 
     default:
@@ -870,7 +1067,7 @@ export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
   data?.map(appointment => {
     const {
       scheduleEndDateTime, scheduleStartDateTime, patient, id: appointmentId, appointmentType, facility, provider,
-      reason, primaryInsurance, status, token, billingStatus
+      reason, primaryInsurance, status, token, billingStatus, appointmentCreateType
     } = appointment || {};
 
     const { firstName, lastName, contacts: pContact, id: patientId } = patient || {}
@@ -879,6 +1076,7 @@ export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
     const { firstName: providerFN, lastName: providerLN, id: providerId } = provider || {}
     const facilityContact = fContact && fContact.filter(contact => contact.primaryContact)[0]
     const appointmentStatus = status && formatValue(status)
+    const rawStatus = status
     const patientContact = pContact && pContact.filter(contact => contact.primaryContact)[0];
     return {
       token,
@@ -897,7 +1095,9 @@ export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
       billingStatus,
       appointmentName,
       appointmentStatus,
+      appointmentCreateType,
       scheduleStartDateTime,
+      rawStatus,
       title: `${firstName} ${lastName}`,
       providerName: `${providerFN} ${providerLN}`,
       ...makeTodayAppointment(new Date(parseInt(scheduleStartDateTime || '')), new Date(parseInt(scheduleEndDateTime || '')))
@@ -1028,23 +1228,33 @@ export const getDocumentByType = (attachmentData: AttachmentsPayload['attachment
   }
 };
 
+export const getDocumentByDocumentType = (attachmentData: AttachmentsPayload['attachments'], title: ATTACHMENT_TITLES) => {
+  const documentAttachment = attachmentData?.filter(attachment => attachment?.title === title)[0] || undefined
+  return documentAttachment
+};
+
 export const formatPermissionName = (name: string) => {
-  const [text, ...rest] = name.split(/(?=[A-Z])/)
+  const [text, ...rest] = name?.split(/(?=[A-Z])/)
   const updateName = `${text.charAt(0).toUpperCase()}${text.slice(1)} ${rest.map(str => str)} `
   return updateName.replaceAll(',', ' ');
 }
 
 export const formatRoleName = (name: string): string => {
   let formatted = ''
-  name.split(/[-_\s]+/).map(term =>
+  name?.split(/[-_\s]+/)?.map(term =>
     formatted = `${formatted} ${term.charAt(0).toUpperCase()}${term.slice(1).toLowerCase()}`)
 
-  return formatted.trim();
+  return formatted?.trim();
 };
+
+export const parseXmGrid = (col: number): GridSize => {
+  return 12;
+}
 
 export const parseColumnGrid = (col: number): GridSize => {
   return col as GridSize;
 }
+
 
 export const LoaderBackdrop = memo(({ open }: LoaderProps): JSX.Element => (
   <Backdrop
@@ -1106,9 +1316,13 @@ export const getFormatDateString = (date: Maybe<string> | undefined, format = "Y
   return moment(date).format(format).toString()
 };
 
-export const convertDateFromUnix = (date: Maybe<string> | undefined, format = "MM-DD-YYYY") => {
+export const dobDateFormat = (date: Maybe<string> | undefined, format = "MM-DD-YYYY") => {
   if (!date) return '';
-  return moment(date, 'x').format(format).toString()
+  return moment(date).format(format).toString()
+};
+
+export const convertDateFromUnix = (date: Maybe<string> | undefined, format = "MM-DD-YYYY") => {
+  return !date ? '' : moment(date, 'x').format(format).toString()
 };
 
 export const userFormUploadImage = async (file: File, attachmentId: string, title: string, id: string) => {
@@ -1120,7 +1334,12 @@ export const userFormUploadImage = async (file: File, attachmentId: string, titl
   try {
     const res = await axios.post(
       `${process.env.REACT_APP_API_BASE_URL}${USER_FORM_IMAGE_UPLOAD_URL}`,
-      formData
+      formData,
+      {
+        headers: {
+          pathname: window.location.pathname
+        }
+      }
     )
     const { data } = res || {};
     const { attachment, response } = data as FormAttachmentPayload || {}
@@ -1210,6 +1429,8 @@ export const getUserFormDefaultValue = (type: ElementType, isMultiSelect: boolea
       return value || ''
     case ElementType.Select:
       return isMultiSelect ? [] : value || ''
+    case ElementType.Dropdown:
+      return value || ''
     case ElementType.Radio:
       return value || ''
     case ElementType.Checkbox:
@@ -1313,7 +1534,7 @@ export const ounceToPounds = (o: number) => (o / 16)
 export const getBMI = (weight: number, height: number) => (weight / (height * height))
 
 export const dataURLtoFile = (url: any, filename: string) => {
-  let arr = url.split(','),
+  let arr = url?.split(','),
     mime = arr && arr[0] && arr[0].match(/:(.*?);/)[1],
     bstr = atob(arr[1]),
     n = bstr.length,
@@ -1323,7 +1544,7 @@ export const dataURLtoFile = (url: any, filename: string) => {
     u8arr[n] = bstr.charCodeAt(n);
   }
 
-  return new File([u8arr], `${filename}.${mime.split('/').pop()}`, { type: mime });
+  return new File([u8arr], `${filename}.${mime?.split('/').pop()}`, { type: mime });
 }
 
 export const getDefaultHeight = (heightUnitType: UnitType, PatientHeight: string) => {
@@ -1413,7 +1634,7 @@ export const roundOffUpto2Decimal = (str: number | undefined | string | null): s
 }
 
 export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[], modalName: ITEM_MODULE) {
-  const data: SelectorOption[] = [];
+  const data: ItemSelectorOption[] = [];
 
   if (!!list) {
     for (let item of list) {
@@ -1428,11 +1649,6 @@ export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[], moda
 
           data.push({ id: icdCodesId, name: `${code} | ${description}` })
           break;
-        case ITEM_MODULE.cptCode:
-          let { id: cptCodeId, name: cptCodeName } = (item as unknown as SelectorOption) || {};
-
-          data.push({ id: cptCodeId, name: cptCodeName?.slice(0, 100) })
-          break;
         case ITEM_MODULE.insurance:
           let { id: insuranceId, payerId, payerName } = (item as unknown as Insurance) || {};
 
@@ -1443,6 +1659,26 @@ export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[], moda
 
           data.push({ id: documentTypeId, name: type })
           break;
+        case ITEM_MODULE.claimStatus:
+          let { id: claimStatusId, statusName } = (item as unknown as ClaimStatus) || {};
+
+          data.push({ id: claimStatusId, name: statusName })
+          break;
+        case ITEM_MODULE.feeSchedule:
+          let { id: feeScheduleId, name: feeScheduleName } = (item as unknown as FeeSchedule) || {};
+
+          data.push({ id: feeScheduleId, name: feeScheduleName })
+          break;
+        case ITEM_MODULE.cptFeeSchedule:
+          let { id: cptFeeScheduleId, serviceFee, code: cptCode, shortDescription } = (item as unknown as CptFeeSchedule) || {};
+
+          data.push({ id: cptFeeScheduleId, name: `${cptCode} | ${shortDescription}`, code: cptCode || '', serviceFee: serviceFee || '' })
+          break;
+        case ITEM_MODULE.taxonomies:
+          let { id: taxonomyId, code: taxonomyCode, displayName: taxonomyName } = (item as unknown as Taxonomy) || {};
+
+          data.push({ id: taxonomyId, name: `${taxonomyCode} | ${taxonomyName}` })
+          break
         default:
           break;
       }
@@ -1640,7 +1876,7 @@ export const getPracticeFacilityUsersData = (data: PracticeUsersWithRoles[]) => 
 
 export const getShortName = (name: string) => {
   let shortName = '';
-  const parts = name.split(' ')
+  const parts = name?.split(' ')
 
   parts.map(part => shortName = shortName.concat(part.charAt(0)))
 
@@ -1655,6 +1891,19 @@ export function mapEnum<enumType>(enumerable: enumType): SelectorOption[] {
       return {
         id: member,
         name: formatValue(member).trim()
+      }
+    });
+  } else return [EMPTY_OPTION]
+}
+
+export function mapEnumWithCode<enumType>(enumerable: enumType): SelectorOption[] {
+  if (enumerable) {
+    let enumMembers = Object.keys(enumerable).map(key => (enumerable as any)[key]);
+
+    return enumMembers.map(member => {
+      return {
+        id: member,
+        name: formatToLeadingCode(member)
       }
     });
   } else return [EMPTY_OPTION]
@@ -1731,17 +1980,12 @@ export const getCheckInStatus = (
     case 0:
       return { stage: 'Checked In', stageColor: GREEN_ONE };
     case 1:
-    case 2:
       return { stage: 'With Staff', stageColor: BLUE };
-
-    case 3:
-    case 4:
+    case 2:
       return { stage: 'Charting', stageColor: ORANGE_SIMPLE };
-
-    case 5:
+    case 3:
       return { stage: 'With Provider', stageColor: BLUE_SEVEN };
-
-    case 6:
+    case 4:
       return { stage: 'With Biller', stageColor: PURPLE_ONE };
 
     default:
@@ -1751,6 +1995,12 @@ export const getCheckInStatus = (
 
 export const canUpdateAppointmentStatus = (status: AppointmentStatus) => {
   return status === AppointmentStatus.Scheduled
+}
+
+export const canCancelAppointment = (status: AppointmentStatus, time: string) => {
+  return moment(getISOTime(time || '')).diff(moment(), 'hours') <= 1
+    ? CANCEL_TIME_EXPIRED_MESSAGE : status !== AppointmentStatus.Scheduled
+      ? `Appointment with status "${formatValue(status || '')}" can't be cancelled!` : ''
 }
 
 export const AppointmentStatusStateMachine = (
@@ -1815,7 +2065,7 @@ export const appointmentChargesDescription = (amount: string) =>
   <Typography>You will be charged  <strong>${amount}</strong> for this appointment booking.</Typography>
 
 export const getFilteredSSN = (value: string) => {
-  const [, , last4] = value.split('-')
+  const [, , last4] = value?.split('-')
 
   return `***-**-${last4 || '0000'}`
 }
@@ -1870,4 +2120,205 @@ export const updateSortOptions = (options: SelectorOption[]) => {
   )
 }
 
-export const sortingValue= (updatedOptions : SelectorOption[]) =>  updateSortOptions && updateSortOptions(updatedOptions)?.sort((a, b) => -b?.firstLetter.localeCompare(a?.firstLetter))
+export const sortingValue = (updatedOptions: SelectorOption[]) =>
+  updateSortOptions && updateSortOptions(updatedOptions)?.sort((a, b) =>
+    -b?.firstLetter.localeCompare(a?.firstLetter)
+  )
+
+export const isValidDate = (date: Date) => {
+  return date instanceof Date && !isNaN(date.getTime());
+}
+
+export const hasEncounter = (status: AppointmentStatus) => {
+  return status !== AppointmentStatus.Cancelled
+    && status !== AppointmentStatus.NoShow
+    && status !== AppointmentStatus.Scheduled
+    && status !== AppointmentStatus.Discharged
+}
+
+export function sortingArray<arrayType>(array: arrayType, by: string, order: Order): arrayType {
+  const sorted = sortBy(array as Collection<any>, by)
+
+  return (order === ASC ? sorted : sorted.reverse()) as unknown as arrayType
+}
+
+export const excludeLeadingZero = (value: string) => parseInt(value).toString()
+export const formatModuleTypes = (param: string[]): SelectorOption[] => param?.map((val) => ({ id: val, name: val }))
+
+export const getArrayOfObjSum = (arr: any[], key: string) => arr.map(value => value[key]).reduce((acc, value) => acc += isNaN(Number(value)) ? 0 : Number(value), 0)
+
+export const getCharFromNumber = (num: number, isUpper = true) => {
+  const caseNumber = isUpper ? 65 : 97
+  return String.fromCharCode(caseNumber + num)
+}
+
+export const getNumberFromChar = (s: string, index: number) => {
+  const numb = s.charCodeAt(index) - 65 + 1
+  return isNaN(numb) ? '' : numb
+}
+
+export const getPageNumber = (page: number, pageRecords: number): number => {
+  if (page > 1) {
+    return pageRecords > 1 ? page : page - 1
+  }
+
+  return 1;
+}
+
+export const checkNpi = (npi: string) => {
+  var tmp;
+  var sum;
+  var i;
+  var j;
+  i = npi.length;
+  if ((i === 15) && (npi.indexOf("80840", 0) === 0))
+    sum = 0;
+  else if (i === 10)
+    sum = 24;
+  else
+    return false;
+  j = 0;
+  while (i !== 0) {
+    tmp = npi.charCodeAt(i - 1) - '0'.charCodeAt(0);
+    if ((j++ % 2) !== 0) {
+      const con = tmp <<= 1
+      if (con > 9) {
+        tmp -= 10;
+        tmp++;
+      }
+    }
+    sum += tmp;
+    i--;
+  }
+  return ((sum % 10) === 0) ? true : false
+}
+
+export const formatEmail = (email: string) => {
+  if (!!!email) return '';
+
+  return email.toLowerCase();
+}
+
+export const getClaimBtnText = (statusName: string) => {
+  if (!!statusName) {
+    switch (statusName) {
+
+      case 'ready_to_claim':
+        return SUBMIT_CLAIM;
+
+      case 'rejected':
+        return UPDATE_CLAIM;
+
+      case 'acknowledged':
+        return UPDATE_CLAIM;
+
+      default:
+        return UPDATE_CLAIM
+    }
+  } else {
+    return CREATE_CLAIM
+  }
+}
+
+export const getBloodPressureGraphValues = (bloodPressures: number[]) => {
+  return {
+    ...areaChartOne,
+    series: [{
+      name: 'USA',
+      color: '#CA6B6E',
+      data: bloodPressures
+    }]
+  }
+}
+
+export const getPulseRateGraphValues = (pulseRates: number[]) => {
+  return {
+    ...areaChartTwo,
+    series: [{
+      color: '#1BC5BD',
+      name: 'USSR/Russia',
+      data: pulseRates
+    }]
+  }
+}
+
+export const getBloodPressureStatus = (systolicBloodPressure: number, diastolicBloodPressure: number) => {
+  if ((systolicBloodPressure > 90 && systolicBloodPressure < 140) && (diastolicBloodPressure > 60 && diastolicBloodPressure < 90)) {
+    return {
+      status: BLOOD_PRESSURE_RANGES.Normal,
+      color: 'primary'
+    }
+  }
+
+  return {
+    status: BLOOD_PRESSURE_RANGES.Abnormal,
+    color: 'danger-bg'
+  }
+}
+
+export const getHeartBeatStatus = (pulseRate: number) => {
+  if (pulseRate > 60 && pulseRate < 100) {
+    return {
+      status: Heart_RATE_RANGES.Normal,
+      color: 'primary'
+    }
+  }
+
+  return {
+    status: Heart_RATE_RANGES.Abnormal,
+    color: 'danger-bg'
+  }
+}
+export const isLast = (count: number, page: number) => {
+  return count === 1 && page === 1
+}
+
+
+export const calculateAge = (birthday: string) => {
+  //birthday must be in YYYY-MM-DD format
+  const birthdayDate = new Date(birthday);
+  const ageDifMs = Date.now() - birthdayDate.getTime();
+  const ageDate = new Date(ageDifMs);
+  return Math.abs(ageDate.getUTCFullYear() - 1970);
+}
+
+export const getFormEmbeddedLink = (src: string): string =>
+  `<iframe width="560" height="315" src="${src}" frameborder="0" allow="accelerometer; allowfullscreen"></iframe>`
+
+export const blobToFile = (theBlob: Blob, fileName: string): File => {
+  const lastModified = new Date().getTime()
+  const file = new File([theBlob], `${fileName}.png`, { lastModified, type: 'image/png' });
+  return file
+}
+
+export enum DocumentFileType {
+  IMAGE = 'image',
+  DOCUMENT = 'document'
+}
+
+export const getFileType = (key: string) => {
+  switch (key) {
+    case 'png':
+      return DocumentFileType.IMAGE
+    case 'jpg':
+      return DocumentFileType.IMAGE
+    case 'jpeg':
+      return DocumentFileType.IMAGE
+    case 'svg':
+      return DocumentFileType.IMAGE
+    case 'gif':
+      return DocumentFileType.IMAGE
+    default:
+      return DocumentFileType.DOCUMENT
+  }
+}
+
+export const getStateWithAbbreviation = (state: string) => {
+  const stateDetail = states?.find(({ name }) => name === state);
+  if (stateDetail) return `${state} - ${stateDetail?.abbreviation}`;
+  return state;
+}
+export const emailRegex = (value: string) => {
+  // eslint-disable-next-line no-useless-escape
+  return /^[a-z0-9!@#\$%\^\&*\)\(+=._-]+@[a-z0-9-]+\.[a-z0-9-.]+$/g.test(value || '')
+}

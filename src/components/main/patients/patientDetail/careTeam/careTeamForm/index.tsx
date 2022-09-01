@@ -1,22 +1,24 @@
 // packages block
 import { FC, useEffect, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, Typography, Grid, } from '@material-ui/core';
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 //components block
 import Alert from '../../../../../common/Alert';
 import Selector from '../../../../../common/Selector';
 import PhoneField from '../../../../../common/PhoneInput';
+import InputController from '../../../../../../controller';
 import ConfirmModal from '../../../../../common/ConfirmModal';
 import RadioController from '../../../../../../controller/RadioController';
 import DoctorSelector from '../../../../../common/Selector/DoctorSelector';
 // constants, history, styling block
 import history from '../../../../../../history';
-import { renderItem, setRecord } from '../../../../../../utils';
 import { GREY_SIXTEEN } from '../../../../../../theme';
-import InputController from '../../../../../../controller'
+import { renderItem, setRecord } from '../../../../../../utils';
 import { CareTeamsProps, UpdatePatientProviderInputsProps } from '../../../../../../interfacesTypes';
-import { updatePatientProviderRelationSchema, updatePatientProviderSchema } from '../../../../../../validationSchemas';
+import {
+  updatePatientProviderRelationSchema, updatePatientProviderSchema
+} from '../../../../../../validationSchemas';
 import {
   DoctorPatient, DoctorPatientRelationType, useGetDoctorLazyQuery, useGetPatientProviderLazyQuery,
   useUpdatePatientProviderMutation, useUpdatePatientProviderRelationMutation
@@ -33,9 +35,13 @@ const CareTeamForm: FC<CareTeamsProps> = ({
 }): JSX.Element => {
   const [isOtherRelation, setIsOtherRelation] = useState<boolean>(false);
   const [openSave, setOpenSave] = useState<boolean>(false);
-  const [relationInput, setRelationInput] = useState<DoctorPatientRelationType>(DoctorPatientRelationType.OtherProvider);
+  const [relationInput, setRelationInput] =
+    useState<DoctorPatientRelationType>(DoctorPatientRelationType.OtherProvider);
+
   const [otherRelationInput, setOtherRelationInput] = useState<string>('');
-  const newPrimaryProvidersData = patientProvidersData?.find(item => item.relation === DoctorPatientRelationType.PrimaryProvider)
+  const newPrimaryProvidersData = patientProvidersData?.find(item =>
+    item.relation === DoctorPatientRelationType.PrimaryProvider)
+
   const methods = useForm<UpdatePatientProviderInputsProps>({
     mode: "all",
     defaultValues: { relation: DoctorPatientRelationType.OtherProvider },
@@ -176,14 +182,15 @@ const CareTeamForm: FC<CareTeamsProps> = ({
     const { otherRelation, relation } = inputs;
     setRelationInput(relation as DoctorPatientRelationType)
     setOtherRelationInput(otherRelation as string)
+
     if (isEdit) {
-      const editPrimaryProvidersData = patientProvidersData?.find(({id, relation}) =>
+      const editPrimaryProvidersData = patientProvidersData?.find(({ id, relation }) =>
         relation === DoctorPatientRelationType.PrimaryProvider && doctorPatientId !== id)
 
       const { id } = editPrimaryProvidersData || {}
       if (id && relation === DoctorPatientRelationType.PrimaryProvider) {
         setOpenSave(true)
-      }else {
+      } else {
         await updatePatientProviderRelation({
           variables: {
             updatePatientProviderRelationInputs: {
@@ -196,6 +203,7 @@ const CareTeamForm: FC<CareTeamsProps> = ({
       }
     } else {
       const { id } = newPrimaryProvidersData || {}
+
       if (relation === DoctorPatientRelationType.PrimaryProvider && id) {
         setOpenSave(true)
       } else {

@@ -192,3 +192,43 @@ query FetchDocumentTypes($documentTypeInput: DocumentTypeInput!) {
 }
 
 
+query GetPatientAttachments($getAttachment: GetAttachment!){
+  getAttachments(getAttachment: $getAttachment){
+    response {
+      error
+      status
+      message
+    }
+    
+    attachments {
+      id
+      key
+      url
+      type
+      title
+      typeId
+      attachmentName
+      createdAt
+      updatedAt
+      preSignedUrl
+
+      attachmentMetadata {
+        signedAt
+        signedBy
+        providerName
+        comments
+        documentDate
+
+        documentType {
+          id
+          type
+        }
+      }
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+  }
+}

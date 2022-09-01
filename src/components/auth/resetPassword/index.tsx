@@ -33,6 +33,9 @@ const ResetPasswordComponent = (): JSX.Element => {
   const { password, repeatPassword } = watch();
 
   const [resetPassword, { loading }] = useResetPasswordMutation({
+    fetchPolicy: "network-only",
+    notifyOnNetworkStatusChange: true,
+
     onError() {
       return null;
     },
@@ -64,7 +67,7 @@ const ResetPasswordComponent = (): JSX.Element => {
   }, [token])
 
   useEffect(() => {
-    password === repeatPassword ?
+    password === repeatPassword || !!!repeatPassword ?
       clearErrors("repeatPassword")
       : setError("repeatPassword", { message: PASSWORDS_MUST_MATCH })
   }, [clearErrors, password, repeatPassword, setError, watch])

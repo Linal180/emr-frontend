@@ -32,7 +32,7 @@ const PracticeFacilities: FC = (): JSX.Element => {
     } as SeriesOptionsType]
   });
 
-  const [getPracticeFacilities, { loading }] = useGetPracticeFacilitiesLazyQuery({
+  const [getPracticeFacilities] = useGetPracticeFacilitiesLazyQuery({
     onError() { },
 
     onCompleted(data) {
@@ -68,13 +68,9 @@ const PracticeFacilities: FC = (): JSX.Element => {
   }, [fetchPracticeFacilities])
 
   return (
-    <>
-      {!loading &&
-        <Box className="practice-bar-chart-container">
-          <HighchartsReact highcharts={Highcharts} options={chartOptions} />
-        </Box>
-      }
-    </>
+    <Box className="practice-bar-chart-container">
+      <HighchartsReact highcharts={Highcharts} options={chartOptions} />
+    </Box>
   )
 };
 

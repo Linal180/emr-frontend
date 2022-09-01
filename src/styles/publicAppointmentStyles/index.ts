@@ -25,12 +25,12 @@ export const usePublicAppointmentStyles = makeStyles(() =>
       listStyle: 'none',
       overflowX: 'auto',
       margin: "10px 0 20px",
-      maxHeight: "470px",
+      maxHeight: "210px",
       overflowY: "auto",
 
       '& li': {
         width: 'calc(50% - 12px)',
-        margin: "0 12px 12px 0",
+        margin: "0 12px 15px 0",
       },
 
       "& input": {
@@ -180,5 +180,29 @@ export const usePublicAppointmentStyles = makeStyles(() =>
         height: 16,
       }
     },
+
+    checkBox: {
+      width: 40,
+    },
+
+    billingCard: {
+      [theme.breakpoints.up("md")]: {
+        borderRight: `1px solid ${GRAY_SIX}`,
+        minHeight: 354,
+        paddingRight: theme.spacing(3),
+      },
+    },
+
+    customCalendar: {
+      "& .MuiPickersStaticWrapper-staticWrapperRoot": {
+        marginTop: '-10px',
+        border: '1px solid red',
+      },
+
+      "& .MuiPickersBasePicker-pickerView": {
+        minHeight: 330,
+        justifyContent: 'flex-start'
+      }
+    }
   })
 );

@@ -84,7 +84,6 @@ export const useExternalPatientStyles = makeStyles({
 
   stepperContainer: {
     "& .MuiStepper-root": {
-      marginTop: 40,
       padding: 30,
 
       "& .MuiStepConnector-vertical": {
@@ -166,6 +165,46 @@ export const useExternalPatientStyles = makeStyles({
     width: "100%",
     textAlign: "center",
   },
+
+  privacyLabelHeader: {
+    fontWeight: 'bold',
+  },
+
+  privacyLabelDescription: {
+    paddingLeft: 25,
+    "& .MuiFormControlLabel-label": {
+      fontSize: 14,
+    },
+
+    "& .MuiCheckbox-root .MuiIconButton-label:before":{
+      width:15,
+      height:15
+    }
+  },
+
+  privacyLabelNewDescription: {
+    paddingLeft: 5,
+    "& .privacyCheckBox": {
+      padding: '2px 8px',
+      alignSelf : 'flex-start',
+    },
+
+    "& .MuiFormControlLabel-label": {
+      fontSize: 14,
+      marginBottom: 5
+    },
+
+    "& .MuiCheckbox-root .MuiIconButton-label:before":{
+      width:15,
+      height:15
+    }
+  },
+
+
+  privacyFormGroup: {
+    display: 'flex',
+    flexDirection: 'row'
+  }
 });
 
 export const toggleButtonComponent = makeStyles({
@@ -263,7 +302,7 @@ export const AntSwitch = withStyles(() =>
       left: 0,
       top: 0,
     },
-
+    
     thumb: {
       width: 70,
       height: 34,
@@ -274,29 +313,29 @@ export const AntSwitch = withStyles(() =>
       transform: "translateX(93%)",
       transition: "all .3s ease-in",
     },
-
+    
     switchBase: {
       padding: 4,
       transform: "none !important",
-
+      
       "&$checked": {
         "& + $track": {
           opacity: 0.8,
           backgroundColor: "transparent",
           borderColor: "none",
         },
-
+        
         "& .MuiSwitch-thumb": {
           backgroundColor: GREY_TWO,
           transform: "translateX(0)",
         },
       },
-
+      
       "&:hover": {
-        backgroundColor: 'transparent'
+        backgroundColor: 'transparent',
       }
     },
-
+    
     track: {
       border: `none`,
       backgroundColor: WHITE,

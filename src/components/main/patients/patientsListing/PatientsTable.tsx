@@ -1,5 +1,5 @@
 // packages block
-import { FC, ChangeEvent, useEffect, useContext, useCallback, Reducer, useReducer, useState } from "react";
+import { FC, ChangeEvent, useEffect, useContext, useCallback, Reducer, useReducer } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { FormProvider, useForm } from "react-hook-form";
@@ -24,7 +24,7 @@ import { PatientSearchInputProps } from "../../../../interfacesTypes";
 import { BLACK_TWO, GREY_FIVE, GREY_NINE, GREY_TEN } from "../../../../theme";
 import {
   formatPhone, getFormatDateString, isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin,
-  checkPermission, isUser, renderTh, getTimestampsForDob
+  checkPermission, isUser, renderTh, dobDateFormat, getPageNumber, isLast
 } from "../../../../utils";
 import {
   patientReducer, Action, initialState, State, ActionType
@@ -35,9 +35,8 @@ import {
 import {
   ACTION, EMAIL, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION, PATIENTS_ROUTE, NAME,
   PATIENT, PRN, PatientSearchingTooltipData, ADVANCED_SEARCH, DOB, DATE_OF_SERVICE, LOCATION, PROVIDER,
-  US_DATE_FORMAT, RESET, USER_PERMISSIONS, ROOT_ROUTE, PERMISSION_DENIED
+  US_DATE_FORMAT, RESET, USER_PERMISSIONS,
 } from "../../../../constants";
-import history from "../../../../history";
 
 const PatientsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -52,12 +51,14 @@ const PatientsTable: FC = (): JSX.Element => {
 
   const isDoctor = isOnlyDoctor(roles);
   const { id: facilityId, practiceId } = facility || {}
-  const [open, setOpen] = useState<boolean>(false)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
-
+  
   const canDelete = checkPermission(userPermissions, USER_PERMISSIONS.removePatient)
   const canUpdate = checkPermission(userPermissions, USER_PERMISSIONS.updatePatient)
-  const { page, totalPages, searchQuery, openDelete, deletePatientId, patients, doctorId } = state;
+  
+  const {
+    page, totalPages, searchQuery, openDelete, deletePatientId, patients, doctorId, openAdvancedSearch
+  } = state;
   const methods = useForm<PatientSearchInputProps>({ mode: "all" });
 
   const { search: patientSearch } = useLocation()
@@ -73,6 +74,7 @@ const PatientsTable: FC = (): JSX.Element => {
 
     onError() {
       dispatch({ type: ActionType.SET_PATIENTS, patients: [] })
+      dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
     },
 
     onCompleted(data) {
@@ -98,14 +100,14 @@ const PatientsTable: FC = (): JSX.Element => {
   const fetchAllPatients = useCallback(async () => {
     try {
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
-      const patientsInputs = isSuper ? { ...pageInputs } :
-        isPracticeUser ? { practiceId, facilityId: selectedLocationId, ...pageInputs } :
-          isFacAdmin || isRegularUser ? { facilityId, ...pageInputs } : undefined
+      const patientsInputs = isSuper ? { ...pageInputs }
+        : isPracticeUser ? { practiceId, facilityId: selectedLocationId, ...pageInputs }
+          : isFacAdmin || isRegularUser ? { facilityId, ...pageInputs } : undefined
 
       patientsInputs && await fetchAllPatientsQuery({
         variables: {
           patientInput: {
-            ...patientsInputs, searchString: searchQuery, dob: getFormatDateString(dob, 'MM-DD-YYYY'),
+            ...patientsInputs, searchString: searchQuery, dob: dob,
             doctorId: isDoctor ? doctorId : selectedProviderId,
             appointmentDate: getFormatDateString(dos),
             ...(isSuper || isPracticeUser ? { facilityId: selectedLocationId } : {}),
@@ -135,19 +137,22 @@ const PatientsTable: FC = (): JSX.Element => {
           const { message } = response
           message && Alert.success(message);
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
-          fetchAllPatients();
+
+          if (!!patients && (patients.length > 1 || isLast(patients.length, page))) {
+            fetchAllPatients();
+          } else {
+            dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, patients?.length || 0) })
+          }
         }
       }
     }
   });
 
   useEffect(() => {
-    if (!checkPermission(userPermissions, USER_PERMISSIONS.fetchAllPatients)) {
-      history.push(ROOT_ROUTE)
-      Alert.error(PERMISSION_DENIED)
-    }
-
-    !!patientSearch && dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: patientSearch.replace('?', '') })
+    !!patientSearch && dispatch({
+      type: ActionType.SET_SEARCH_QUERY,
+      searchQuery: patientSearch.replace('?', '')
+    })
   }, [patientSearch, user, userPermissions]);
 
   useEffect(() => {
@@ -198,22 +203,26 @@ const PatientsTable: FC = (): JSX.Element => {
       <Box className={classes.mainTableContainer}>
         <Grid container spacing={3}>
           <Grid item md={4} sm={12} xs={12}>
-            <Search search={search} info tooltipData={PatientSearchingTooltipData} />
+            <Search search={search} text={searchQuery} info tooltipData={PatientSearchingTooltipData} />
           </Grid>
 
           <Grid item md={2} sm={12} xs={12}>
             <Box
-              onClick={() => setOpen(!open)} className='pointer-cursor'
+              className='pointer-cursor'
               border={`1px solid ${GREY_FIVE}`} borderRadius={4}
               color={BLACK_TWO} p={1.35} display='flex' width={186}
+              onClick={() => dispatch({
+                type: ActionType.SET_OPEN_ADVANCED_SEARCH,
+                openAdvancedSearch: !openAdvancedSearch
+              })}
             >
               <Typography variant="body1">{ADVANCED_SEARCH}</Typography>
-              {open ? <ExpandLess /> : <ExpandMore />}
+              {openAdvancedSearch ? <ExpandLess /> : <ExpandMore />}
             </Box>
           </Grid>
         </Grid>
 
-        <Collapse in={open} mountOnEnter unmountOnExit>
+        <Collapse in={openAdvancedSearch} mountOnEnter unmountOnExit>
           <FormProvider {...methods}>
             <Box p={3} mt={2} bgcolor={GREY_NINE} border={`1px solid ${GREY_TEN}`} borderRadius={4}>
               <Grid container spacing={3}>
@@ -223,8 +232,9 @@ const PatientsTable: FC = (): JSX.Element => {
                     controllerName="dob"
                     controllerLabel={DOB}
                     clearable={!!dob}
-                    handleClearField={handleClearField}
                     placeholder={US_DATE_FORMAT}
+                    handleClearField={handleClearField}
+                    onChange={() => dispatch({ type: ActionType.SET_PAGE, page: 1 })}
                   />
                 </Grid>
 
@@ -232,30 +242,35 @@ const PatientsTable: FC = (): JSX.Element => {
                   <InputController
                     fieldType="text"
                     controllerName="dos"
-                    controllerLabel={DATE_OF_SERVICE}
                     clearable={!!dos}
-                    handleClearField={handleClearField}
                     placeholder={US_DATE_FORMAT}
+                    controllerLabel={DATE_OF_SERVICE}
+                    handleClearField={handleClearField}
+                    onChange={() => dispatch({ type: ActionType.SET_PAGE, page: 1 })}
                   />
                 </Grid>
 
                 {(isSuper || isPracticeUser) &&
                   <Grid item md={3} sm={12} xs={12}>
                     <FacilitySelector
+                      addEmpty
                       label={LOCATION}
                       name="location"
-                      addEmpty
+                      onSelect={() => dispatch({ type: ActionType.SET_PAGE, page: 1 })}
                     />
                   </Grid>
                 }
 
                 <Grid item md={3} sm={12} xs={12}>
-                  <DoctorSelector
-                    label={PROVIDER}
-                    name="provider"
-                    shouldOmitFacilityId
-                    addEmpty
-                  />
+                  {!(isDoctor || isRegularUser) &&
+                    <DoctorSelector
+                      addEmpty
+                      name="provider"
+                      label={PROVIDER}
+                      shouldOmitFacilityId
+                      onSelect={() => dispatch({ type: ActionType.SET_PAGE, page: 1 })}
+                    />
+                  }
                 </Grid>
 
                 <Grid item md={(isSuper || isPracticeUser) ? 12 : 3} sm={12} xs={12}>
@@ -271,7 +286,7 @@ const PatientsTable: FC = (): JSX.Element => {
         </Collapse>
 
         <Box className="table-overflow" mt={4}>
-          <Table aria-label="customized table">
+          <Table aria-label="customized table" className={classes.table}>
             <TableHead>
               <TableRow>
                 {renderTh(PRN)}
@@ -308,7 +323,7 @@ const PatientsTable: FC = (): JSX.Element => {
                       <TableCell scope="row"> {`${firstName} ${lastName}`}</TableCell>
                       <TableCell scope="row">{email}</TableCell>
                       <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
-                      <TableCell scope="row">{dob && getTimestampsForDob(dob)}</TableCell>
+                      <TableCell scope="row">{!!dob && dobDateFormat(dob)}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                           <Link to={`${PATIENTS_ROUTE}/${id}`} className={canUpdate ? '' : 'disable-icon'}>

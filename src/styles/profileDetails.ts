@@ -1,5 +1,5 @@
 import { makeStyles, createStyles } from "@material-ui/core";
-import { BLACK_ONE, BLACK_THREE, BLUE_SEVEN, GREY_SEVEN, GREY_THREE, theme, WHITE, WHITE_SIX } from "../theme";
+import { BLACK_ONE, BLACK_THREE, BLUE_FOUR, BLUE_SEVEN, GRAY_THREE, GREEN, GREY_SEVEN, GREY_THREE, RED, RED_TWO, theme, WHITE, WHITE_SIX } from "../theme";
 
 export const useProfileDetailsStyles = makeStyles(() =>
   createStyles({
@@ -29,6 +29,11 @@ export const useProfileDetailsStyles = makeStyles(() =>
 
     profileDetailsContainer: {
       maxHeight: 'calc(100vh - 175px)',
+      [theme.breakpoints.down('xs')]: {
+        "& .MuiBox-root-1825": {
+          flexDirection: 'column'
+        }
+      }
     },
 
     profileCard: {
@@ -36,7 +41,10 @@ export const useProfileDetailsStyles = makeStyles(() =>
       padding: 20,
       background: WHITE,
       borderRadius: 12,
-      display: 'flex',
+
+      [theme.breakpoints.down('xs')]: {
+        flexDirection: 'column'
+      }
     },
 
     patientProfileCard: {
@@ -65,7 +73,6 @@ export const useProfileDetailsStyles = makeStyles(() =>
       fontSize: 19,
       fontWeight: 700,
       color: BLACK_ONE,
-      textTransform: 'capitalize',
 
       "& > svg": {
         marginLeft: 10,
@@ -90,6 +97,14 @@ export const useProfileDetailsStyles = makeStyles(() =>
       width: '25%',
       fontSize: 14,
       color: GREY_SEVEN,
+
+      [theme.breakpoints.down('md')]: {
+        width: '50%',
+      },
+
+      [theme.breakpoints.down('xs')]: {
+        width: '100%',
+      },
     },
 
     profileInfoHeading: {
@@ -185,5 +200,78 @@ export const useProfileDetailsStyles = makeStyles(() =>
         minWidth: 14
       }
     },
+
+    tab: {
+      flexDirection: "row-reverse"
+    },
+
+    cardChart: {
+      backgroundColor: WHITE,
+      boxShadow: '0px 4px 30px rgba(56, 71, 109, 0.09)',
+      borderRadius: 8,
+      position: 'relative',
+    },
+
+    areaBloodPressureChart: {
+      "& .highcharts-container": {
+        transform: 'translate(-60px, 221px) scale(1.5)',
+      },
+    },
+
+    areaChartContainer: {
+      "& div": {
+        "& div": {
+          height: 300,
+        }
+      },
+
+      "& svg": {
+        height: 230,
+        transform: 'scale(1.5)',
+      }
+    },
+
+    bloodPressureMeasurement: {
+      position: 'absolute',
+      left: 30,
+      top: 135,
+      color: RED_TWO,
+      zIndex: 1,
+
+      "& .measure-unit": {
+        fontSize: 14,
+        color: GRAY_THREE,
+      }
+    },
+
+    heartRateMeasurement: {
+      position: 'absolute',
+      left: 30,
+      top: 135,
+      color: BLUE_FOUR,
+      zIndex: 1,
+
+      "& .measure-unit": {
+        fontSize: 14,
+        color: GRAY_THREE,
+        marginLeft: 10,
+      }
+    },
+
+    measureFrequency: {
+      fontStyle: 'normal',
+      color: WHITE,
+      padding: '4px 8px 4px 8px',
+      borderRadius: 4,
+    },
+
+    primary: {
+      backgroundColor: GREEN,
+    },
+
+    dangerBg: {
+      backgroundColor: RED,
+    },
+    
   })
 );

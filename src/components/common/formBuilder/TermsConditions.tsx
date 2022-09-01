@@ -1,6 +1,6 @@
 //packages block
 import { useFormContext } from "react-hook-form";
-import { FC, useCallback, useEffect } from "react";
+import { FC, Fragment, useCallback, useEffect } from "react";
 import { Box, Grid, Typography } from "@material-ui/core"
 //components
 import Signature from '../signature'
@@ -13,7 +13,8 @@ import { AgreementsPayload, useFetchAllAgreementsLazyQuery } from "../../../gene
 
 const TermsConditions: FC<FieldComponentProps> = ({ item, state, dispatcher }): JSX.Element => {
   const { label, fieldId } = item
-  const { isSignature = false, agreements = [], facilityId } = state || {}
+  const { isSignature = false, agreements = [], facilityId, facilityFieldId } = state || {}
+  const { id } = facilityFieldId || {}
   const { setValue } = useFormContext()
 
   const [getAllAgreements] = useFetchAllAgreementsLazyQuery({
@@ -40,40 +41,41 @@ const TermsConditions: FC<FieldComponentProps> = ({ item, state, dispatcher }): 
       await getAllAgreements({
         variables: {
           agreementPaginationInput: {
-            agreementFacilityId: facilityId,
+            agreementFacilityId: facilityId || id,
             paginationOptions: { limit: PUBLIC_AGREEMENTS_PAGE_LIMIT, page: 1 }
           }
         }
       })
     } catch (error) { }
-  }, [facilityId, getAllAgreements])
+  }, [id, facilityId, getAllAgreements])
 
   const onSignatureEnd = (file: File | null) => setValue('signature', file)
 
   useEffect(() => {
-    facilityId && fetchAllAgreements()
-  }, [facilityId, fetchAllAgreements])
+    (id || facilityId) && fetchAllAgreements()
+  }, [id, facilityId, fetchAllAgreements])
 
-
-  return <Box my={3}>
-    <Box maxHeight={400} pl={2} mb={3} overflow="auto">
+  return <Box>
+    <Box maxHeight={200} px={1.5} mb={3} overflow="auto">
       {agreements?.map((agreement) => {
         const { body } = agreement || {}
-        return (<Box maxHeight={400} pl={2} mb={3} overflow="auto">
+        return (<Fragment>
           {body && <Typography variant="subtitle1" component="p" dangerouslySetInnerHTML={{ __html: body }} ></Typography>}
-        </Box>)
+        </Fragment>)
       })}
-      {isSignature &&
-        <Box width="50%" pb={2}>
-          <Signature onSignatureEnd={onSignatureEnd} controllerName={'signature'} />
-        </Box>
-      }
     </Box>
 
     <Grid container>
       <Grid item xs={12}>
         <CheckboxController controllerName={fieldId} controllerLabel={label} />
       </Grid>
+      {isSignature &&
+        <Grid item xs={12}>
+          <Box width="50%" pb={2}>
+            <Signature onSignatureEnd={onSignatureEnd} controllerName={'signature'} />
+          </Box>
+        </Grid>
+      }
     </Grid>
   </Box>
 }

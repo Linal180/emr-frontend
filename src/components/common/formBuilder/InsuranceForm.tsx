@@ -9,7 +9,7 @@ import InputController from "../../../controller"
 import { requiredLabel } from "../../../utils"
 import { COMPANY_NAME, GROUP_NUMBER, MEMBER_ID } from "../../../constants"
 import { FieldComponentProps, SelectorOption } from "../../../interfacesTypes"
-import { InsurancesPayload, useFetchAllInsurancesLazyQuery } from "../../../generated/graphql"
+import { InsurancesPayload, useFetchAllInsurancesLazyQuery, useGetInsuranceLazyQuery } from "../../../generated/graphql"
 
 const InsuranceComponent: FC<FieldComponentProps> = ({ item }): JSX.Element => {
 
@@ -18,8 +18,9 @@ const InsuranceComponent: FC<FieldComponentProps> = ({ item }): JSX.Element => {
   const [company, setCompany] = useState<SelectorOption>({ id: '', name: "" })
   const [searchQuery, setSearchQuery] = useState('')
 
-  const { control } = useFormContext()
+  const { control, getValues } = useFormContext()
   const { fieldId } = item || {}
+  const companyName = getValues('companyName')
 
   const [fetchAllInsurances] = useFetchAllInsurancesLazyQuery({
     onCompleted: (data) => {
@@ -35,10 +36,26 @@ const InsuranceComponent: FC<FieldComponentProps> = ({ item }): JSX.Element => {
     }
   })
 
+  const [getInsurance] = useGetInsuranceLazyQuery({
+    onCompleted: (data) => {
+      const { getInsurance } = data || {}
+      const { insurance, response } = getInsurance || {}
+      const { status } = response || {}
+      if (status === 200) {
+        const { payerId, payerName, id } = insurance || {}
+        id && setCompany({ id, name: `${payerId} - ${payerName}` })
+      }
+    }
+  })
+
   const getAllInsurances = useCallback(async () => {
     try {
       await fetchAllInsurances({
-        variables: { insuranceInput: { paginationOptions: { limit: 10, page: 1 }, searchString: searchQuery } }
+        variables: {
+          insuranceInput: {
+            paginationOptions: { limit: 10, page: 1 }, searchString: searchQuery.trim()
+          }
+        }
       })
     } catch (error) { }
   }, [fetchAllInsurances, searchQuery])
@@ -48,6 +65,17 @@ const InsuranceComponent: FC<FieldComponentProps> = ({ item }): JSX.Element => {
       getAllInsurances()
     }
   }, [searchQuery, getAllInsurances]);
+
+  const fetchInsurance = useCallback(async () => {
+    try {
+      await getInsurance({ variables: { getInsuranceInput: { id: companyName } } })
+    } catch (error) { }
+  }, [getInsurance, companyName])
+
+  useEffect(() => {
+    companyName && !company?.id && fetchInsurance()
+  }, [companyName, company, fetchInsurance])
+
 
   useMemo(() => {
     if (insurances && insurances?.length > 0) {

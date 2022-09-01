@@ -1,16 +1,18 @@
 // packages block
 import { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 // component block
 import Alert from '../../common/Alert';
 import InputController from '../../../controller';
 import CardComponent from '../../common/CardComponent';
 import ProfileSettingsLayout from '../../common/ProfileSettingsLayout';
-import { Box, Button, CircularProgress, FormControl, Grid, IconButton, Typography, } from '@material-ui/core';
+import {
+  Box, Button, CircularProgress, FormControl, Grid, IconButton, Typography,
+} from '@material-ui/core';
 // constants, history, styling block
 import { AuthContext } from '../../../context';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { InfoSearchIcon } from '../../../assets/svgs';
 import { GRAY_THREE, RED, WHITE } from '../../../theme';
 import { TwoFactorInputProps } from '../../../interfacesTypes';
@@ -21,16 +23,12 @@ import { AntSwitch } from '../../../styles/publicAppointmentStyles/externalPatie
 import {
   TWO_FA_AUTHENTICATION, DISABLED, TWO_FA_AUTHENTICATION_DESCRIPTION, ENTER_PASSWORD,
   TWO_FA_ENABLED_SUCCESSFULLY, SAVE_TEXT, ENABLED, NOT_FOUND_EXCEPTION, VALID_PASSWORD_MESSAGE,
-  TWO_FA_DISABLED_SUCCESSFULLY, ADD_NUM, ADD_PHONE_NUM_DESCRIPTION,
+  TWO_FA_DISABLED_SUCCESSFULLY, ADD_NUM, ADD_PHONE_NUM_DESCRIPTION, SOMETHING_WENT_WRONG,
 } from '../../../constants';
 
 const TwoFAComponent = (): JSX.Element => {
-  const { user, currentDoctor, currentStaff, fetchUser } = useContext(AuthContext)
+  const { user, fetchUser } = useContext(AuthContext)
   const { id, isTwoFactorEnabled: userTwoFactor, phone } = user || {}
-  const { contacts } = currentDoctor || {}
-
-  const { phone: doctorPhone } = contacts?.find(({ primaryContact }) => primaryContact) || {}
-  const { phone: staffPhone } = currentStaff || {}
   const classes = useHeaderStyles();
 
   const [isChecked, setIsChecked] = useState<boolean>(userTwoFactor as boolean);
@@ -66,13 +64,13 @@ const TwoFAComponent = (): JSX.Element => {
 
   const onSubmit: SubmitHandler<TwoFactorInputProps> = async (inputs) => {
     const { password, isTwoFactorEnabled } = inputs;
-    id && await faEnabled({
+    id ? await faEnabled({
       variables: {
         twoFactorInput: {
           isTwoFactorEnabled: isTwoFactorEnabled || false, userId: id, password
         }
       }
-    })
+    }) : Alert.error(SOMETHING_WENT_WRONG)
   }
 
   const toggleHandleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -92,8 +90,9 @@ const TwoFAComponent = (): JSX.Element => {
     <ProfileSettingsLayout>
       <CardComponent cardTitle={TWO_FA_AUTHENTICATION}>
         <Box p={2} mb={2}>
-          {!(phone || doctorPhone || staffPhone) &&
+          {!phone &&
             <Box display="flex" bgcolor={RED} color={WHITE} justifyContent='space-between'
+              className={classes.factorAuthHeader}
               px={2} py={1} mb={1} borderRadius={5}
             >
               <Box display="flex" alignItems='center'>
@@ -109,8 +108,7 @@ const TwoFAComponent = (): JSX.Element => {
               <Button color="primary" variant="contained" component={Link} to={"/profile"}>
                 {ADD_NUM}
               </Button>
-            </Box>
-          }
+            </Box>}
 
           <Typography variant='body2'>{TWO_FA_AUTHENTICATION_DESCRIPTION}</Typography>
 
@@ -152,7 +150,7 @@ const TwoFAComponent = (): JSX.Element => {
               <Box p={1} />
 
               <Button type="submit" variant="contained" color='primary'
-                disabled={!(phone || doctorPhone || staffPhone)}
+                disabled={!phone}
               >
                 {SAVE_TEXT}
 

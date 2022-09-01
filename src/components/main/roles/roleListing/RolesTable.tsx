@@ -3,7 +3,9 @@ import { ChangeEvent, useEffect, useCallback, useContext, Reducer, useReducer } 
 import { pluck } from "underscore";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
-import { Box, Table, TableBody, TableHead, TableRow, TableCell, IconButton } from "@material-ui/core";
+import {
+  Box, Table, TableBody, TableHead, TableRow, TableCell, IconButton
+} from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import Search from "../../../common/Search";
@@ -11,9 +13,9 @@ import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // constant, utils and styles block
+import { getPageNumber, isLast, renderTh } from "../../../../utils";
 import { AuthContext } from "../../../../context";
 import { TrashNewIcon } from "../../../../assets/svgs";
-import { renderTh } from "../../../../utils";
 import { RolesTableProps } from "../../../../interfacesTypes";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import {
@@ -22,7 +24,7 @@ import {
 import { RolesPayload, useFindAllRolesLazyQuery, useRemoveRoleMutation } from "../../../../generated/graphql";
 import {
   NAME, DESCRIPTION, N_A, ROLES_ROUTE, ACTION, CANT_DELETE_ROLE, ROLE, DELETE_ROLE_DESCRIPTION,
-  SYSTEM_ROLES, PAGE_LIMIT
+  SYSTEM_ROLES, EXTENDED_PAGE_LIMIT
 } from "../../../../constants";
 
 const RolesTable = ({ customRole = false }: RolesTableProps) => {
@@ -38,7 +40,7 @@ const RolesTable = ({ customRole = false }: RolesTableProps) => {
   const [findAllRoles, { loading, error }] = useFindAllRolesLazyQuery({
     variables: {
       roleInput: {
-        paginationOptions: { page, limit: PAGE_LIMIT },
+        paginationOptions: { page, limit: EXTENDED_PAGE_LIMIT },
         customRole, roleName: searchQuery
       }
     },
@@ -100,7 +102,12 @@ const RolesTable = ({ customRole = false }: RolesTableProps) => {
             const { message } = response
             message && Alert.success(message);
             dispatch({ type: ActionType.SET_OPEN_MODAL, openModal: false })
-            await findAllRoles();
+
+            if (!!roles && (roles.length > 1 || isLast(roles.length, page))) {
+              await findAllRoles();
+            } else {
+              dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, roles?.length || 0) })
+            }
           }
         }
       } catch (error) { }
@@ -144,7 +151,9 @@ const RolesTable = ({ customRole = false }: RolesTableProps) => {
               {loading ? (
                 <TableRow>
                   <TableCell colSpan={10}>
-                    <TableLoader numberOfRows={customRole ? PAGE_LIMIT : 5} numberOfColumns={customRole ? 3 : 2} />
+                    <TableLoader numberOfRows={EXTENDED_PAGE_LIMIT}
+                      numberOfColumns={customRole ? 3 : 2}
+                    />
                   </TableCell>
                 </TableRow>
               ) : (
@@ -166,7 +175,8 @@ const RolesTable = ({ customRole = false }: RolesTableProps) => {
                             <IconButton
                               color="primary"
                               disabled={!isSuperAdmin}
-                              className={isSuperAdmin ? classes.rolesIconsBackground : classes.rolesIconsBackgroundDisabled}
+                              className={isSuperAdmin ?
+                                classes.rolesIconsBackground : classes.rolesIconsBackgroundDisabled}
                               onClick={() => onDelete(id || '')}>
                               <TrashNewIcon />
                             </IconButton>

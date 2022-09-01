@@ -53,20 +53,6 @@ query FindAllDoctorList($doctorInput: DoctorInput!) {
   }
 }
 
-query FetchAllPatientList($patientInput: PatientInput!) {
-  fetchAllPatients(patientInput: $patientInput) {
-    pagination {
-      totalPages
-    }
-    
-    patients {
-      id
-      lastName
-      firstName
-    }
-  }
-}
-
 query FindAllPatientList($patientInput: PatientInput!) {
   findAllPatient(patientInput: $patientInput) {
     pagination {
@@ -91,6 +77,40 @@ query FindAllServiceList($serviceInput: ServiceInput!) {
       id
       name
       duration
+    }
+  }
+}
+
+query GetCurrentFacility($getFacility: GetFacility!){
+  getFacility(getFacility: $getFacility){
+    facility {
+      id
+      name
+    }
+
+    response{
+      status
+      message
+    }
+  }
+}
+
+query FindAllStaffList($staffInput: StaffInput!) {
+  findAllStaff(staffInput: $staffInput) {
+    pagination {
+      totalCount
+    }
+
+    response {
+      status
+    }
+  }
+}
+
+query FindAllAppointmentList($appointmentInput: AppointmentInput!){
+  findAllAppointments(appointmentInput: $appointmentInput){
+    pagination {
+      totalCount
     }
   }
 }

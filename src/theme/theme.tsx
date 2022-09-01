@@ -3,9 +3,8 @@ import { createTheme } from "@material-ui/core/styles";
 import createBreakpoints from '@material-ui/core/styles/createBreakpoints'
 // constants block
 import {
-  GREEN, BLUE, WHITE, BLACK, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, BLACK_TWO, GRAY_SIX, ORANGE, GREY_ELEVEN, 
-  BLACK_THREE, GRAY_SEVEN, ORANGE_ONE, BLACK_SIX, RED_THREE, RED, INTER, GREY_ONE, GREY_TWO, GREY_THREE, GREY_FOUR, GREY, 
-  BLUE_TWO,
+  GREEN, BLUE, WHITE, BLACK, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, BLACK_TWO, GRAY_SIX, ORANGE, GREY_ELEVEN,
+  BLACK_THREE, GRAY_SEVEN, ORANGE_ONE, BLACK_SIX, RED_THREE, RED, INTER, GREY_ONE, GREY_TWO, GREY_THREE, GREY_FOUR, GREY, BLUE_TWO,
 } from ".";
 
 const breakpoints = createBreakpoints({})
@@ -191,9 +190,9 @@ export const theme = createTheme({
           padding: 20,
         },
 
-        "& .MuiCardContent-root": {
-          padding: '0 0 0 15px'
-        },
+        // "& .MuiCardContent-root": {
+        //   padding: '0 0 0 15px'
+        // },
 
         "& h4": {
           fontWeight: 'bold',
@@ -276,12 +275,17 @@ export const theme = createTheme({
           backgroundColor: GREY_TWO,
           color: WHITE,
         },
+
+        "&.blue-button-New": {
+          backgroundColor: BLUE,
+          color: WHITE,
+        }
       },
 
       outlined: {
         borderRadius: 6,
-        maxHeight: 40,
-        height: 40,
+        // maxHeight: 40,
+        // height: 40,
         boxShadow: 'none',
         color: BLACK,
 
@@ -307,6 +311,7 @@ export const theme = createTheme({
       label: {
         fontSize: 16,
         fontWeight: 600,
+        flexWrap: 'wrap',
       },
 
       text: {
@@ -437,7 +442,8 @@ export const theme = createTheme({
       root: {
         background: WHITE,
         borderRadius: 12,
-        boxShadow: 'none'
+        boxShadow: 'none',
+        overflow: 'visible',
       }
     },
 

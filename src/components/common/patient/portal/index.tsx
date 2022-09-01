@@ -2,9 +2,7 @@
 // packages block
 import { FC, useContext } from "react";
 import { useParams } from "react-router";
-import {
-  Box, Table, TableBody, TableHead, TableRow, TableCell, Typography, Button, CircularProgress
-} from "@material-ui/core";
+import { Box, Table, TableBody, TableHead, TableRow, Button, CircularProgress } from "@material-ui/core";
 // components block
 import Alert from "../../Alert";
 import Search from "../../Search";
@@ -15,11 +13,10 @@ import { useTableStyles } from "../../../../styles/tableStyles";
 import { ParamsType, PortalTableProps } from "../../../../interfacesTypes";
 import { useSendInviteToPatientMutation } from "../../../../generated/graphql";
 import {
-  EMAIL, ENABLED_BY, ACTIVATED_ON, DISABLED, PORTAL_DUMMY_DATA, REVOKE_ACCESS, ENABLE_ACCESS_PORTAL,
-  DISABLE_ACCESS_PORTAL,
-  NOT_FOUND_EXCEPTION,
-  PATIENT_CANT_BE_INVITED
+  EMAIL, ENABLED_BY, ACTIVATED_ON, DISABLED,  ENABLE_ACCESS_PORTAL,
+  DISABLE_ACCESS_PORTAL,NOT_FOUND_EXCEPTION,PATIENT_CANT_BE_INVITED
 } from "../../../../constants";
+import NoDataFoundComponent from "../../NoDataFoundComponent";
 
 const PortalTable: FC<PortalTableProps> = ({ inviteAccepted }): JSX.Element => {
   const classes = useTableStyles();
@@ -88,26 +85,12 @@ const PortalTable: FC<PortalTableProps> = ({ inviteAccepted }): JSX.Element => {
           </TableHead>
 
           <TableBody>
-            {PORTAL_DUMMY_DATA.map(({
-              email, enabledByName, enabledByDate, activatedOn, disabledName, disabledDate,
-            }) =>
-              <TableRow>
-                <TableCell scope="row">{email}</TableCell>
-                <TableCell scope="row">
-                  <Typography variant="body2">{enabledByName}</Typography>
-                  <Typography variant="body1">{enabledByDate}</Typography>
-                </TableCell>
-
-                <TableCell scope="row">{activatedOn}</TableCell>
-                <TableCell scope="row">
-                  <Button variant="text" color="secondary" className="danger">{REVOKE_ACCESS}</Button>
-                  <Typography variant="body2">{disabledName}</Typography>
-                  <Typography variant="body1">{disabledDate}</Typography>
-                </TableCell>
-              </TableRow>
-            )}
           </TableBody>
         </Table>
+
+        <Box display="flex" justifyContent="center" pb={12} pt={5}>
+          <NoDataFoundComponent />
+        </Box>
       </Box>
     </Box>
   );

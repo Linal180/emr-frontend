@@ -6,11 +6,7 @@ import history from "../../history";
 import { BreadcrumbProps } from '../../interfacesTypes'
 
 const Breadcrumb: FC<BreadcrumbProps> = ({ path }) => {
-  const handleClick = (link: string) => {
-    if (link) {
-      history.push(link);
-    }
-  };
+  const handleClick = (link: string) => link && history.push(link);
 
   return (
     <Breadcrumbs aria-label="breadcrumb">
@@ -18,7 +14,10 @@ const Breadcrumb: FC<BreadcrumbProps> = ({ path }) => {
         const { text, link } = bread;
 
         return (
-          <Link color="textPrimary" key={`${text}-${index}`} className="pointer-cursor" onClick={() => handleClick(link)}>
+          <Link color="textPrimary" key={`${text}-${index}`}
+            className={!!link ? 'pointer-cursor' : 'not-link'}
+            onClick={() => handleClick(link)}
+          >
             {text}
           </Link>
         )

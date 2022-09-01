@@ -1,28 +1,32 @@
-//packages import
-import { Box, Button, Checkbox, FormControl, FormControlLabel, FormGroup, Grid, Typography } from "@material-ui/core"
-import { CheckBox as CheckBoxIcon } from '@material-ui/icons'
-import { FC, useState } from "react"
+// packages import
+import { FC, Reducer, useReducer } from "react"
 import { useFormContext } from "react-hook-form"
+import { CheckBox as CheckBoxIcon } from '@material-ui/icons'
 import {
-  ADDRESS, ADDRESS_2, CITY, CONTACT_INFORMATION, COUNTRY, DONT_WANT_TO_SHARE_EMAIL, EMAIL, HOME_PHONE, MAPPED_COUNTRIES, MAPPED_STATES, MOBILE_PHONE, STATE, VERIFIED,
-  VERIFY_ADDRESS, ZIP_CODE, ZIP_CODE_AND_CITY
-} from "../../../../constants"
-import InputController from "../../../../controller"
-import { PatientCardsProps, SmartyUserData } from "../../../../interfacesTypes"
-//constants, interfaces and utils import
-import { ActionType } from "../../../../reducers/patientReducer"
-//components import
+  Box, Button, Checkbox, FormControl, FormControlLabel, FormGroup, Grid, Typography
+} from "@material-ui/core"
+// components import
 import Alert from "../../../common/Alert"
-import CardComponent from "../../../common/CardComponent"
-import PhoneField from "../../../common/PhoneInput"
 import Selector from "../../../common/Selector"
+import PhoneField from "../../../common/PhoneInput"
+import InputController from "../../../../controller"
+import SmartyModal from "../../../common/SmartyModal"
+import CardComponent from "../../../common/CardComponent"
 import { verifyAddress } from "../../../common/smartyAddress"
-import SmartyModal from "../../../common/SmartyModal";
+import CountryController from "../../../../controller/CountryController"
+// constants, interfaces and utils import
+import { Action, ActionType, patientReducer, initialState, State } from "../../../../reducers/patientReducer"
+import { PatientCardsProps } from "../../../../interfacesTypes"
+import {
+  ADDRESS_ONE, ADDRESS_TWO, CITY, CONTACT_INFORMATION, DONT_WANT_TO_SHARE_EMAIL, EMAIL, HOME_PHONE,
+  MAPPED_STATES, MOBILE_PHONE, STATE, VERIFIED, VERIFY_ADDRESS, ZIP_CODE, ZIP_CODE_AND_CITY
+} from "../../../../constants"
 
 const ContactInfoCard: FC<PatientCardsProps> = ({
   getPatientLoading, state, dispatch, shouldDisableEdit, disableSubmit, isEdit
 }) => {
-  const [userData, setUserData] = useState<SmartyUserData>({ street: '', address: '' })
+  const [{ userData }, patientDispatch] =
+    useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const methods = useFormContext()
   const { watch, setValue } = methods;
 
@@ -35,8 +39,14 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
     if (basicZipCode && basicCity) {
       const { id } = basicState
       const data = await verifyAddress(basicZipCode, basicCity, id, basicAddress, basicAddress2);
-      setUserData((prev) =>
-        ({ ...prev, address: `${basicCity}, ${id} ${basicZipCode}`, street: `${basicAddress} ${basicAddress2}` }))
+
+      patientDispatch({
+        type: ActionType.SET_USER_DATA, userData:
+        {
+          ...userData,
+          address: `${basicCity}, ${id} ${basicZipCode}`, street: `${basicAddress} ${basicAddress2}`
+        }
+      })
       const { status, options } = data || {}
 
       dispatch && dispatch({ type: ActionType.SET_DATA, data: status ? options : [] })
@@ -56,19 +66,27 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
     }, 0);
   }
 
-  const handleOptionalEmail = (checked: boolean) =>
+  const handleOptionalEmail = async (checked: boolean) => {
     dispatch && dispatch({ type: ActionType.SET_OPTIONAL_EMAIL, optionalEmail: checked })
+  }
 
   return (
     <>
-      <CardComponent cardTitle={CONTACT_INFORMATION} state={state} saveBtn disableSubmit={disableSubmit} isEdit={isEdit}>
+      <CardComponent
+        // saveBtn
+        // state={state}
+        // isEdit={isEdit}
+        // disableSubmit={disableSubmit}
+        cardTitle={CONTACT_INFORMATION}
+      >
         <Grid container spacing={3}>
           <Grid item md={6} sm={12} xs={12}>
             <InputController
+              isRequired
               disabled={shouldDisableEdit}
               fieldType="text"
               controllerName="basicAddress"
-              controllerLabel={ADDRESS}
+              controllerLabel={ADDRESS_ONE}
               loading={getPatientLoading}
             />
           </Grid>
@@ -78,7 +96,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
               disabled={shouldDisableEdit}
               fieldType="text"
               controllerName="basicAddress2"
-              controllerLabel={ADDRESS_2}
+              controllerLabel={ADDRESS_TWO}
               loading={getPatientLoading}
             />
           </Grid>
@@ -89,6 +107,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
             <Grid container spacing={1} alignItems={'center'}>
               <Grid item md={9} sm={10} xs={10}>
                 <InputController
+                  isRequired
                   disabled={shouldDisableEdit}
                   fieldType="text"
                   controllerName="basicZipCode"
@@ -116,35 +135,30 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
             </Grid>
           </Grid>
 
-          <Grid item lg={2} md={4}>
+          <Grid item lg={2} md={4} sm={12} xs={12}>
             <InputController
-              disabled={shouldDisableEdit}
+              isRequired
               fieldType="text"
-              controllerName="basicCity"
               controllerLabel={CITY}
+              controllerName="basicCity"
               loading={getPatientLoading}
+              disabled={shouldDisableEdit}
             />
           </Grid>
 
-          <Grid item lg={2} md={4}>
+          <Grid item lg={2} md={4} sm={12} xs={12}>
             <Selector
-              disabled={shouldDisableEdit}
-              name="basicState"
+              isRequired
               label={STATE}
-              addEmpty
+              name="basicState"
               options={MAPPED_STATES}
               loading={getPatientLoading}
+              disabled={shouldDisableEdit}
             />
           </Grid>
 
-          <Grid item lg={2} md={4}>
-            <Selector
-              disabled={shouldDisableEdit}
-              name="basicCountry"
-              label={COUNTRY}
-              options={MAPPED_COUNTRIES}
-              loading={getPatientLoading}
-            />
+          <Grid item lg={2} md={4} sm={12} xs={12}>
+            <CountryController loading={getPatientLoading} controllerName="basicCountry" />
           </Grid>
         </Grid>
 
@@ -167,18 +181,21 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
                 </Box>
               </FormGroup>
             </FormControl>
+
             <Grid container spacing={3}>
               <Grid item md={6} sm={12} xs={12}>
 
                 <InputController
                   disabled={shouldDisableEdit}
                   isRequired={!optionalEmail}
-                  fieldType="text"
+                  fieldType="email"
+                  toLowerCase
                   controllerName="basicEmail"
                   controllerLabel={EMAIL}
                   loading={getPatientLoading}
                 />
               </Grid>
+
               <Grid item md={3} sm={12} xs={12}>
                 <PhoneField
                   name="basicPhone"
@@ -198,23 +215,18 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
               </Grid>
             </Grid>
           </Grid>
-
-
-        </Grid>
-
-        <Grid container spacing={3}>
-
         </Grid>
       </CardComponent>
 
       <SmartyModal
         isOpen={addressOpen || false}
+        data={data ?? []}
+        userData={userData}
+        verifiedAddressHandler={verifiedAddressHandler}
         setOpen={(open: boolean) =>
           dispatch && dispatch({ type: ActionType.SET_ADDRESS_OPEN, addressOpen: open })
         }
-        data={data ?? []}
-        userData={userData}
-        verifiedAddressHandler={verifiedAddressHandler} />
+      />
     </>
   )
 }

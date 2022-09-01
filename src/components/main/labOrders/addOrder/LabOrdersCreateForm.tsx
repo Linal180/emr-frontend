@@ -16,9 +16,9 @@ import InputController from '../../../../controller';
 // interfaces, graphql, constants block
 import { LabOrderCreateProps, LabOrdersCreateFormInput, ParamsType } from "../../../../interfacesTypes";
 import {
-  ADD_ANOTHER_TEST, APPOINTMENT_TEXT, CREATE_LAB_ORDER,
-  DIAGNOSES, EMPTY_MULTISELECT_OPTION, EMPTY_OPTION, LAB_TEST_STATUSES, NOT_FOUND_EXCEPTION, REMOVE_TEST, SAVE_TEXT, STATUS,
-  TEST, TEST_DATE, TEST_FIELD_INITIAL_VALUES, TEST_NOTES, TEST_TIME, USER_NOT_FOUND_EXCEPTION_MESSAGE
+  ADD_ANOTHER_TEST, APPOINTMENT_TEXT, CREATE_LAB_ORDER, DIAGNOSES, EMPTY_MULTISELECT_OPTION, EMPTY_OPTION, 
+  LAB_TEST_STATUSES, NOT_FOUND_EXCEPTION, REMOVE_TEST, SAVE_TEXT, STATUS, TEST, TEST_DATE, TEST_FIELD_INITIAL_VALUES, 
+  TEST_NOTES, TEST_TIME, USER_NOT_FOUND_EXCEPTION_MESSAGE
 } from '../../../../constants';
 import { createLabOrdersSchema } from '../../../../validationSchemas';
 import { LabTestStatus, useCreateLabTestMutation } from '../../../../generated/graphql';
@@ -29,19 +29,19 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleS
   const methods = useForm<LabOrdersCreateFormInput>({
     mode: "all",
     defaultValues: {
-      testField: [TEST_FIELD_INITIAL_VALUES],
+      testFieldValues: [TEST_FIELD_INITIAL_VALUES],
       appointment: EMPTY_OPTION,
       diagnosesIds: [EMPTY_MULTISELECT_OPTION],
       labTestStatus: setRecord(LabTestStatus.OrderEntered, LabTestStatus.OrderEntered)
     },
-    resolver: yupResolver(createLabOrdersSchema)
+    resolver: yupResolver(createLabOrdersSchema())
   });
 
   const { id: patientId } = useParams<ParamsType>()
 
   const { control, handleSubmit, reset } = methods
 
-  const { fields: testFields, remove: removeTestField, append: appendTestField } = useFieldArray({ control: control, name: "testField" });
+  const { fields: testFields, remove: removeTestField, append: appendTestField } = useFieldArray({ control: control, name: "testFieldValues" });
 
   const [createLabTest, { loading }] = useCreateLabTestMutation({
     onError({ message }) {
@@ -66,7 +66,7 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleS
   const onSubmit: SubmitHandler<LabOrdersCreateFormInput> = async (values) => {
     const orderNumber = generateString()
     const accessionNumber = generateString(6)
-    const { appointment, labTestStatus, diagnosesIds, testField } = values
+    const { appointment, labTestStatus, diagnosesIds, testFieldValues } = values
     let appointmentId = ''
     if (appointmentInfo) {
       appointmentId = appointmentInfo.id
@@ -76,8 +76,8 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleS
 
     const { id: testStatus } = labTestStatus ?? {}
 
-    testField.forEach(async (testFieldValues) => {
-      const { test, testDate, testNotes, testTime, specimenTypeField } = testFieldValues
+    testFieldValues.forEach(async (testFieldValue) => {
+      const { test, testDate, testNotes, testTime, specimenTypeField } = testFieldValue
 
       const createLabTestItemInput = {
         patientId: patientId ?? '',
@@ -126,18 +126,17 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleS
     })
   }
 
-
   return (
     <>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Card className='overflowVisible'>
-            <Box p={2}>
+          <Card className='overflow-visible'>
+            <Box px={2}>
               <Box py={2} mb={4} display='flex' justifyContent='space-between' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`}>
                 <Typography variant='h4'>{CREATE_LAB_ORDER}</Typography>
               </Box>
 
-              <Grid container spacing={3}>
+              <Grid container spacing={2}>
                 <Grid item md={4} sm={12} xs={12}>
                   {appointmentInfo ? renderItem(APPOINTMENT_TEXT, appointmentInfo.name) :
                     <AppointmentSelector
@@ -177,7 +176,7 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleS
             return (
               <Box mb={4}>
                 <Card>
-                  <Box p={2}>
+                  <Box px={2}>
                     <Box py={2} mb={5} display='flex' justifyContent='space-between' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`}>
                       <Typography variant='h4'>{TEST}</Typography>
 
@@ -186,7 +185,7 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleS
                       </Button>}
                     </Box>
 
-                    <Grid container spacing={3}>
+                    <Grid container spacing={2}>
                       <Grid item md={6} sm={12} xs={12}>
                         <TestsSelector
                           isRequired
@@ -226,15 +225,17 @@ const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleS
             )
           })}
 
-          <Box display='flex' justifyContent='flex-end'>
+          <Box px={2} display='flex' justifyContent='flex-end'>
             <Button onClick={() => appendTestField(TEST_FIELD_INITIAL_VALUES)} type="submit" variant="outlined" color="secondary">
               {ADD_ANOTHER_TEST}
             </Button>
           </Box>
 
-          <Button type="submit" variant="contained" color="primary" disabled={loading}>
-            {SAVE_TEXT} {loading && <CircularProgress size={20} color="inherit" />}
-          </Button>
+          <Box px={2}>
+            <Button type="submit" variant="contained" color="primary" size='large' disabled={loading}>
+              {SAVE_TEXT} {loading && <CircularProgress size={20} color="inherit" />}
+            </Button>
+          </Box>
         </form>
       </FormProvider>
     </>

@@ -1,15 +1,16 @@
 // packages block
-import { FC, useReducer, Reducer, useCallback, useEffect } from "react";
+import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
+import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { renderFacilities, requiredLabel, sortingValue } from "../../../utils";
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
+import { FacilitiesPayload, useFindAllPublicFacilityLazyQuery } from "../../../generated/graphql";
 import { FormBuilderFacilitySelectorProps } from "../../../interfacesTypes";
-import { FacilitiesPayload, useFindAllFacilityListLazyQuery } from "../../../generated/graphql";
-import { facilityReducer, Action, initialState, State, ActionType } from "../../../reducers/facilityReducer";
-import { ActionType as FormActionType } from '../../../reducers/externalFormBuilderReducer'
+import { ActionType as FormActionType } from '../../../reducers/externalFormBuilderReducer';
+import { Action, ActionType, facilityReducer, initialState, State } from "../../../reducers/facilityReducer";
+import { renderFacilities, requiredLabel, sortingValue } from "../../../utils";
+import AutocompleteTextField from "../AutocompleteTextField";
 
 const FacilitySelector: FC<FormBuilderFacilitySelectorProps> = ({
   name, label, disabled, isRequired, addEmpty, practiceId, dispatcher, state: formState
@@ -20,7 +21,7 @@ const FacilitySelector: FC<FormBuilderFacilitySelectorProps> = ({
   const { facilityFieldId } = formState || {}
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderFacilities(facilities ?? [])] : [...renderFacilities(facilities ?? [])]
 
-  const [findAllFacility] = useFindAllFacilityListLazyQuery({
+  const [findAllFacility, { loading: facilitiesLoading }] = useFindAllPublicFacilityLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -29,10 +30,10 @@ const FacilitySelector: FC<FormBuilderFacilitySelectorProps> = ({
     },
 
     onCompleted(data) {
-      const { findAllFacility } = data || {};
+      const { findAllPublicFacility } = data || {};
 
-      if (findAllFacility) {
-        const { pagination, facilities } = findAllFacility
+      if (findAllPublicFacility) {
+        const { pagination, facilities } = findAllPublicFacility
         facilities && dispatch({ type: ActionType.SET_FACILITIES, facilities: facilities as FacilitiesPayload['facilities'] })
 
         if (pagination) {
@@ -68,8 +69,8 @@ const FacilitySelector: FC<FormBuilderFacilitySelectorProps> = ({
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
-          options={sortingValue(updatedOptions) ?? []}
-          value={facilityFieldId}
+            options={sortingValue(updatedOptions) ?? []}
+            value={facilityFieldId}
             disabled={disabled}
             disableClearable
             getOptionLabel={(option) => option.name || ""}
@@ -81,12 +82,11 @@ const FacilitySelector: FC<FormBuilderFacilitySelectorProps> = ({
                     {isRequired ? requiredLabel(label) : label}
                   </InputLabel>
                 </Box>
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  error={invalid}
-                  className="selectorClass"
+                <AutocompleteTextField
+                  invalid={invalid}
                   onChange={(event) => dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: event.target.value })}
+                  params={params}
+                  loading={facilitiesLoading}
                 />
                 <FormHelperText>{message}</FormHelperText>
               </FormControl>

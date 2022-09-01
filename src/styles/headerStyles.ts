@@ -1,5 +1,7 @@
 import { makeStyles } from "@material-ui/core";
-import { BLACK, BLACK_THREE, BLUE, GREY_ELEVEN, GREY_SEVEN, WHITE, WHITE_FOUR, GRAY_SIX,BLUE_ONE  } from "../theme";
+import {
+  BLACK, BLACK_THREE, BLUE, GREY_ELEVEN, GREY_SEVEN, WHITE, WHITE_FOUR, GRAY_SIX, BLUE_ONE
+} from "../theme";
 
 export const useHeaderStyles = makeStyles((theme) => ({
   menuButton: {
@@ -35,6 +37,10 @@ export const useHeaderStyles = makeStyles((theme) => ({
     "& .active": {
       borderBottom: `2px solid ${BLUE}`,
     },
+
+    "& .MuiButton-root": {
+      minWidth: 'auto',
+    }
   },
 
   menuItem: {
@@ -78,8 +84,8 @@ export const useHeaderStyles = makeStyles((theme) => ({
 
     "& .MuiTypography-root": {
       justifyContent: 'flex-start !important',
-    textAlign: 'start !important',
-    margin: '0px !important',
+      textAlign: 'start !important',
+      margin: '0px !important',
     },
 
     "& .MuiIconButton-root": {
@@ -88,6 +94,11 @@ export const useHeaderStyles = makeStyles((theme) => ({
 
     "& .active": {
       borderBottom: `2px solid ${BLUE} !important`,
+    },
+
+    "& .MuiButton-root": {
+      maxWidth: "100%",
+      width: 30,
     },
   },
 
@@ -130,8 +141,6 @@ export const useHeaderStyles = makeStyles((theme) => ({
   profileItemName: {
     "& .MuiTypography-root": {
       minWidth: 30,
-      margin: 0,
-      color: BLACK,
     },
   },
 
@@ -150,10 +159,11 @@ export const useHeaderStyles = makeStyles((theme) => ({
   sidebarMenu: {
     "& .MuiListItem-root": {
       color: BLACK_THREE,
+      whiteSpace : 'normal'
     },
   },
 
-  toggleContainer: {    
+  toggleContainer: {
     "& .toggle-main": {
       cursor: 'pointer',
       display: 'flex',
@@ -227,5 +237,20 @@ export const useHeaderStyles = makeStyles((theme) => ({
       textDecoration: 'underline',
       color: BLUE,
     }
-  }
+  },
+
+  factorAuthHeader: {
+    [theme.breakpoints.down("sm")]: {
+      flexDirection: 'column'
+    },
+    "& h4": {
+      marginTop: '10px'
+    }
+  },
+
+  practiceLogo: {
+    objectFit:'contain',
+    width:'100%',
+    height:'100%',
+  },
 }));

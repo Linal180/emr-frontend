@@ -53,6 +53,9 @@ query findAllForms($formInput: FormInput!) {
               isMultiSelect
               apiCall
               tableContactType
+              regex
+              futureEnable
+              pastEnable
 
               options {
                 name
@@ -100,11 +103,13 @@ query getForm($getForm: GetForm!) {
       layout {
         tabs {
           id
+          tabId
           name
           sections {
             id
             col
             name
+            sectionId
 
             fields {
               label
@@ -123,6 +128,9 @@ query getForm($getForm: GetForm!) {
               isMultiSelect
               tableContactType
               apiCall
+              regex
+              futureEnable
+              pastEnable
 
               options {
                 name
@@ -168,11 +176,13 @@ query getPublicForm($getForm: GetForm!) {
         tabs {
           id
           name
+          tabId
 
           sections {
             id
             col
             name
+            sectionId
 
             fields {
               label
@@ -191,6 +201,9 @@ query getPublicForm($getForm: GetForm!) {
               isMultiSelect
               apiCall
               tableContactType
+              regex
+              futureEnable
+              pastEnable
 
               options {
                 name
@@ -266,6 +279,10 @@ mutation saveUserFormValues($createUserFormInput: CreateUserFormInput!) {
 
     userForm {
       id
+
+      form {
+        type
+      }
     }
 
     appointment {
@@ -297,6 +314,26 @@ mutation CreateFormTemplate($createFormInput: CreateFormInput!) {
 
     form {
       id
+    }
+  }
+}
+
+query FindAllPublicFacility($facilityInput: FacilityInput!) {
+  findAllPublicFacility(facilityInput: $facilityInput) {
+    facilities {
+      id
+      name
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+
+    response {
+      error
+      status
+      message
     }
   }
 }

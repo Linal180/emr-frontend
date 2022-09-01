@@ -6,10 +6,10 @@ import { Box, FormControl, FormHelperText, InputLabel } from '@material-ui/core'
 import { getUserFormDefaultValue } from '../../utils';
 import { useFormStyles } from '../../styles/formsStyles';
 import { FieldComponentProps } from '../../interfacesTypes';
-import { FormBuilderApiSelector, FormBuilderPaymentTypes } from '../../constants';
+import { ATTACHMENT_TITLES, FormBuilderApiSelector, FormBuilderPaymentTypes } from '../../constants';
 //component
 import { FieldRenderer } from './FieldRenderer'
-import PaymentForm from './formBuilder/PaymentForm'
+// import PaymentForm from './formBuilder/PaymentForm'
 import ConsentForm from './formBuilder/ConsentForm';
 import ContractForm from "./formBuilder/ContractForm"
 import InsuranceForm from './formBuilder/InsuranceForm'
@@ -29,7 +29,7 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
   const classes = useFormStyles();
   //constants
   const { required, label, fieldId, type, isMultiSelect, apiCall, defaultValue } = item;
-  const { facilityFieldId, paymentType } = state || {}
+  const { facilityFieldId, paymentType, drivingLicense1, drivingLicense2, insuranceCard1, insuranceCard2 } = state || {}
   const { id: facilityField } = facilityFieldId || {}
 
   const getPaymentComponent = (value: string) => {
@@ -40,7 +40,8 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
       case FormBuilderPaymentTypes.CONTRACT:
         return <ContractForm />
       case FormBuilderPaymentTypes.NO_INSURANCE:
-        return <PaymentForm dispatcher={dispatcher} state={state} />
+        // return <PaymentForm dispatcher={dispatcher} state={state} />
+        return <></>
       default:
         return <></>
     }
@@ -50,7 +51,7 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
     switch (apiCall) {
       case FormBuilderApiSelector.PRACTICE_FACILITIES:
         return <FacilitySelector
-          isRequired={required || true}
+          isRequired={required}
           practiceId={practiceId || ''}
           dispatcher={dispatcher}
           name={fieldId}
@@ -61,7 +62,7 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
 
       case FormBuilderApiSelector.SERVICE_SELECT:
         return <ServiceSelector
-          isRequired={required || true}
+          isRequired={required}
           facilityId={facilityField || facilityId || ''}
           name={fieldId}
           label={label}
@@ -75,7 +76,7 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
       case FormBuilderApiSelector.FACILITY_PROVIDERS:
         return <ProviderSelector
           facilityId={facilityField || facilityId || ""}
-          isRequired={required || true}
+          isRequired={required}
           name={fieldId}
           label={label}
           formDispatch={dispatcher}
@@ -83,16 +84,45 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
           addEmpty
         />
 
-      case FormBuilderApiSelector.DRIVING_LICENSE:
+      case FormBuilderApiSelector.DRIVING_LICENSE_FRONT:
         return <DocumentsForm
           item={item}
+          state={state}
+          isCreating={isCreating}
           dispatcher={dispatcher}
-          state={state} />
+          documentAttachment={drivingLicense1}
+          documentType={ATTACHMENT_TITLES.DrivingLicense1}
+        />
 
-      case FormBuilderApiSelector.INSURANCE_CARD:
+      case FormBuilderApiSelector.DRIVING_LICENSE_BACK:
         return <DocumentsForm
           item={item}
-          dispatcher={dispatcher} state={state} />
+          state={state}
+          dispatcher={dispatcher}
+          isCreating={isCreating}
+          documentAttachment={drivingLicense2}
+          documentType={ATTACHMENT_TITLES.DrivingLicense2}
+        />
+
+      case FormBuilderApiSelector.INSURANCE_CARD_FRONT:
+        return <DocumentsForm
+          item={item}
+          state={state}
+          isCreating={isCreating}
+          dispatcher={dispatcher}
+          documentAttachment={insuranceCard1}
+          documentType={ATTACHMENT_TITLES.InsuranceCard1}
+        />
+
+      case FormBuilderApiSelector.INSURANCE_CARD_BACK:
+        return <DocumentsForm
+          item={item}
+          state={state}
+          isCreating={isCreating}
+          dispatcher={dispatcher}
+          documentAttachment={insuranceCard2}
+          documentType={ATTACHMENT_TITLES.InsuranceCard2}
+        />
 
       case FormBuilderApiSelector.PAYMENT_TYPE:
         return <>
@@ -115,7 +145,7 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
           name={fieldId}
           control={control}
           defaultValue={getUserFormDefaultValue(type, isMultiSelect, defaultValue)}
-          render={({ field, fieldState }) => {
+          render={({ field }) => {
             return (
               <FormControl fullWidth margin="normal">
                 <InputLabel shrink htmlFor={fieldId} className={classes.detailTooltipBox}>
@@ -129,14 +159,12 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
     }
   }
 
-
-
   return (
     <Controller
       rules={{ required: required }}
       name={fieldId}
       control={control}
-      defaultValue={getUserFormDefaultValue(type, isMultiSelect)}
+      defaultValue={getUserFormDefaultValue(type, isMultiSelect, defaultValue)}
       render={({ field, fieldState }) => {
         const { invalid, error: { message } = {} } = fieldState
         return (

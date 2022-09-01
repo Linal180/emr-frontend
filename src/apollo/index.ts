@@ -1,12 +1,14 @@
 /*
   1. Creating connection with GraphQL
   2. Handling and showing GraphQL and network errors.
-*/
+  */
 
 // packages block
 import dotenv from 'dotenv';
 import { onError } from "@apollo/client/link/error";
-import { ApolloClient, InMemoryCache, ApolloLink, HttpLink, from, DefaultOptions } from "@apollo/client";
+import {
+  ApolloClient, InMemoryCache, ApolloLink, HttpLink, from, DefaultOptions, Operation, NextLink
+} from "@apollo/client";
 // components block
 import Alert from "../components/common/Alert";
 // utils and constants block
@@ -15,17 +17,19 @@ import { handleLogout } from "../utils";
 import {
   FORBIDDEN_EXCEPTION, INVALID_OR_EXPIRED_TOKEN_MESSAGE, MAINTENANCE_ALERT, MAINTENANCE_ROUTE,
   NOT_FOUND_EXCEPTION, PRECONDITION_FAILED_EXCEPTION, TOKEN, TOKEN_INVALID, TOKEN_NOT_FOUND,
-  UNAUTHORIZED, FA_TOKEN,
+  UNAUTHORIZED, FA_TOKEN, CONFLICT_EXCEPTION, REMOTE_IP, BAD_REQUEST_EXCEPTION,
 } from "../constants";
 
 dotenv.config()
 
-const authMiddleware = new ApolloLink((operation: any, forward: any) => {
+const authMiddleware = new ApolloLink((operation: Operation, forward: NextLink) => {
   const token = localStorage.getItem(TOKEN) || localStorage.getItem(FA_TOKEN);
+  const pathname = window.location.pathname;
+  const clientRemote = sessionStorage.getItem(REMOTE_IP) || ''
 
   operation.setContext({
     headers: {
-      authorization: `Bearer ${token}`,
+      authorization: `Bearer ${token}`, pathname, clientRemote
     },
   });
 
@@ -33,7 +37,7 @@ const authMiddleware = new ApolloLink((operation: any, forward: any) => {
 });
 
 const httpLink = new HttpLink({
-  uri: `${process.env.REACT_APP_API_BASE_URL}/graphql`,
+  uri: `${process.env.REACT_APP_API_BASE_URL}/graphql`
 });
 
 const errorLink = onError(({ graphQLErrors, networkError, forward, operation }) => {
@@ -42,6 +46,7 @@ const errorLink = onError(({ graphQLErrors, networkError, forward, operation }) 
       ({ extensions }) => {
         if (extensions) {
           const { exception } = extensions;
+
 
           if (exception) {
             const { response } = exception;
@@ -57,9 +62,15 @@ const errorLink = onError(({ graphQLErrors, networkError, forward, operation }) 
               }
 
               if (errorResponse) {
-                const { error: responseError, message } = errorResponse;
-
-                if (message && message !== NOT_FOUND_EXCEPTION && message !== FORBIDDEN_EXCEPTION) {
+                const { error: responseError, message, name: errorName } = errorResponse;
+                if (errorName === BAD_REQUEST_EXCEPTION || errorName === 'InternalServerErrorException') {
+                }
+                else if (
+                  message && message !== NOT_FOUND_EXCEPTION
+                  && message !== FORBIDDEN_EXCEPTION
+                  && message !== CONFLICT_EXCEPTION
+                  && message !== PRECONDITION_FAILED_EXCEPTION
+                ) {
                   Alert.error(message)
                 } else if (
                   responseError
@@ -72,7 +83,7 @@ const errorLink = onError(({ graphQLErrors, networkError, forward, operation }) 
             }
           }
         }
-        
+
         return forward(operation);
       }
     );

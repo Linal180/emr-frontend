@@ -1,43 +1,52 @@
 // packages block
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import SignatureCanvas from 'react-signature-canvas';
-import { Box, Button, CircularProgress, Collapse, Grid, MenuItem, Typography } from '@material-ui/core';
+import {
+  Box, Button, CircularProgress, Collapse, Grid, MenuItem, Typography
+} from '@material-ui/core';
 // component block
 import Alert from '../../common/Alert';
 import CardComponent from '../../common/CardComponent';
+import Loader from '../../common/Loader';
 // constants, history, styling block
 import history from '../../../history';
 import { AuthContext } from '../../../context';
 import { WHITE, WHITE_FOUR } from '../../../theme';
 import { SettingsIcon, ShieldIcon } from '../../../assets/svgs';
 import { useHeaderStyles } from " ../../../src/styles/headerStyles";
-import { dataURLtoFile, getToken, isOnlyDoctor } from '../../../utils';
+import { dataURLtoFile, getAppointmentDateTime, getToken, isOnlyDoctor } from '../../../utils';
 import {
   AttachmentPayload, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery
 } from '../../../generated/graphql';
 import {
   CLEAR_TEXT, GENERAL, PROFILE_GENERAL_MENU_ITEMS, PROFILE_SECURITY_MENU_ITEMS, SAVE_TEXT, SECURITY,
-  SIGNATURE_TEXT, USER_SETTINGS, ATTACHMENT_TITLES, ADD_SIGNATURE, DASHBOARD_ROUTE, UPDATED_ON, DRAW_SIGNATURE,
+  SIGNATURE_TEXT, USER_SETTINGS, ATTACHMENT_TITLES, ADD_SIGNATURE, DASHBOARD_ROUTE, UPDATED_ON,
+  DRAW_SIGNATURE, PAGE_LIMIT, SOMETHING_WENT_WRONG,
 } from '../../../constants';
 
 const SignatureComponent = (): JSX.Element => {
-  const { currentUser, user } = useContext(AuthContext);
+  const { currentUser, user, fetchUser } = useContext(AuthContext);
   const { id, attachments } = currentUser || {}
   const { roles } = user || {}
+
   const userType = currentUser?.__typename
   const [signAttachment, setSignAttachment] = useState<AttachmentPayload['attachment']>(
     attachments?.filter(attachment =>
       attachment.title === ATTACHMENT_TITLES.Signature)[0]
   )
+
+  const { createdAt } = signAttachment || {}
   const [error, setError] = useState(false)
   const classes = useHeaderStyles();
   let data = ''
   let signCanvas = useRef<any>({});
+
   const [open, setOpen] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [signatureUrl, setSignatureUrl] = useState<string>('')
+
   const token = getToken();
   let moduleRoute = "";
 
@@ -103,6 +112,7 @@ const SignatureComponent = (): JSX.Element => {
     setLoading(true)
     const { id: attachmentId } = signAttachment || {}
     const formData = new FormData();
+
     attachmentId && formData.append("id", attachmentId);
     id && formData.append("typeId", id);
     formData.append("title", ATTACHMENT_TITLES.Signature);
@@ -115,15 +125,19 @@ const SignatureComponent = (): JSX.Element => {
         `${process.env.REACT_APP_API_BASE_URL}/${moduleRoute}/upload`,
       formData,
       {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: {
+          Authorization: `Bearer ${token}`,
+          pathname: window.location.pathname
+        }
       }
     ).then(response => {
       const { status } = response
 
-      if (status !== 201) Alert.error("Something went wrong!");
+      if (status !== 201) Alert.error(SOMETHING_WENT_WRONG);
       fetchAttachments()
       setLoading(false)
       setOpen(false)
+      fetchUser()
     }).then(() => { })
       .catch(error => {
         const { response: { data: { error: errorMessage } } } = error || {}
@@ -137,6 +151,7 @@ const SignatureComponent = (): JSX.Element => {
     if (signCanvas && signCanvas?.current) {
       const { toDataURL, isEmpty } = signCanvas.current;
       const empty = isEmpty()
+
       if (empty) setError(true)
       else {
         setError(false)
@@ -151,11 +166,11 @@ const SignatureComponent = (): JSX.Element => {
     signCanvas && signCanvas.current && signCanvas.current.clear && signCanvas.current.clear();
   }
 
-  const fetchAttachments = async () => {
+  const fetchAttachments = useCallback(async () => {
     id && await getAttachments({
-      variables: { getAttachment: { typeId: id } }
+      variables: { getAttachment: { typeId: id, paginationOptions: { limit: PAGE_LIMIT, page: 1 } } }
     })
-  }
+  }, [getAttachments, id])
 
   useEffect(() => {
     if (!isOnlyDoctor(roles)) {
@@ -167,7 +182,15 @@ const SignatureComponent = (): JSX.Element => {
     }
   }, [getAttachment, roles, signAttachment?.id])
 
-  const isLoading = attachmentLoading || attachmentsLoading || loading
+  useEffect(() => {
+    fetchAttachments()
+  }, [fetchAttachments])
+
+  const isLoading = !id || attachmentLoading || attachmentsLoading || loading
+
+  if (isLoading) {
+    return <Loader loading loaderText='Fetching Signature...' />
+  }
 
   return (
     <Box mt={5}>
@@ -222,17 +245,25 @@ const SignatureComponent = (): JSX.Element => {
               }
 
               <Box mb={4} display="flex" justifyContent="space-between" alignItems="center">
-                {!signatureUrl && <Button onClick={() => setOpen(!open)} type="submit" disabled={isLoading} variant="outlined" color='secondary'>
-                  {ADD_SIGNATURE}
+                {!signatureUrl &&
+                  <Button onClick={() => setOpen(!open)} type="submit"
+                    disabled={isLoading} variant="outlined" color='secondary'
+                  >
+                    {ADD_SIGNATURE}
 
-                  {isLoading && <CircularProgress size={20} color="inherit" />}
-                </Button>}
+                    {isLoading && <CircularProgress size={20} color="inherit" />}
+                  </Button>}
 
-                <Box display="flex" alignItems="center">
-                  <Typography variant='h5' color='textPrimary'>{UPDATED_ON}</Typography>
-                  <Box p={1} />
-                  <Typography variant='h6' color='secondary'>12:00</Typography>
-                </Box>
+                {!!signAttachment &&
+                  <Box display="flex" alignItems="center">
+                    <Typography variant='h5' color='textPrimary'>{UPDATED_ON}</Typography>
+                    <Box p={1} />
+
+                    {createdAt &&
+                      <Typography variant='h6' color='secondary'>{getAppointmentDateTime(createdAt)}</Typography>
+                    }
+                  </Box>
+                }
               </Box>
             </Collapse>
 
