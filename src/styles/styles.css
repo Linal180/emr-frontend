@@ -497,6 +497,7 @@ input::-webkit-inner-spin-button {
 .bloodPressure-measurement .measure-unit {
   font-size: 14px;
   color: #464E5F;
+  margin-left: 10px;
 }
 
 .heartRate-measurement {

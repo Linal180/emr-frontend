@@ -8,15 +8,16 @@ import { useParams } from 'react-router';
 import {
   ADDRESS, APPOINTMENT_DATE, BILLING_CODE, DATE_OF_BIRTH, DATE_OF_SERVICE, DATE_OF_VISIT, DIAGNOSIS,
   DIAGNOSIS_CODE, DIS, DX_PTRS, EMAIL, FEE, GROUP_NO, INSURANCE_BALANCE_DUE, INSURANCE_PAID, INSURER,
-  MEMBER_NO, MODS, N_A, OFFICE_EIN, OFFICE_PHONE, PATIENT_ADDRESS, PATIENT_BALANCE_DUE,
-  PATIENT_INFORMATION, PATIENT_NAME, PATIENT_PAID, PATIENT_PHONE, PATIENT_RECEIPT,
-  PATIENT_RECEIPT_AUTHORIZE_TEXT, PATIENT_SIGNATURE, PLACE_OF_SERVICE_CODE, PRACTICE_NAME, PROVIDER_INFORMATION,
-  PROVIDER_NAME, PROVIDER_SIGNATURE, QTY, SIGNATURE_DATE, SUBSCRIBER, TOTAL_CHARGES, TOTAL_DISCOUNTS, TOTAL_TEXT, TREATMENT
+  MEMBER_NO, MODS, N_A, OFFICE_EIN, OFFICE_PHONE, PATIENT_ADDRESS, PATIENT_BALANCE_DUE, PATIENT_INFORMATION, 
+  PATIENT_NAME, PATIENT_PAID, PATIENT_PHONE, PATIENT_RECEIPT, PATIENT_RECEIPT_AUTHORIZE_TEXT, PATIENT_SIGNATURE, 
+  PLACE_OF_SERVICE_CODE, PRACTICE_NAME, PROVIDER_INFORMATION, PROVIDER_NAME, PROVIDER_SIGNATURE, QTY, SIGNATURE_DATE, 
+  SUBSCRIBER, TOTAL_CHARGES, TOTAL_DISCOUNTS, TOTAL_TEXT, TREATMENT
 } from '../../../constants';
 import { CodeType, SuperBillPayload, useGetSuperBillInfoLazyQuery } from '../../../generated/graphql';
 import { ParamsType } from '../../../interfacesTypes';
 import { BLACK_FOUR, GREY_NINE } from '../../../theme';
 import { formatPhone, formatToLeadingCode, getDateWithDayAndTime, getFormatDateString, getNumberFromChar, renderTh } from '../../../utils';
+import NoDataFoundComponent from '../../common/NoDataFoundComponent';
 
 const SuperBillComponent = (): JSX.Element => {
   const { id: appointmentId } = useParams<ParamsType>()
@@ -247,6 +248,12 @@ const SuperBillComponent = (): JSX.Element => {
             </TableBody>
           </Table>
 
+          {(diagnosesCodes?.length === 0) &&
+            <Box display="flex" justifyContent="center" pb={12} pt={5}>
+              <NoDataFoundComponent />
+            </Box>
+          }
+
           <Box mt={5} mb={3} p={2} bgcolor={GREY_NINE}>
             <Typography variant="h4">{TREATMENT}</Typography>
           </Box>
@@ -311,11 +318,17 @@ const SuperBillComponent = (): JSX.Element => {
             </TableBody>
           </Table>
 
+          {(treatmentCodes?.length === 0) &&
+            <Box display="flex" justifyContent="center" pb={12} pt={5}>
+              <NoDataFoundComponent />
+            </Box>
+          }
+
           <Box mt={5} mb={3} p={2} bgcolor={GREY_NINE}>
             <Box display="flex" justifyContent="space-between" flexWrap="wrap"
               pb={2} alignItems="center" maxWidth={600}>
               <Typography variant="h4">{TOTAL_CHARGES}</Typography>
-              <Typography variant="body1">${totalCharges}</Typography>
+              <Typography variant="body1">{totalCharges ? `$${totalCharges}` : `$${0}`}</Typography>
             </Box>
 
             <Box display="flex" justifyContent="space-between" flexWrap="wrap"
@@ -339,7 +352,7 @@ const SuperBillComponent = (): JSX.Element => {
             <Box display="flex" justifyContent="space-between" flexWrap="wrap"
               pb={2} alignItems="center" maxWidth={600}>
               <Typography variant="h4">{PATIENT_BALANCE_DUE}</Typography>
-              <Typography variant="body1">${totalCharges}</Typography>
+              <Typography variant="body1">{totalCharges ? `$${totalCharges}` : `$${0}`}</Typography>
             </Box>
 
             <Box display="flex" justifyContent="space-between" flexWrap="wrap"
