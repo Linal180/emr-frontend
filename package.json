@@ -80,7 +80,7 @@
     "@react-pdf/font": "2.2.0"
   },
   "scripts": {
-    "preinstall": "npx npm-force-resolutions",
+    "preinstall": "npx npm-force-resolutions@0.0.3",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "build:prod": "NODE_OPTIONS='--max-old-space-size=8192' react-scripts build",
