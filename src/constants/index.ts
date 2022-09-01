@@ -745,6 +745,7 @@ export const PAY = "Pay";
 export const SSN = "SSN";
 export const ZIP = "Zip";
 export const OKAY = "Okay";
+export const COMPLETED ='COMPLETED'
 export const DATE = "Date";
 export const TEST = "Test";
 export const TYPE = "Type";

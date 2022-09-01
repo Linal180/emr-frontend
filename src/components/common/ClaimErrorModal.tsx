@@ -4,7 +4,7 @@ import { FC } from "react";
 import { TickIconNew, WarningIconNew } from "../../assets/svgs";
 // components block
 // interfaces/types block, theme, svgs and constants
-import { ISSUES, NO_ERROR_FOUND, OKAY } from "../../constants";
+import { COMPLETED, ISSUES, NO_ERROR_FOUND, OKAY } from "../../constants";
 import { ClaimErrorModalProps } from "../../interfacesTypes";
 
 const ClaimErrorModal: FC<ClaimErrorModalProps> = ({ isOpen, setIsOpen, errorMessages }): JSX.Element => {
@@ -26,7 +26,7 @@ const ClaimErrorModal: FC<ClaimErrorModalProps> = ({ isOpen, setIsOpen, errorMes
         <Box display='flex' alignItems='center'>
           {errorMessages?.length ? <WarningIconNew /> : <TickIconNew />}
           <Box p={1} />
-          <Typography variant="h4">{ISSUES}</Typography>
+          <Typography variant="h4">{errorMessages?.length ? ISSUES: COMPLETED}</Typography>
         </Box>
       </DialogTitle>
 
