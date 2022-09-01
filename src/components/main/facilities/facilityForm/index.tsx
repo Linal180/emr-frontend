@@ -2,6 +2,7 @@
 import {
   FC, useEffect, useContext, Reducer, useReducer, ChangeEvent, useCallback
 } from 'react';
+import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
@@ -17,7 +18,7 @@ import history from "../../../../history";
 import { AuthContext } from '../../../../context';
 import { ListContext } from '../../../../context/listContext';
 import { facilitySchema } from '../../../../validationSchemas';
-import { CustomFacilityInputProps, GeneralFormProps } from '../../../../interfacesTypes';
+import { CustomFacilityInputProps, GeneralFormProps, ParamsType } from '../../../../interfacesTypes';
 import {
   formatEmail, formatToLeadingCode, getTimeString, isSuperAdmin, setRecord,
   setTime, timeValidation
@@ -37,6 +38,7 @@ import {
 } from "../../../../constants";
 
 const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
+  const { tabValue: paramTabValue } = useParams<ParamsType>()
   const { user, userRoles } = useContext(AuthContext);
   const { facility, roles } = user || {};
 
@@ -296,6 +298,12 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   useEffect(() => {
     zipCode?.length === 5 && getAddressHandler()
   }, [zipCode, getAddressHandler]);
+
+  useEffect(()=>{
+    if(paramTabValue){
+      dispatch({ type: ActionType.SET_TAB_VALUE, tabValue: paramTabValue })
+    }
+  },[paramTabValue])
 
   return (
     <TabContext value={tabValue}>
