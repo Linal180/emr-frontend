@@ -1,16 +1,16 @@
 // packages block
+import moment from 'moment';
 import DateFnsUtils from '@date-io/date-fns';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import {
   Box, Button, CircularProgress, FormControl, Grid, InputLabel, Typography
 } from "@material-ui/core";
-import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
-import moment from 'moment';
 import {
   ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer, useState
 } from 'react';
-import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
 // components block
 import InputController from '../../../../controller';
 import Alert from "../../../common/Alert";
@@ -362,14 +362,15 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
         practiceId = pId || ''
       }
-
+      
       const appointmentInput = {
         reason, scheduleStartDateTime: transformedStartTime, practiceId, patientId: selectedPatient,
         scheduleEndDateTime: transformedEndTime, autoAccident: autoAccident || false, notes,
         otherAccident: otherAccident || false, primaryInsurance, secondaryInsurance,
         facilityId: isHigherAdmin ? selectedFacility : userFacilityId, billingStatus: BillingStatus.Due,
         appointmentTypeId: selectedService, employment: employment || false, paymentType: PaymentType.Self,
-        appointmentCreateType: appointmentType as AppointmentCreateType
+        appointmentCreateType: appointmentType as AppointmentCreateType, appointmentDate: moment(dateToFormat).format('YYYY-MM-DD'),
+        timeZone: moment.tz.guess()
       };
 
       const payload = onlyDoctor ? { ...appointmentInput, providerId: currentDoctor } : selectedProvider ?
