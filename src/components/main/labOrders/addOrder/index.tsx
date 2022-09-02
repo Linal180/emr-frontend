@@ -105,7 +105,7 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
 
     onCompleted(data) {
       if (data) {
-        Alert.success('Lab Order Created Successfully');
+        !isEdit && Alert.success('Lab Order Created Successfully');
         toggleSideDrawer && toggleSideDrawer()
       }
     }

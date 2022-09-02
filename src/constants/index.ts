@@ -508,6 +508,7 @@ export const AVAILABILITY_TEXT = "Availability";
 export const ADD_MORE_RECORDS_TEXT = "Add more records";
 export const ADD_WIDGET_TEXT = "Add Widget";
 export const EXCEL_FILE_FORMATS = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel']
+export const LAB_RESULTS_SUPPORTED_FILE=[...EXCEL_FILE_FORMATS, 'text/csv']
 export const EXCEL_FILE_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
 export const EXCEL_FILE_EXTENSION = ".xlsx";
 export const ACCEPTABLE_PDF_FILES = [".pdf", ".docx", ".doc"];
