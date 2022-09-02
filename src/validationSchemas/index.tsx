@@ -334,7 +334,7 @@ const staffBasicSchema = {
   gender: selectorSchema(GENDER),
   mobile: notRequiredPhone(PHONE),
   phone: notRequiredPhone(MOBILE),
-  dob: yup.string().required(requiredMessage(DOB)),
+  dob: yup.string(),
 }
 
 export const staffSchema = (isEdit: boolean, isSuper: boolean, isPractice: boolean) => yup.object({
