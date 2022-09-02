@@ -96,6 +96,12 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
     }
   }
 
+  const onUnitChange = (data: string, price: number | undefined, index: number) => {
+    price && Number(data) >= 1 && setFormValue(`${moduleName}.${index}.price`, (Number(data) * Number(price)) as never)
+    trigger()
+    return
+  }
+
   return (
     <Controller
       name={moduleName}
@@ -205,11 +211,7 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                                         controllerName={`${moduleName}.${index}.unit`}
                                         controllerLabel={""}
                                         margin={'none'}
-                                        onChange={(data: string) => {
-                                          price && Number(data) >= 1 && setFormValue(`${moduleName}.${index}.price`, (Number(data) * Number(price)) as never)
-                                          trigger()
-                                          return
-                                        }}
+                                        onChange={(data: string) => onUnitChange(data, price, index)}
                                       />
                                     </Box>
                                   </TableCell>
