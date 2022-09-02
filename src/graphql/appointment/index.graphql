@@ -16,6 +16,7 @@ query FindAllAppointments($appointmentInput: AppointmentInput!) {
       status
       scheduleEndDateTime
       scheduleStartDateTime
+      appointmentDate
       token
       reason
       primaryInsurance
