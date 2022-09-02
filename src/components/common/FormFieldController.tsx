@@ -71,7 +71,10 @@ export const FieldController = ({ item, isCreating, facilityId, state, practiceI
         />
 
       case FormBuilderApiSelector.SERVICE_SLOT:
-        return <SlotsComponent facilityId={facilityField || facilityId || ""} state={state} />
+        return <SlotsComponent
+          facilityId={facilityField || facilityId || ""}
+          state={state}
+        />
 
       case FormBuilderApiSelector.FACILITY_PROVIDERS:
         return <ProviderSelector

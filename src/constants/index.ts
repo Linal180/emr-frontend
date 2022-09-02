@@ -508,6 +508,7 @@ export const AVAILABILITY_TEXT = "Availability";
 export const ADD_MORE_RECORDS_TEXT = "Add more records";
 export const ADD_WIDGET_TEXT = "Add Widget";
 export const EXCEL_FILE_FORMATS = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel']
+export const LAB_RESULTS_SUPPORTED_FILE = [...EXCEL_FILE_FORMATS, 'text/csv']
 export const EXCEL_FILE_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
 export const EXCEL_FILE_EXTENSION = ".xlsx";
 export const ACCEPTABLE_PDF_FILES = [".pdf", ".docx", ".doc"];
@@ -528,6 +529,8 @@ export const EMERGENCY_ACCESS_VALUE = "emergency-access";
 export const ACCESS_ACTIVATED = "Access Activated";
 export const EMERGENCY_ACCESS_DENIED = "Emergency Access Denied";
 export const EMERGENCY_ACCESS_ENABLED = "Emergency Access Enabled";
+export const ONLY_EXCEL_AND_CSV = 'Only excel and csv file supported'
+export const LAB_ORDER_CREATE_SUCCESS = "Lab Order Created Successfully"
 export const ROLES_PERMISSIONS = "Roles & Permissions";
 export const NOTICE_REQUIRED_TEXT = "Minimum Notice Required (In Hours)";
 export const PRACTICE_DETAILS_DESCRIPTION =
@@ -745,7 +748,7 @@ export const PAY = "Pay";
 export const SSN = "SSN";
 export const ZIP = "Zip";
 export const OKAY = "Okay";
-export const COMPLETED ='COMPLETED'
+export const COMPLETED = 'COMPLETED'
 export const DATE = "Date";
 export const TEST = "Test";
 export const TYPE = "Type";
@@ -3542,7 +3545,7 @@ export const areaChartTwo = {
   }]
 }
 
-export const CLAIM_SUCCESS_MESSAGES=[
+export const CLAIM_SUCCESS_MESSAGES = [
   "Claim Submitted Successfully",
   "Claim Created Successfully"
 ]
