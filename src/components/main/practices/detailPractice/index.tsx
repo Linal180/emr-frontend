@@ -40,7 +40,7 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
 
   const methods = useForm<CustomPracticeInputProps>({
     mode: "all",
-    resolver: yupResolver(updatePracticeSchema)
+    resolver: yupResolver(updatePracticeSchema(true))
   });
   const { handleSubmit, setValue } = methods;
 
@@ -227,7 +227,7 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
     fetchAttachments();
     fetchUser()
   }
-  
+
   return (
     <Box p={4}>
       <Grid container justifyContent='center'>

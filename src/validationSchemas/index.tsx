@@ -634,10 +634,10 @@ export const createPracticeSchema = yup.object({
   taxId: requiredMatches(TAX_ID, TID_VALIDATION_MESSAGE, TID_REGEX),
 })
 
-export const updatePracticeSchema = yup.object({
+export const updatePracticeSchema = (isPracticeDetail?: boolean) => yup.object({
   ...npiSchema(true),
   ...practiceFacilitySchema,
-  ...registerUserSchema,
+  ...(isPracticeDetail ? {} : registerUserSchema),
   taxonomyCodeId: selectorSchema(TAXONOMY_CODE, false),
   taxId: requiredMatches(TAX_ID, TID_VALIDATION_MESSAGE, TID_REGEX),
 })
