@@ -18,7 +18,7 @@ import TableLoader from "../../../common/TableLoader";
 import { DownloadIconWhite, EyeIcon, PrintGrayIcon } from "../../../../assets/svgs";
 import {
   ACTION, CLEAR_TEXT, COLLECTION_DATE, DOB, EXCEL_FILE_EXTENSION, EXCEL_FILE_FORMATS, EXCEL_FILE_TYPE, EXPORT_TO_CSV, EXPORT_TO_EXCEL,
-  LAB_RESULTS_ROUTE, LAB_RESULTS_SUPPORTED_FILE, N_A, PAGE_LIMIT_EIGHT, PATIENT, PENDING, RECEIVED, RECEIVED_DATE, RESULT_1, RESULT_2, RESULT_3, TEST_1, TEST_2, TEST_3
+  LAB_RESULTS_ROUTE, LAB_RESULTS_SUPPORTED_FILE, N_A, ONLY_EXCEL_AND_CSV, PAGE_LIMIT_EIGHT, PATIENT, PENDING, RECEIVED, RECEIVED_DATE, RESULT_1, RESULT_2, RESULT_3, TEST_1, TEST_2, TEST_3
 } from "../../../../constants";
 import { AuthContext } from "../../../../context";
 import {
@@ -272,7 +272,7 @@ const LabResultsTable: FC = (): JSX.Element => {
     const files = e.target.files;
     const fileType= files?.[0]?.type
     if(!LAB_RESULTS_SUPPORTED_FILE.includes(fileType || '')){
-       return Alert.error('Only excel and csv file supported')
+       return Alert.error(ONLY_EXCEL_AND_CSV)
     }
     if (files) {
       const observationsToUpdate = (EXCEL_FILE_FORMATS.includes(files?.[0].type || '') ? await promiseFileReaderExcel(files?.[0]) : await promiseFileReaderCSV(files?.[0])) as UpdateObservationItemInput[]

@@ -4,7 +4,7 @@ import { Check, ChevronRight } from '@material-ui/icons';
 import clsx from 'clsx';
 import { FC, useEffect, useState } from 'react';
 import {
-  BACK_TEXT, EDIT_LAB_ORDER, LAB_ORDER_SIDEDRAWER_STEPS, NEW_LAB_ORDER, NEXT, NOT_FOUND_EXCEPTION,
+  BACK_TEXT, EDIT_LAB_ORDER, LAB_ORDER_CREATE_SUCCESS, LAB_ORDER_SIDEDRAWER_STEPS, NEW_LAB_ORDER, NEXT, NOT_FOUND_EXCEPTION,
   SUBMIT, USER_NOT_FOUND_EXCEPTION_MESSAGE
 } from '../../../../constants';
 import { CheckInConnector, useCheckInStepIconStyles } from '../../../../styles/checkInStyles';
@@ -105,7 +105,7 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
 
     onCompleted(data) {
       if (data) {
-        !isEdit && Alert.success('Lab Order Created Successfully');
+        !isEdit && Alert.success(LAB_ORDER_CREATE_SUCCESS);
         toggleSideDrawer && toggleSideDrawer()
       }
     }
