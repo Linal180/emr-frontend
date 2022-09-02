@@ -3542,6 +3542,11 @@ export const areaChartTwo = {
   }]
 }
 
+export const CLAIM_SUCCESS_MESSAGES=[
+  "Claim Submitted Successfully",
+  "Claim Created Successfully"
+]
+
 export const PATIENT_CHARTING_TABS = [
   {
     icon: VitalsIcon,

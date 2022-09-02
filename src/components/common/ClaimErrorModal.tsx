@@ -1,16 +1,28 @@
 // packages block
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@material-ui/core";
-import { FC } from "react";
+import { FC, useCallback } from "react";
 import { TickIconNew, WarningIconNew } from "../../assets/svgs";
 // components block
 // interfaces/types block, theme, svgs and constants
-import { COMPLETED, ISSUES, NO_ERROR_FOUND, OKAY } from "../../constants";
+import { CLAIM_SUCCESS_MESSAGES, COMPLETED, ISSUES, NO_ERROR_FOUND, OKAY } from "../../constants";
 import { ClaimErrorModalProps } from "../../interfacesTypes";
 
 const ClaimErrorModal: FC<ClaimErrorModalProps> = ({ isOpen, setIsOpen, errorMessages }): JSX.Element => {
   const handleClose = () => {
     setIsOpen(false)
   }
+
+  const getHeaderIcon = useCallback(() => {
+    if (!errorMessages?.length) {
+      return <TickIconNew />
+    }
+
+    if (CLAIM_SUCCESS_MESSAGES.includes(errorMessages[0])) {
+      return <TickIconNew />
+    }
+
+    return <WarningIconNew />
+  }, [errorMessages])
 
   return (
     <Dialog
@@ -24,9 +36,9 @@ const ClaimErrorModal: FC<ClaimErrorModalProps> = ({ isOpen, setIsOpen, errorMes
     >
       <DialogTitle id="alert-dialog-title">
         <Box display='flex' alignItems='center'>
-          {errorMessages?.length ? <WarningIconNew /> : <TickIconNew />}
+          {getHeaderIcon()}
           <Box p={1} />
-          <Typography variant="h4">{errorMessages?.length ? ISSUES: COMPLETED}</Typography>
+          <Typography variant="h4">{CLAIM_SUCCESS_MESSAGES.includes(errorMessages?.[0] || '') ? COMPLETED: ISSUES}</Typography>
         </Box>
       </DialogTitle>
 
