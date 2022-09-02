@@ -9,8 +9,8 @@ import PracticeSelector from "../../../common/Selector/PracticeSelector"
 // constants, interface block
 import { FacilityCardsProps } from "../../../../interfacesTypes"
 import {
-  EMPTY_OPTION, FACILITY_INFO, MAPPED_SERVICE_CODES, MAPPED_TIME_ZONES, NAME, PRACTICE,
-  SERVICE_CODE, TIME_ZONE_TEXT
+  EMPTY_OPTION, FACILITY_INFO, MAPPED_SERVICE_CODES, NAME, PRACTICE,
+  SERVICE_CODE
 } from "../../../../constants"
 
 const FacilityInfoCard: FC<FacilityCardsProps> = ({ getFacilityLoading, isSuper }) =>
@@ -51,7 +51,7 @@ const FacilityInfoCard: FC<FacilityCardsProps> = ({ getFacilityLoading, isSuper 
         />
       </Grid>
 
-      <Grid xs={12} sm={12} item md={6}>
+      {/* <Grid xs={12} sm={12} item md={6}>
         <Selector
           isRequired
           value={EMPTY_OPTION}
@@ -60,7 +60,7 @@ const FacilityInfoCard: FC<FacilityCardsProps> = ({ getFacilityLoading, isSuper 
           options={MAPPED_TIME_ZONES}
           loading={getFacilityLoading}
         />
-      </Grid>
+      </Grid> */}
     </Grid>
   </CardComponent>;
 

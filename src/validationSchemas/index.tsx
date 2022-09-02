@@ -364,7 +364,7 @@ export const facilitySchema = (practiceRequired: boolean) => yup.object({
   ...federalTaxIdSchema,
   tamxonomyCode: selectorSchema(TAXONOMY_CODE, false),
   ...billingAddressSchema,
-  timeZone: selectorSchema(TIME_ZONE_TEXT),
+  // timeZone: selectorSchema(TIME_ZONE_TEXT),
   serviceCode: selectorSchema(SERVICE_CODE),
   practice: selectorSchema(PRACTICE, practiceRequired),
   name: yup.string()
