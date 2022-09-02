@@ -142,8 +142,8 @@ mutation CreateAppointment($createAppointmentInput: CreateAppointmentInput!) {
   }
 }
 
-mutation SendAppointmentReminder($appointmentId: String!) {
-  sendAppointmentReminder(appointmentId: $appointmentId) {
+mutation SendAppointmentReminder($appointmentReminderInput: AppointmentReminderInput!) {
+  sendAppointmentReminder(appointmentReminderInput: $appointmentReminderInput) {
     response {
       error
       status

@@ -183,8 +183,8 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${STAFF_ROUTE}/:id`} component={ViewStaff} permission={USER_PERMISSIONS.updateStaff} />
       <PrivateRoute exact path={FACILITIES_ROUTE} component={Facilities} permission={USER_PERMISSIONS.findAllFacility} />
       <PrivateRoute exact path={`${FACILITIES_ROUTE}/new`} component={AddFacility} permission={USER_PERMISSIONS.createFacility} />
-      <PrivateRoute exact path={`${FACILITIES_ROUTE}/:id`} component={ViewFacility} permission={USER_PERMISSIONS.updateFacility} />
       <PrivateRoute exact path={`${FACILITIES_ROUTE}/:id${FACILITY_SERVICES_ROUTE}`} component={Services} permission={USER_PERMISSIONS.findAllServices} />
+      <PrivateRoute exact path={`${FACILITIES_ROUTE}/:id/:tabValue?`} component={ViewFacility} permission={USER_PERMISSIONS.updateFacility} />
       <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_SERVICES_ROUTE}/new`} component={AddService} permission={USER_PERMISSIONS.createService} />
       <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_SERVICES_ROUTE}/:id`} component={ViewService} permission={USER_PERMISSIONS.updateService} />
       <PrivateRoute exact path={SETTINGS_ROUTE} component={Settings} />

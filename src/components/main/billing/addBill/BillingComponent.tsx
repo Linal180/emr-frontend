@@ -20,7 +20,8 @@ import {
   BillingComponentProps, CodeTablesData, CreateBillingProps, ParamsType
 } from "../../../../interfacesTypes";
 import {
-  EMAIL_OR_USERNAME_ALREADY_EXISTS, FORBIDDEN_EXCEPTION, ITEM_MODULE, VIEW_APPOINTMENTS_ROUTE
+  CLAIM_SUCCESS_MESSAGES,
+  EMAIL_OR_USERNAME_ALREADY_EXISTS, FORBIDDEN_EXCEPTION, ITEM_MODULE, SystemBillingStatuses, VIEW_APPOINTMENTS_ROUTE
 } from "../../../../constants";
 import {
   CodeType, DoctorPatientRelationType, OnsetDateType, OrderOfBenefitType, OtherDateType,
@@ -66,8 +67,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
       if (message === FORBIDDEN_EXCEPTION) {
         Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
       } else {
-        const messages = message.split('.');
-        messages?.pop()
+        const messages = message.split('\n');
         dispatch(({ type: ActionType.SET_CLAIM_ERROR_MESSAGES, claimErrorMessages: messages }))
         dispatch(({ type: ActionType.SET_CLAIM_MODAL_OPEN, claimModalOpen: true }))
       }
@@ -82,7 +82,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
           const { id, statusId, statusName } = claimStatus || {}
           id && setValue('claimStatus', { id, name: statusName, statusName: statusId })
 
-          const successMessage = statusId === 'acknowledged' ? 'Claim Submitted Successfully' : 'Claim Created Successfully'
+          const successMessage = statusId === SystemBillingStatuses.ACKNOWLEDGED ? CLAIM_SUCCESS_MESSAGES[0] : CLAIM_SUCCESS_MESSAGES[1]
 
           dispatch(({ type: ActionType.SET_CLAIM_ERROR_MESSAGES, claimErrorMessages: [successMessage] }))
           dispatch(({ type: ActionType.SET_CLAIM_MODAL_OPEN, claimModalOpen: true }))
@@ -281,8 +281,8 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
             diagPointer: diagPointer ?? '',
             diag1: diagPointer ? String(getNumberFromChar(diagPointer, 0)) : '',
             diag2: diagPointer ? String(getNumberFromChar(diagPointer, 1)) : '',
-            diag3: diagPointer ? String(getNumberFromChar(diagPointer, 3)) : '',
-            diag4: diagPointer ? String(getNumberFromChar(diagPointer, 4)) : ''
+            diag3: diagPointer ? String(getNumberFromChar(diagPointer, 2)) : '',
+            diag4: diagPointer ? String(getNumberFromChar(diagPointer, 3)) : ''
           }
 
           if (acc[codeType]) {

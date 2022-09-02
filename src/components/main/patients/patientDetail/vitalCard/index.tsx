@@ -91,6 +91,8 @@ const VitalCard: FC<GeneralFormProps> = () => {
                 <span className='measure-unit'>{BLOOD_PRESSURE_UNIT}</span>
               </Typography>
 
+              <Box p={0.2} />
+
               <Typography className={`measure-frequency ${bloodPressureColor}`} component="span">
                 {bloodPressureStatus}
               </Typography>
@@ -120,6 +122,8 @@ const VitalCard: FC<GeneralFormProps> = () => {
               <Typography variant="h2">{pulseRate ?? '- -'}
                 <span className='measure-unit'>{HEART_RATE_UNIT}</span>
               </Typography>
+
+              <Box p={0.2} />
 
               <Typography className={`measure-frequency ${heartRateColor}`} component="span">
                 {heartRateStatus}
