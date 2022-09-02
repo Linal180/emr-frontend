@@ -90,7 +90,6 @@ const SlotsComponent = ({ facilityId, state }: SlotsComponentProps) => {
   }, [values, serviceId, setAppointmentTypeId])
 
   const dateHandler = (muiDate: Date | null) => {
-    debugger
     muiDate ? setDate(muiDate) : setDate(new Date() as MaterialUiPickersDate);
     setValue('appointmentDate', muiDate)
   }
