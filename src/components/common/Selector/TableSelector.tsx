@@ -77,21 +77,23 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
     }
   }
 
-  const handleCodeRemoval = (codeId: string) => {
+  const handleCodeRemoval = (codeId: string, codeType: string) => {
     const filteredValues = (moduleData)?.filter((data => data?.codeId !== codeId)) as TableCodesProps[]
     setFormValue(moduleName, filteredValues)
-    filteredValues.forEach((values, index) => {
-      setFormValue(`cptFeeSchedule.${index}.price`, values.price as never)
-      setFormValue(`cptFeeSchedule.${index}.unit`, values.unit as never)
-      setFormValue(`cptFeeSchedule.${index}.m1`, setRecord(values.m1?.id || '', values.m1?.name || '') as never)
-      setFormValue(`cptFeeSchedule.${index}.m2`, setRecord(values.m2?.id || '', values.m2?.name || '') as never)
-      setFormValue(`cptFeeSchedule.${index}.m3`, setRecord(values.m3?.id || '', values.m3?.name || '') as never)
-      setFormValue(`cptFeeSchedule.${index}.m4`, setRecord(values.m4?.id || '', values.m4?.name || '') as never)
-      setFormValue(`cptFeeSchedule.${index}.diag1`, values.diag1 as never)
-      setFormValue(`cptFeeSchedule.${index}.diag2`, values.diag2 as never)
-      setFormValue(`cptFeeSchedule.${index}.diag3`, values.diag3 as never)
-      setFormValue(`cptFeeSchedule.${index}.diag4`, values.diag4 as never)
-    })
+    if (codeType === CodeType.CptCode) {
+      filteredValues.forEach((values, index) => {
+        setFormValue(`cptFeeSchedule.${index}.price`, values.price as never)
+        setFormValue(`cptFeeSchedule.${index}.unit`, values.unit as never)
+        setFormValue(`cptFeeSchedule.${index}.m1`, setRecord(values.m1?.id || '', values.m1?.name || '') as never)
+        setFormValue(`cptFeeSchedule.${index}.m2`, setRecord(values.m2?.id || '', values.m2?.name || '') as never)
+        setFormValue(`cptFeeSchedule.${index}.m3`, setRecord(values.m3?.id || '', values.m3?.name || '') as never)
+        setFormValue(`cptFeeSchedule.${index}.m4`, setRecord(values.m4?.id || '', values.m4?.name || '') as never)
+        setFormValue(`cptFeeSchedule.${index}.diag1`, values.diag1 as never)
+        setFormValue(`cptFeeSchedule.${index}.diag2`, values.diag2 as never)
+        setFormValue(`cptFeeSchedule.${index}.diag3`, values.diag3 as never)
+        setFormValue(`cptFeeSchedule.${index}.diag4`, values.diag4 as never)
+      })
+    }
   }
 
   return (
@@ -169,7 +171,7 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
 
                     <TableBody>
                       {(moduleData)?.map(({
-                        code, description, codeId, price
+                        code, description, codeId, price, codeType
                       }, index) => {
                         return <>
                           <TableRow key={index}>
@@ -204,9 +206,9 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                                         controllerLabel={""}
                                         margin={'none'}
                                         onChange={(data: string) => {
-                                           price && Number(data) >= 1 && setFormValue(`${moduleName}.${index}.price`, (Number(data) * Number(price)) as never)
-                                           trigger()
-                                           return
+                                          price && Number(data) >= 1 && setFormValue(`${moduleName}.${index}.price`, (Number(data) * Number(price)) as never)
+                                          trigger()
+                                          return
                                         }}
                                       />
                                     </Box>
@@ -260,7 +262,7 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                             }
                             <TableCell>
                               <IconButton
-                                onClick={() => codeId && handleCodeRemoval(codeId)}
+                                onClick={() => codeType && codeId && handleCodeRemoval(codeId, codeType)}
                               >
                                 <TrashNewIcon />
                               </IconButton>

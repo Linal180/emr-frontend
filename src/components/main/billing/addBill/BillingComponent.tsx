@@ -281,8 +281,8 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
             diagPointer: diagPointer ?? '',
             diag1: diagPointer ? String(getNumberFromChar(diagPointer, 0)) : '',
             diag2: diagPointer ? String(getNumberFromChar(diagPointer, 1)) : '',
-            diag3: diagPointer ? String(getNumberFromChar(diagPointer, 3)) : '',
-            diag4: diagPointer ? String(getNumberFromChar(diagPointer, 4)) : ''
+            diag3: diagPointer ? String(getNumberFromChar(diagPointer, 2)) : '',
+            diag4: diagPointer ? String(getNumberFromChar(diagPointer, 3)) : ''
           }
 
           if (acc[codeType]) {
