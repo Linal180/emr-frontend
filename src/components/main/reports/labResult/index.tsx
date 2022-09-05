@@ -16,8 +16,6 @@ function LabResultDetail() {
   const { attachments } = practice || {}
   const { preSignedUrl } = attachments?.[0] || {}
 
-  console.log("preSignedUrl", preSignedUrl)
-
   const [findLabResultInfo] = useFindLabResultInfoLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
