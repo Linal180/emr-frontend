@@ -273,7 +273,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
 
   const renderName = () => <>
     <Box display="flex" alignItems="center">
-      <Box className={classes.userName} mr={1}>
+      <Box className={`${classes.userName} ${classes.capitalize}`} mr={1}>
         {getPatientLoading ? renderLoading('') : `${firstName} ${lastName}`}
       </Box>
 
