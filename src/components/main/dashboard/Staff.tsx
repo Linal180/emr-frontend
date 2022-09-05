@@ -1,5 +1,5 @@
 // packages block
-import { FC } from "react";
+import { FC, useContext } from "react";
 import { Box, Card, Grid, Typography } from "@material-ui/core";
 // components block
 import CalendarComponent from "./calendar";
@@ -11,12 +11,18 @@ import { useDashboardStyles } from "../../../styles/dashboardStyles";
 import { WHITE } from "../../../theme";
 import { Link } from "react-router-dom";
 import { MessageIcon } from "../../../assets/svgs";
+import { AuthContext } from "../../../context";
+import { isBiller } from "../../../utils";
 
 const StaffDashboardComponent: FC = (): JSX.Element => {
+  const { user } = useContext(AuthContext);
+  const { roles } = user || {}
+  const isBillerUser = isBiller(roles)
   const classes = useDashboardStyles();
+
   return (
     <>
-      <PatientSearchComponent />
+      {!isBillerUser && <PatientSearchComponent />}
 
       <Grid container spacing={2}>
         <Grid item md={8} sm={12} xs={12}>
