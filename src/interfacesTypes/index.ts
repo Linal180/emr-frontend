@@ -2027,4 +2027,12 @@ export type CameraModalProps = {
 export type AppointmentPaymentType = {
   lastFour: string;
   paymentType: string;
-} 
+}
+
+export type InsuranceComponentProps = {
+  patientId?: string;
+  viewInsuranceBtn?: boolean;
+  shouldDisableEdit?: boolean;
+  showAddInsuranceBtn?: boolean;
+  showEditInsuranceBtn?: boolean;
+}
