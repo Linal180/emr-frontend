@@ -32,7 +32,7 @@ import {
   patientReducer, State as PatientState
 } from "../../../reducers/patientReducer";
 import { CheckInConnector, useCheckInStepIconStyles, useCheckInProfileStyles } from '../../../styles/checkInStyles';
-import { convertDateFromUnix, getFormattedDate, isBiller } from "../../../utils";
+import { convertDateFromUnix, getFormattedDate, isBiller, isFrontDesk } from "../../../utils";
 import { ChevronRightIcon } from "../../../assets/svgs";
 import ChartCards from "../patientChart/chartCards";
 import { AuthContext } from "../../../context";
@@ -56,6 +56,7 @@ const CheckInComponent = (): JSX.Element => {
   const { user } = useContext(AuthContext)
   const { roles } = user || {}
   const isBillerUser = isBiller(roles);
+  const isFrontDeskUser = isFrontDesk(roles);
   const checkInClasses = useCheckInProfileStyles();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState);
   const [, patientDispatcher] =
@@ -258,8 +259,16 @@ const CheckInComponent = (): JSX.Element => {
     </>
 
   const handleStepChange = (index: number) => {
-    if ([0, 4].includes(index)) {
-      handleStep(index)
+    if (isBillerUser) {
+      if ([0, 4].includes(index)) {
+        handleStep(index)
+      }
+    }
+
+    if (isFrontDeskUser) {
+      if (index !== 2) {
+        handleStep(index)
+      }
     }
   }
 
@@ -290,7 +299,7 @@ const CheckInComponent = (): JSX.Element => {
           <Stepper alternativeLabel activeStep={activeStep} connector={<CheckInConnector />}>
             {CHECK_IN_STEPS.map((label, index) => (
               <Step key={label}>
-                <StepLabel onClick={() => isBillerUser ? handleStepChange(index) : handleStep(index)} StepIconComponent={CheckInStepIcon}>
+                <StepLabel onClick={() => (isBillerUser || isFrontDeskUser) ? handleStepChange(index) : handleStep(index)} StepIconComponent={CheckInStepIcon}>
                   <Box ml={0} display='flex' alignItems='center' className='pointer-cursor'>
                     {label}
                     <Box p={0.5} />

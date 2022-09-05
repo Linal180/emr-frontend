@@ -249,6 +249,12 @@ export const isBiller = (currentUserRole: RolesPayload['roles'] | undefined) => 
   return userRoles.includes(SYSTEM_ROLES.Biller)
 }
 
+export const isFrontDesk = (currentUserRole: RolesPayload['roles'] | undefined) => {
+  const userRoles = currentUserRole ? pluck(currentUserRole, 'role') : ['']
+
+  return userRoles.includes(SYSTEM_ROLES.FrontDesk)
+}
+
 export const getUserRole = (roles: RolesPayload['roles']) => {
   if (roles) {
     for (let role of roles) {
