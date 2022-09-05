@@ -1,6 +1,7 @@
 import { PDFViewer } from "@react-pdf/renderer";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
+import { AuthContext } from "../../../../context";
 import { LabTestsPayload, useFindLabResultInfoLazyQuery } from "../../../../generated/graphql";
 import { ParamsType } from "../../../../interfacesTypes";
 import ResultDoc from "./ResultDoc";
@@ -9,6 +10,11 @@ import ResultDoc from "./ResultDoc";
 function LabResultDetail() {
   const { orderNum } = useParams<ParamsType>()
   const [labTest, setLabTest] = useState<LabTestsPayload['labTests']>()
+  const { user } = useContext(AuthContext)
+  const { facility } = user || {}
+  const { practice } = facility || {}
+  const { attachments } = practice || {}
+  const { preSignedUrl } = attachments?.[0] || {}
 
   const [findLabResultInfo] = useFindLabResultInfoLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -44,7 +50,7 @@ function LabResultDetail() {
 
   return (
     <PDFViewer style={{ width: "100%", height: `calc(100vh - 140px)`, }}>
-      <ResultDoc labTest={labTest} />
+      <ResultDoc labTest={labTest} attachmentUrl={preSignedUrl} />
     </PDFViewer>
   );
 }

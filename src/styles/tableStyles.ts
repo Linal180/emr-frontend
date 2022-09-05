@@ -250,5 +250,9 @@ export const useTableStyles = makeStyles(() => ({
         borderBottom: '2px solid #204ECF'
       }
     },
+  },
+  
+  capitalize: {
+    textTransform : 'capitalize'
   }
 }))

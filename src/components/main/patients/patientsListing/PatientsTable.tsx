@@ -52,10 +52,10 @@ const PatientsTable: FC = (): JSX.Element => {
   const isDoctor = isOnlyDoctor(roles);
   const { id: facilityId, practiceId } = facility || {}
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
-  
+
   const canDelete = checkPermission(userPermissions, USER_PERMISSIONS.removePatient)
   const canUpdate = checkPermission(userPermissions, USER_PERMISSIONS.updatePatient)
-  
+
   const {
     page, totalPages, searchQuery, openDelete, deletePatientId, patients, doctorId, openAdvancedSearch
   } = state;
@@ -320,7 +320,7 @@ const PatientsTable: FC = (): JSX.Element => {
                         </Link>
                       </TableCell>
 
-                      <TableCell scope="row"> {`${firstName} ${lastName}`}</TableCell>
+                      <TableCell scope="row"><Box className={`${classes.capitalize}`}> {`${firstName} ${lastName}`}</Box></TableCell>
                       <TableCell scope="row">{email}</TableCell>
                       <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
                       <TableCell scope="row">{!!dob && dobDateFormat(dob)}</TableCell>
