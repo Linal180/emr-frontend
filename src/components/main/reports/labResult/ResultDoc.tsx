@@ -1,11 +1,11 @@
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import JsBarcode from "jsbarcode";
 import Logo from "../../../../assets/images/aimed-logo.png";
-import { 
-  ADDRESS, ATTENDING, CLIA_ID_NUMBER, COLLECTED_DATE, COMMENT, DIAGNOSES, DOB_TEXT, FACILITY, 
-  FINAL_REPORT, GENDER, LAB_RESULTS_INFO, METHOD, NAME, PATIENT, PATIENT_NO, PHYSICIAN, 
+import {
+  ADDRESS, ATTENDING, CLIA_ID_NUMBER, COLLECTED_DATE, COMMENT, DIAGNOSES, DOB_TEXT, FACILITY,
+  FINAL_REPORT, GENDER, LAB_RESULTS_INFO, METHOD, NAME, PATIENT, PATIENT_NO, PHYSICIAN,
   PRIMARY, PRIMARY_CARE, RECEIVED_DATE, RESULTS, SPECIMEN, TEL, TESTS, URGENT_CARE,
- } from "../../../../constants";
+} from "../../../../constants";
 import { LabTestsPayload } from "../../../../generated/graphql";
 import { formatAddress, formatPhone, getFormatDateString } from "../../../../utils";
 
@@ -137,7 +137,8 @@ const styles = StyleSheet.create({
   }
 });
 
-const ResultDoc = ({ labTest }: { labTest: LabTestsPayload['labTests'] }) => {
+
+const ResultDoc = ({ labTest, attachmentUrl }: { labTest: LabTestsPayload['labTests'], attachmentUrl?: string | null }) => {
   const canvas = document.createElement('canvas');
   JsBarcode(canvas, `${process.env.REACT_APP_URL}${LAB_RESULTS_INFO}/${labTest?.[0]?.orderNumber}`);
   const barcode = canvas.toDataURL();
@@ -153,6 +154,7 @@ const ResultDoc = ({ labTest }: { labTest: LabTestsPayload['labTests'] }) => {
   const doctorFullName = `${dFirstName} ${dLastName}`
   const patientFullName = `${firstName} ${lastName}`
   const diagnoses = labTest?.find((test) => test?.diagnoses?.[0]?.code)?.diagnoses
+
   return (
     <Document>
       <Page style={styles.page} size="A3" wrap>
@@ -160,7 +162,10 @@ const ResultDoc = ({ labTest }: { labTest: LabTestsPayload['labTests'] }) => {
           {/* 1st-row */}
           <View style={styles.tableRow}>
             <View style={[styles.w30, styles.flexRow, styles.borderStyle, styles.borderRightWidth]}>
-              <Image src={Logo} style={styles.logoImage} />
+              <Image
+                src={Logo}
+                style={styles.logoImage}
+              />
             </View>
 
             <View style={[styles.w70]}>

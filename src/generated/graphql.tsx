@@ -333,6 +333,7 @@ export type Attachment = {
   attachmentMetadata?: Maybe<AttachmentMetadata>;
   attachmentMetadataId?: Maybe<Scalars['String']>;
   attachmentName?: Maybe<Scalars['String']>;
+  baseUrl?: Maybe<Scalars['String']>;
   childAttachment?: Maybe<Attachment>;
   createdAt: Scalars['String'];
   id: Scalars['String'];
@@ -394,6 +395,7 @@ export type AttachmentWithPreSignedUrl = {
   attachmentMetadata?: Maybe<AttachmentMetadata>;
   attachmentMetadataId?: Maybe<Scalars['String']>;
   attachmentName?: Maybe<Scalars['String']>;
+  baseUrl?: Maybe<Scalars['String']>;
   childAttachment?: Maybe<Attachment>;
   createdAt: Scalars['String'];
   id: Scalars['String'];
@@ -4412,6 +4414,7 @@ export type Query = {
   getPractice: PracticePayload;
   getPracticeFacilitiesUsersWithRoles: PracticeUsersWithRolesPayload;
   getPracticeFacilityAppointments: PracticeFacilityAppointmentsPayload;
+  getPracticeLogo: PracticePayload;
   getPracticesByYear: PracticesViaDatePayload;
   getPracticesFacilities: PracticeFacilitiesPayload;
   getPracticesUser: PracticeUsersPayload;
@@ -4912,6 +4915,11 @@ export type QueryGetPracticeFacilitiesUsersWithRolesArgs = {
 
 export type QueryGetPracticeFacilityAppointmentsArgs = {
   practiceFacilityAppointmentsInputs: PracticeFacilityAppointmentsInputs;
+};
+
+
+export type QueryGetPracticeLogoArgs = {
+  imageUrl: Scalars['String'];
 };
 
 

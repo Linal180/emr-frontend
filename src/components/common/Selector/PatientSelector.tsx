@@ -1,7 +1,7 @@
 // packages block
 import { FC, useReducer, Reducer, useCallback, useContext, useEffect } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { Autocomplete, createFilterOptions } from "@material-ui/lab";
+import { Autocomplete } from "@material-ui/lab";
 import { TextField, FormControl, FormHelperText, InputLabel, Box, Typography } from "@material-ui/core";
 // utils and interfaces/types block
 import { GREY } from "../../../theme";
@@ -92,7 +92,7 @@ const PatientSelector: FC<PatientSelectorProps> = ({
   ])
 
   useEffect(() => {
-    (!searchQuery.length || searchQuery.length > 2) && fetchAllPatients()
+    fetchAllPatients()
   }, [page, searchQuery, fetchAllPatients]);
 
   useEffect(() => {
@@ -104,7 +104,6 @@ const PatientSelector: FC<PatientSelectorProps> = ({
       dispatch({ type: ActionType.SET_DOCTOR_ID, doctorId: currentUserId })
   }, [currentUserId, doctorId, isDoctor])
 
-  const defaultFilterOptions = createFilterOptions();
   return (
     <Controller
       rules={{ required: true }}
@@ -122,7 +121,7 @@ const PatientSelector: FC<PatientSelectorProps> = ({
             getOptionSelected={(option, value) => option.id === value.id}
             getOptionLabel={(option) => option.name ?? ""}
             filterOptions={(options, state) => {
-              const results = defaultFilterOptions(options, state);
+              const results = options
               if (results.length === 0) {
                 return addNewPatientOption ? [NO_RECORDS_OPTION, DUMMY_OPTION] : [NO_RECORDS_OPTION]
               }
