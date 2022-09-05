@@ -141,7 +141,7 @@ const AuditLogTable = (): JSX.Element => {
     setValue('patient', setRecord('', '--'));
     setValue('user', setRecord('', '--'));
     setValue('module', setRecord('', '--'));
-    setValue('startDate', new Date().toString());
+    setValue('startDate', moment().subtract(1,'hour').toString());
     setValue('endDate', new Date().toString());
     await fetchAllUserLogs()
   }

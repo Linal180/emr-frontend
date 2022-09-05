@@ -12,10 +12,10 @@ import NoDataComponent from '../../../../common/NoDataComponent';
 import EligibilityTableComponent from './eligibilityAndCoverage/EligibilityTable';
 // constant, utils, svgs, interfaces, graphql and styles block
 import history from '../../../../../history';
-import { ParamsType } from "../../../../../interfacesTypes";
-import { EditNewIcon, EyeIcon } from "../../../../../assets/svgs";
 import { PURPLE_ONE, WHITE_FOUR } from "../../../../../theme";
+import { EditNewIcon, EyeIcon } from "../../../../../assets/svgs";
 import { getFormatDateString, renderTextLoading } from '../../../../../utils';
+import { InsuranceComponentProps, ParamsType } from "../../../../../interfacesTypes";
 import {
   OrderOfBenefitType, PoliciesPayload, useFetchAllPoliciesLazyQuery, useGetEligibilityAndCoverageMutation
 } from "../../../../../generated/graphql";
@@ -25,13 +25,16 @@ import {
   SECONDARY_INSURANCE, TERTIARY_INSURANCE, INSURANCES, NO_INSURANCE_ADDED,
 } from "../../../../../constants";
 
-const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean }): JSX.Element => {
+const InsuranceComponent = ({
+  shouldDisableEdit, patientId: pId, showAddInsuranceBtn = true, showEditInsuranceBtn = true, viewInsuranceBtn = true,
+}: InsuranceComponentProps): JSX.Element => {
   const { id: patientId, appointmentId } = useParams<ParamsType>()
+
   const [policyToEdit, setPolicyToEdit] = useState<string>('')
-  const [policies, setPolicies] = useState<PoliciesPayload['policies']>([]);
+  const [policyCardId, setPolicyCardId] = useState<string>('')
   const [drawerOpened, setDrawerOpened] = useState<boolean>(false);
   const [isCardModalOpen, setIsCardModalOpen] = useState<boolean>(false)
-  const [policyCardId, setPolicyCardId] = useState<string>('')
+  const [policies, setPolicies] = useState<PoliciesPayload['policies']>([]);
 
   const [fetchAllPolicies, { loading: fetchAllPoliciesLoading }] = useFetchAllPoliciesLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -74,16 +77,16 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
         variables: {
           policyInput: {
             paginationOptions: { limit: PAGE_LIMIT, page: 1 },
-            patientId,
+            patientId: patientId ? patientId : pId ? pId : undefined,
           }
         }
       })
     } catch (error) { }
-  }, [fetchAllPolicies, patientId])
+  }, [fetchAllPolicies, patientId, pId])
 
   useEffect(() => {
-    findAllPolicies()
-  }, [findAllPolicies]);
+    (patientId || pId) && findAllPolicies()
+  }, [findAllPolicies, patientId, pId]);
 
   const toggleSideDrawer = () => setDrawerOpened(!drawerOpened)
 
@@ -148,6 +151,11 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
     setIsCardModalOpen(true)
   }
 
+  const editHandler = (id: string) => {
+    setPolicyToEdit(id)
+    toggleSideDrawer()
+  }
+
   return (
     getEligibilityAndCoverageLoading ? <Loader loading loaderText='Checking Eligibility' /> :
       <>
@@ -159,7 +167,7 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
               </Typography>
 
               {!!filteredOrderOfBenefitOptions.length &&
-                !shouldDisableEdit && <>
+                !shouldDisableEdit && showAddInsuranceBtn && <>
                   <Button
                     onClick={() => {
                       toggleSideDrawer()
@@ -177,7 +185,7 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
             )}
 
             <Box p={3}>
-              {policies.map((policy) => {
+              {policies?.map((policy) => {
                 const { insurance, copays, expirationDate, issueDate, groupNumber, id, orderOfBenefit } = policy ?? {}
                 const { payerId, payerName } = insurance ?? {}
                 const { amount } = copays?.[0] ?? {}
@@ -196,16 +204,15 @@ const InsuranceComponent = ({ shouldDisableEdit }: { shouldDisableEdit?: boolean
                           }
                         </Box>
 
-                        {!shouldDisableEdit && <IconButton onClick={() => {
-                          setPolicyToEdit(id)
-                          toggleSideDrawer()
-                        }}>
-                          <EditNewIcon />
-                        </IconButton>}
-
-                        <IconButton onClick={() => handleCardModalOpen(id)}>
-                          <EyeIcon />
-                        </IconButton>
+                        {!shouldDisableEdit && showEditInsuranceBtn &&
+                          <IconButton onClick={() => editHandler(id)}>
+                            <EditNewIcon />
+                          </IconButton>}
+                        {viewInsuranceBtn &&
+                          <IconButton onClick={() => handleCardModalOpen(id)}>
+                            <EyeIcon />
+                          </IconButton>
+                        }
                       </Box>
                     </Box>
 

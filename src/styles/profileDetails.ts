@@ -79,6 +79,10 @@ export const useProfileDetailsStyles = makeStyles(() =>
       }
     },
 
+    capitalize: {
+      textTransform : 'capitalize'
+    },
+
     profileInfoItem: {
       // minWidth: "20%",
       alignItems: 'center',

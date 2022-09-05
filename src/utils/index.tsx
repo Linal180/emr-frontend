@@ -249,6 +249,12 @@ export const isBiller = (currentUserRole: RolesPayload['roles'] | undefined) => 
   return userRoles.includes(SYSTEM_ROLES.Biller)
 }
 
+export const isFrontDesk = (currentUserRole: RolesPayload['roles'] | undefined) => {
+  const userRoles = currentUserRole ? pluck(currentUserRole, 'role') : ['']
+
+  return userRoles.includes(SYSTEM_ROLES.FrontDesk)
+}
+
 export const getUserRole = (roles: RolesPayload['roles']) => {
   if (roles) {
     for (let role of roles) {
@@ -467,6 +473,9 @@ export const timeDifference = (time: string) => {
 
 export const getDateWithDay = (date: string) =>
   moment(date, "x").format("ddd MMM. DD, YYYY");
+
+export const getAppointmentDateWithDay = (date: string, inputFormat?: string | undefined, outputFormat?: string) =>
+  moment(date, inputFormat).format(outputFormat ?? "ddd MMM. DD, YYYY");
 
 export const getDateWithDayAndTime = (date: string) =>
   moment(date, "x").format("ddd MMM DD, YYYY hh:mm A");
@@ -938,9 +947,18 @@ export const getStandardTime = (timestamp: string) => {
 
 export const getStandardTimeDuration = (starTimestamp: string, endTimestamp: string): Number => {
   if (!starTimestamp && !endTimestamp) return 0;
-
   var startTime = moment(new Date(parseInt(starTimestamp)));
   var endTime = moment(new Date(parseInt(endTimestamp)));
+
+  const dateDifference = endTime.diff(startTime, 'minutes');
+  return Math.abs(dateDifference)
+};
+
+export const getAptStandardTimeDuration = (starTimestamp: string, endTimestamp: string): Number => {
+  if (!starTimestamp && !endTimestamp) return 0;
+
+  const startTime = moment(starTimestamp);
+  const endTime = moment(endTimestamp);
 
   const dateDifference = endTime.diff(startTime, 'minutes');
   return Math.abs(dateDifference)
