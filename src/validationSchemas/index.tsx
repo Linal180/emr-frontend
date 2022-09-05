@@ -334,7 +334,7 @@ const staffBasicSchema = {
   gender: selectorSchema(GENDER),
   mobile: notRequiredPhone(PHONE),
   phone: notRequiredPhone(MOBILE),
-  dob: yup.string().required(requiredMessage(DOB)),
+  dob: yup.string(),
 }
 
 export const staffSchema = (isEdit: boolean, isSuper: boolean, isPractice: boolean) => yup.object({
@@ -364,7 +364,7 @@ export const facilitySchema = (practiceRequired: boolean) => yup.object({
   ...federalTaxIdSchema,
   tamxonomyCode: selectorSchema(TAXONOMY_CODE, false),
   ...billingAddressSchema,
-  timeZone: selectorSchema(TIME_ZONE_TEXT),
+  // timeZone: selectorSchema(TIME_ZONE_TEXT),
   serviceCode: selectorSchema(SERVICE_CODE),
   practice: selectorSchema(PRACTICE, practiceRequired),
   name: yup.string()

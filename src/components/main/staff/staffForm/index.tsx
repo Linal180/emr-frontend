@@ -22,7 +22,7 @@ import { staffSchema } from '../../../../validationSchemas';
 import { AuthContext, FacilityContext, ListContext } from '../../../../context';
 import { ExtendedStaffInputProps, GeneralFormProps } from "../../../../interfacesTypes";
 import {
-  getTimestamps, setRecord, renderItem, formatValue, renderLoading, isSuperAdmin, isPracticeAdmin, 
+  getTimestamps, setRecord, renderItem, formatValue, renderLoading, isSuperAdmin, isPracticeAdmin,
   formatEmail
 } from "../../../../utils";
 import {
@@ -184,17 +184,17 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       transformFacilityId = facility?.id || ''
       transformPracticeId = selectedPractice
     } else {
-      if(!!selectedFacility){
+      if (!!selectedFacility) {
         const facility = facilityList?.filter(f => f?.id === selectedFacility)[0];
         const { practiceId: pId } = facility || {};
-        
+
         transformFacilityId = selectedFacility
         transformPracticeId = pId || ''
       }
     }
 
     const staffInputs = {
-      firstName, lastName, email: formatEmail(email), phone, mobile, dob: getTimestamps(dob || ''),
+      firstName, lastName, email: formatEmail(email), phone, mobile, dob: dob ? getTimestamps(dob || '') : '',
       gender: staffGender as Gender, username: '',
       ...(isAdminUser ? { practiceId: transformPracticeId, facilityId: transformFacilityId }
         : { practiceId: currentPractice, facilityId: currentFacility }
@@ -350,7 +350,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                   </Grid>
 
                   <Grid item md={6} sm={12} xs={12}>
-                    <DatePicker loading={getStaffLoading} isRequired name="dob" label={DOB} />
+                    <DatePicker loading={getStaffLoading} name="dob" label={DOB} />
                   </Grid>
                 </Grid>
 
