@@ -1213,6 +1213,8 @@ export const DIS = "Dis";
 export const DIAGNOSIS_CODE = "Diagnosis Code";
 export const CLAIM_STATUSES = "Claim Statuses";
 export const SEND_SMS_TEXT = "Send SMS";
+export const INSURANCE_ELIGIBILITY_TEXT = "Insurance Eligibility";
+export const INSURANCE_ELIGIBILITY_DESCRIPTION = "Check the patient's insurance eligibility";
 export const SEND_SMS_DESCRIPTION = "Send SMS to the any one.";
 export const AGREEMENTS_DESCRIPTION = "Create Agreements for patients";
 export const CLAIM_STATUSES_DESCRIPTION = "Create Claim Statuses for Billing";
@@ -1624,7 +1626,7 @@ export const FACILITY_PUBLIC_APPOINTMENT_ROUTE = "/facility-public-appointment";
 export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION_ROUTE}/success`;
 export const PATIENT_APPOINTMENT_CANCEL = `${PUBLIC_APPOINTMENT_ROUTE}/appointment-cancel`;
 export const SEND_SMS_ROUTE = `/send-sms`
-
+export const INSURANCE_ELIGIBILITY_ROUTE = `/insurance-eligibility`
 // Facility Routes
 export const BILLING_PROFILE_ROUTE = "billing-profile";
 export const FACILITY_INFO_ROUTE = "facility-information";
@@ -2355,6 +2357,7 @@ export const VIEW_APPOINTMENTS_BREAD = {
 };
 
 export const CALENDAR_VIEW_APPOINTMENTS_BREAD = { text: CALENDAR_VIEW_TEXT, link: CALENDAR_ROUTE, };
+export const INSURANCE_ELIGIBILITY_TEXT_BREAD = { text: INSURANCE_ELIGIBILITY_TEXT, link: INSURANCE_ELIGIBILITY_ROUTE, };
 
 // profile top tabs
 export const PROFILE_TOP_TABS = [
@@ -3212,6 +3215,11 @@ export const MISCELLANEOUS_SETTINGS_ITEMS = [
     name: SEND_SMS_TEXT,
     link: SEND_SMS_ROUTE,
     desc: SEND_SMS_DESCRIPTION,
+  },
+  {
+    name: INSURANCE_ELIGIBILITY_TEXT,
+    link: INSURANCE_ELIGIBILITY_ROUTE,
+    desc: INSURANCE_ELIGIBILITY_DESCRIPTION,
   }
 ];
 
