@@ -1,18 +1,20 @@
 // packages block
 import { FC, useContext } from "react";
+import { Link } from "react-router-dom";
 import { Box, Card, Grid, Typography } from "@material-ui/core";
 // components block
 import CalendarComponent from "./calendar";
 import AppointmentsComponent from "../appointments/appointmentsListing";
 import PatientSearchComponent from "../../common/Dashboard/patientSearch";
 // constant block
-import { APPOINTMENTS_TEXT, QUICK_ACTIONS, SEND_SMS, SEND_SMS_ROUTE } from "../../../constants";
-import { useDashboardStyles } from "../../../styles/dashboardStyles";
-import { WHITE } from "../../../theme";
-import { Link } from "react-router-dom";
-import { MessageIcon } from "../../../assets/svgs";
-import { AuthContext } from "../../../context";
+import { BLACK, WHITE } from "../../../theme";
 import { isBiller } from "../../../utils";
+import { AuthContext } from "../../../context";
+import { InfoSearchIcon, MessageIcon } from "../../../assets/svgs";
+import { useDashboardStyles } from "../../../styles/dashboardStyles";
+import {
+  APPOINTMENTS_TEXT, INSURANCE_ELIGIBILITY_ROUTE, INSURANCE_ELIGIBILITY_TEXT, QUICK_ACTIONS, SEND_SMS, SEND_SMS_ROUTE
+} from "../../../constants";
 
 const StaffDashboardComponent: FC = (): JSX.Element => {
   const { user } = useContext(AuthContext);
@@ -66,6 +68,17 @@ const StaffDashboardComponent: FC = (): JSX.Element => {
                     <Typography variant="h6">{SEND_SMS}</Typography>
                   </Box>
                 </Link>
+                <Box ml={2}>
+                  <Link to={`${INSURANCE_ELIGIBILITY_ROUTE}`}>
+                    <Box className={classes.cardBox}>
+                      <InfoSearchIcon color={BLACK} />
+
+                      <Box p={0.2} />
+
+                      <Typography variant="h6">{INSURANCE_ELIGIBILITY_TEXT}</Typography>
+                    </Box>
+                  </Link>
+                </Box>
               </Box>
             </Box>
           </Card>
