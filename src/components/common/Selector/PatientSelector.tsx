@@ -7,7 +7,7 @@ import { TextField, FormControl, FormHelperText, InputLabel, Box, Typography } f
 import { GREY } from "../../../theme";
 import { AuthContext } from "../../../context";
 import { AddPatientIcon } from "../../../assets/svgs";
-import { PatientSelectorProps } from "../../../interfacesTypes";
+import { PatientSelectorProps, SelectorOption } from "../../../interfacesTypes";
 import { PatientsPayload, useFetchAllPatientLazyQuery } from "../../../generated/graphql";
 import {
   ADD_PATIENT_MODAL, DROPDOWN_PAGE_LIMIT, EMPTY_OPTION, NO_RECORDS_OPTION, DUMMY_OPTION
@@ -20,7 +20,7 @@ import {
 } from "../../../reducers/patientReducer";
 
 const PatientSelector: FC<PatientSelectorProps> = ({
-  name, label, disabled, isRequired, isOpen, setValue, placeholder, styles, addNewPatientOption = true
+  name, label, disabled, isRequired, isOpen, setValue, placeholder, styles, addNewPatientOption = true, shouldReset, setShouldReset
 }): JSX.Element => {
   const { control } = useFormContext()
   const { user, currentUser } = useContext(AuthContext)
@@ -104,6 +104,13 @@ const PatientSelector: FC<PatientSelectorProps> = ({
       dispatch({ type: ActionType.SET_DOCTOR_ID, doctorId: currentUserId })
   }, [currentUserId, doctorId, isDoctor])
 
+  useEffect(() => {
+    if (shouldReset) {
+      dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: '' })
+      setShouldReset && setShouldReset(false)
+    }
+  }, [setShouldReset, shouldReset])
+
   return (
     <Controller
       rules={{ required: true }}
@@ -120,7 +127,7 @@ const PatientSelector: FC<PatientSelectorProps> = ({
             disabled={disabled}
             getOptionSelected={(option, value) => option.id === value.id}
             getOptionLabel={(option) => option.name ?? ""}
-            filterOptions={(options, state) => {
+            filterOptions={(options: SelectorOption[]) => {
               const results = options
               if (results.length === 0) {
                 return addNewPatientOption ? [NO_RECORDS_OPTION, DUMMY_OPTION] : [NO_RECORDS_OPTION]
@@ -165,7 +172,10 @@ const PatientSelector: FC<PatientSelectorProps> = ({
               </FormControl>
             )}
 
-            onChange={(_, data) => field.onChange(data)}
+            onChange={(_, data) => {
+              !data?.id && dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: '' })
+              return field.onChange(data)
+            }}
           />
         );
       }}
