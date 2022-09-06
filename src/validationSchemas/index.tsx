@@ -1118,8 +1118,8 @@ export const createAgreementSchema = yup.object({
 })
 
 export const profileSchema = yup.object({
-  firstName: generalNameSchema(false, FIRST_NAME, false, false, 25),
-  lastName: generalNameSchema(false, FIRST_NAME, false, false, 25),
+  firstName: generalNameSchema(false, FIRST_NAME, false, false, 15),
+  lastName: generalNameSchema(false, FIRST_NAME, false, false, 15),
   phone: notRequiredPhone(CONTACT_NUMBER),
   zipCode: notRequiredMatches(ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
 })
