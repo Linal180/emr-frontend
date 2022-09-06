@@ -44,6 +44,7 @@ export interface State {
   labOrderAttachments: AttachmentsPayload['attachments']
   mediaData: Pick<CreateAttachmentInput, "title"> | undefined;
   signatureAttachmentId: string;
+  documentId: string;
   policyAttachments: AttachmentWithPreSignedUrlPayload['attachmentsWithPreSignedUrl']
 }
 
@@ -89,6 +90,7 @@ export const initialState: State = {
   drivingLicense1: undefined,
   drivingLicense2: undefined,
   signatureAttachmentId: '',
+  documentId: '',
   insuranceId: { id: "", name: "" },
   documentTypeId: { id: "", name: "" },
 }
@@ -136,6 +138,7 @@ export enum ActionType {
   SET_DELETE_ATTACHMENT_ID = 'setDeleteAttachmentId',
   SET_LAB_ORDER_ATTACHMENTS = 'setLabOrderAttachments',
   SET_IS_EDIT_MEDIA_MODAL_OPEN = 'setIsEditMediaModalOpen',
+  SET_DOCUMENT_ID = 'setDocumentId'
 }
 
 export type Action =
@@ -181,6 +184,7 @@ export type Action =
   | { type: ActionType.SET_MEDIA_DATA; mediaData: Pick<CreateAttachmentInput, "title"> | undefined }
   | { type: ActionType.SET_LAB_ORDER_ATTACHMENTS; labOrderAttachments: AttachmentsPayload['attachments'] }
   | { type: ActionType.SET_POLICY_ATTACHMENTS; policyAttachments: AttachmentWithPreSignedUrlPayload['attachmentsWithPreSignedUrl'] }
+  | { type: ActionType.SET_DOCUMENT_ID; documentId: string }
 
 export const mediaReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -434,6 +438,12 @@ export const mediaReducer = (state: State, action: Action): State => {
       return {
         ...state,
         file: action.file
+      }
+
+    case ActionType.SET_DOCUMENT_ID:
+      return {
+        ...state,
+        documentId: action.documentId
       }
   }
 }

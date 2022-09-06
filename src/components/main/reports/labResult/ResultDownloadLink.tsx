@@ -8,6 +8,12 @@ import ResultDoc from "./ResultDoc";
 
 const ResultDownloadLink = ({ orderNumber }: { orderNumber: string }) => {
   const [labTest, setLabTest] = useState<LabTestsPayload['labTests']>()
+  
+  const { patient } = labTest?.[0] || {};
+  const { facility } = patient || {}
+  const { practice } = facility || {}
+  const { attachments } = practice || {}
+  const { url } = attachments?.[0] || {}
 
   const [findLabResultInfo] = useFindLabResultInfoLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -41,8 +47,8 @@ const ResultDownloadLink = ({ orderNumber }: { orderNumber: string }) => {
     orderNumber && fetchLabTests()
   }, [fetchLabTests, orderNumber])
   return (
-    <PDFDownloadLink document={<ResultDoc labTest={labTest} />} fileName={`lab_orders_${orderNumber}_${moment(new Date()).format('DD_MM_YYYY_hh_mm_A')}`}>
-      {({ blob, url, loading, error }) =>
+    <PDFDownloadLink document={<ResultDoc labTest={labTest} attachmentUrl={url} />} fileName={`lab_orders_${orderNumber}_${moment(new Date()).format('DD_MM_YYYY_hh_mm_A')}`}>
+      {({ loading }) =>
         <IconButton disabled={loading}>
           <DownloadIcon />
         </IconButton>

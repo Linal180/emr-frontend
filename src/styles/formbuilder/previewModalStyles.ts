@@ -9,5 +9,26 @@ export const usePreviewModalStyles = makeStyles((theme) => ({
   },
   tableCell: {
     overflowX: "auto"
+  },
+
+  //vertical-stepper-style
+
+  stepperVertical: {    
+    "& .MuiStepper-vertical" :{
+      [theme.breakpoints.down("md")]: {
+        flexDirection: 'row',
+        overflowX: 'auto',
+        paddingLeft: 10,
+        paddingRight: 10,
+      },
+    },
+
+    "& .MuiStepConnector-line": {
+      visibility: 'hidden',
+    },
+
+    "& .MuiStepLabel-label": {
+      whiteSpace: 'nowrap',
+    }
   }
 }))

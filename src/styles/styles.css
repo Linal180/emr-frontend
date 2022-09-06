@@ -115,6 +115,8 @@ body {
 
 .MuiPickersBasePicker-pickerView .MuiPickersCalendarHeader-switchHeader .MuiPickersCalendarHeader-iconButton {
   padding: 5px;
+  max-width: 100%;
+  width: 36px;
 }
 
 .MuiPickersBasePicker-pickerView .MuiPickersCalendarHeader-switchHeader .MuiPickersSlideTransition-transitionContainer>p {
@@ -172,9 +174,19 @@ body .MuiTabPanel-root {
   border-color: #F3F4F6;
 }
 
+.MuiCheckbox-colorPrimary, 
+.MuiCheckbox-colorSecondary 
+{
+  width: 40px;
+}
+
 .MuiCheckbox-colorPrimary.Mui-checked,
-.MuiCheckbox-root.Mui-checked .MuiSvgIcon-root {
+.MuiCheckbox-colorSecondary.Mui-checked
+
+/* .MuiCheckbox-root.Mui-checked .MuiSvgIcon-root  */
+  {
   color: #204ECF;
+  width: 40px;
 }
 
 .MuiCheckbox-root.Mui-checked .MuiIconButton-label:before {
@@ -908,8 +920,14 @@ input[type=number] {
   text-decoration: none !important;
 }
 
+.MuiIconButton-root {
+  max-width: 100%;
+  min-width: auto !important;
+}
+
 .MuiIconButton-sizeSmall {
-  width: 20px !important;
+  max-width: 100%;
+  min-width: 20px !important;
   height: auto !important;
 }
 
@@ -937,4 +955,9 @@ input[type=number] {
 .claim-error-dialog {
   max-width: 600px;
   margin: auto;
+}
+
+.step-icon .MuiStepLabel-iconContainer {
+  max-width: 100%;
+  width: 40px;
 }

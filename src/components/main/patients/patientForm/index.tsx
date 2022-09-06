@@ -2,6 +2,7 @@
 import {
   forwardRef, Reducer, useCallback, useContext, useEffect, useImperativeHandle, useReducer
 } from 'react';
+import moment from 'moment';
 import { Box } from "@material-ui/core";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
@@ -126,7 +127,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
             }
           }
 
-          dob && setValue("dob", dob)
+          dob && setValue("dob", moment(dob, 'MM-DD-YYYY').format())
           ssn && setValue("ssn", ssn)
           suffix && setValue("suffix", suffix)
           lastName && setValue("lastName", lastName)

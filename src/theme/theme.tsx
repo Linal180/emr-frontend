@@ -220,7 +220,7 @@ export const theme = createTheme({
             height: 20,
             width: 20,
             position: "absolute",
-            background: WHITE,
+            // background: WHITE,
             zIndex: 9,
             borderRadius: 4,
             border: `1px solid ${GREY_ONE}`,
@@ -250,7 +250,7 @@ export const theme = createTheme({
             color: BLUE,
           }
         }
-      }
+      },
     },
 
     MuiButton: {
