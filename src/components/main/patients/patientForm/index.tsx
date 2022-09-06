@@ -35,6 +35,7 @@ import {
   Pronouns, Race, RelationshipType, Sexualorientation, useCreatePatientMutation, useGetPatientLazyQuery,
   useUpdatePatientMutation
 } from "../../../../generated/graphql";
+import moment from 'moment';
 
 const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   { id, isEdit, shouldShowBread = true, shouldDisableEdit }, ref
@@ -126,7 +127,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
             }
           }
 
-          dob && setValue("dob", dob)
+          dob && setValue("dob", moment(dob, 'MM-DD-YYYY').format())
           ssn && setValue("ssn", ssn)
           suffix && setValue("suffix", suffix)
           lastName && setValue("lastName", lastName)

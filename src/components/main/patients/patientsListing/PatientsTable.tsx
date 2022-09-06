@@ -24,7 +24,7 @@ import { PatientSearchInputProps } from "../../../../interfacesTypes";
 import { BLACK_TWO, GREY_FIVE, GREY_NINE, GREY_TEN } from "../../../../theme";
 import {
   formatPhone, getFormatDateString, isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin,
-  checkPermission, isUser, renderTh, dobDateFormat, getPageNumber, isLast
+  checkPermission, isUser, renderTh, getPageNumber, isLast
 } from "../../../../utils";
 import {
   patientReducer, Action, initialState, State, ActionType
@@ -323,7 +323,7 @@ const PatientsTable: FC = (): JSX.Element => {
                       <TableCell scope="row"><Box className={`${classes.capitalize}`}> {`${firstName} ${lastName}`}</Box></TableCell>
                       <TableCell scope="row">{email}</TableCell>
                       <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
-                      <TableCell scope="row">{!!dob && dobDateFormat(dob)}</TableCell>
+                      <TableCell scope="row">{dob}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                           <Link to={`${PATIENTS_ROUTE}/${id}`} className={canUpdate ? '' : 'disable-icon'}>
