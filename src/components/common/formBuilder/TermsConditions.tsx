@@ -70,10 +70,8 @@ const TermsConditions: FC<FieldComponentProps> = ({ item, state, dispatcher }): 
         <CheckboxController controllerName={fieldId} controllerLabel={label} />
       </Grid>
       {isSignature &&
-        <Grid item xs={12}>
-          <Box width="50%" pb={2}>
-            <Signature onSignatureEnd={onSignatureEnd} controllerName={'signature'} />
-          </Box>
+        <Grid item xs={12} sm={12} md={6}>
+          <Signature onSignatureEnd={onSignatureEnd} controllerName={'signature'} />
         </Grid>
       }
     </Grid>

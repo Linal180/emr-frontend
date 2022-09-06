@@ -6,7 +6,7 @@ import PhoneInput from 'react-phone-input-2';
 import { Autocomplete } from '@material-ui/lab';
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
-import { TextField, MenuItem, RadioGroup, FormControlLabel, FormGroup, Checkbox, Chip } from '@material-ui/core'
+import { TextField, MenuItem, RadioGroup, FormControlLabel, FormGroup, Checkbox, Chip, Box } from '@material-ui/core'
 //component
 import RadioButton from '../../components/common/RadioButton'
 //constant, interfaces, svgs, utils
@@ -203,7 +203,7 @@ export const DateFieldComponent = ({ field, isCreating, item }: FieldComponentPr
         }}
         onKeyDown={(e) => e.preventDefault()}
         autoOk
-        keyboardIcon={<CalendarIcon />}
+        keyboardIcon={<Box width={20}><CalendarIcon /></Box>}
       />
     </MuiPickersUtilsProvider>
   )

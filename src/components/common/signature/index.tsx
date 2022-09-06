@@ -34,7 +34,7 @@ const Signature = ({ onSignatureEnd, controllerName, title, isController = true 
   }
 
   return (
-    <Box mt={1} mb={3} p={3} border={`2px dashed ${WHITE_FOUR}`} width={'100%'}>
+    <Box mt={1} mb={3} p={3} border={`2px dashed ${WHITE_FOUR}`} width='100%'>
       <SignatureCanvas ref={signCanvas} canvasProps={{ className: 'publicSignCanvas' }} clearOnResize
         backgroundColor={GRAY_SEVEN} onEnd={onEnd} />
 
@@ -68,9 +68,9 @@ const Signature = ({ onSignatureEnd, controllerName, title, isController = true 
       />}
 
       <Box py={1}>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Box display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
           <Typography variant="h5">{DRAW_SIGNATURE}</Typography>
-          <Box>
+          <Box my={1}>
             <Button variant='outlined' onClick={clear} color='default' size='small'>{CLEAR_TEXT}</Button>
           </Box>
         </Box>

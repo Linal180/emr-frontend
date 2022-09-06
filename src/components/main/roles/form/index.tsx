@@ -282,7 +282,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       <FormGroup>
                         <FormControlLabel
                           control={
-                            <Box>
+                            <Box mr={1}>
                               <Checkbox disabled={!(custom || isSuper)} color="primary" checked={modules.includes(module)}
                                 onChange={() => handleAllIds(module, allIds)} />
                             </Box>
@@ -315,7 +315,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                             <FormGroup>
                               <FormControlLabel
                                 control={
-                                  <Box>
+                                  <Box mr={1}>
                                     <Checkbox
                                       color="primary"
                                       checked={ids.includes(id || '')}

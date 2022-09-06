@@ -224,9 +224,11 @@ const Header = ({ url }: { url: string }): JSX.Element => {
           <Box className={classes.grow} />
 
           <Box className="icon-button-hover" display="flex" alignItems="center">
-            <Button onClick={() => history.push(SETTINGS_ROUTE)}>
-              <SettingsIcon />
-            </Button>
+            <Link to={SETTINGS_ROUTE}>
+              <Box width={20}>
+                <SettingsIcon />
+              </Box>
+            </Link>
 
             <Box px={2} />
 
