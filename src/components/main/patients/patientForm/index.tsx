@@ -2,6 +2,7 @@
 import {
   forwardRef, Reducer, useCallback, useContext, useEffect, useImperativeHandle, useReducer
 } from 'react';
+import moment from 'moment';
 import { Box } from "@material-ui/core";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
@@ -35,7 +36,6 @@ import {
   Pronouns, Race, RelationshipType, Sexualorientation, useCreatePatientMutation, useGetPatientLazyQuery,
   useUpdatePatientMutation
 } from "../../../../generated/graphql";
-import moment from 'moment';
 
 const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
   { id, isEdit, shouldShowBread = true, shouldDisableEdit }, ref

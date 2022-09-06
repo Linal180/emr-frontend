@@ -1,9 +1,12 @@
+//packages block
 import { PDFViewer } from "@react-pdf/renderer";
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router";
+//components
+import ResultDoc from "./ResultDoc";
+//constants, types, utils
 import { LabTestsPayload, useFindLabResultInfoLazyQuery } from "../../../../generated/graphql";
 import { ParamsType } from "../../../../interfacesTypes";
-import ResultDoc from "./ResultDoc";
 
 // Create Document Component
 function LabResultDetail() {
