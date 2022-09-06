@@ -26,7 +26,7 @@ const PatientEligibility: FC = (): JSX.Element => {
         <Grid container spacing={1}>
           <Grid item xs={12} sm={12} md={6}>
             <Box pt={2}>
-              <PatientSelector label={PATIENT} name="patient" />
+              <PatientSelector label={PATIENT} name="patient" addNewPatientOption={false} />
             </Box>
           </Grid>
         </Grid>
