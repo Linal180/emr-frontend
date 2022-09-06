@@ -67,21 +67,26 @@ const CameraComponent = ({ sendFile, invisibleHandler, open }: CameraComponentPr
         </Box>
       </Box>
         :
-        <Box>
+        <Box width="100%" height="100%">
           <Webcam audio={false} videoConstraints={{ deviceId: deviceId }} screenshotFormat="image/png" width={'100%'} >
             {(values) => {
               const { getScreenshot } = values
               return (
                 <Box display="flex" justifyContent='center'>
-                  <Box p={1}>
-                    <IconButton onClick={() => invisibleHandler(!open)}><Cancel /></IconButton>
-                  </Box>
-                  <Box p={1}>
-                    <IconButton onClick={() => {
-                      const imageSrc = getScreenshot()
-                      takePhoto(imageSrc)
-                    }} color="primary"><CameraAlt /></IconButton>
-                  </Box>
+                  <IconButton onClick={() => invisibleHandler(!open)}>
+                    <Box width={20}>
+                      <Cancel />
+                    </Box>
+                  </IconButton>
+                  <Box p={1} />
+                  <IconButton onClick={() => {
+                    const imageSrc = getScreenshot()
+                    takePhoto(imageSrc)
+                  }} color="primary">
+                    <Box width={20}>
+                      <CameraAlt />
+                    </Box>
+                  </IconButton>
                 </Box>
               )
             }}

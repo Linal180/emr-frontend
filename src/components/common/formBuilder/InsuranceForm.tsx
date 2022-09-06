@@ -92,7 +92,7 @@ const InsuranceComponent: FC<FieldComponentProps> = ({ item }): JSX.Element => {
 
   return <Box my={3}>
     <Grid container spacing={3}>
-      <Grid item xs={6}>
+      <Grid item md={6} sm={12} xs={12}>
         <Controller
           rules={{ required: true }}
           name={'companyName'}
@@ -136,10 +136,10 @@ const InsuranceComponent: FC<FieldComponentProps> = ({ item }): JSX.Element => {
           }}
         />
       </Grid>
-      <Grid item xs={3}>
+      <Grid item md={3} sm={6} xs={12}>
         <InputController controllerName="memberId" fieldType="text" controllerLabel={MEMBER_ID} isRequired />
       </Grid>
-      <Grid item xs={3}>
+      <Grid item md={3} sm={6} xs={12}>
         <InputController controllerName="groupNumber" fieldType="text" controllerLabel={GROUP_NUMBER} isRequired />
       </Grid>
     </Grid>

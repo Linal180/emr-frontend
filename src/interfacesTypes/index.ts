@@ -386,6 +386,8 @@ export interface PatientSelectorProps extends SelectorProps {
   handlePatientModal?: Function
   setValue?: Function;
   addNewPatientOption?: boolean
+  shouldReset?: boolean
+  setShouldReset?: Function
 }
 
 export interface FacilitySelectorProps extends SelectorProps {

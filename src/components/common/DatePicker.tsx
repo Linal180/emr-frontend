@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 import { Controller, useFormContext } from "react-hook-form";
-import { FormControl, IconButton, InputLabel } from '@material-ui/core';
+import { Box, Button, FormControl, InputLabel } from '@material-ui/core';
 import { MuiPickersUtilsProvider, KeyboardDatePicker, } from '@material-ui/pickers';
 // interfaces constants and utils block
 import { US_DATE_FORMAT } from '../../constants';
@@ -53,19 +53,24 @@ const DatePicker: FC<PickerProps> = ({
                   disableFuture={disableFuture}
                   maxDate="2100-01-31"
                   minDate="1900-01-01"
-                  keyboardIcon={<CalendarIcon />}
+                  keyboardIcon={<Box width={20}> 
+                    <CalendarIcon />
+                  </Box>
+                  }
                   onChange={(_, data) => {
                     field.onChange(data)
                     onSelect && onSelect(data)
 
                     return data
                   }}
+
                   InputProps={clearable ? {
-                    startAdornment: <IconButton aria-label="clear" onClick={() => setValue(name, null)}>
+                    startAdornment: <Button aria-label="clear" className='icon-button-hover' onClick={() => setValue(name, null)}>
                       <ClearIcon />
-                    </IconButton>
+                    </Button>
                   } : undefined
                   }
+                  className='hello'
                 />
               </MuiPickersUtilsProvider>
             </FormControl>

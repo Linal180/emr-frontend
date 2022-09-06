@@ -363,6 +363,11 @@ query FindLabResultInfo($orderNumber: String!) {
           id
           name
           cliaIdNumber
+          practice {
+            attachments {
+              url
+            }
+          }
         
           contacts {
             primaryContact

@@ -72,7 +72,11 @@ export const useLoginStyles = makeStyles((theme) => ({
   },
 
   passwordIcon: {
-    color: BLUE_ONE
+    color: BLUE_ONE,
+    
+    "&:hover": {
+      backgroundColor: WHITE,
+    }
   },
 
   forgotPassword: {

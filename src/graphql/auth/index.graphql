@@ -60,7 +60,7 @@ query GetLoggedInUser {
           name
 
           attachments {
-            preSignedUrl
+            url
           }
         }
       }
