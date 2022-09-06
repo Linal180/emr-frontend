@@ -19,6 +19,7 @@ import { ParamsType } from '../../../../interfacesTypes'
 import { GREY_EIGHTEEN, WHITE } from '../../../../theme';
 import { calculateAge, getUserFormFormattedValues } from '../../../../utils';
 import { getFormBuilderValidation } from '../../../../validationSchemas/formBuilder';
+import { usePreviewModalStyles } from "../../../../styles/formbuilder/previewModalStyles";
 import {
   State, Action, initialState, externalFormBuilderReducer, ActionType
 } from '../../../../reducers/externalFormBuilderReducer';
@@ -35,6 +36,7 @@ import {
 const initialValues = {};
 
 const PublicFormPreview = () => {
+  const classes = usePreviewModalStyles()
   const { id } = useParams<ParamsType>()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(externalFormBuilderReducer, initialState);
   const {
@@ -230,7 +232,7 @@ const PublicFormPreview = () => {
 
         if (scheduleStartDateTime && scheduleEndDateTime) {
           if (signature && appointmentId && patientId) {
-          await  signatureUploadHandler(appointmentId, patientId, signature)
+            await signatureUploadHandler(appointmentId, patientId, signature)
           }
 
           await createUserForm({ variables: { createUserFormInput: data } })
@@ -328,14 +330,14 @@ const PublicFormPreview = () => {
               <Box>
                 <FormProvider {...methods}>
                   <form onSubmit={handleSubmit(submitHandler)}>
-                    <Box display="flex" justifyContent="space-between" alignItems="center" marginY={2}>
+                    <Box display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
                       <Box>
                         <Typography variant='h4'>
                           {formName}
                         </Typography>
                       </Box>
 
-                      <Box display={'flex'} justifyContent={'flex-end'}>
+                      <Box display={'flex'} justifyContent={'flex-end'} marginY={2}>
                         <Box marginX={2}>
                           <Button variant={'contained'} disabled={activeStep === 0} onClick={backStepHandler}>
                             {BACK_TEXT}
@@ -359,16 +361,18 @@ const PublicFormPreview = () => {
                       {formValues?.length > 1 ?
                         <Grid container spacing={2}>
                           <Grid item xs={12} sm={12} md={3} lg={2}>
-                            <Stepper activeStep={activeStep} orientation="vertical">
-                              {formValues?.map((tab, index) => {
-                                const { name, id } = tab || {}
+                            <Box className={classes.stepperVertical}>
+                              <Stepper activeStep={activeStep} orientation="vertical">
+                                {formValues?.map((tab, index) => {
+                                  const { name, id } = tab || {}
 
-                                return <Step key={`${id}-${index}`}>
-                                  <StepLabel className='formBuilder-stepLabel'>{name}</StepLabel>
-                                </Step>
-                              }
-                              )}
-                            </Stepper>
+                                  return <Step key={`${id}-${index}`} className="step-icon">
+                                    <StepLabel className='formBuilder-stepLabel'>{name}</StepLabel>
+                                  </Step>
+                                }
+                                )}
+                              </Stepper>
+                            </Box>
                           </Grid>
 
                           <Grid item xs={12} sm={12} md={9} lg={10}>

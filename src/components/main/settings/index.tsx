@@ -138,21 +138,25 @@ export const SettingsComponent = () => {
           </Box>
         </CardComponent> */}
 
-        {isFacility && <CardComponent cardTitle={SERVICES}>
-          <Box pb={3}>
-            <Box className={classes.settingContainer}>
-              <Link key={FACILITY_SERVICES_TEXT}
-                to={`${FACILITIES_ROUTE}/${facilityId}${FACILITY_SERVICES_ROUTE}`}
-              >
-                <MenuItem>{FACILITY_SERVICES_TEXT}</MenuItem>
-              </Link>
+        {isFacility &&
+          <Box pb={2}>
+            <CardComponent cardTitle={SERVICES}>
+              <Box pb={3}>
+                <Box className={classes.settingContainer}>
+                  <Link key={FACILITY_SERVICES_TEXT}
+                    to={`${FACILITIES_ROUTE}/${facilityId}${FACILITY_SERVICES_ROUTE}`}
+                  >
+                    <MenuItem>{FACILITY_SERVICES_TEXT}</MenuItem>
+                  </Link>
 
-              <Box pr={2} className={classes.inlineDashes}>-</Box>
+                  <Box pr={2} className={classes.inlineDashes}>-</Box>
 
-              <Typography variant="body1">{FACILITY_SERVICES_DESCRIPTION}</Typography>
-            </Box>
+                  <Typography variant="body1">{FACILITY_SERVICES_DESCRIPTION}</Typography>
+                </Box>
+              </Box>
+            </CardComponent>
           </Box>
-        </CardComponent>}
+        }
 
         {/* <CardComponent cardTitle={APPOINTMENT_SETTINGS}>
           <Box pb={3}>
@@ -172,23 +176,23 @@ export const SettingsComponent = () => {
           </Box>
         </CardComponent> */}
 
-        <Box p={2} />
+        {isFacility &&
+          <Box pb={2}>
+            <CardComponent cardTitle={CALENDAR_SETTINGS_TEXT}>
+              <Box pb={3}>
+                <Box className={classes.settingContainer}>
+                  <Link key={FACILITY_SCHEDULE} to={`${FACILITIES_ROUTE}/${facilityId}/2`}>
+                    <MenuItem>{FACILITY_SCHEDULE}</MenuItem>
+                  </Link>
 
-        {isFacility && <CardComponent cardTitle={CALENDAR_SETTINGS_TEXT}>
-          <Box pb={3}>
-            <Box className={classes.settingContainer}>
-              <Link key={FACILITY_SCHEDULE} to={`${FACILITIES_ROUTE}/${facilityId}/2`}>
-                <MenuItem>{FACILITY_SCHEDULE}</MenuItem>
-              </Link>
+                  <Box pr={2} className={classes.inlineDashes}>-</Box>
 
-              <Box pr={2} className={classes.inlineDashes}>-</Box>
-
-              <Typography variant="body1">{FACILITY_SCHEDULE_DESCRIPTION}</Typography>
-            </Box>
+                  <Typography variant="body1">{FACILITY_SCHEDULE_DESCRIPTION}</Typography>
+                </Box>
+              </Box>
+            </CardComponent>
           </Box>
-        </CardComponent>}
-
-        <Box p={2} />
+        }
 
         {!isBillerUser && <CardComponent cardTitle={CLINICAL_TEXT}>
           <Box pb={3}>

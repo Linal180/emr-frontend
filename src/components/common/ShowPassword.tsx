@@ -1,6 +1,6 @@
 // packages block
 import { FC } from "react";
-import { IconButton, InputAdornment } from "@material-ui/core";
+import { Button, InputAdornment } from "@material-ui/core";
 // constants and interfaces block
 import { PASSWORD, SSN_INPUT } from "../../constants";
 import { useLoginStyles } from "../../styles/loginStyles";
@@ -13,9 +13,9 @@ const ShowPassword: FC<IShowPasswordProps> = ({ isPassword, passwordType, handle
   return (
     <InputAdornment position="end">
       {isPassword &&
-        <IconButton onClick={handleShowPassword} className={classes.passwordIcon}>
+        <Button onClick={handleShowPassword} className={classes.passwordIcon}>
           {passwordType === PASSWORD || passwordType === SSN_INPUT ? <VisibilityOnIcon /> : <VisibilityOffIcon />}
-        </IconButton>
+        </Button>
       }
     </InputAdornment>
   );

@@ -6,7 +6,8 @@ export interface State {
   openAdvancedSearch: boolean;
   isRejectedModalOpen: boolean;
   claimStatuses: BillingsPayload['billings'];
-  selectedClaim: BillingPayload['billing'] | null
+  selectedClaim: BillingPayload['billing'] | null;
+  shouldReset: boolean
 }
 
 export const initialState: State = {
@@ -15,7 +16,8 @@ export const initialState: State = {
   claimStatuses: [],
   openAdvancedSearch: false,
   isRejectedModalOpen: false,
-  selectedClaim: null
+  selectedClaim: null,
+  shouldReset: false
 }
 
 export enum ActionType {
@@ -25,6 +27,7 @@ export enum ActionType {
   SET_SELECTED_CLAIM = 'setSelectedClaim',
   SET_REJECTED_MODAL = 'setRejectedModal',
   SET_BILLING_STATUSES = 'setBillingStatuses',
+  SET_SHOULD_RESET = 'setShouldReset'
 }
 
 export type Action =
@@ -34,6 +37,7 @@ export type Action =
   | { type: ActionType.SET_REJECTED_MODAL, isRejectedModalOpen: boolean }
   | { type: ActionType.SET_BILLING_STATUSES, claimStatuses: BillingsPayload['billings'] }
   | { type: ActionType.SET_SELECTED_CLAIM, selectedClaim: BillingPayload['billing'] | null }
+  | { type: ActionType.SET_SHOULD_RESET, shouldReset: boolean }
 
 export const claimStatusReducer = (state: State, action: Action): State => {
 
@@ -73,6 +77,12 @@ export const claimStatusReducer = (state: State, action: Action): State => {
       return {
         ...state,
         selectedClaim: action.selectedClaim
+      }
+
+    case ActionType.SET_SHOULD_RESET:
+      return {
+        ...state,
+        shouldReset: action.shouldReset
       }
   }
 }
