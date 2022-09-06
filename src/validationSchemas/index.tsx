@@ -334,7 +334,7 @@ const staffBasicSchema = {
   gender: selectorSchema(GENDER),
   mobile: notRequiredPhone(PHONE),
   phone: notRequiredPhone(MOBILE),
-  dob: yup.string().required(requiredMessage(DOB)),
+  dob: yup.string(),
 }
 
 export const staffSchema = (isEdit: boolean, isSuper: boolean, isPractice: boolean) => yup.object({
@@ -364,7 +364,7 @@ export const facilitySchema = (practiceRequired: boolean) => yup.object({
   ...federalTaxIdSchema,
   tamxonomyCode: selectorSchema(TAXONOMY_CODE, false),
   ...billingAddressSchema,
-  timeZone: selectorSchema(TIME_ZONE_TEXT),
+  // timeZone: selectorSchema(TIME_ZONE_TEXT),
   serviceCode: selectorSchema(SERVICE_CODE),
   practice: selectorSchema(PRACTICE, practiceRequired),
   name: yup.string()
@@ -634,10 +634,10 @@ export const createPracticeSchema = yup.object({
   taxId: requiredMatches(TAX_ID, TID_VALIDATION_MESSAGE, TID_REGEX),
 })
 
-export const updatePracticeSchema = yup.object({
+export const updatePracticeSchema = (isPracticeDetail?: boolean) => yup.object({
   ...npiSchema(true),
   ...practiceFacilitySchema,
-  ...registerUserSchema,
+  ...(isPracticeDetail ? {} : registerUserSchema),
   taxonomyCodeId: selectorSchema(TAXONOMY_CODE, false),
   taxId: requiredMatches(TAX_ID, TID_VALIDATION_MESSAGE, TID_REGEX),
 })
@@ -1118,6 +1118,8 @@ export const createAgreementSchema = yup.object({
 })
 
 export const profileSchema = yup.object({
+  firstName: generalNameSchema(false, FIRST_NAME, false, false, 25),
+  lastName: generalNameSchema(false, FIRST_NAME, false, false, 25),
   phone: notRequiredPhone(CONTACT_NUMBER),
   zipCode: notRequiredMatches(ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
 })

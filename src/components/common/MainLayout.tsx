@@ -41,7 +41,7 @@ const MainLayout: FC<MainLayoutProps> = ({ children }): JSX.Element => {
 
   const AppLayout = () => <>
     <CssBaseline />
-    {pathname !== LOCK_ROUTE && <Header url={(attachments?.[0] as any)?.preSignedUrl} />}
+    {pathname !== LOCK_ROUTE && <Header url={(attachments?.[0] as any)?.url} />}
 
     <Box className={classes.mainLayoutContainer}>
       <Box component="main" flex={1} width="100%">

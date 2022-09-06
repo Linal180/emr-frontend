@@ -54,6 +54,7 @@ const SlotsComponent = ({ facilityId, state }: SlotsComponentProps) => {
       const endDateTime = getCurrentTimesFormbuilder(endTime || '', date)
       startTime && setValue('scheduleStartDateTime', startDateTime)
       endTime && setValue('scheduleEndDateTime', endDateTime)
+      setValue('timeZone', moment.tz.guess())
     }
   };
 
@@ -88,12 +89,16 @@ const SlotsComponent = ({ facilityId, state }: SlotsComponentProps) => {
     }
   }, [values, serviceId, setAppointmentTypeId])
 
+  const dateHandler = (muiDate: Date | null) => {
+    muiDate ? setDate(muiDate) : setDate(new Date() as MaterialUiPickersDate);
+    setValue('appointmentDate', muiDate)
+  }
 
   return (
     <Grid container>
       <Grid item xs={12} sm={12} md={6}>
         <Box display="flex" justifyContent="center">
-          <AppointmentDatePicker date={date} setDate={setDate} />
+          <AppointmentDatePicker date={date} setDate={dateHandler} />
         </Box>
       </Grid>
       <Grid item xs={12} sm={12} md={6}>

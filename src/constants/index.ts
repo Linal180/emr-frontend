@@ -508,6 +508,7 @@ export const AVAILABILITY_TEXT = "Availability";
 export const ADD_MORE_RECORDS_TEXT = "Add more records";
 export const ADD_WIDGET_TEXT = "Add Widget";
 export const EXCEL_FILE_FORMATS = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel']
+export const LAB_RESULTS_SUPPORTED_FILE = [...EXCEL_FILE_FORMATS, 'text/csv']
 export const EXCEL_FILE_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
 export const EXCEL_FILE_EXTENSION = ".xlsx";
 export const ACCEPTABLE_PDF_FILES = [".pdf", ".docx", ".doc"];
@@ -528,6 +529,8 @@ export const EMERGENCY_ACCESS_VALUE = "emergency-access";
 export const ACCESS_ACTIVATED = "Access Activated";
 export const EMERGENCY_ACCESS_DENIED = "Emergency Access Denied";
 export const EMERGENCY_ACCESS_ENABLED = "Emergency Access Enabled";
+export const ONLY_EXCEL_AND_CSV = 'Only excel and csv file supported'
+export const LAB_ORDER_CREATE_SUCCESS = "Lab Order Created Successfully"
 export const ROLES_PERMISSIONS = "Roles & Permissions";
 export const NOTICE_REQUIRED_TEXT = "Minimum Notice Required (In Hours)";
 export const PRACTICE_DETAILS_DESCRIPTION =
@@ -745,7 +748,7 @@ export const PAY = "Pay";
 export const SSN = "SSN";
 export const ZIP = "Zip";
 export const OKAY = "Okay";
-export const COMPLETED ='COMPLETED'
+export const COMPLETED = 'COMPLETED'
 export const DATE = "Date";
 export const TEST = "Test";
 export const TYPE = "Type";
@@ -917,6 +920,8 @@ export const DISPLAY_COLUMNS = "Display Columns";
 export const MEDICAL_BILLING = "Medical Billing";
 export const POS = "POS";
 export const LAB_TEXT = "Lab";
+export const PATIENT_IMAGE = "Patient Image"
+export const OTHER_TEXT = "Other"
 export const REVOKE = "REVOKE";
 export const NUMBER = "Number";
 export const OTP_CODE = "OTP Code";
@@ -1210,6 +1215,8 @@ export const DIS = "Dis";
 export const DIAGNOSIS_CODE = "Diagnosis Code";
 export const CLAIM_STATUSES = "Claim Statuses";
 export const SEND_SMS_TEXT = "Send SMS";
+export const INSURANCE_ELIGIBILITY_TEXT = "Insurance Eligibility";
+export const INSURANCE_ELIGIBILITY_DESCRIPTION = "Check the patient's insurance eligibility";
 export const SEND_SMS_DESCRIPTION = "Send SMS to the any one.";
 export const AGREEMENTS_DESCRIPTION = "Create Agreements for patients";
 export const CLAIM_STATUSES_DESCRIPTION = "Create Claim Statuses for Billing";
@@ -1621,7 +1628,7 @@ export const FACILITY_PUBLIC_APPOINTMENT_ROUTE = "/facility-public-appointment";
 export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION_ROUTE}/success`;
 export const PATIENT_APPOINTMENT_CANCEL = `${PUBLIC_APPOINTMENT_ROUTE}/appointment-cancel`;
 export const SEND_SMS_ROUTE = `/send-sms`
-
+export const INSURANCE_ELIGIBILITY_ROUTE = `/insurance-eligibility`
 // Facility Routes
 export const BILLING_PROFILE_ROUTE = "billing-profile";
 export const FACILITY_INFO_ROUTE = "facility-information";
@@ -2352,6 +2359,7 @@ export const VIEW_APPOINTMENTS_BREAD = {
 };
 
 export const CALENDAR_VIEW_APPOINTMENTS_BREAD = { text: CALENDAR_VIEW_TEXT, link: CALENDAR_ROUTE, };
+export const INSURANCE_ELIGIBILITY_TEXT_BREAD = { text: INSURANCE_ELIGIBILITY_TEXT, link: INSURANCE_ELIGIBILITY_ROUTE, };
 
 // profile top tabs
 export const PROFILE_TOP_TABS = [
@@ -3209,6 +3217,11 @@ export const MISCELLANEOUS_SETTINGS_ITEMS = [
     name: SEND_SMS_TEXT,
     link: SEND_SMS_ROUTE,
     desc: SEND_SMS_DESCRIPTION,
+  },
+  {
+    name: INSURANCE_ELIGIBILITY_TEXT,
+    link: INSURANCE_ELIGIBILITY_ROUTE,
+    desc: INSURANCE_ELIGIBILITY_DESCRIPTION,
   }
 ];
 
@@ -3542,7 +3555,7 @@ export const areaChartTwo = {
   }]
 }
 
-export const CLAIM_SUCCESS_MESSAGES=[
+export const CLAIM_SUCCESS_MESSAGES = [
   "Claim Submitted Successfully",
   "Claim Created Successfully"
 ]
@@ -3655,7 +3668,8 @@ export const formTemplateTabIds = {
 
 export const SMS_TEMPLATES: SelectorOption[] = [
   {
-    id: `Please register on the following link: ${`${process.env.REACT_APP_URL}/login`}`,
+    // id: `Please register on the following link: ${`${process.env.REACT_APP_URL}/login`}`,
+    id: `Please register on the following link: https://admin.aimed.healthcare/public/form/2f883f99-c220-427c-8cee-2c39e65e3ec9`,
     name: "Registration Link",
   },
   {

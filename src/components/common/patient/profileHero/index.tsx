@@ -15,7 +15,7 @@ import {
   ATTACHMENT_TITLES, NOTES, MORE_INFO, LESS_INFO, NEXT_SCHEDULED_APPOINTMENT, PATIENTS_ROUTE
 } from "../../../../constants";
 import {
-  formatPhone, getFormattedDate, renderMissing, formatValue, getFormatDateString, getDateWithDay, dateDifference, renderLoading
+  formatPhone, getFormattedDate, renderMissing, formatValue, getDateWithDay, dateDifference, renderLoading
 } from "../../../../utils";
 import {
   AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery, AppointmentPayload,
@@ -273,14 +273,14 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
 
   const renderName = () => <>
     <Box display="flex" alignItems="center">
-      <Box className={classes.userName} mr={1}>
+      <Box className={`${classes.userName} ${classes.capitalize}`} mr={1}>
         {getPatientLoading ? renderLoading('') : `${firstName} ${lastName}`}
       </Box>
 
       <Box display="flex" flexWrap="wrap" alignItems="center">
         {!isCheckIn &&
           <Typography variant="body2">
-            {`(${patientRecord}) | ${formatValue(genderIdentity || '')} | ${getFormatDateString(dob || '')}`}
+            {`(${patientRecord}) | ${formatValue(genderIdentity || '')} | ${dob || ''}`}
           </Typography>
         }
       </Box>

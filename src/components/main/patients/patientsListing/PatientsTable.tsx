@@ -24,7 +24,7 @@ import { PatientSearchInputProps } from "../../../../interfacesTypes";
 import { BLACK_TWO, GREY_FIVE, GREY_NINE, GREY_TEN } from "../../../../theme";
 import {
   formatPhone, getFormatDateString, isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin,
-  checkPermission, isUser, renderTh, dobDateFormat, getPageNumber, isLast
+  checkPermission, isUser, renderTh, getPageNumber, isLast
 } from "../../../../utils";
 import {
   patientReducer, Action, initialState, State, ActionType
@@ -52,10 +52,10 @@ const PatientsTable: FC = (): JSX.Element => {
   const isDoctor = isOnlyDoctor(roles);
   const { id: facilityId, practiceId } = facility || {}
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
-  
+
   const canDelete = checkPermission(userPermissions, USER_PERMISSIONS.removePatient)
   const canUpdate = checkPermission(userPermissions, USER_PERMISSIONS.updatePatient)
-  
+
   const {
     page, totalPages, searchQuery, openDelete, deletePatientId, patients, doctorId, openAdvancedSearch
   } = state;
@@ -320,10 +320,10 @@ const PatientsTable: FC = (): JSX.Element => {
                         </Link>
                       </TableCell>
 
-                      <TableCell scope="row"> {`${firstName} ${lastName}`}</TableCell>
+                      <TableCell scope="row"><Box className={`${classes.capitalize}`}> {`${firstName} ${lastName}`}</Box></TableCell>
                       <TableCell scope="row">{email}</TableCell>
                       <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
-                      <TableCell scope="row">{!!dob && dobDateFormat(dob)}</TableCell>
+                      <TableCell scope="row">{dob}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                           <Link to={`${PATIENTS_ROUTE}/${id}`} className={canUpdate ? '' : 'disable-icon'}>

@@ -1,5 +1,5 @@
 // packages block
-import { ChangeEventHandler, ComponentType, Dispatch, ElementType, ReactNode, SetStateAction } from "react";
+import { ChangeEventHandler, ComponentType, Dispatch, ElementType, ReactNode } from "react";
 import { RouteProps } from "react-router-dom";
 import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
 import { GridSize, PropTypes as MuiPropsTypes } from "@material-ui/core";
@@ -1287,7 +1287,7 @@ export interface DaySchedule {
 
 export interface AppointmentDatePickerProps {
   date: MaterialUiPickersDate;
-  setDate: Dispatch<SetStateAction<MaterialUiPickersDate>>;
+  setDate: (date: MaterialUiPickersDate) => void
 }
 
 export type CustomPracticeInputProps = Omit<CreatePracticeItemInput, "taxonomyCodeId"> &
@@ -2027,4 +2027,12 @@ export type CameraModalProps = {
 export type AppointmentPaymentType = {
   lastFour: string;
   paymentType: string;
-} 
+}
+
+export type InsuranceComponentProps = {
+  patientId?: string;
+  viewInsuranceBtn?: boolean;
+  shouldDisableEdit?: boolean;
+  showAddInsuranceBtn?: boolean;
+  showEditInsuranceBtn?: boolean;
+}

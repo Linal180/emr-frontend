@@ -1,15 +1,15 @@
 // packages block
 import { FC } from "react";
 import { Link } from "react-router-dom";
+import AddIcon from '@material-ui/icons/Add';
 import { Box, Typography, Button } from "@material-ui/core";
 // components block
 import Breadcrumb from "./Breadcrumb";
 // interfaces/types block
-import { PageHeaderProps } from "../../interfacesTypes";
 import { BLACK_TWO } from "../../theme";
 import { PageBackIcon } from "../../assets/svgs";
 import { PATIENTS_ROUTE } from "../../constants";
-import AddIcon from '@material-ui/icons/Add';
+import { PageHeaderProps } from "../../interfacesTypes";
 
 const PageHeader: FC<PageHeaderProps> = ({
   title, subTitle, buttonText, hasComponent, linkToPage, noAdd, path, openModal,

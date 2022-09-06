@@ -208,6 +208,7 @@ export type Appointment = {
   __typename?: 'Appointment';
   appointmentCancelReason?: Maybe<Scalars['String']>;
   appointmentCreateType?: Maybe<AppointmentCreateType>;
+  appointmentDate?: Maybe<Scalars['String']>;
   appointmentNumber?: Maybe<Scalars['String']>;
   appointmentType?: Maybe<Service>;
   appointmentTypeId?: Maybe<Scalars['String']>;
@@ -251,6 +252,7 @@ export type Appointment = {
   secondaryInsurance?: Maybe<Scalars['String']>;
   selfCheckIn?: Maybe<Scalars['Boolean']>;
   status: AppointmentStatus;
+  timeZone?: Maybe<Scalars['String']>;
   token?: Maybe<Scalars['String']>;
   transaction?: Maybe<Transactions>;
   updatedAt?: Maybe<Scalars['String']>;
@@ -994,6 +996,7 @@ export type CptFeeSchedule = {
 
 export type CreateAppointmentInput = {
   appointmentCreateType?: Maybe<AppointmentCreateType>;
+  appointmentDate?: Maybe<Scalars['String']>;
   appointmentTypeId: Scalars['String'];
   autoAccident?: Maybe<Scalars['Boolean']>;
   billingStatus: BillingStatus;
@@ -1017,6 +1020,7 @@ export type CreateAppointmentInput = {
   scheduleEndDateTime: Scalars['String'];
   scheduleStartDateTime: Scalars['String'];
   secondaryInsurance?: Maybe<Scalars['String']>;
+  timeZone?: Maybe<Scalars['String']>;
 };
 
 export type CreateAttachmentInput = {
@@ -1211,6 +1215,7 @@ export type CreateExternalAppointmentInput = {
 };
 
 export type CreateExternalAppointmentItemInput = {
+  appointmentDate?: Maybe<Scalars['String']>;
   billingStatus: BillingStatus;
   facilityId?: Maybe<Scalars['String']>;
   insuranceCompany?: Maybe<Scalars['String']>;
@@ -1224,6 +1229,7 @@ export type CreateExternalAppointmentItemInput = {
   scheduleEndDateTime: Scalars['String'];
   scheduleStartDateTime: Scalars['String'];
   serviceId: Scalars['String'];
+  timeZone?: Maybe<Scalars['String']>;
 };
 
 export type CreateExternalInvoiceInputs = {
@@ -5838,6 +5844,7 @@ export type UpdateAppointmentBillingStatusInput = {
 
 export type UpdateAppointmentInput = {
   appointmentCreateType?: Maybe<AppointmentCreateType>;
+  appointmentDate?: Maybe<Scalars['String']>;
   appointmentTypeId?: Maybe<Scalars['String']>;
   autoAccident?: Maybe<Scalars['Boolean']>;
   billingStatus?: Maybe<BillingStatus>;
@@ -5868,6 +5875,7 @@ export type UpdateAppointmentInput = {
   secondaryInsurance?: Maybe<Scalars['String']>;
   selfCheckIn?: Maybe<Scalars['Boolean']>;
   status?: Maybe<AppointmentStatus>;
+  timeZone?: Maybe<Scalars['String']>;
 };
 
 export type UpdateAppointmentStatusInput = {
@@ -6684,7 +6692,7 @@ export type FindAllAppointmentsQueryVariables = Exact<{
 }>;
 
 
-export type FindAllAppointmentsQuery = { __typename?: 'Query', findAllAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, appointments?: Array<{ __typename?: 'Appointment', id: string, status: AppointmentStatus, scheduleEndDateTime?: string | null, scheduleStartDateTime?: string | null, token?: string | null, reason?: string | null, primaryInsurance?: string | null, billingStatus: BillingStatus, checkInActiveStep?: string | null, appointmentCreateType?: AppointmentCreateType | null, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null, email?: string | null, contacts?: Array<{ __typename?: 'Contact', primaryContact?: boolean | null, phone?: string | null }> | null } | null, facility?: { __typename?: 'Facility', id: string, name: string } | null, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string, color?: string | null, duration: string } | null } | null> | null } };
+export type FindAllAppointmentsQuery = { __typename?: 'Query', findAllAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, appointments?: Array<{ __typename?: 'Appointment', id: string, status: AppointmentStatus, scheduleEndDateTime?: string | null, scheduleStartDateTime?: string | null, appointmentDate?: string | null, token?: string | null, reason?: string | null, primaryInsurance?: string | null, billingStatus: BillingStatus, checkInActiveStep?: string | null, appointmentCreateType?: AppointmentCreateType | null, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null, email?: string | null, contacts?: Array<{ __typename?: 'Contact', primaryContact?: boolean | null, phone?: string | null }> | null } | null, facility?: { __typename?: 'Facility', id: string, name: string } | null, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string, color?: string | null, duration: string } | null } | null> | null } };
 
 export type GetAppointmentQueryVariables = Exact<{
   getAppointment: GetAppointment;
@@ -6878,7 +6886,7 @@ export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'Ac
 export type GetLoggedInUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetLoggedInUserQuery = { __typename?: 'Query', me: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, error?: string | null, message?: string | null } | null, user?: { __typename?: 'User', id: string, email: string, phone?: string | null, isTwoFactorEnabled: boolean, token?: string | null, userId: string, userType: string, autoLogoutTime?: string | null, roles?: Array<{ __typename?: 'Role', id: string, role?: string | null, rolePermissions?: Array<{ __typename?: 'RolePermission', permission?: { __typename?: 'Permission', id: string, name?: string | null } | null }> | null } | null> | null, facility?: { __typename?: 'Facility', id: string, name: string, practiceId?: string | null, practice?: { __typename?: 'Practice', id: string, name: string, attachments?: Array<{ __typename?: 'Attachment', preSignedUrl?: string | null }> | null } | null } | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null } | null } };
+export type GetLoggedInUserQuery = { __typename?: 'Query', me: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, error?: string | null, message?: string | null } | null, user?: { __typename?: 'User', id: string, email: string, phone?: string | null, isTwoFactorEnabled: boolean, token?: string | null, userId: string, userType: string, autoLogoutTime?: string | null, roles?: Array<{ __typename?: 'Role', id: string, role?: string | null, rolePermissions?: Array<{ __typename?: 'RolePermission', permission?: { __typename?: 'Permission', id: string, name?: string | null } | null }> | null } | null> | null, facility?: { __typename?: 'Facility', id: string, name: string, practiceId?: string | null, practice?: { __typename?: 'Practice', id: string, name: string, attachments?: Array<{ __typename?: 'Attachment', url?: string | null }> | null } | null } | null, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null, url?: string | null, type: AttachmentType, title?: string | null, typeId: string, createdAt: string, updatedAt: string }> | null } | null } };
 
 export type ForgetPasswordMutationVariables = Exact<{
   forgotPasswordInput: ForgotPasswordInput;
@@ -7638,7 +7646,7 @@ export type FindLabResultInfoQueryVariables = Exact<{
 }>;
 
 
-export type FindLabResultInfoQuery = { __typename?: 'Query', findLabResultInfo: { __typename?: 'LabResultPayload', labTests?: Array<{ __typename?: 'LabTests', id: string, labTestStatus: LabTestStatus, testDate?: string | null, testTime?: string | null, patientId?: string | null, createdAt?: string | null, testNotes?: string | null, receivedDate?: string | null, labName?: string | null, vendorName?: string | null, accessionNumber?: string | null, orderNumber?: string | null, collectedDate?: string | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null, dob?: string | null, patientRecord?: string | null, gender: Genderidentity, contacts?: Array<{ __typename?: 'Contact', primaryContact?: boolean | null, phone?: string | null }> | null, facility?: { __typename?: 'Facility', id: string, name: string, cliaIdNumber?: string | null, contacts?: Array<{ __typename?: 'Contact', primaryContact?: boolean | null, address?: string | null, city?: string | null, state?: string | null, zipCode?: string | null, phone?: string | null }> | null } | null } | null, diagnoses?: Array<{ __typename?: 'ICDCodes', id: string, code: string, description?: string | null } | null> | null, primaryProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, test?: { __typename?: 'LoincCodes', id: string, loincNum?: string | null, component?: string | null, unitsRequired?: string | null } | null, testObservations?: Array<{ __typename?: 'Observations', id: string, doctorsSignOff?: boolean | null, resultUnit?: string | null, resultValue?: string | null, normalRange?: string | null, normalRangeUnit?: string | null, abnormalFlag: AbnormalFlag, attachments?: Array<{ __typename?: 'Attachment', title?: string | null, id: string, attachmentName?: string | null, url?: string | null }> | null }> | null, appointment?: { __typename?: 'Appointment', id: string, scheduleStartDateTime?: string | null, appointmentType?: { __typename?: 'Service', name: string } | null } | null }> | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
+export type FindLabResultInfoQuery = { __typename?: 'Query', findLabResultInfo: { __typename?: 'LabResultPayload', labTests?: Array<{ __typename?: 'LabTests', id: string, labTestStatus: LabTestStatus, testDate?: string | null, testTime?: string | null, patientId?: string | null, createdAt?: string | null, testNotes?: string | null, receivedDate?: string | null, labName?: string | null, vendorName?: string | null, accessionNumber?: string | null, orderNumber?: string | null, collectedDate?: string | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null, dob?: string | null, patientRecord?: string | null, gender: Genderidentity, contacts?: Array<{ __typename?: 'Contact', primaryContact?: boolean | null, phone?: string | null }> | null, facility?: { __typename?: 'Facility', id: string, name: string, cliaIdNumber?: string | null, practice?: { __typename?: 'Practice', attachments?: Array<{ __typename?: 'Attachment', url?: string | null }> | null } | null, contacts?: Array<{ __typename?: 'Contact', primaryContact?: boolean | null, address?: string | null, city?: string | null, state?: string | null, zipCode?: string | null, phone?: string | null }> | null } | null } | null, diagnoses?: Array<{ __typename?: 'ICDCodes', id: string, code: string, description?: string | null } | null> | null, primaryProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, test?: { __typename?: 'LoincCodes', id: string, loincNum?: string | null, component?: string | null, unitsRequired?: string | null } | null, testObservations?: Array<{ __typename?: 'Observations', id: string, doctorsSignOff?: boolean | null, resultUnit?: string | null, resultValue?: string | null, normalRange?: string | null, normalRangeUnit?: string | null, abnormalFlag: AbnormalFlag, attachments?: Array<{ __typename?: 'Attachment', title?: string | null, id: string, attachmentName?: string | null, url?: string | null }> | null }> | null, appointment?: { __typename?: 'Appointment', id: string, scheduleStartDateTime?: string | null, appointmentType?: { __typename?: 'Service', name: string } | null } | null }> | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
 
 export type CreateLabTestMutationVariables = Exact<{
   createLabTestInput: CreateLabTestInput;
@@ -8337,6 +8345,7 @@ export const FindAllAppointmentsDocument = gql`
       status
       scheduleEndDateTime
       scheduleStartDateTime
+      appointmentDate
       token
       reason
       primaryInsurance
@@ -9754,7 +9763,7 @@ export const GetLoggedInUserDocument = gql`
           id
           name
           attachments {
-            preSignedUrl
+            url
           }
         }
       }
@@ -15464,6 +15473,11 @@ export const FindLabResultInfoDocument = gql`
           id
           name
           cliaIdNumber
+          practice {
+            attachments {
+              url
+            }
+          }
           contacts {
             primaryContact
             address

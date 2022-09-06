@@ -16,7 +16,7 @@ import history from '../../../../history';
 import { AuthContext } from '../../../../context';
 import { updatePracticeSchema } from '../../../../validationSchemas';
 import { CustomPracticeInputProps } from '../../../../interfacesTypes';
-import { Attachment, AttachmentType, PracticePayload, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery, useGetPracticeLazyQuery, useUpdatePracticeMutation } from '../../../../generated/graphql';
+import { Attachment, AttachmentType, PracticePayload, useGetAttachmentsLazyQuery, useGetPracticeLazyQuery, useUpdatePracticeMutation } from '../../../../generated/graphql';
 import {
   CANCEL, CHAMPUS, EDIT, EIN, FAX, MEDICAID, MEDICARE, NOT_FOUND_EXCEPTION, PHONE, UPIN,
   PRACTICE_IDENTIFIER, PRACTICE_NAME, SAVE_TEXT, SETTINGS_ROUTE, NO_ASSOCIATED_PRACTICE,
@@ -40,7 +40,7 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
 
   const methods = useForm<CustomPracticeInputProps>({
     mode: "all",
-    resolver: yupResolver(updatePracticeSchema)
+    resolver: yupResolver(updatePracticeSchema(true))
   });
   const { handleSubmit, setValue } = methods;
 
@@ -100,7 +100,9 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
 
         if (!!attachments) {
           const practiceAttachment = attachments.find((attachment) => attachment?.title === ATTACHMENT_TITLES.PracticeLogo);
-          const { id } = practiceAttachment || {}
+          const { id, url } = practiceAttachment || {}
+
+          url && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_URL, attachmentUrl: url })
 
           id &&
             mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId: id })
@@ -112,40 +114,11 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
     },
   });
 
-  const fetchAttachments = async () => {
+  const fetchAttachments = useCallback(async() => {
     practiceId && await getAttachments({
       variables: { getAttachment: { typeId: practiceId, paginationOptions: { limit: 10, page: 1 } } }
     })
-  }
-
-  const [getAttachment, { loading: getAttachmentLoading }] = useGetAttachmentLazyQuery({
-    fetchPolicy: "network-only",
-    nextFetchPolicy: 'no-cache',
-    notifyOnNetworkStatusChange: true,
-
-    onError() {
-      return null
-    },
-
-    onCompleted(data) {
-      const { getAttachment } = data || {};
-
-      if (getAttachment) {
-        const { preSignedUrl } = getAttachment
-        preSignedUrl && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_URL, attachmentUrl: preSignedUrl })
-      }
-    }
-  });
-
-  const fetchAttachment = useCallback(async () => {
-    try {
-      attachmentId && await getAttachment({ variables: { getMedia: { id: attachmentId } } })
-    } catch (error) { }
-  }, [attachmentId, getAttachment])
-
-  useEffect(() => {
-    attachmentId && attachmentData && fetchAttachment()
-  }, [attachmentId, fetchAttachment, attachmentData])
+  },[getAttachments, practiceId])
 
   const setEditData = (practice: PracticePayload['practice']) => {
     const { name, phone, fax, ein, upin, medicaid, medicare, champus, npi, taxId } = practice || {};
@@ -221,13 +194,17 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
   }
 
   const isLoading = loading || updatePracticeLoading
-  const attachmentLoading = loading || getAttachmentLoading || getAttachmentsLoading
+  const attachmentLoading = loading || getAttachmentsLoading
 
   const handleReload = () => {
     fetchAttachments();
     fetchUser()
   }
-  
+
+  useEffect(()=>{
+    fetchAttachments();
+  },[fetchAttachments])
+
   return (
     <Box p={4}>
       <Grid container justifyContent='center'>

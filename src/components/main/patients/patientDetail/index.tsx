@@ -1,7 +1,7 @@
 // packages block
 import { Box, Button, Tab } from "@material-ui/core";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
-import { ChangeEvent, Reducer, useCallback, useEffect, useReducer } from 'react';
+import { ChangeEvent, Reducer, useCallback, useContext, useEffect, useReducer } from 'react';
 import { useParams } from 'react-router';
 import { Link } from "react-router-dom";
 //components block
@@ -37,12 +37,16 @@ import {
 import { Action as mediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer, State as mediaState } from "../../../../reducers/mediaReducer";
 import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
-import { hasEncounter } from '../../../../utils';
+import { hasEncounter, isFrontDesk } from '../../../../utils';
 import PastAndUpcomingAppointments from "./PastAndUpcomingAppointments";
+import { AuthContext } from "../../../../context";
 // import { WHITE } from '../../../../theme';
 
 const PatientDetailsComponent = (): JSX.Element => {
   const { id, tabValue: routeParamValue } = useParams<ParamsType>();
+  const { user } = useContext(AuthContext);
+  const { roles } = user || {}
+  const isFrontDeskUser = isFrontDesk(roles)
   const classes = useProfileDetailsStyles();
   const [{
     openDelete, tabValue, patientData, patientProvidersData, doctorPatientId, doctorId, isEdit, doctorName
@@ -248,11 +252,11 @@ const PatientDetailsComponent = (): JSX.Element => {
             ))}
           </TabList>
 
-          <Box my={1}>
+          {!isFrontDeskUser && <Box my={1}>
             <Link to={`${PATIENTS_ROUTE}/${id}${CHART_ROUTE}`}>
               <Button color="primary" variant="contained">{VIEW_CHART_TEXT}</Button>
             </Link>
-          </Box>
+          </Box>}
         </Box>
 
         <Box className={classes.profileDetailsContainer}>
