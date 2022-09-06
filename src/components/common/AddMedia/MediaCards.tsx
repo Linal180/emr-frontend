@@ -6,16 +6,17 @@ import AddImageModal from ".";
 import EditMediaModal from "./EditMediaModal"
 import MediaCardComponent from "./MediaCardComponent";
 // graphql, media reducer and interfaces/types block
-import { Attachment } from "../../../generated/graphql";
+import { Attachment, useFetchDocumentTypeByNameLazyQuery } from "../../../generated/graphql";
 import { MediaCardsType } from "../../../interfacesTypes";
 import { Action, ActionType, initialState, mediaReducer, State } from '../../../reducers/mediaReducer'
+import { OTHER_TEXT } from "../../../constants";
 
 const MediaCards: FC<MediaCardsType> = ({
   moduleType, itemId, attachmentData, imageSide, notDescription, reload, title, button,
   buttonText, providerName, filesLimit, attachmentMetadata, btnType
 }): JSX.Element => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(mediaReducer, initialState)
-  const { isOpen, attachments, attachment, isEdit, isEditModalOpen } = state
+  const { isOpen, attachments, attachment, isEdit, isEditModalOpen, documentId } = state
 
   useEffect(() => {
     if (attachmentData) {
@@ -26,14 +27,35 @@ const MediaCards: FC<MediaCardsType> = ({
     }
   }, [attachmentData])
 
+  const [fetchDocumentType] = useFetchDocumentTypeByNameLazyQuery({
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+    variables: {
+      name: OTHER_TEXT
+    },
+
+    onCompleted(data) {
+      if (data) {
+        const { fetchDocumentTypeByName } = data ?? {}
+        const { documentType } = fetchDocumentTypeByName ?? {}
+        const { id } = documentType ?? {}
+        id && dispatch({ type: ActionType.SET_DOCUMENT_ID, documentId: id })
+      }
+    }
+  })
+
+  useEffect(() => {
+    fetchDocumentType()
+  }, [fetchDocumentType])
+
   const renderCard = (title: string, allAttachments: Attachment[]) => {
     return (
       <MediaCardComponent
-      title={title}
-      button={button}
-      imageSide={imageSide}
-      buttonText={buttonText}
-      notDescription={notDescription}
+        title={title}
+        button={button}
+        imageSide={imageSide}
+        buttonText={buttonText}
+        notDescription={notDescription}
         setOpen={(isOpen: boolean) => {
           dispatch({
             type: ActionType.SET_IS_OPEN,
@@ -105,7 +127,7 @@ const MediaCards: FC<MediaCardsType> = ({
         attachment={attachment}
         preSignedUrl={imageSide}
         filesLimit={filesLimit}
-        attachmentMetadata={attachmentMetadata}
+        attachmentMetadata={{ documentTypeId: documentId, ...attachmentMetadata }}
         btnType={btnType}
       />
 
