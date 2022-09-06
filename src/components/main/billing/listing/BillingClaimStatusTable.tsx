@@ -38,7 +38,7 @@ const BillingClaimStatusTable: FC = (): JSX.Element => {
 
   const { watch, setValue } = methods;
   const { claimNo, claimStatus, facility, from, patient, to } = watch()
-  const { isRejectedModalOpen, openAdvancedSearch, page, totalPages, claimStatuses, selectedClaim } = state;
+  const { isRejectedModalOpen, openAdvancedSearch, page, totalPages, claimStatuses, selectedClaim, shouldReset } = state;
 
   const [fetchBillingClaimStatus, { loading, error }] = useFetchBillingClaimStatusesLazyQuery({
     onCompleted(data) {
@@ -108,6 +108,7 @@ const BillingClaimStatusTable: FC = (): JSX.Element => {
     setValue('patient', { id: '', name: '' })
     setValue('facility', { id: '', name: '' })
     setValue('claimStatus', { id: '', name: '' })
+    dispatch({ type: ActionType.SET_SHOULD_RESET, shouldReset: true })
     fetchBillingClaim()
   }
 
@@ -152,6 +153,8 @@ const BillingClaimStatusTable: FC = (): JSX.Element => {
                               name="patient"
                               label={PATIENT}
                               addNewPatientOption={false}
+                              shouldReset={shouldReset}
+                              setShouldReset={(reset: boolean) => dispatch({ type: ActionType.SET_SHOULD_RESET, shouldReset: reset })}
                             />
                           </Grid>
 
