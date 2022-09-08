@@ -116,6 +116,22 @@ export const useExternalPatientStyles = makeStyles({
       color: GREY_TWO,
       fontWeight: 500,
     },
+
+    [theme.breakpoints.down("md")]: {
+      flexDirection: 'row',
+      overflowX: 'auto',
+      paddingRight: 10,
+      
+      "& .MuiStepConnector-vertical": {
+        display: 'none',
+      },
+      
+      "& .MuiStepLabel-label": {
+        whiteSpace: 'nowrap',
+        marginRight: 15,
+        marginLeft: 5,
+      }
+    },
   },
 
   agreementContainer: {

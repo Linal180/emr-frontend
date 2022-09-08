@@ -59,7 +59,8 @@ export const useCheckInStepIconStyles = makeStyles({
   },
 });
 
-export const useCheckInProfileStyles = makeStyles({
+// export const useCheckInProfileStyles = makeStyles({
+export const useCheckInProfileStyles = makeStyles((theme) => ({
   checkInProfileBox: {
     boxShadow: `0px 4px 30px rgba(56, 71, 109, 0.09)`,
     borderRadius: 8,
@@ -70,6 +71,10 @@ export const useCheckInProfileStyles = makeStyles({
     minHeight: 100,
     display: 'flex',
     alignItems: 'center',
+
+    [theme.breakpoints.down('md')]: {
+      width: '100%',
+    },
 
     "& .MuiStepper-root": {
       padding: 0,
@@ -112,7 +117,7 @@ export const useCheckInProfileStyles = makeStyles({
       color: BLUE,
     },
   },
-});
+}));
 
 export const useInsurancesStyles = makeStyles({
   checkInProfileBox: {

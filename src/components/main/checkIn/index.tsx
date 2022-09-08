@@ -287,13 +287,13 @@ const CheckInComponent = (): JSX.Element => {
           />
         </Box>
 
-        <Box p={1.5} />
+        <Box p={1} />
 
         <Box className={checkInClasses.checkInProfileBox}>
           <Typography variant="h6" color="textPrimary">{`Encounter on ${appointmentTime}`}</Typography>
         </Box>
 
-        <Box p={1.5} />
+        <Box p={1} />
 
         <Box className={checkInClasses.checkInProfileBox}>
           <Stepper alternativeLabel activeStep={activeStep} connector={<CheckInConnector />}>

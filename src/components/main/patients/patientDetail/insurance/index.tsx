@@ -159,123 +159,127 @@ const InsuranceComponent = ({
   return (
     getEligibilityAndCoverageLoading ? <Loader loading loaderText='Checking Eligibility' /> :
       <>
-        <Box>
-          <Card>
-            <Box px={3.5} py={1.5} borderBottom={`1px solid ${colors.grey[300]}`} display='flex' flexWrap='wrap' justifyContent='space-between' alignItems='center'>
-              <Typography variant="h3" color="initial">
-                {INSURANCES}
-              </Typography>
+        <Card>
+          <Box px={3.5} py={1.5} borderBottom={`1px solid ${colors.grey[300]}`} display='flex' flexWrap='wrap' justifyContent='space-between' alignItems='center'>
+            <Typography variant="h3" color="initial">
+              {INSURANCES}
+            </Typography>
 
-              {!!filteredOrderOfBenefitOptions.length &&
-                !shouldDisableEdit && showAddInsuranceBtn && <>
-                  <Button
-                    onClick={() => {
-                      toggleSideDrawer()
-                      setPolicyToEdit('')
-                    }}
-                    variant='contained' color='secondary'>{ADD_INSURANCE}</Button>
-                </>
-              }
+            {!!filteredOrderOfBenefitOptions.length &&
+              !shouldDisableEdit && showAddInsuranceBtn && <>
+                <Button
+                  onClick={() => {
+                    toggleSideDrawer()
+                    setPolicyToEdit('')
+                  }}
+                  variant='contained' color='secondary'>{ADD_INSURANCE}</Button>
+              </>
+            }
+          </Box>
+
+          {((!fetchAllPoliciesLoading && policies?.length === 0)) && (
+            <Box display="flex" justifyContent="center" pb={12} pt={5}>
+              <NoDataComponent message={NO_INSURANCE_ADDED} />
             </Box>
+          )}
 
-            {((!fetchAllPoliciesLoading && policies?.length === 0)) && (
-              <Box display="flex" justifyContent="center" pb={12} pt={5}>
-                <NoDataComponent message={NO_INSURANCE_ADDED} />
-              </Box>
-            )}
+          <Box p={3}>
+            {policies?.map((policy) => {
+              const { insurance, copays, expirationDate, issueDate, groupNumber, id, orderOfBenefit } = policy ?? {}
+              const { payerId, payerName } = insurance ?? {}
+              const { amount } = copays?.[0] ?? {}
 
-            <Box p={3}>
-              {policies?.map((policy) => {
-                const { insurance, copays, expirationDate, issueDate, groupNumber, id, orderOfBenefit } = policy ?? {}
-                const { payerId, payerName } = insurance ?? {}
-                const { amount } = copays?.[0] ?? {}
+              return (
+                <Box p={3} mb={5} border={`1px dashed ${WHITE_FOUR}`} borderRadius={4}>
+                  <Box mb={3} display='flex' flexWrap='wrap' justifyContent='space-between' alignItems='center'>
+                    <Box display='flex' alignItems='center' flexWrap='wrap'>
+                      <Box mr={2} display='flex' alignItems='center' flexWrap='wrap'>
+                        <Typography variant="h4">{fetchAllPoliciesLoading ? renderTextLoading() : payerName}</Typography>
 
-                return (
-                  <Box p={3} mb={5} border={`1px dashed ${WHITE_FOUR}`} borderRadius={4}>
-                    <Box mb={3} display='flex' flexWrap='wrap' justifyContent='space-between' alignItems='center'>
-                      <Box display='flex' alignItems='center' flexWrap='wrap'>
-                        <Box mr={2} display='flex' alignItems='center' flexWrap='wrap'>
-                          <Typography variant="h4">{fetchAllPoliciesLoading ? renderTextLoading() : payerName}</Typography>
-
-                          {fetchAllPoliciesLoading ? renderTextLoading() :
-                            <Box ml={2} py={0.5} px={1} border={`1px solid ${PURPLE_ONE}`} color={PURPLE_ONE} borderRadius={6}>
-                              <Typography variant="h6">{getInsuranceStatus(orderOfBenefit)}</Typography>
-                            </Box>
-                          }
-                        </Box>
-
-                        {!shouldDisableEdit && showEditInsuranceBtn &&
-                          <IconButton onClick={() => editHandler(id)}>
-                            <EditNewIcon />
-                          </IconButton>}
-                        {viewInsuranceBtn &&
-                          <IconButton onClick={() => handleCardModalOpen(id)}>
-                            <EyeIcon />
-                          </IconButton>
+                        {fetchAllPoliciesLoading ? renderTextLoading() :
+                          <Box ml={2} py={0.5} px={1} border={`1px solid ${PURPLE_ONE}`} color={PURPLE_ONE} borderRadius={6}>
+                            <Typography variant="h6">{getInsuranceStatus(orderOfBenefit)}</Typography>
+                          </Box>
                         }
                       </Box>
-                    </Box>
 
-                    <Box display='flex' alignItems='center' flexWrap='wrap'>
-                      <Box minWidth={200} mr={10} my={2}>
-                        <Typography variant="h6">{POLICY_NAME_TEXT}</Typography>
-                        <Typography variant="body2">{fetchAllPoliciesLoading ? renderTextLoading() : payerId}</Typography>
-                      </Box>
-
-                      <Box minWidth={200} mr={10} my={2}>
-                        <Typography variant="h6">{ID_TEXT}</Typography>
-                        <Typography variant="body2">{fetchAllPoliciesLoading ? renderTextLoading() : groupNumber}</Typography>
-                      </Box>
-
-                      <Box minWidth={200} mr={10} my={2}>
-                        <Typography variant="h6">{COPAY_TEXT}</Typography>
-                        <Typography variant="body2">{fetchAllPoliciesLoading ? renderTextLoading() : amount ? `$${amount}` : '- -'}</Typography>
-                      </Box>
-
-                      <Box minWidth={200} mr={10} my={2}>
-                        <Typography variant="h6">{EFFECTIVE_TEXT}</Typography>
-                        <Typography variant="body2">
-                          {fetchAllPoliciesLoading ? renderTextLoading() :
-                            `${getFormatDateString(issueDate, "MM-DD-YYYY")} - ${getFormatDateString(expirationDate, "MM-DD-YYYY")}`
-                          }
-                        </Typography>
-                      </Box>
-
-                      <Box minWidth={200} my={2}>
-                        <Typography variant="h6">{ELIGIBILITY_TEXT}</Typography>
-
-                        <Button onClick={() => handleCheckEligibility(id)}>
-                          <Typography variant="body1" color='secondary'>{fetchAllPoliciesLoading ? renderTextLoading() : CHECK_ELIGIBILITY_TODAY}</Typography>
-                        </Button>
-                      </Box>
-
-                      {/* <Button onClick={() => handleCardModalOpen(id)}>
-                        <Typography variant="body1" color='secondary'>{fetchAllPoliciesLoading ? renderTextLoading() : POLICY_CARDS}</Typography>
-                      </Button> */}
+                      {!shouldDisableEdit && showEditInsuranceBtn &&
+                        <IconButton onClick={() => editHandler(id)}>
+                          <Box width={20}>
+                            <EditNewIcon />
+                          </Box>
+                        </IconButton>}
+                      {viewInsuranceBtn &&
+                        <IconButton onClick={() => handleCardModalOpen(id)}>
+                          <Box width={20}>
+                            <EyeIcon />
+                          </Box>
+                        </IconButton>
+                      }
                     </Box>
                   </Box>
-                )
-              })}
 
-              <SideDrawer
-                drawerOpened={drawerOpened}
-                toggleSideDrawer={toggleSideDrawer}
-              >
-                <PolicyCard
-                  id={policyToEdit}
-                  isEdit={!!policyToEdit}
-                  handleReload={handleReload}
-                  setPolicyToEdit={setPolicyToEdit}
-                  filteredOrderOfBenefitOptions={filteredOrderOfBenefitOptions}
-                />
-              </SideDrawer>
-            </Box>
-          </Card>
-        </Box>
+                  <Box display='flex' alignItems='center' flexWrap='wrap'>
+                    <Box minWidth={200} mr={10} my={2}>
+                      <Typography variant="h6">{POLICY_NAME_TEXT}</Typography>
+                      <Typography variant="body2">{fetchAllPoliciesLoading ? renderTextLoading() : payerId}</Typography>
+                    </Box>
 
-        <Box mt={3}>
+                    <Box minWidth={200} mr={10} my={2}>
+                      <Typography variant="h6">{ID_TEXT}</Typography>
+                      <Typography variant="body2">{fetchAllPoliciesLoading ? renderTextLoading() : groupNumber}</Typography>
+                    </Box>
+
+                    <Box minWidth={200} mr={10} my={2}>
+                      <Typography variant="h6">{COPAY_TEXT}</Typography>
+                      <Typography variant="body2">{fetchAllPoliciesLoading ? renderTextLoading() : amount ? `$${amount}` : '- -'}</Typography>
+                    </Box>
+
+                    <Box minWidth={200} mr={10} my={2}>
+                      <Typography variant="h6">{EFFECTIVE_TEXT}</Typography>
+                      <Typography variant="body2">
+                        {fetchAllPoliciesLoading ? renderTextLoading() :
+                          `${getFormatDateString(issueDate, "MM-DD-YYYY")} - ${getFormatDateString(expirationDate, "MM-DD-YYYY")}`
+                        }
+                      </Typography>
+                    </Box>
+
+                    <Box minWidth={200} my={2}>
+                      <Typography variant="h6">{ELIGIBILITY_TEXT}</Typography>
+
+                      <Button onClick={() => handleCheckEligibility(id)}>
+                        <Typography variant="body1" color='secondary'>{fetchAllPoliciesLoading ? renderTextLoading() : CHECK_ELIGIBILITY_TODAY}</Typography>
+                      </Button>
+                    </Box>
+
+                    {/* <Button onClick={() => handleCardModalOpen(id)}>
+                        <Typography variant="body1" color='secondary'>{fetchAllPoliciesLoading ? renderTextLoading() : POLICY_CARDS}</Typography>
+                      </Button> */}
+                  </Box>
+                </Box>
+              )
+            })}
+
+            <SideDrawer
+              drawerOpened={drawerOpened}
+              toggleSideDrawer={toggleSideDrawer}
+            >
+              <PolicyCard
+                id={policyToEdit}
+                isEdit={!!policyToEdit}
+                handleReload={handleReload}
+                setPolicyToEdit={setPolicyToEdit}
+                filteredOrderOfBenefitOptions={filteredOrderOfBenefitOptions}
+              />
+            </SideDrawer>
+          </Box>
+        </Card>
+
+        <Box m={3} />
+
+        <Card>
           <EligibilityTableComponent id={patientId} appointmentId={appointmentId} />
-        </Box>
+        </Card>
 
         {isCardModalOpen &&
           <InsuranceCardsModal

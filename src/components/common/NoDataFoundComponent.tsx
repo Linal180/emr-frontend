@@ -8,7 +8,7 @@ import { NO_DATA_FOUND } from "../../constants";
 const NoDataFoundComponent: FC = (): JSX.Element => {
   return (
     <Box display="flex" flexDirection="column" alignItems="center">
-      <Box color="#E3EEFA" fontSize={120} display="flex" alignItems="center">
+      <Box width={80} color="#E3EEFA" fontSize={120} display="flex" alignItems="center">
         <FolderOpenIcon fontSize="inherit" color="inherit" />
       </Box>
 

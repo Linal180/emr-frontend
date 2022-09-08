@@ -10,7 +10,9 @@ const NoDataComponent: FC<NoDataComponentProps> = ({ message }): JSX.Element => 
   return (
     <Box display="flex" flexDirection="column" alignItems="center">
       <Box color="#E3EEFA" fontSize={120} display="flex" alignItems="center">
-        <NoDataIcon />
+        <Box width={40}>
+          <NoDataIcon />
+        </Box>
       </Box>
 
       <Box mt={1}>

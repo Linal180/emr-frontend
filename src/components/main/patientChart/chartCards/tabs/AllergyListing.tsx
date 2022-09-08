@@ -35,7 +35,7 @@ const AllergyTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
   const { id } = useParams<ParamsType>()
   const classes = useChartingStyles()
   const classesTable = useTableStyles();
-  
+
   const [state, dispatch] =
     useReducer<Reducer<State, Action>>(chartReducer, initialState)
   const { isSubModalOpen, selectedItem, itemId, allergyDeleteId, patientAllergies, totalPages, page, isOpen, openDelete } = state || {}
@@ -217,11 +217,15 @@ const AllergyTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
                           {!shouldDisableEdit && <TableCell scope="row">
                             <Box display='flex' alignItems='center'>
                               <IconButton onClick={() => id && allergy && handleEdit(id, allergy)}>
-                                <EditOutlinedIcon />
+                                <Box width={20}>
+                                  <EditOutlinedIcon />
+                                </Box>
                               </IconButton>
 
                               <IconButton onClick={() => id && onDeleteClick(id)}>
-                                <TrashOutlinedSmallIcon />
+                                <Box width={20}>
+                                  <TrashOutlinedSmallIcon />
+                                </Box>
                               </IconButton>
                             </Box>
                           </TableCell>}
@@ -261,20 +265,24 @@ const AllergyTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
         />
         }
       </Grid>
-      {isOpen &&
-        <AddAllergy isOpen={isOpen} handleModalClose={handleModalClose} fetch={() => fetchAllergies()} />}
+      {
+        isOpen &&
+        <AddAllergy isOpen={isOpen} handleModalClose={handleModalClose} fetch={() => fetchAllergies()} />
+      }
 
-      {totalPages > 1 && (
-        <Box display="flex" justifyContent="flex-end" p={3}>
-          <Pagination
-            count={totalPages}
-            shape="rounded"
-            variant="outlined"
-            page={page}
-            onChange={handleChange}
-          />
-        </Box>
-      )}
+      {
+        totalPages > 1 && (
+          <Box display="flex" justifyContent="flex-end" p={3}>
+            <Pagination
+              count={totalPages}
+              shape="rounded"
+              variant="outlined"
+              page={page}
+              onChange={handleChange}
+            />
+          </Box>
+        )
+      }
     </>
   )
 }

@@ -1,18 +1,19 @@
 //packages import
-import { Box, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, Radio } from "@material-ui/core"
-import { FC } from "react"
+import { Box, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, } from "@material-ui/core";
+import { FC } from "react";
+import { useParams } from "react-router";
 //components import
-import CardComponent from "../../../common/CardComponent"
+import Alert from "../../../common/Alert";
+import RadioButton from "../../../common/RadioButton";
+import CardComponent from "../../../common/CardComponent";
 //constants, interfaces, reducer imports
 import {
   CONTRACT, INSURANCE, INSURANCE_DISCLAIMER, INSURANCE_SELECTION, INTERNATIONAL_TRAVELER, NO_INSURANCE
-} from "../../../../constants"
-import { InsuranceSelectionProps, ParamsType } from "../../../../interfacesTypes"
-import { useExternalPatientStyles } from "../../../../styles/publicAppointmentStyles/externalPatientStyles"
-import { useUpdateAppointmentMutation } from "../../../../generated/graphql"
-import Alert from "../../../common/Alert"
-import { useParams } from "react-router"
-import { ActionType } from "../../../../reducers/patientReducer"
+} from "../../../../constants";
+import { useUpdateAppointmentMutation } from "../../../../generated/graphql";
+import { InsuranceSelectionProps, ParamsType } from "../../../../interfacesTypes";
+import { useExternalPatientStyles } from "../../../../styles/publicAppointmentStyles/externalPatientStyles";
+import { ActionType } from "../../../../reducers/patientReducer";
 
 const InsuranceSelectionCard: FC<InsuranceSelectionProps> = ({
   shouldDisableEdit, selection, setSelection, state, dispatch
@@ -53,13 +54,12 @@ const InsuranceSelectionCard: FC<InsuranceSelectionProps> = ({
       <Grid item md={12} sm={12} xs={12}>
         <FormControl component="fieldset">
           <FormLabel className={classes.privacyLabelHeader} component="li">{INSURANCE_DISCLAIMER}</FormLabel>
-
           <Box display="flex" flexWrap="wrap" pb={2}>
             <FormGroup className={classes.privacyFormGroup}>
               <FormControlLabel
                 className={classes.privacyLabelDescription}
                 control={
-                  <Radio
+                  <RadioButton
                     disabled={shouldDisableEdit}
                     color="primary"
                     checked={selection === 'insurance'}
@@ -74,7 +74,7 @@ const InsuranceSelectionCard: FC<InsuranceSelectionProps> = ({
               <FormControlLabel
                 className={classes.privacyLabelDescription}
                 control={
-                  <Radio
+                  <RadioButton
                     disabled={shouldDisableEdit}
                     color="primary"
                     checked={selection === 'noInsurance'}
@@ -89,7 +89,7 @@ const InsuranceSelectionCard: FC<InsuranceSelectionProps> = ({
               <FormControlLabel
                 className={classes.privacyLabelDescription}
                 control={
-                  <Radio
+                  <RadioButton
                     disabled={shouldDisableEdit}
                     color="primary"
                     checked={selection === 'internationalTraveler'}
@@ -104,7 +104,7 @@ const InsuranceSelectionCard: FC<InsuranceSelectionProps> = ({
               <FormControlLabel
                 className={classes.privacyLabelDescription}
                 control={
-                  <Radio
+                  <RadioButton
                     disabled={shouldDisableEdit}
                     color="primary"
                     checked={selection === 'contract'}
