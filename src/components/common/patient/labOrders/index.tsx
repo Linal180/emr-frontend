@@ -181,7 +181,7 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Eleme
               </Box>
 
               <Box mb={2}>
-                <Button variant="outlined" color="inherit" className='blue-button-new' startIcon={<Add />} onClick={toggleSideDrawer}>
+                <Button variant="outlined" color="inherit" className='blue-button-new' startIcon={<Box width={20}><Add /></Box>} onClick={toggleSideDrawer}>
                   {MANUAL_ENTRY}
                 </Button>
               </Box>
@@ -267,11 +267,15 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Eleme
                         <TableCell scope="row">
                           <Box display="flex" alignItems="center">
                             <IconButton onClick={() => history.push(appointmentId ? `${ADD_LAB_ORDERS_RESULTS_ROUTE}/${id}/${orderNumber}/${appointmentId}` : `${ADD_LAB_ORDERS_RESULTS_ROUTE}/${id}/${orderNumber}`)}>
-                              <OutlinedAddIcon />
+                              <Box width={20}>
+                                <OutlinedAddIcon />
+                              </Box>
                             </IconButton>
 
                             {/* <IconButton>
-                                <EyeIcon />
+                                  <Box width={20}>
+                                    <EyeIcon />
+                                  </Box>
                               </IconButton> */}
                             <ResultDownloadLink orderNumber={orderNumber || ''} />
 
@@ -280,7 +284,9 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Eleme
                                 dispatch({ type: ActionType.SET_IS_STICKER_MODAL_OPEN, isStickerModalOpen: true });
                                 dispatch({ type: ActionType.SET_STICKER_ORDER, stickerOrder: orderNumber || '' })
                               }}>
-                                <PrintGrayIcon />
+                                <Box width={20}>
+                                  <PrintGrayIcon />
+                                </Box>
                               </IconButton>
                             </Box>
                           </Box>

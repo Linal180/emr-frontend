@@ -1,7 +1,7 @@
 //packages block
 import { FC, Fragment, useEffect } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Box, Checkbox, FormControlLabel, IconButton, Typography } from "@material-ui/core";
+import { Box, Button, Checkbox, FormControlLabel, IconButton, Typography } from "@material-ui/core";
 //components
 import Alert from "../../Alert";
 import InputController from "../../../../controller";
@@ -70,11 +70,11 @@ export const PatientNoteModal: FC<PatientNoteModalProps> = ({ dispatcher, patien
 
   return (
     <Fragment>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Box className="icon-button-hover" display="flex" justifyContent="space-between" alignItems="center">
         <Typography>{PINNED_NOTES}</Typography>
 
         {isEdit ?
-          <IconButton onClick={handleSubmit(onSubmit)}><SaveIcon /></IconButton> :
+          <Button onClick={handleSubmit(onSubmit)}><SaveIcon /></Button> :
           <IconButton onClick={() => dispatcher({ type: ActionType.SET_IS_EDIT, isEdit: true })}><EditOutlinedIcon /></IconButton>
         }
       </Box>

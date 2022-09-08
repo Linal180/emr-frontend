@@ -624,7 +624,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                   {getAppointmentLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                     <>
                       <Grid container spacing={3}>
-                        <Grid item lg={6} md={12} sm={12} xs={12}>
+                        <Grid item lg={6} md={6} sm={12} xs={12}>
                           <Controller
                             name='employment'
                             control={control}

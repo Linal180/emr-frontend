@@ -38,7 +38,9 @@ const Search = forwardRef<FormForwardRef | undefined, SearchComponentProps>(
       <Box className={classes.searchBox}>
         <Box className="icon-button-hover">
           <Button aria-label="search">
-            <SearchIcon />
+            <Box width={20}>
+              <SearchIcon />
+            </Box>
           </Button>
         </Box>
 
