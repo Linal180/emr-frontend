@@ -154,7 +154,7 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
             />
           </Grid>
 
-          <Grid item md={12}>
+          <Grid item md={12} sm={12}>
             <Selector
               controllerLabel={SELECT_COLUMN_TEXT}
               controllerName="column"

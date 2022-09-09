@@ -2,6 +2,16 @@ import { makeStyles } from "@material-ui/core";
 import { WHITE } from "../../theme";
 
 export const usePreviewModalStyles = makeStyles((theme) => ({
+  externalMain: {
+    paddingLeft: theme.spacing(5),
+    paddingRight: theme.spacing(5),
+
+    [theme.breakpoints.down("md")]: {
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(2),
+    },
+  },
+
   main: {
     backgroundColor: `${WHITE} !important`,
     border: "none !important",

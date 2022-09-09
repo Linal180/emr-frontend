@@ -36,7 +36,7 @@ export const FormFields = () => {
                         }}
                         className={classes.dragContainer}
                       >
-                        <Box marginRight={1} display="flex" alignItems="center">
+                        <Box width={20} marginRight={1} display="flex" alignItems="center">
                           <item.icon />
                         </Box>
 
