@@ -189,10 +189,10 @@ const DropContainer = ({ formState, changeValues, dispatch }: DropContainerProps
                             }
                           </Box>
                           <Box display={'flex'} justifyContent={'flex-end'} pr={1}>
-                            {sectionIndex !== 0 && <IconButton onClick={() => upwardHandler(tabIndex, sectionIndex)}><ArrowUpwardIcon /></IconButton>}
-                            {sectionLength - 1 !== sectionIndex && <IconButton onClick={() => downwardHandler(tabIndex, sectionIndex)}><ArrowDownwardIcon /></IconButton>}
+                            {sectionIndex !== 0 && <IconButton onClick={() => upwardHandler(tabIndex, sectionIndex)}><Box width={20}><ArrowUpwardIcon /></Box></IconButton>}
+                            {sectionLength - 1 !== sectionIndex && <IconButton onClick={() => downwardHandler(tabIndex, sectionIndex)}><Box width={20}><ArrowDownwardIcon /></Box></IconButton>}
                             {sectionLength > 1 && <IconButton onClick={() => delColHandler(tabIndex, sectionIndex)}>
-                              <TrashOutlinedIcon />
+                              <Box width={20}><TrashOutlinedIcon /></Box>
                             </IconButton>}
                           </Box>
                         </Box>
