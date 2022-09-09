@@ -103,6 +103,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
     patientId: selectedPatient, scheduleStartDateTime
   } = watch();
+
   const { value: selectedService } = selectedServiceId ?? {}
   const scheduleStartTime = getScheduleStartTime(scheduleStartDateTime)
 
@@ -139,7 +140,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
     async onCompleted(data) {
       const { getAppointment: { response, appointment } } = data;
-
       if (response) {
         const { status } = response
 
@@ -302,18 +302,18 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
       const slotsInput = {
         offset, currentDate: appStartDate ? new Date(appStartDate).toString() : date.toString(),
-        serviceId: selectedService, day: days[currentDay]
+        serviceId: selectedService, day: days[currentDay], ...(isEdit ? { appointmentId: id } : {})
       };
 
       getSlots({
         variables: {
           getSlots: selectedProvider || onlyDoctor ?
             { providerId: onlyDoctor ? currentDoctor : selectedProvider, ...slotsInput }
-            : { facilityId: isHigherAdmin ? selectedFacility : userFacilityId || '', ...slotsInput }
+            : { facilityId: isHigherAdmin ? selectedFacility : userFacilityId || '', ...slotsInput, }
         }
       })
     }
-  }, [currentDate, offset, selectedFacility, date, selectedProvider, selectedService, serviceId, watch, getSlots, appStartDate, setValue, appEndDate, onlyDoctor, currentDoctor, isHigherAdmin, userFacilityId])
+  }, [currentDate, offset, selectedFacility, date, selectedProvider, selectedService, serviceId, watch, getSlots, appStartDate, setValue, appEndDate, onlyDoctor, currentDoctor, isHigherAdmin, userFacilityId, isEdit, id])
 
   const fetchList = useCallback((id: string, name: string) => {
     reset({
@@ -362,7 +362,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
         practiceId = pId || ''
       }
-      
+
       const appointmentInput = {
         reason, scheduleStartDateTime: transformedStartTime, practiceId, patientId: selectedPatient,
         scheduleEndDateTime: transformedEndTime, autoAccident: autoAccident || false, notes,
@@ -419,14 +419,10 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     setValue('patientId', setRecord(pId, pName))
   }, [pId, pName, setValue])
 
-  const setScheduleEmpty = useCallback(() => {
+  const setScheduleEmpty = () => {
     setValue('scheduleEndDateTime', '')
     setValue('scheduleStartDateTime', '')
-  }, [setValue])
-
-  useEffect(() => {
-    setScheduleEmpty()
-  }, [date, selectedService, selectedFacility, selectedProvider, setScheduleEmpty])
+  }
 
   const handleAppointmentType = (type: string) => setAppointmentType(type)
 
@@ -483,6 +479,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         isEdit ? renderItem(FACILITY, facilityName, false, getAppointmentLoading)
                           : <FacilitySelector
                             isRequired
+                            onSelect={() => setScheduleEmpty()}
                             label={FACILITY}
                             name="facilityId"
                           />
@@ -499,6 +496,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                           defaultValues={serviceIds}
                           loading={getAppointmentLoading}
                           facilityId={isHigherAdmin ? selectedFacility : userFacilityId || ''}
+                          onSelect={() => setScheduleEmpty()}
                         />
                       }
                     </Grid>
@@ -520,6 +518,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                               facilityId={selectedFacility}
                               loading={getAppointmentLoading}
                               isRequired={appointmentType === AppointmentCreateType.Telehealth}
+                              onSelect={() => setScheduleEmpty()}
                             />
                           }
                         </Grid>
@@ -588,7 +587,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         autoOk
                         fullWidth
                         disableToolbar
-                        onChange={(currentDate) => { dateHandler(currentDate) }}
+                        onChange={(currentDate) => { dateHandler(currentDate); setScheduleEmpty() }}
                       />
 
                     </MuiPickersUtilsProvider>
@@ -624,7 +623,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                   {getAppointmentLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                     <>
                       <Grid container spacing={3}>
-                        <Grid item lg={6} md={12} sm={12} xs={12}>
+                        <Grid item lg={6} md={6} sm={12} xs={12}>
                           <Controller
                             name='employment'
                             control={control}

@@ -1,7 +1,7 @@
 import Webcam from "react-webcam";
 import { CameraAlt, Cancel } from "@material-ui/icons";
 import { Box, Button, Grid, IconButton } from "@material-ui/core";
-import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 //components
 import Alert from "../Alert";
 //interface, utils
@@ -10,6 +10,8 @@ import { CameraComponentProps } from "../../../interfacesTypes";
 import { NO_CAMERA_FOUND, TAKE_AGAIN } from "../../../constants";
 
 const CameraComponent = ({ sendFile, invisibleHandler, open }: CameraComponentProps) => {
+
+  const webcamRef = useRef<Webcam | null>(null);
 
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([])
   const [deviceId, setDeviceId] = useState<string>('');
@@ -67,42 +69,39 @@ const CameraComponent = ({ sendFile, invisibleHandler, open }: CameraComponentPr
         </Box>
       </Box>
         :
-        <Box width="100%" height="100%">
-          <Webcam audio={false} videoConstraints={{ deviceId: deviceId }} screenshotFormat="image/png" width={'100%'} >
-            {(values) => {
-              const { getScreenshot } = values
-              return (
-                <Box display="flex" justifyContent='center'>
-                  <IconButton onClick={() => invisibleHandler(!open)}>
-                    <Box width={20}>
-                      <Cancel />
-                    </Box>
-                  </IconButton>
-                  <Box p={1} />
-                  <IconButton onClick={() => {
-                    const imageSrc = getScreenshot()
-                    takePhoto(imageSrc)
-                  }} color="primary">
-                    <Box width={20}>
-                      <CameraAlt />
-                    </Box>
-                  </IconButton>
-                </Box>
-              )
-            }}
-          </Webcam>
-          {devices?.length > 1 &&
-            <Grid container spacing={3}>{devices?.map((device, key) => {
-              const { label } = device || {}
-              return <Grid item xs={12} sm={6} md={6}>
-                <Button variant="contained" onClick={() => deviceSelectHandler(device)} color="secondary">
-                  {label || `Device ${key + 1}`}
-                </Button>
+        <Box>
+          <Box display="flex" justifyContent='center'>
+            <IconButton onClick={() => invisibleHandler(!open)}>
+              <Box width={20}>
+                <Cancel />
+              </Box>
+            </IconButton>
+            <Box p={1} />
+            <IconButton onClick={() => {
+              const imageSrc = webcamRef?.current?.getScreenshot();
+              imageSrc && takePhoto(imageSrc)
+            }} color="primary">
+              <Box width={20}>
+                <CameraAlt />
+              </Box>
+            </IconButton>
+          </Box>
+          <Box width="100%" height="100%">
+            <Webcam audio={false} videoConstraints={{ deviceId: deviceId }} screenshotFormat="image/png" width={'100%'} ref={webcamRef} />
+            {devices?.length > 1 &&
+              <Grid container spacing={3}>{devices?.map((device, key) => {
+                const { label } = device || {}
+                return <Grid item xs={12} sm={6} md={6}>
+                  <Button variant="contained" onClick={() => deviceSelectHandler(device)} color="secondary">
+                    {label || `Device ${key + 1}`}
+                  </Button>
+                </Grid>
+              })}
               </Grid>
-            })}
-            </Grid>
-          }
-        </Box>}
+            }
+          </Box>
+        </Box>
+      }
     </Fragment>
   );
 }

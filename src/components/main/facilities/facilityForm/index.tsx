@@ -79,7 +79,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           if (facility && status && status === 200) {
             const {
               name, cliaIdNumber, federalTaxId, mammographyCertificationNumber, practiceId, npi,
-              taxonomyCode, serviceCode, timeZone, billingAddress, contacts, practice, startTime, endTime
+              taxonomyCode, serviceCode, billingAddress, contacts, practice, startTime, endTime
             } = facility;
             const { name: practiceName } = practice || {};
 
@@ -95,7 +95,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               name: `${taxonomyCode.code} | ${taxonomyCode.displayName}`
             })
             startTime && setValue('startTime', getTimeString(startTime))
-            timeZone && setValue('timeZone', setRecord(timeZone, timeZone))
+            // timeZone && setValue('timeZone', setRecord(timeZone, timeZone))
             serviceCode && setValue('serviceCode', setRecord(serviceCode, formatToLeadingCode(serviceCode), false))
             mammographyCertificationNumber && setValue('mammographyCertificationNumber', mammographyCertificationNumber)
 
@@ -225,18 +225,18 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       mammographyCertificationNumber, serviceCode,
       phone, email, fax, city, state, country, address2, address, zipCode,
       billingPhone, billingEmail, billingFax, billingCity, billingState, billingCountry, billingAddress2,
-      billingAddress, billingZipCode, timeZone, startTime, endTime
+      billingAddress, billingZipCode, startTime, endTime
     } = inputs;
 
     const { id: selectedState } = state;
-    const { name: timeZoneName } = timeZone;
+    // const { name: timeZoneName } = timeZone;
     const { id: selectedPractice } = practice || {};
     const { id: selectedServiceCode } = serviceCode;
     const { id: selectedBillingState } = billingState;
     const facilityPractice = isSuper ? selectedPractice : practiceId
 
     const facilityInput = {
-      name: name || '', cliaIdNumber, federalTaxId, npi, timeZone: timeZoneName, tamxonomyCode: tamxonomyCode.id,
+      name: name || '', cliaIdNumber, federalTaxId, npi, tamxonomyCode: tamxonomyCode.id,
       practiceId: facilityPractice, mammographyCertificationNumber, endTime: endTime && setTime(endTime),
       serviceCode: selectedServiceCode as ServiceCode || ServiceCode.Pharmacy_01,
       startTime: startTime && setTime(startTime),

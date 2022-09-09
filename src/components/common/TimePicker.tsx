@@ -26,12 +26,13 @@ const TimePicker: FC<PickerProps> = ({ name, label, isRequired, loading, disable
               <TextField
                 id={`${name}-dialog`}
                 {...field}
-                className="timePickerIcon"
                 type="time"
                 defaultValue="07:30"
+                className="timePickerIcon"
                 error={invalid}
                 inputProps={{ step: 300, }}
                 disabled={disabled}
+                
               />
 
               <FormHelperText>{message}</FormHelperText>

@@ -4,10 +4,31 @@ import {
   GREY, GREY_FOUR, WHITE, WHITE_FOUR 
 } from "../theme";
 
-export const useChartingStyles = makeStyles({
+export const useChartingStyles = makeStyles((theme) => ({
+
   cardBox: {
     boxShadow: `0px 4px 30px rgba(56, 71, 109, 0.09)`,
     borderRadius: 8,
+
+    [theme.breakpoints.down("md")]: {
+      minHeight: 'auto',
+      height: 'fit-content',
+    },
+    
+    "& .MuiTabs-flexContainerVertical" :{
+      [theme.breakpoints.down("md")]: {
+        flexDirection: 'row',
+        overflowX: 'auto',
+
+        "& .MuiTab-labelIcon": {
+          [theme.breakpoints.down("md")]: {
+            marginBottom: 0,
+            marginRight: 15,
+          },
+        },
+      },
+    },
+
   },
 
   tab: {
@@ -266,4 +287,4 @@ export const useChartingStyles = makeStyles({
       paddingTop: 0,
     }
   }
-});
+}));

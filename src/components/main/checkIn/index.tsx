@@ -215,7 +215,7 @@ const CheckInComponent = (): JSX.Element => {
 
   const handlePatientUpdate = () => {
     !shouldDisableEdit && patientRef.current?.submit()
-    handleStep(2)
+    isFrontDeskUser ? handleStep(3) : handleStep(2)
   }
 
   // 1- PATIENT-INFO
@@ -225,7 +225,7 @@ const CheckInComponent = (): JSX.Element => {
         <Typography variant="h4">{PATIENT_INFO}</Typography>
 
         <Button variant="contained" color="primary" onClick={handlePatientUpdate}>
-          {TO_CHART}
+          {isFrontDeskUser ? TO_LAB_ORDERS : TO_CHART}
           <ChevronRight />
         </Button>
       </Box>
@@ -287,13 +287,13 @@ const CheckInComponent = (): JSX.Element => {
           />
         </Box>
 
-        <Box p={1.5} />
+        <Box p={1} />
 
         <Box className={checkInClasses.checkInProfileBox}>
           <Typography variant="h6" color="textPrimary">{`Encounter on ${appointmentTime}`}</Typography>
         </Box>
 
-        <Box p={1.5} />
+        <Box p={1} />
 
         <Box className={checkInClasses.checkInProfileBox}>
           <Stepper alternativeLabel activeStep={activeStep} connector={<CheckInConnector />}>

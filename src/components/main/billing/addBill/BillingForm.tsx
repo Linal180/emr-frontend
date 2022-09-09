@@ -179,11 +179,10 @@ const BillingForm: FC<BillingFormProps> = ({
               <Box m={0.5}>
                 <Button
                   variant="contained" color="primary" disabled={createBillingLoading}
-                  onClick={() => handleCheckout(true)}
+                  onClick={() => handleCheckout(true)} endIcon={<Box width={20}><ChevronRight /></Box>}
                 >
                   {submitButtonText ?? CHECKOUT}
                   {createBillingLoading && <CircularProgress size={20} color="inherit" />}
-                  <ChevronRight />
                 </Button>
               </Box>
             </Box>}
@@ -308,7 +307,6 @@ const BillingForm: FC<BillingFormProps> = ({
               <Grid item lg={3} md={6} sm={12} xs={12}>
                 <Box className={classesToggle.billingCard}>
                   <Grid container spacing={3} direction="row">
-
                     <Grid item md={12} sm={12} xs={12}>
                       <DoctorSelector
                         label={RENDERING_PROVIDER}
@@ -496,9 +494,9 @@ const BillingForm: FC<BillingFormProps> = ({
 
               <TabPanel value="2">
                 <Box>
-                  <Card>
+                  {/* <Card> */}
                     <InsuranceComponent shouldDisableEdit={shouldDisableEdit} />
-                  </Card>
+                  {/* </Card> */}
                 </Box>
               </TabPanel>
 

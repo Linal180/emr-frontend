@@ -105,7 +105,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
         <Grid container spacing={3}>
           <Grid item lg={6} md={12} sm={12} xs={12}>
             <Grid container spacing={1} alignItems={'center'}>
-              <Grid item md={9} sm={10} xs={10}>
+              <Grid item md={9} sm={12} xs={10}>
                 <InputController
                   isRequired
                   disabled={shouldDisableEdit}
