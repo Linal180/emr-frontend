@@ -1,25 +1,26 @@
 // packages block
-import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
-import { FC, useCallback, useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
+import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useState } from "react";
 //components block
 import AutocompleteTextField from "./AutocompleteTextField";
 // utils and interfaces/types block
 import { EMPTY_OPTION, INITIAL_PAGE_LIMIT, ITEM_MODULE } from '../../constants';
+import { ItemSelectForwardRef, ItemSelectorOption, ItemSelectorProps } from "../../interfacesTypes";
+import { renderListOptions, renderLoading, requiredLabel, setRecord } from "../../utils";
 import {
   ClaimStatus, CptFeeSchedule, DocumentType, FeeSchedule, IcdCodes, Insurance, SnoMedCodes,
   useFetchAllClaimStatusesLazyQuery, useFetchAllInsurancesLazyQuery, useFetchDocumentTypesLazyQuery,
   useFetchIcdCodesLazyQuery, useFindAllCptFeeScheduleLazyQuery, useFindAllFeeSchedulesLazyQuery,
   useSearchSnoMedCodesLazyQuery
 } from "../../generated/graphql";
-import { ItemSelectorOption, ItemSelectorProps } from "../../interfacesTypes";
-import { renderListOptions, renderLoading, requiredLabel, setRecord } from "../../utils";
 
-const ItemSelector: FC<ItemSelectorProps> = ({
-  name, label, disabled, isRequired, margin, modalName, value, isEdit, searchQuery, onSelect,
-  filteredOptions, practiceId, feeScheduleId, loading
-}): JSX.Element => {
+const ItemSelector = forwardRef<ItemSelectForwardRef, ItemSelectorProps>((props, ref): JSX.Element => {
+  const {
+    name, label, disabled, isRequired, margin, modalName, value, isEdit, searchQuery, onSelect,
+    filteredOptions, practiceId, feeScheduleId, loading
+  } = props
   const { control, setValue } = useFormContext()
   const [query, setQuery] = useState<string>('')
 
@@ -245,13 +246,13 @@ const ItemSelector: FC<ItemSelectorProps> = ({
   useEffect(() => {
     if (isEdit) {
       if (value) {
-        const { id, name } = value
-        modalName === ITEM_MODULE.snoMedCode && setValue('snowMedCodeId', setRecord(id, name || ''))
-        modalName === ITEM_MODULE.insurance && setValue('insuranceId', value)
-        modalName === ITEM_MODULE.documentTypes && setValue('documentType', value)
+        const { id, name: nameValue } = value || {}
+        modalName === ITEM_MODULE.snoMedCode && setValue(name, setRecord(id, nameValue || ''))
+        modalName === ITEM_MODULE.insurance && setValue(name, setRecord(id, nameValue || ''))
+        modalName === ITEM_MODULE.documentTypes && setValue(name, setRecord(id, nameValue || ''))
       }
     }
-  }, [isEdit, modalName, setValue, value])
+  }, [isEdit, modalName, setValue, value, name])
 
   const filterOptions = (options: ItemSelectorOption[]) => {
     if (filteredOptions) {
@@ -268,6 +269,12 @@ const ItemSelector: FC<ItemSelectorProps> = ({
     insurancesLoading ||
     documentTypesLoading ||
     icdCodesLoading
+
+  useImperativeHandle(ref, () => ({
+    resetSearchQuery() {
+      setQuery('')
+    }
+  }));
 
   return (
     <>
@@ -320,6 +327,6 @@ const ItemSelector: FC<ItemSelectorProps> = ({
       }
     </>
   );
-};
+});
 
 export default ItemSelector;

@@ -2,7 +2,7 @@
 import { Pagination } from "@material-ui/lab";
 import { FormProvider, useForm } from "react-hook-form";
 import { ExpandLess, ExpandMore } from "@material-ui/icons";
-import { ChangeEvent, FC, Reducer, useReducer, useEffect, useCallback, useContext } from "react";
+import { ChangeEvent, FC, Reducer, useReducer, useEffect, useCallback, useContext, useRef } from "react";
 import {
   Box, Button, Card, Collapse, Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography
 } from "@material-ui/core";
@@ -28,9 +28,10 @@ import {
 } from "../../../../constants";
 
 const BillingClaimStatusTable: FC = (): JSX.Element => {
+  const claimStatusRef = useRef<any>()
   const classes = useTableStyles()
-  const methods = useForm<ClaimStatusForm>({ mode: "all" });
   const { user } = useContext(AuthContext)
+  const methods = useForm<ClaimStatusForm>({ mode: "all" });
   const [state, dispatch] = useReducer<Reducer<State, Action>>(claimStatusReducer, initialState);
 
   const { facilityId: userFacility, roles } = user || {}
@@ -109,6 +110,7 @@ const BillingClaimStatusTable: FC = (): JSX.Element => {
     setValue('facility', { id: '', name: '' })
     setValue('claimStatus', { id: '', name: '' })
     dispatch({ type: ActionType.SET_SHOULD_RESET, shouldReset: true })
+    claimStatusRef?.current?.resetSearchQuery()
     fetchBillingClaim()
   }
 
@@ -169,6 +171,7 @@ const BillingClaimStatusTable: FC = (): JSX.Element => {
                           <Grid item xs={12} sm={4} md={2}>
                             <ItemSelector
                               addEmpty
+                              ref={claimStatusRef}
                               key="claimStatus"
                               name="claimStatus"
                               label={CLAIM_STATUS}
