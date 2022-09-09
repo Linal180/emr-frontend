@@ -1,5 +1,7 @@
 // package block
 import { FC, useCallback, useEffect, useState } from 'react';
+import { useFormContext } from 'react-hook-form';
+import moment from 'moment';
 import { useParams } from 'react-router';
 import { Box, Card, Grid } from '@material-ui/core';
 // component block
@@ -18,7 +20,8 @@ import InsuranceSelectionCard from './InsuranceSelection';
 import InsuranceComponent from '../patientDetail/insurance';
 // utils. interfaces, constants
 import { INSURANCE, INSURANCE_SELECTION, RegisterPatientMenuNav } from '../../../../constants';
-import { ParamsType, PatientCardsProps } from '../../../../interfacesTypes';
+import { calculateAge } from '../../../../utils';
+import { ParamsType, PatientCardsProps, PatientInputProps } from '../../../../interfacesTypes';
 import { useExternalPatientStyles } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
 import { useFindAppointmentInsuranceStatusLazyQuery } from '../../../../generated/graphql';
 
@@ -26,9 +29,15 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
   getPatientLoading, dispatch, isEdit, state, shouldDisableEdit, disableSubmit, shouldShowBread
 }) => {
   const classes = useExternalPatientStyles()
+  const methods = useFormContext<PatientInputProps>()
+  const { watch } = methods
+  const { dob } = watch()
   const { appointmentId } = useParams<ParamsType>()
   const { activeStep } = state || {}
   const [selection, setSelection] = useState('')
+
+  const ageFormat = dob ? moment(new Date(dob)).format('YYYY-MM-DD') : ''
+  const age = ageFormat ? calculateAge(ageFormat) : -1
 
   const [findAppointmentInsuranceStatus] = useFindAppointmentInsuranceStatusLazyQuery({
     fetchPolicy: "network-only",
@@ -120,18 +129,21 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
               <PatientNextKinCard getPatientLoading={getPatientLoading} shouldDisableEdit={shouldDisableEdit} />
             </Box>
 
-            <Box mb={3}>
-              <PatientGuardianCard getPatientLoading={getPatientLoading} shouldDisableEdit={shouldDisableEdit} />
-            </Box>
+            {age < 18 && <>
+              <Box mb={3}>
+                <PatientGuardianCard getPatientLoading={getPatientLoading} shouldDisableEdit={shouldDisableEdit} />
+              </Box>
+              <Box mb={3}>
+                <GuarantorCard
+                  isEdit={isEdit}
+                  state={state} dispatch={dispatch}
+                  shouldDisableEdit={shouldDisableEdit}
+                  getPatientLoading={getPatientLoading}
+                />
+              </Box>
+            </>}
 
-            <Box mb={3}>
-              <GuarantorCard
-                isEdit={isEdit}
-                state={state} dispatch={dispatch}
-                shouldDisableEdit={shouldDisableEdit}
-                getPatientLoading={getPatientLoading}
-              />
-            </Box>
+
 
             <EmploymentCard getPatientLoading={getPatientLoading} shouldDisableEdit={shouldDisableEdit} />
           </>

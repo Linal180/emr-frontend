@@ -13,7 +13,7 @@ import {
 } from "../../../utils";
 
 const ServicesSelector: FC<ServiceSelectorInterface> = ({
-  name, isEdit, label, isRequired, defaultValues, facilityId, isMulti, shouldEmitFacilityId, loading
+  name, isEdit, label, isRequired, defaultValues, facilityId, isMulti, shouldEmitFacilityId, loading, onSelect
 }): JSX.Element => {
   const { control, setValue } = useFormContext();
   const [options, setOptions] = useState<multiOptionType[] | multiOptionType>([])
@@ -134,8 +134,9 @@ const ServicesSelector: FC<ServiceSelectorInterface> = ({
                     isLoading={servicesLoading}
                     components={{ LoadingIndicator: () => <CircularProgress color="inherit" size={20} style={{ marginRight: 5, }} /> }}
                     onChange={(newValue) => {
-                      field.onChange(newValue)
                       updateValues(newValue as multiOptionType[])
+                      onSelect && onSelect(newValue)
+                      return field.onChange(newValue)
                     }}
                     onInputChange={(query: string) => {
                       (query.length > 2 || query.length === 0) && fetchAllServices(query)
