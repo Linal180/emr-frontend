@@ -202,16 +202,17 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
                       facilityId={selectedFacility}
                     />}
                 </Grid>
-                  </Grid>
+              </Grid>
 
-                <Grid item md={12} sm={12} xs={12}>
-                  <InputController
-                    isRequired
-                    fieldType="text"
-                    controllerName="basicEmail"
-                    controllerLabel={EMAIL}
-                  />
-                </Grid>
+              <Grid item md={12} sm={12} xs={12}>
+                <InputController
+                  isRequired
+                  toLowerCase
+                  fieldType="text"
+                  controllerName="basicEmail"
+                  controllerLabel={EMAIL}
+                />
+              </Grid>
 
               <Grid container spacing={3}>
                 <Grid item md={6} sm={12} xs={12}>
