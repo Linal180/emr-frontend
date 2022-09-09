@@ -151,10 +151,10 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
                 <Typography variant='h3'>{PROBLEM_TEXT}</Typography>
 
                 {!shouldDisableEdit &&
-                  <Button variant='contained' color='primary' onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
-                    <AddWhiteIcon />
-                    <Box p={0.5} />
-
+                  <Button 
+                    variant='contained' color='primary' 
+                    startIcon={<Box width={20}><AddWhiteIcon /></Box>} 
+                    onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
                     {ADD_NEW_TEXT}
                   </Button>}
               </Box>
@@ -219,11 +219,15 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
                             !shouldDisableEdit && <TableCell scope="row">
                               <Box display='flex' alignItems='center'>
                                 <IconButton onClick={() => id && ICDCode && handleEdit(id, ICDCode)}>
-                                  <EditOutlinedIcon />
+                                  <Box width={20}>
+                                    <EditOutlinedIcon />
+                                  </Box>
                                 </IconButton>
 
                                 <IconButton onClick={() => id && onDeleteClick(id)}>
-                                  <TrashOutlinedSmallIcon />
+                                  <Box width={20}>
+                                    <TrashOutlinedSmallIcon />
+                                  </Box>
                                 </IconButton>
                               </Box>
                             </TableCell>

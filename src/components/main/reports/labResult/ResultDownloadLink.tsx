@@ -1,4 +1,4 @@
-import { IconButton } from "@material-ui/core";
+import { Box, IconButton } from "@material-ui/core";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import moment from "moment";
 import { useCallback, useEffect, useState } from "react";
@@ -50,7 +50,9 @@ const ResultDownloadLink = ({ orderNumber }: { orderNumber: string }) => {
     <PDFDownloadLink document={<ResultDoc labTest={labTest} attachmentUrl={url} />} fileName={`lab_orders_${orderNumber}_${moment(new Date()).format('DD_MM_YYYY_hh_mm_A')}`}>
       {({ loading }) =>
         <IconButton disabled={loading}>
-          <DownloadIcon />
+          <Box width={20}>
+            <DownloadIcon />
+          </Box>
         </IconButton>
       }
 

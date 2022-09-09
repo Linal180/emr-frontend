@@ -1,4 +1,4 @@
-import { Table, TableBody, TableHead, TableRow } from "@material-ui/core"
+import { Box, Table, TableBody, TableHead, TableRow } from "@material-ui/core"
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { DATE, IN_TEXT, KG_TEXT, VITAL_LABELS } from "../../../../../constants"
 import { TempUnitType } from "../../../../../generated/graphql"
@@ -28,7 +28,9 @@ export const VitalsLabels = () => {
     <Table>
       <TableHead>
         <TableRow className="vitals-header">
-          {renderTh(DATE)}
+          <Box py={0.37}>
+            {renderTh(DATE)}
+          </Box>
         </TableRow>
       </TableHead>
 

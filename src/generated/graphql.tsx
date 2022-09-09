@@ -2261,6 +2261,7 @@ export type GetShortUrlInput = {
 };
 
 export type GetSlots = {
+  appointmentId?: Maybe<Scalars['String']>;
   currentDate: Scalars['String'];
   day?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;

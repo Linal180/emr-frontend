@@ -75,9 +75,9 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   const { setValue, watch } = methods
   const {
     page, totalPages, deleteAppointmentId, isEdit, appointmentId, openDelete, searchQuery,
-    appointments, sortBy, selectDate, filterFacilityId, isReminderModalOpen, reminderId
+    appointments, sortBy, filterFacilityId, isReminderModalOpen, reminderId
   } = state;
-  const { status, serviceId } = watch()
+  const { status, serviceId, appointmentDate } = watch()
   const { value: appointmentTypeId } = serviceId ?? {}
 
   const resetPage = () => dispatch({ type: ActionType.SET_PAGE, page: 1 })
@@ -89,14 +89,13 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   };
 
   const getPreviousDate = () => {
-    const previousDate = moment(selectDate, 'MM-DD-YYYY').subtract(1, 'day').format('MM-DD-YYYY')
+    const previousDate = moment(moment(appointmentDate).subtract(1, 'day'), 'MM-DD-YYYY').format()
     setDate(previousDate)
   }
 
   const getNextDate = () => {
-    const nextDate = moment(selectDate, 'MM-DD-YYYY').add(1, 'day').format('MM-DD-YYYY');
+    const nextDate = moment(moment(appointmentDate).add(1, 'day'), 'MM-DD-YYYY').format();
     setDate(nextDate)
-    resetPage()
   }
 
   const [findAllAppointments, { loading, error }] = useFindAllAppointmentsLazyQuery({
@@ -239,12 +238,12 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
           appointmentInput: {
             ...inputs, ...pageInputs, searchString: searchQuery.trim(),
             appointmentTypeId: appointmentTypeId,
-            appointmentDate: moment(selectDate, 'MM-DD-YYYY').format('YYYY-MM-DD')
+            appointmentDate: moment(appointmentDate).format('YYYY-MM-DD')
           }
         },
       })
     } catch (error) { }
-  }, [page, isSuper, filterFacilityId, doctorId, isPracticeUser, practiceId, isDoctor, providerId, facilityId, findAllAppointments, searchQuery, appointmentTypeId, selectDate])
+  }, [page, isSuper, filterFacilityId, doctorId, isPracticeUser, practiceId, isDoctor, providerId, facilityId, findAllAppointments, searchQuery, appointmentTypeId, appointmentDate])
 
   useEffect(() => {
     fetchAppointments();
@@ -396,6 +395,10 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     }
   }
 
+  useEffect(() => {
+    setValue('appointmentDate', moment(new Date(), 'MM-DD-YYYY').format())
+  }, [setValue])
+
   if (sendAppointmentReminderLoading) {
     return <Loader loading loaderText={SENDING_APPOINTMENT_REMINDER} />
   }
@@ -454,7 +457,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                             label=""
                             disableFuture={false}
                             name="appointmentDate"
-                            defaultValue={new Date(selectDate)}
+                            // defaultValue={new Date(selectDate)}
                             onSelect={(date: string) => setDate(date)}
                           />
                         </Box>

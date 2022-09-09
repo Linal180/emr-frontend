@@ -266,7 +266,9 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                               <IconButton
                                 onClick={() => codeType && codeId && handleCodeRemoval(codeId, codeType)}
                               >
-                                <TrashNewIcon />
+                                <Box width={20}>
+                                  <TrashNewIcon />
+                                </Box>
                               </IconButton>
                             </TableCell>
                           </TableRow>

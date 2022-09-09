@@ -43,7 +43,7 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({
 
       <DialogContent>
         <Box display="flex">
-          <Box pt={0.75}>
+          <Box width={40} pt={0.75}>
             <DeleteWarningIcon />
           </Box>
 

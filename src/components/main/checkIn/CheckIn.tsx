@@ -1,6 +1,6 @@
 //packages import
 import { FC, useContext } from "react";
-import { ChevronRight } from "@material-ui/icons";
+import { ChevronRight, } from "@material-ui/icons";
 import { Box, Button, Card, colors, Grid, Typography } from "@material-ui/core";
 //constants, interfaces, utils, types
 import { CheckInComponentProps } from "../../../interfacesTypes";
@@ -15,7 +15,7 @@ const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep }) =>
   const { user } = useContext(AuthContext)
   const { roles } = user || {}
   const isBillerUser = isBiller(roles);
-  
+
   const { appointment, primaryInsurance } = appointmentState;
   const { appointmentType, provider, facility, reason, checkedInAt, selfCheckIn } = appointment ?? {}
   const { firstName, lastName } = provider ?? {}
@@ -31,9 +31,11 @@ const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep }) =>
       >
         <Typography variant="h4">{APPOINTMENT_INFO}</Typography>
 
-        <Button variant="contained" color="primary" onClick={() => isBillerUser ? handleStep(4): handleStep(1)}>
+        <Button
+          variant="contained" color="primary"
+          endIcon={<Box width={20}><ChevronRight /></Box>}
+          onClick={() => isBillerUser ? handleStep(4) : handleStep(1)}>
           {CHECK_IN}
-          <ChevronRight />
         </Button>
       </Box>
 

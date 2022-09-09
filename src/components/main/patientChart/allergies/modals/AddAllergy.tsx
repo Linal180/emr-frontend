@@ -1,8 +1,8 @@
 //packages import
 import { FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
 import { Add as AddIcon } from '@material-ui/icons';
-import { 
-  Box, Button, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton, InputBase, Typography 
+import {
+  Box, Button, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton, InputBase, Typography
 } from "@material-ui/core";
 // components block
 import AllergyModal from "./AllergyModal";
@@ -12,11 +12,11 @@ import { NoDataIcon, SearchIcon } from "../../../../../assets/svgs";
 import { AddAllergyModalProps } from "../../../../../interfacesTypes";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
 import { Action, ActionType, chartReducer, initialState, State } from "../../../../../reducers/chartReducer";
-import { 
-  ADD_ALLERGY, INITIAL_PAGE_LIMIT, LIST_PAGE_LIMIT, NO_RECORDS, SEARCH_FOR_ALLERGIES, TYPE 
+import {
+  ADD_ALLERGY, INITIAL_PAGE_LIMIT, LIST_PAGE_LIMIT, NO_RECORDS, SEARCH_FOR_ALLERGIES, TYPE
 } from "../../../../../constants";
-import { 
-  Allergies, AllergiesPayload, AllergyType, useFindAllAllergiesLazyQuery 
+import {
+  Allergies, AllergiesPayload, AllergyType, useFindAllAllergiesLazyQuery
 } from "../../../../../generated/graphql";
 
 const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose, fetch }) => {
@@ -24,7 +24,7 @@ const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
   const chartingClasses = useChartingStyles()
   const [tab, setTab] = useState<string>(!!tabs ? tabs[0] : '');
 
-  const [{ isSubModalOpen, selectedItem, searchQuery, newRecord, searchedData,  }, dispatch] =
+  const [{ isSubModalOpen, selectedItem, searchQuery, newRecord, searchedData, }, dispatch] =
     useReducer<Reducer<State, Action>>(chartReducer, initialState)
 
   const closeSearchMenu = () => {
@@ -163,15 +163,17 @@ const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
       </DialogTitle>
 
       <DialogContent className={chartingClasses.chartModalBox}>
-          <Typography variant='h6'>{TYPE}</Typography>
+        <Typography variant='h6'>{TYPE}</Typography>
 
-          <Box className={chartingClasses.toggleProblem}>
+        <Box className={chartingClasses.toggleProblem}>
           {!!tabs && renderTabs()}
         </Box>
 
         <Box mb={2} className={chartingClasses.searchBox} display="flex">
           <IconButton aria-label="search">
-            <SearchIcon />
+            <Box width={20}>
+              <SearchIcon />
+            </Box>
           </IconButton>
 
           <InputBase

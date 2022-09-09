@@ -1574,6 +1574,7 @@ export interface ServiceSelectorInterface extends ReactionSelectorInterface {
   isMulti?: boolean
   shouldEmitFacilityId?: boolean,
   loading?: boolean
+  onSelect?: Function
 }
 
 export interface MediaDoctorDataType extends Message {

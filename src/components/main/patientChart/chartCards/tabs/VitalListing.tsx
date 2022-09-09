@@ -119,9 +119,8 @@ const VitalTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
                         onClick={() => dispatch({
                           type: ActionType.SET_OPEN_VITAL, openVital: true
                         })}
+                        startIcon={<Box width={20}><AddWhiteIcon /></Box>}
                       >
-                        <AddWhiteIcon />
-                        <Box p={0.5} />
                         {ADD_NEW_TEXT}
                       </Button>}
                   </Box>
