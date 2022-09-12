@@ -12,13 +12,16 @@ import CSVReader from "../../../common/CsvReader";
 import DatePicker from "../../../common/DatePicker";
 import Loader from "../../../common/Loader";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
+import LabTestModal from "./LabTestModal";
 import Search from "../../../common/Search";
 import TableLoader from "../../../common/TableLoader";
+import ResultDownloadLink from "../labResult/ResultDownloadLink";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { DownloadIconWhite, EyeIcon, PrintGrayIcon } from "../../../../assets/svgs";
 import {
-  ACTION, CLEAR_TEXT, COLLECTION_DATE, DOB, EXCEL_FILE_EXTENSION, EXCEL_FILE_FORMATS, EXCEL_FILE_TYPE, EXPORT_TO_CSV, EXPORT_TO_EXCEL,
-  LAB_RESULTS_ROUTE, LAB_RESULTS_SUPPORTED_FILE, N_A, ONLY_EXCEL_AND_CSV, PAGE_LIMIT_EIGHT, PATIENT, PENDING, RECEIVED, RECEIVED_DATE, RESULT_1, RESULT_2, RESULT_3, TEST_1, TEST_2, TEST_3
+  ACTION, CLEAR_TEXT, DOB, EXCEL_FILE_EXTENSION, EXCEL_FILE_FORMATS, EXCEL_FILE_TYPE, EXPORT_TO_CSV, EXPORT_TO_EXCEL,
+  LAB_RESULTS_ROUTE, LAB_RESULTS_SUPPORTED_FILE, N_A, ONLY_EXCEL_AND_CSV, PAGE_LIMIT_EIGHT, PATIENT, PENDING, RECEIVED,
+  RESULT_1, RESULT_2, RESULT_3, TEST_1, TEST_2, TEST_3
 } from "../../../../constants";
 import { AuthContext } from "../../../../context";
 import {
@@ -28,8 +31,6 @@ import history from "../../../../history";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { GRAY_SIX, WHITE } from "../../../../theme";
 import { getFormatDateString, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh } from "../../../../utils";
-import ResultDownloadLink from "../labResult/ResultDownloadLink";
-import LabTestModal from "./LabTestModal";
 import { Action, ActionType, initialState, labReducer, State } from "../../../../reducers/labReducer";
 
 const headers = [
@@ -270,9 +271,9 @@ const LabResultsTable: FC = (): JSX.Element => {
 
   const handleFileUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    const fileType= files?.[0]?.type
-    if(!LAB_RESULTS_SUPPORTED_FILE.includes(fileType || '')){
-       return Alert.error(ONLY_EXCEL_AND_CSV)
+    const fileType = files?.[0]?.type
+    if (!LAB_RESULTS_SUPPORTED_FILE.includes(fileType || '')) {
+      return Alert.error(ONLY_EXCEL_AND_CSV)
     }
     if (files) {
       const observationsToUpdate = (EXCEL_FILE_FORMATS.includes(files?.[0].type || '') ? await promiseFileReaderExcel(files?.[0]) : await promiseFileReaderCSV(files?.[0])) as UpdateObservationItemInput[]
@@ -338,7 +339,7 @@ const LabResultsTable: FC = (): JSX.Element => {
 
               <Typography className={resultReceived ? `${classes.selectedBox} ${classes.selectBox}` : classes.selectBox}
                 onClick={() => {
-                  dispatch({ type: ActionType.SET_RESULT_RECEIVED, resultReceived: true }); 
+                  dispatch({ type: ActionType.SET_RESULT_RECEIVED, resultReceived: true });
                   dispatch({ type: ActionType.SET_PAGE, page: 1 })
                 }}
               >
@@ -400,8 +401,8 @@ const LabResultsTable: FC = (): JSX.Element => {
                 {renderTh(RESULT_1)}
                 {renderTh(RESULT_2)}
                 {renderTh(RESULT_3)}
-                {renderTh(COLLECTION_DATE)}
-                {renderTh(RECEIVED_DATE)}
+                {/* {renderTh(COLLECTION_DATE)}
+                {renderTh(RECEIVED_DATE)} */}
                 {renderTh(ACTION, "center")}
               </TableRow>
             </TableHead>
@@ -414,7 +415,7 @@ const LabResultsTable: FC = (): JSX.Element => {
               </TableRow>
             ) : (
               transformedLabOrders.map((labOrders) => {
-                const { patientName, test, collectedDate, dob, receivedDate, orderNumber, testObservations } = labOrders
+                const { patientName, test, dob, orderNumber, testObservations } = labOrders
 
                 return (
                   <TableRow>
@@ -441,12 +442,6 @@ const LabResultsTable: FC = (): JSX.Element => {
                     </TableCell>
                     <TableCell scope="row">
                       {(testObservations as any).result3 || N_A}
-                    </TableCell>
-                    <TableCell scope="row">
-                      {collectedDate || N_A}
-                    </TableCell>
-                    <TableCell scope="row">
-                      {receivedDate || N_A}
                     </TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center">
