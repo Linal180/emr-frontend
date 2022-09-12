@@ -20,8 +20,8 @@ import { BLACK_TWO, GREY_FIVE } from "../../../../theme";
 import { renderTh, isUserAdmin } from "../../../../utils";
 import { ClaimStatusForm } from "../../../../interfacesTypes";
 import { useTableStyles } from "../../../../styles/tableStyles";
-import { BillingPayload, BillingsPayload, useFetchBillingClaimStatusesLazyQuery } from "../../../../generated/graphql";
 import { State, Action, claimStatusReducer, ActionType, initialState } from "../../../../reducers/claimStatusReducer";
+import { BillingPayload, BillingsPayload, useFetchBillingClaimStatusesLazyQuery } from "../../../../generated/graphql";
 import {
   APPLY_FILTER, BILLED_AMOUNT, CLAIM_ID, CLAIM_STATUS, DATE_OF_SERVICE, FACILITY, FROM_DATE,
   ITEM_MODULE, PAGE_LIMIT, PATIENT, PAYER, RESET, STATUS, TO_DATE, UPDATE_FILTER

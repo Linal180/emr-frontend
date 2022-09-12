@@ -2,7 +2,7 @@
 import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
 import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useState } from "react";
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
 //components block
 import AutocompleteTextField from "./AutocompleteTextField";
 // utils and interfaces/types block
@@ -19,13 +19,17 @@ import {
 const ItemSelector = forwardRef<ItemSelectForwardRef, ItemSelectorProps>((props, ref): JSX.Element => {
   const {
     name, label, disabled, isRequired, margin, modalName, value, isEdit, searchQuery, onSelect,
-    filteredOptions, practiceId, feeScheduleId, loading
+    filteredOptions, practiceId, feeScheduleId, loading, addEmpty
   } = props
   const { control, setValue } = useFormContext()
   const [query, setQuery] = useState<string>('')
 
   const [options, setOptions] = useState<ItemSelectorOption[]>([])
-  const inputLabel = isRequired ? requiredLabel(label) : label
+  const inputLabel = isRequired ? requiredLabel(label) : label;
+  const itemOptions = useMemo(() => {
+    return addEmpty ? [EMPTY_OPTION, ...options] : options
+  }, [options, addEmpty])
+
 
   const [getSnoMedCodes, { loading: snoMedCodesLoading }] = useSearchSnoMedCodesLazyQuery({
     variables: {
@@ -193,7 +197,6 @@ const ItemSelector = forwardRef<ItemSelectForwardRef, ItemSelectorProps>((props,
   const [searchIcdCodes, { loading: icdCodesLoading }] = useFetchIcdCodesLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
-    nextFetchPolicy: 'no-cache',
     variables: {
       searchIcdCodesInput: {
         searchTerm: query,
@@ -247,9 +250,7 @@ const ItemSelector = forwardRef<ItemSelectForwardRef, ItemSelectorProps>((props,
     if (isEdit) {
       if (value) {
         const { id, name: nameValue } = value || {}
-        modalName === ITEM_MODULE.snoMedCode && setValue(name, setRecord(id, nameValue || ''))
-        modalName === ITEM_MODULE.insurance && setValue(name, setRecord(id, nameValue || ''))
-        modalName === ITEM_MODULE.documentTypes && setValue(name, setRecord(id, nameValue || ''))
+        id && setValue(name, setRecord(id, nameValue || ''))
       }
     }
   }, [isEdit, modalName, setValue, value, name])
@@ -283,12 +284,12 @@ const ItemSelector = forwardRef<ItemSelectForwardRef, ItemSelectorProps>((props,
           rules={{ required: true }}
           name={name}
           control={control}
-          defaultValue={options[0]}
+          defaultValue={itemOptions[0]}
           render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
             return (
               <Autocomplete
                 filterOptions={filterOptions}
-                options={options ?? []}
+                options={itemOptions ?? []}
                 disableClearable
                 value={field.value ?? EMPTY_OPTION}
                 disabled={disabled}
