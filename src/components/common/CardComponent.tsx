@@ -23,17 +23,17 @@ const CardComponent: FC<CardComponentType> = ({
               {isEdit ? (
                 <Box>
                   {!hideSaveIcon && (
-                    <IconButton disabled={disableSaveIcon} type="submit" color="primary" aria-label="settings">
+                    <IconButton disabled={disableSaveIcon} type="submit" color="primary" size='small' aria-label="settings">
                       <Save />
                     </IconButton>
                   )}
 
-                  <IconButton onClick={onEditClick} aria-label="settings">
+                  <IconButton size='small' onClick={onEditClick} aria-label="settings">
                     <ArrowBack />
                   </IconButton>
                 </Box>
               ) : (
-                <IconButton disabled={disableEditIcon} onClick={onEditClick} aria-label="settings">
+                <IconButton size='small' disabled={disableEditIcon} onClick={onEditClick} aria-label="settings">
                   <Edit />
                 </IconButton>
               )}

@@ -68,7 +68,7 @@ const ShortUrlForm: FC = (): JSX.Element => {
                 {link}
               </Typography>
 
-              <IconButton onClick={() => copyHandler(link || '')}>
+              <IconButton size='small' onClick={() => copyHandler(link || '')}>
                 <CopyIcon />
               </IconButton>
             </Box>

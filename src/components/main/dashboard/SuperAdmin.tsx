@@ -41,7 +41,7 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
               <Typography variant="h5">{RECENT_PRACTICES}</Typography>
 
               <Link to={PRACTICE_MANAGEMENT_ROUTE}>
-                <IconButton>
+                <IconButton size='small'>
                   <RedirectIcon />
                 </IconButton>
               </Link>
@@ -113,7 +113,7 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
               </Box>
 
               <Link to={PRACTICE_MANAGEMENT_ROUTE}>
-                <IconButton>
+                <IconButton size='small'>
                   <RedirectIcon />
                 </IconButton>
               </Link>

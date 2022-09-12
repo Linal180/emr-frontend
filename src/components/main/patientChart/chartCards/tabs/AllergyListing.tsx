@@ -148,11 +148,10 @@ const AllergyTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
                 <Typography variant='h3'>{ALLERGIES_TEXT}</Typography>
 
                 {!shouldDisableEdit &&
-                  <Button variant='contained' color='primary'
-                    onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}
-                  >
-                    <AddWhiteIcon />
-                    <Box p={0.5} />
+                  <Button
+                    variant='contained' color='primary'
+                    startIcon={<Box width={20}><AddWhiteIcon /></Box>}
+                    onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
                     {ADD_NEW_TEXT}
                   </Button>}
               </Box>
@@ -216,16 +215,12 @@ const AllergyTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
 
                           {!shouldDisableEdit && <TableCell scope="row">
                             <Box display='flex' alignItems='center'>
-                              <IconButton onClick={() => id && allergy && handleEdit(id, allergy)}>
-                                <Box width={20}>
-                                  <EditOutlinedIcon />
-                                </Box>
+                              <IconButton size='small' onClick={() => id && allergy && handleEdit(id, allergy)}>
+                                <EditOutlinedIcon />
                               </IconButton>
 
-                              <IconButton onClick={() => id && onDeleteClick(id)}>
-                                <Box width={20}>
-                                  <TrashOutlinedSmallIcon />
-                                </Box>
+                              <IconButton size='small' onClick={() => id && onDeleteClick(id)}>
+                                <TrashOutlinedSmallIcon />
                               </IconButton>
                             </Box>
                           </TableCell>}

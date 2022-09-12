@@ -87,7 +87,7 @@ const EditMediaModel: FC<MediaModalTypes> = ({
               <img src={fileUrl} alt={attachment?.key || 'emr images'} />
 
               <Box className="media-overlay">
-                <IconButton aria-label="delete" onClick={() =>
+                <IconButton size='small' aria-label="delete" onClick={() =>
                   dispatch({ type: ActionType.SET_FILE_URL, fileUrl: '' })
                 }>
                   <TrashNewIcon />

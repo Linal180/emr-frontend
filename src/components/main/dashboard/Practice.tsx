@@ -101,7 +101,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
                       </Link>
 
                       <Link to={FACILITIES_ROUTE}>
-                        <IconButton>
+                        <IconButton size='small'>
                           <RedirectIcon />
                         </IconButton>
                       </Link>
@@ -137,7 +137,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
                     <Typography variant="h5">{RECENT_ACTIVITIES}</Typography>
 
                     <Link to={AUDIT_LOG_ROUTE}>
-                      <IconButton>
+                      <IconButton size='small'>
                         <RedirectIcon />
                       </IconButton>
                     </Link>

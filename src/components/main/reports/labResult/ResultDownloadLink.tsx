@@ -1,4 +1,4 @@
-import { Box, IconButton } from "@material-ui/core";
+import { IconButton } from "@material-ui/core";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import moment from "moment";
 import { useCallback, useEffect, useState } from "react";
@@ -8,7 +8,7 @@ import ResultDoc from "./ResultDoc";
 
 const ResultDownloadLink = ({ orderNumber }: { orderNumber: string }) => {
   const [labTest, setLabTest] = useState<LabTestsPayload['labTests']>()
-  
+
   const { patient } = labTest?.[0] || {};
   const { facility } = patient || {}
   const { practice } = facility || {}
@@ -49,10 +49,8 @@ const ResultDownloadLink = ({ orderNumber }: { orderNumber: string }) => {
   return (
     <PDFDownloadLink document={<ResultDoc labTest={labTest} attachmentUrl={url} />} fileName={`lab_orders_${orderNumber}_${moment(new Date()).format('DD_MM_YYYY_hh_mm_A')}`}>
       {({ loading }) =>
-        <IconButton disabled={loading}>
-          <Box width={20}>
-            <DownloadIcon />
-          </Box>
+        <IconButton size='small' disabled={loading}>
+          <DownloadIcon />
         </IconButton>
       }
 

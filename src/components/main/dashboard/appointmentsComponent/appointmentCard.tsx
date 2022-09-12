@@ -172,15 +172,15 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
             title={APPOINTMENT}
             action={
               <Box>
-                <IconButton onClick={() => deleteAppointmentHandler(scheduleStartDateTime)}>
+                <IconButton size='small' onClick={() => deleteAppointmentHandler(scheduleStartDateTime)}>
                   <DeleteAppointmentIcon />
                 </IconButton>
 
-                <IconButton aria-label="edit" onClick={handleEdit}>
+                <IconButton size='small' aria-label="edit" onClick={handleEdit}>
                   <EditAppointmentIcon />
                 </IconButton>
 
-                <IconButton aria-label="close" onClick={handleClose}>
+                <IconButton size='small' aria-label="close" onClick={handleClose}>
                   <Close />
                 </IconButton>
               </Box>

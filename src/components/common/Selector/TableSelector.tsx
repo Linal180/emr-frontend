@@ -263,7 +263,8 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                                 </TableCell>
                             }
                             <TableCell>
-                              <IconButton
+                              <IconButton 
+                                size='small' 
                                 onClick={() => codeType && codeId && handleCodeRemoval(codeId, codeType)}
                               >
                                 <Box width={20}>
@@ -414,7 +415,7 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                         </Grid>}
 
                         <Grid item md={1} sm={1} xs={1}>
-                          <IconButton onClick={() => setFormValue(moduleName, (tableCodeFields)?.filter((data => data?.codeId !== codeId)))}>
+                          <IconButton size='small' onClick={() => setFormValue(moduleName, (tableCodeFields)?.filter((data => data?.codeId !== codeId)))}>
                             <TrashNewIcon />
                           </IconButton>
                         </Grid>
