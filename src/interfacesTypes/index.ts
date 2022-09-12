@@ -368,6 +368,7 @@ export interface SelectorProps {
   onBlur?: Function;
   onSelect?: (data: SelectorOption) => void;
   onOutsideClick?: Function;
+  freeSolo?: boolean
 }
 
 export interface CPTCodesSelectorProps extends SelectorProps {
@@ -707,14 +708,14 @@ export type PatientInputProps = BasicContactControlInputs &
   RegisterUserInputs &
   Omit<CreatePatientItemInput, | "gender" | "race" | "genderIdentity"
     | "maritialStatus" | "sexAtBirth" | "pronouns" | "ethnicity" | "sexualOrientation"
-    | "facilityId" | "usualProviderId" | "sexualOrientation" | "genderIdentity" | "homeBound">
+    | "facilityId" | "usualProviderId" | "sexualOrientation" | "genderIdentity" | "homeBound" | "language">
   & { usualProviderId: SelectorOption } & { gender: SelectorOption }
   & { race: SelectorOption; } & { sexualOrientation: SelectorOption }
   & { sexualOrientation: SelectorOption; } & { pronouns: SelectorOption }
   & { ethnicity: SelectorOption } & { facilityId: SelectorOption; }
   & { genderIdentity: SelectorOption } & { sexAtBirth: SelectorOption }
   & { homeBound: boolean; } & { genderIdentity: SelectorOption }
-  & { maritialStatus: SelectorOption };
+  & { maritialStatus: SelectorOption } & { language: SelectorOption };
 
 export type ExternalPatientInputProps = {
   preferredCommunicationMethod: SelectorOption;

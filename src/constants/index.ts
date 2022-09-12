@@ -1975,6 +1975,16 @@ export const MAPPED_WIDGETS: SelectorOption[] = [
   { id: "four", name: "four" },
 ];
 
+export const LANGUAGE_SPOKEN_OPTIONS: SelectorOption[] = [
+  { id: "English", name: "English" },
+  { id: "Arabic", name: "Arabic" },
+  { id: "Chinese", name: "Chinese" },
+  { id: "French", name: "French" },
+  { id: "German", name: "German" },
+  { id: "Russian", name: "Russian" },
+  { id: "Spanish", name: "Spanish" },
+];
+
 export const MAPPED_ALLERGY_SEVERITY: SelectorOption[] = [
   { id: AllergySeverity.VeryMild, name: formatValue(AllergySeverity.VeryMild) },
   { id: AllergySeverity.Mild, name: formatValue(AllergySeverity.Mild) },

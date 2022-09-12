@@ -1,7 +1,7 @@
 //packages Import
 import { forwardRef, Reducer, useCallback, useEffect, useImperativeHandle, useReducer, useRef } from "react";
 import { useParams } from "react-router";
-import { Box, Grid, IconButton, Typography } from "@material-ui/core";
+import { Box, Button, Grid, IconButton, Typography } from "@material-ui/core";
 //components Import
 import Alert from "../../../../common/Alert";
 import DropzoneImage from "../../../../common/DropZoneImage";
@@ -164,6 +164,16 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(
               </Box>
             }
 
+            {!cameraOpen && <Box mb={2} display="flex" justifyContent="flex-end">
+              <Button
+                type="button"
+                variant="contained"
+                color="secondary"
+                onClick={() => insuranceDispatch({ type: ActionType.SET_CAMERA_OPEN, cameraOpen: true })}>
+                Open Camera
+              </Button>
+            </Box>}
+
             {!loading &&
               <DropzoneImage
                 filesLimit={2}
@@ -186,12 +196,12 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(
                   })
                   : dispatch({
                     type: ActionType.SET_NUMBER_OF_FILES,
-                    numberOfFiles: files.length
+                    numberOfFiles: files?.length
                   })}
                 numberOfFiles={numberOfFiles}
                 acceptableFilesType={mediaType(ATTACHMENT_TITLES.InsuranceCard1)}
                 cameraOpen={cameraOpen}
-                setCameraOpen={(value) => dispatch({ type: ActionType.SET_CAMERA_OPEN, cameraOpen: value })}
+                setCameraOpen={(value) => insuranceDispatch({ type: ActionType.SET_CAMERA_OPEN, cameraOpen: value })}
               />
             }
 
