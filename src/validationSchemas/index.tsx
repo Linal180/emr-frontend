@@ -130,13 +130,13 @@ const documentNameSchema = (label: string, isRequired: boolean) => {
 //     .test('', requiredMessage(EMAIL), value => isOptional ? true : !!value)
 // }
 
-const optionalLowerCaseEmailSchema = (label: string) => {
-  return yup.string().when({
-    is: (value: string) => !!value,
-    then: yup.string().email(requiredMessage(label)),
-    otherwise: yup.string()
-  })
-}
+// const optionalLowerCaseEmailSchema = (label: string) => {
+//   return yup.string().when({
+//     is: (value: string) => !!value,
+//     then: yup.string().email(requiredMessage(label)),
+//     otherwise: yup.string()
+//   })
+// }
 
 const otherRelationSchema = (isOtherRelation: boolean) => yup.string()
   .test('', requiredMessage(OTHER_RELATION), value => isOtherRelation ? !!value : true)
@@ -163,7 +163,7 @@ const mammographySchema = {
 }
 
 const dobSchema = {
-  dob: yup.string().test('', DOB_VALIDATION_MESSAGE,
+  dob: yup.string().typeError(DOB_VALIDATION_MESSAGE).test('', DOB_VALIDATION_MESSAGE,
     value => new Date(value || '') <= new Date() && moment().diff(moment(value), 'years') < 123)
 }
 
@@ -509,9 +509,9 @@ export const extendedPatientSchema = (
   ...emergencyPatientSchema,
   ...guarantorPatientSchema,
   suffix: suffixSchema(SUFFIX),
-  basicEmail: isOptional ? optionalLowerCaseEmailSchema(EMAIL) : yup.string().email(requiredMessage(EMAIL)),
+  basicEmail: emailSchema(),
   basicMobile: notRequiredPhone(PHONE_NUMBER),
-  basicPhone: notRequiredPhone(MOBILE_NUMBER),
+  basicPhone: requiredPhone(MOBILE_NUMBER),
   middleName: generalNameSchema(false, MIDDLE_NAME, false, false, 15),
   basicZipCode: requiredMatches(ZIP_CODE, ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
   ...(isSuperAdminOrPracticeAdmin ? { facilityId: selectorSchema(FACILITY) } : {}),

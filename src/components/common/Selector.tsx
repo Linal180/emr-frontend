@@ -10,7 +10,7 @@ import { FormControl, Box, InputLabel, TextField, FormHelperText } from "@materi
 
 const Selector: FC<SelectorProps> = ({
   name, label, options, disabled, isRequired, addEmpty, margin, onBlur, onSelect, value,
-  loading, onOutsideClick, focus
+  loading, onOutsideClick, focus, freeSolo
 }): JSX.Element => {
   const { control } = useFormContext()
   const inputLabel = isRequired ? requiredLabel(label) : label
@@ -31,6 +31,8 @@ const Selector: FC<SelectorProps> = ({
                 disableClearable
                 value={field.value}
                 disabled={disabled}
+                freeSolo={freeSolo}
+                forcePopupIcon
                 getOptionSelected={(option, value) => option.id === value.id}
                 getOptionLabel={(option) => option.name || ""}
                 renderOption={(option) => option.name}
@@ -48,6 +50,9 @@ const Selector: FC<SelectorProps> = ({
                       error={invalid}
                       className="selectorClass"
                       autoFocus={!!focus}
+                      onChange={({ target: { value } }) => {
+                        freeSolo && field.onChange({ id: value, name: value })
+                      }}
                       onBlur={() => onBlur && onBlur()}
                     />
 

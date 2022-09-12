@@ -11,7 +11,7 @@ import { useProfileDetailsStyles } from "../../../../../styles/profileDetails";
 import { formatPhone, getFormattedDate, getTimestamps, renderMissing } from "../../../../../utils";
 import { ATTACHMENT_TITLES, DOCTORS_ROUTE, LESS_INFO, MORE_INFO, N_A } from "../../../../../constants";
 import { AtIcon, EditNewIcon, HashIcon, LocationIcon, ProfileUserIcon } from "../../../../../assets/svgs";
-import { Avatar, Box, Button, Card, CircularProgress, Collapse, Typography } from "@material-ui/core";
+import { Avatar, Box, Button, Card, CircularProgress, Collapse, IconButton, Typography } from "@material-ui/core";
 import {
   AttachmentType, Contact, Doctor, useGetDoctorLazyQuery
 } from "../../../../../generated/graphql";
@@ -49,9 +49,9 @@ const DoctorProfileHero: FC<DoctorProfileHeroProps> = ({ setDoctor, setAttachmen
           const { attachments } = doctor || {}
           const profilePicture = attachments && attachments.filter(attachment =>
             attachment.title === ATTACHMENT_TITLES.ProfilePicture)[0]
-          const { id: attachmentId, preSignedUrl} = profilePicture || {}
+          const { id: attachmentId, preSignedUrl } = profilePicture || {}
 
-          preSignedUrl &&  mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_URL, attachmentUrl: preSignedUrl })
+          preSignedUrl && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_URL, attachmentUrl: preSignedUrl })
 
           attachmentId &&
             mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId })
@@ -167,11 +167,9 @@ const DoctorProfileHero: FC<DoctorProfileHeroProps> = ({ setDoctor, setAttachmen
                     {`${firstName} ${lastName}`}
                   </Box>
 
-                  <Box className="icon-button-hover">
-                    <Button onClick={() => history.push(`${DOCTORS_ROUTE}/${id}`)}>
-                      <EditNewIcon />
-                    </Button>
-                  </Box>
+                  <IconButton size="small" onClick={() => history.push(`${DOCTORS_ROUTE}/${id}`)}>
+                    <EditNewIcon />
+                  </IconButton>
                 </Box>
 
                 <Box display="flex" width="100%" pt={1} flexWrap="wrap" alignItems='center'>
@@ -180,7 +178,7 @@ const DoctorProfileHero: FC<DoctorProfileHeroProps> = ({ setDoctor, setAttachmen
                       key={`${item.description}-${index}`} className={classes.profileInfoItem}>
                       <Box>{item.icon}</Box>
                       <Typography variant="body1">
-                        {!!item.description ? item.description : renderMissing() }
+                        {!!item.description ? item.description : renderMissing()}
                       </Typography>
                     </Box>
                   ))}

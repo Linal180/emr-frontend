@@ -186,7 +186,7 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
         onUploading && onUploading(false)
         handleModalClose();
         // Alert.error(SOMETHING_WENT_WRONG);  //Attachment is uploaded successfully, But it still come in error
-        });
+      });
     }) : numberOfFiles ? numberOfFiles === 0 && Alert.error(PLEASE_SELECT_MEDIA) : Alert.error(PLEASE_SELECT_MEDIA)
   }
 
@@ -222,11 +222,9 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
             <img src={attachment.url} alt="option icon" />
             {!isDisabled && (
               <Box className={classes.updateOverlay}>
-                <Box>
-                  <IconButton onClick={handleUpdateImage} aria-label="Edit image">
-                    <Edit />
-                  </IconButton>
-                </Box>
+                <IconButton size='small' onClick={handleUpdateImage} aria-label="Edit image">
+                  <Edit />
+                </IconButton>
               </Box>
             )}
           </Box>

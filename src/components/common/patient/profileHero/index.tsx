@@ -348,7 +348,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
                 <Box display='flex' flexWrap="wrap" alignItems='center'>
                   {renderName()}
 
-                  <IconButton onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
+                  <IconButton size='small' onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
                     <EditNewIcon />
                   </IconButton>
                 </Box>

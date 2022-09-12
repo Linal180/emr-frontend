@@ -322,7 +322,7 @@ const PublicFormPreview = () => {
         <AIMEDLOGO />
       </Box>
 
-      <Box px={5} mt={2}>
+      <Box mt={2} className={classes.externalMain}>
         {!loader ?
           <Fragment>
             <Box mb={3} />

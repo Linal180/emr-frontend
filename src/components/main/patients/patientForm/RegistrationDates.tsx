@@ -3,7 +3,6 @@ import { FC, memo, useContext } from "react"
 import { Grid } from "@material-ui/core"
 import { useFormContext } from "react-hook-form"
 //components block
-import DatePicker from "../../../common/DatePicker"
 import CardComponent from "../../../common/CardComponent"
 import DoctorSelector from "../../../common/Selector/DoctorSelector"
 import FacilitySelector from "../../../common/Selector/FacilitySelector"
@@ -12,7 +11,7 @@ import { PatientCardsProps, PatientInputProps } from "../../../../interfacesType
 import { AuthContext } from "../../../../context"
 import { isOnlyDoctor, isPracticeAdmin, isSuperAdmin, renderItem } from "../../../../utils"
 import {
-  DECREASED_DATE, DOCTOR, EMPTY_OPTION, FACILITY, REGISTRATION_DATE,
+  DOCTOR, EMPTY_OPTION, FACILITY,
   REGISTRATION_DATES, USUAL_PROVIDER_ID
 } from "../../../../constants"
 
@@ -66,24 +65,6 @@ const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, shoul
                 facilityId={selectedFacility}
                 loading={getPatientLoading}
               />}
-          </Grid>
-
-          <Grid item lg={3} md={6} sm={12} xs={12}>
-            <DatePicker
-              name="registrationDate"
-              label={REGISTRATION_DATE}
-              disabled={shouldDisableEdit}
-              loading={getPatientLoading}
-            />
-          </Grid>
-
-          <Grid item lg={3} md={6} sm={12} xs={12}>
-            <DatePicker
-              name="deceasedDate"
-              label={DECREASED_DATE}
-              disabled={shouldDisableEdit}
-              loading={getPatientLoading}
-            />
           </Grid>
         </Grid>
       </>

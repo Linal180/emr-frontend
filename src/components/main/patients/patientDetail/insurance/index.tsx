@@ -204,16 +204,12 @@ const InsuranceComponent = ({
                       </Box>
 
                       {!shouldDisableEdit && showEditInsuranceBtn &&
-                        <IconButton onClick={() => editHandler(id)}>
-                          <Box width={20}>
-                            <EditNewIcon />
-                          </Box>
+                        <IconButton size='small' onClick={() => editHandler(id)}>
+                          <EditNewIcon />
                         </IconButton>}
                       {viewInsuranceBtn &&
-                        <IconButton onClick={() => handleCardModalOpen(id)}>
-                          <Box width={20}>
-                            <EyeIcon />
-                          </Box>
+                        <IconButton size='small' onClick={() => handleCardModalOpen(id)}>
+                          <EyeIcon />
                         </IconButton>
                       }
                     </Box>

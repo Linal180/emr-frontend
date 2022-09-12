@@ -1,11 +1,12 @@
 //packages block
 import { memo } from 'react';
-import { Dialog, DialogContent, Box, Grid, useTheme, Typography } from '@material-ui/core';
+import { Dialog, DialogContent, Box, Grid, useTheme, Typography, IconButton } from '@material-ui/core';
 //interfaces & styles
 import { UserFormPreviewModalProps } from '../../../../interfacesTypes';
 import { usePreviewModalStyles } from '../../../../styles/formbuilder/previewModalStyles';
 import { useFormResponsesStyles } from '../../../../styles/formbuilder/responses';
 import { NAME, VALUE, VIEW } from '../../../../constants';
+import { CrossIcon } from '../../../../assets/svgs';
 //component
 const UserFormPreview = ({ open, closeModalHandler, formId, formLabels, userForms, imagePreviewHandler }: UserFormPreviewModalProps) => {
   //style
@@ -17,6 +18,12 @@ const UserFormPreview = ({ open, closeModalHandler, formId, formLabels, userForm
     <Dialog open={!!open} onClose={closeModalHandler} fullWidth maxWidth={'md'}>
       <DialogContent dividers>
         <Box className={classes.main}>
+          <Box mb={2} display="flex" justifyContent="flex-end">
+            <IconButton size='small' onClick={closeModalHandler}>
+              <CrossIcon />
+            </IconButton>
+          </Box>
+
           <Grid container>
             <Grid item xs={6}>
               <Box mb={2}>
@@ -42,7 +49,7 @@ const UserFormPreview = ({ open, closeModalHandler, formId, formLabels, userForm
                 )
               })}
             </Grid>
-            
+
             <Grid item xs={6}>
               {userForms?.map((responseElement, index) => {
                 const { arrayOfStrings, FormsElementsId, value, id: responseId, arrayOfObjects } = responseElement;

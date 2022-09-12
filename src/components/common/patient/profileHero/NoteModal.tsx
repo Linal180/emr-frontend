@@ -1,7 +1,7 @@
 //packages block
 import { FC, Fragment, useEffect } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Box, Button, Checkbox, FormControlLabel, IconButton, Typography } from "@material-ui/core";
+import { Box, Checkbox, FormControlLabel, IconButton, Typography } from "@material-ui/core";
 //components
 import Alert from "../../Alert";
 import InputController from "../../../../controller";
@@ -13,6 +13,7 @@ import { PatientPayload, useUpdatePatientNoteInfoMutation } from "../../../../ge
 import {
   AUTO_OPEN_NOTES, PATIENT_NOTE_ERROR_MESSAGE, PATIENT_NOTE_SUCCESS_MESSAGE, PINNED_NOTES
 } from "../../../../constants";
+import { GREY } from "../../../../theme";
 
 export const PatientNoteModal: FC<PatientNoteModalProps> = ({ dispatcher, patientStates }) => {
   const methods = useForm<any>({ mode: "all" });
@@ -70,12 +71,12 @@ export const PatientNoteModal: FC<PatientNoteModalProps> = ({ dispatcher, patien
 
   return (
     <Fragment>
-      <Box className="icon-button-hover" display="flex" justifyContent="space-between" alignItems="center">
+      <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography>{PINNED_NOTES}</Typography>
 
         {isEdit ?
-          <Button onClick={handleSubmit(onSubmit)}><SaveIcon /></Button> :
-          <IconButton onClick={() => dispatcher({ type: ActionType.SET_IS_EDIT, isEdit: true })}><EditOutlinedIcon /></IconButton>
+          <IconButton size="small" onClick={handleSubmit(onSubmit)}><SaveIcon /></IconButton> :
+          <IconButton size='small' onClick={() => dispatcher({ type: ActionType.SET_IS_EDIT, isEdit: true })}><EditOutlinedIcon /></IconButton>
         }
       </Box>
 
@@ -83,7 +84,9 @@ export const PatientNoteModal: FC<PatientNoteModalProps> = ({ dispatcher, patien
         <form onSubmit={handleSubmit(onSubmit)}>
           {isEdit ?
             <InputController fieldType="text" controllerName="patientNote" /> :
-            <Typography color="inherit">{patientNote}</Typography>
+            <Box p={1} my={0.5} maxWidth={500} minHeight={50} bgcolor={GREY} borderRadius={4}>
+              <Typography color="inherit" style={{wordWrap:"break-word"}}>{patientNote}</Typography>
+            </Box>
           }
 
           <FormControlLabel

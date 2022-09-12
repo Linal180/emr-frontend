@@ -45,7 +45,7 @@ export const TAXONOMY_CODE_REGEX = /^[A-Z0-9]{9}X$/;
 export const US_ROUTING_NUMBER_REGEX = /^[0-9]{9}$/g
 export const US_BANK_ACCOUNT_REGEX = /^[0-9]{7,14}$/g
 export const NO_START_SPACE_REGEX = /^([a-zA-Z0-9]+\s?)/;
-export const NO_SPECIAL_CHAR_REGEX = /^[A-Za-z0-9\-\s]+$/;
+export const NO_SPECIAL_CHAR_REGEX = /^[A-Za-z0-9\s]+$/;
 export const ALPHABETS_REGEX = /^([A-Za-z]+\s)*[A-Za-z]+$/;
 export const NO_WHITE_SPACE_REGEX = /^(?!\s)[a-zA-Z0-9_\s-]*$/;
 export const NO_SPACE_AT_BOTH_ENDS_REGEX = /^[^\s]+(\s+[^\s]+)*$/;
@@ -1048,7 +1048,7 @@ export const SPECIMEN_NOTES = "Specimen Notes";
 export const INITIAL_CAPITAL_INVESTMENT = "2%";
 export const OTHER_RELATION = "Other Relation";
 export const ALL_INSURANCES = "All Insurances";
-export const DOCTOR_SIGNOFF = "Provider Signoff";
+export const DOCTOR_SIGNOFF = "Lab Manager Signoff";
 export const OTHER_PROVIDER = "Other Provider";
 export const EMAIL_VERIFIED = "Email Verified?";
 export const APPOINTMENTS_TEXT = "Appointments";
@@ -1521,7 +1521,7 @@ export const TWO_FACTOR_LOGIN_DESCRIPTION = "Enter security code from your mobil
 export const PATIENT_RELATIONSHIP_TO_POLICY_HOLDER = "Patient relationship to policy holder";
 export const DELETE_LAB_ORDER_RESULT_DESCRIPTION = "Confirm to delete lab order result file";
 export const POLICY_HOLDER_ID_CERTIFICATION_NUMBER = "Policy holder ID/certification number";
-export const PUBLIC_FORM_SUCCESS_DESCRIPTION_1 = 'Your Details has been record successfully.';
+export const PUBLIC_FORM_SUCCESS_DESCRIPTION_1 = 'Your details has been record successfully.';
 export const APPOINTMENT_CANCEL_SUBHEADING = "You won’t be able to revert this action later!";
 export const REQUIRE_AGREEMENT_BEFORE_AGREEING = "Require to view the agreement before agreeing";
 export const PRIMARY_INSURANCE_DESCRIPTION = "Click here to add primary insurance (Recommended)";
@@ -1973,6 +1973,16 @@ export const MAPPED_WIDGETS: SelectorOption[] = [
   { id: "two", name: "two" },
   { id: "three", name: "three" },
   { id: "four", name: "four" },
+];
+
+export const LANGUAGE_SPOKEN_OPTIONS: SelectorOption[] = [
+  { id: "English", name: "English" },
+  { id: "Arabic", name: "Arabic" },
+  { id: "Chinese", name: "Chinese" },
+  { id: "French", name: "French" },
+  { id: "German", name: "German" },
+  { id: "Russian", name: "Russian" },
+  { id: "Spanish", name: "Spanish" },
 ];
 
 export const MAPPED_ALLERGY_SEVERITY: SelectorOption[] = [
@@ -2867,6 +2877,7 @@ export const ABNORMAL_FLAG_OPTIONS: SelectorOption[] = [
 export const COVID_RESULT_OPTIONS: SelectorOption[] = [
   { id: 'Detected', name: 'Detected' },
   { id: 'Not Detected', name: 'Not Detected' },
+  { id: 'Corrupted', name: 'Corrupted' },
 ]
 
 export const FORM_BUILDER_INITIAL_VALUES: FormBuilderFormInitial = {
