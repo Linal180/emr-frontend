@@ -42,7 +42,7 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
     isSubModalOpen, selectedItem, itemId, problemDeleteId, totalPages, page, isOpen,
     openDelete, patientProblems
   } = state || {}
-  
+
   const handleModalClose = () => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: !isOpen })
   const handleChange = (_: ChangeEvent<unknown>, page: number) => dispatch({ type: ActionType.SET_PAGE, page: page })
 
@@ -151,9 +151,9 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
                 <Typography variant='h3'>{PROBLEM_TEXT}</Typography>
 
                 {!shouldDisableEdit &&
-                  <Button 
-                    variant='contained' color='primary' 
-                    startIcon={<Box width={20}><AddWhiteIcon /></Box>} 
+                  <Button
+                    variant='contained' color='primary'
+                    startIcon={<Box width={20}><AddWhiteIcon /></Box>}
                     onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
                     {ADD_NEW_TEXT}
                   </Button>}
@@ -218,16 +218,12 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
                           {
                             !shouldDisableEdit && <TableCell scope="row">
                               <Box display='flex' alignItems='center'>
-                                <IconButton onClick={() => id && ICDCode && handleEdit(id, ICDCode)}>
-                                  <Box width={20}>
-                                    <EditOutlinedIcon />
-                                  </Box>
+                                <IconButton size='small' onClick={() => id && ICDCode && handleEdit(id, ICDCode)}>
+                                  <EditOutlinedIcon />
                                 </IconButton>
 
-                                <IconButton onClick={() => id && onDeleteClick(id)}>
-                                  <Box width={20}>
-                                    <TrashOutlinedSmallIcon />
-                                  </Box>
+                                <IconButton size='small' onClick={() => id && onDeleteClick(id)}>
+                                  <TrashOutlinedSmallIcon />
                                 </IconButton>
                               </Box>
                             </TableCell>

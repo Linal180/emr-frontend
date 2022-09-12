@@ -1,5 +1,5 @@
 // packages block
-import { AppBar, Box, Button, Fade, Menu, MenuItem, Toolbar, Typography } from '@material-ui/core';
+import { AppBar, Box, Button, Fade, IconButton, Menu, MenuItem, Toolbar, Typography } from '@material-ui/core';
 import { Menu as MenuIcon } from "@material-ui/icons";
 import { MouseEvent, useContext, useState } from "react";
 import { Link } from "react-router-dom";
@@ -19,7 +19,7 @@ import { useHeaderStyles } from "../../styles/headerStyles";
 import { BLACK } from "../../theme";
 import { activeClass, checkPermission, getHigherRole, isBiller, isFacilityAdmin, isPracticeAdmin, isSuperAdmin } from "../../utils";
 
-const Header = ({ url }: { url: string }): JSX.Element => {
+const Header = (): JSX.Element => {
   const classes = useHeaderStyles();
   const { user, currentUser, userPermissions, userRoles } = useContext(AuthContext);
   const { firstName, lastName } = currentUser || {}
@@ -136,16 +136,9 @@ const Header = ({ url }: { url: string }): JSX.Element => {
     <>
       <AppBar className={classes.appBar}>
         <Toolbar className={classes.toolBar}>
-          {
-            !url ? <Link to={ROOT_ROUTE} className={classes.logo}>
+            <Link to={ROOT_ROUTE} className={classes.logo}>
               <AIMEDLOGO />
-            </Link> :
-              <Box onClick={() => history.push(ROOT_ROUTE)} width={200} height={64}>
-                {/* <Button onClick={()=>history.push(ROOT_ROUTE)}> */}
-                <img src={url} alt="practice-logo" className={classes.practiceLogo} />
-                {/* </Button> */}
-              </Box>
-          }
+            </Link> 
 
           <Box className={classes.grow} />
 
@@ -223,11 +216,11 @@ const Header = ({ url }: { url: string }): JSX.Element => {
 
           <Box className={classes.grow} />
 
-          <Box className="icon-button-hover" display="flex" alignItems="center">
+          <Box display="flex" alignItems="center">
             <Link to={SETTINGS_ROUTE}>
-              <Box width={20}>
+              <IconButton size='small'>
                 <SettingsIcon />
-              </Box>
+              </IconButton>
             </Link>
 
             <Box px={2} />

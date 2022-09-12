@@ -51,7 +51,7 @@ const ProfileDropdownMenu = (): JSX.Element => {
     <>
       <IconButton
         aria-label="dropdown menu" aria-controls="menu-appBar" aria-haspopup="true" color="inherit"
-        onClick={(event) => handleClick(event)}
+        size='small' onClick={(event) => handleClick(event)}
       >
         {profileUrl ?
           <Avatar alt={`${firstName}-${lastName}`} src={profileUrl}></Avatar> :

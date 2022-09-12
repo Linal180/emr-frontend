@@ -69,7 +69,7 @@ const DoctorDashboardComponent: FC = (): JSX.Element => {
                 <Typography variant="h5">{TODAYS_APPOINTMENTS}</Typography>
 
                 <Link to={VIEW_APPOINTMENTS_ROUTE}>
-                  <IconButton>
+                  <IconButton size='small'>
                     <RedirectIcon />
                   </IconButton>
                 </Link>
@@ -87,7 +87,7 @@ const DoctorDashboardComponent: FC = (): JSX.Element => {
                 <Typography variant="h5">{MY_PATIENTS}</Typography>
 
                 <Link to={PATIENTS_ROUTE}>
-                  <IconButton>
+                  <IconButton size='small'>
                     <RedirectIcon />
                   </IconButton>
                 </Link>

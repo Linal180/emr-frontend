@@ -3,7 +3,7 @@ import { FC, Reducer, useReducer } from "react"
 import { useFormContext } from "react-hook-form"
 import { CheckBox as CheckBoxIcon } from '@material-ui/icons'
 import {
-  Box, Button, Checkbox, FormControl, FormControlLabel, FormGroup, Grid, Typography
+  Box, Button, Grid, Typography
 } from "@material-ui/core"
 // components import
 import Alert from "../../../common/Alert"
@@ -18,7 +18,7 @@ import CountryController from "../../../../controller/CountryController"
 import { Action, ActionType, patientReducer, initialState, State } from "../../../../reducers/patientReducer"
 import { PatientCardsProps } from "../../../../interfacesTypes"
 import {
-  ADDRESS_ONE, ADDRESS_TWO, CITY, CONTACT_INFORMATION, DONT_WANT_TO_SHARE_EMAIL, EMAIL, HOME_PHONE,
+  ADDRESS_ONE, ADDRESS_TWO, CITY, CONTACT_INFORMATION, EMAIL, HOME_PHONE,
   MAPPED_STATES, MOBILE_PHONE, STATE, VERIFIED, VERIFY_ADDRESS, ZIP_CODE, ZIP_CODE_AND_CITY
 } from "../../../../constants"
 
@@ -33,7 +33,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
   const {
     basicZipCode, basicCity, basicState, basicAddress, basicAddress2
   } = watch();
-  const { isVerified, addressOpen, data, optionalEmail } = state || {}
+  const { isVerified, addressOpen, data } = state || {}
 
   const verifyAddressHandler = async () => {
     if (basicZipCode && basicCity) {
@@ -66,9 +66,6 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
     }, 0);
   }
 
-  const handleOptionalEmail = async (checked: boolean) => {
-    dispatch && dispatch({ type: ActionType.SET_OPTIONAL_EMAIL, optionalEmail: checked })
-  }
 
   return (
     <>
@@ -164,30 +161,12 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
 
         <Grid container spacing={3}>
           <Grid item md={12} sm={12} xs={12}>
-            <FormControl component="fieldset">
-              <FormGroup>
-                <Box mr={3} mb={2} mt={2}>
-                  <FormControlLabel
-                    label={DONT_WANT_TO_SHARE_EMAIL}
-                    control={
-                      <Checkbox
-                        disabled={shouldDisableEdit}
-                        color="primary"
-                        checked={optionalEmail}
-                        onChange={({ target: { checked } }) => handleOptionalEmail(checked)}
-                      />
-                    }
-                  />
-                </Box>
-              </FormGroup>
-            </FormControl>
-
             <Grid container spacing={3}>
               <Grid item md={6} sm={12} xs={12}>
 
                 <InputController
                   disabled={shouldDisableEdit}
-                  isRequired={!optionalEmail}
+                  isRequired
                   fieldType="email"
                   toLowerCase
                   controllerName="basicEmail"
@@ -198,6 +177,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
 
               <Grid item md={3} sm={12} xs={12}>
                 <PhoneField
+                  isRequired
                   name="basicPhone"
                   label={MOBILE_PHONE}
                   disabled={shouldDisableEdit}

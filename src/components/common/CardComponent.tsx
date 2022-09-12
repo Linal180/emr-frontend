@@ -10,7 +10,7 @@ import { CardComponentType } from "../../interfacesTypes";
 
 const CardComponent: FC<CardComponentType> = ({
   children, cardTitle, isEdit, hasEdit, onEditClick, disableEditIcon, disableSaveIcon, hideSaveIcon,
-  saveBtn, state, disableSubmit, isFullHeight, onSubmitClick
+  saveBtn, state, disableSubmit, isFullHeight, onSubmitClick, saveBtnText
 }): JSX.Element => {
   const { activeStep } = state || {}
 
@@ -23,17 +23,17 @@ const CardComponent: FC<CardComponentType> = ({
               {isEdit ? (
                 <Box>
                   {!hideSaveIcon && (
-                    <IconButton disabled={disableSaveIcon} type="submit" color="primary" aria-label="settings">
+                    <IconButton disabled={disableSaveIcon} type="submit" color="primary" size='small' aria-label="settings">
                       <Save />
                     </IconButton>
                   )}
 
-                  <IconButton onClick={onEditClick} aria-label="settings">
+                  <IconButton size='small' onClick={onEditClick} aria-label="settings">
                     <ArrowBack />
                   </IconButton>
                 </Box>
               ) : (
-                <IconButton disabled={disableEditIcon} onClick={onEditClick} aria-label="settings">
+                <IconButton size='small' disabled={disableEditIcon} onClick={onEditClick} aria-label="settings">
                   <Edit />
                 </IconButton>
               )}
@@ -45,8 +45,7 @@ const CardComponent: FC<CardComponentType> = ({
               disabled={disableSubmit}
               onClick={onSubmitClick ? () => onSubmitClick() : () => { }}
             >
-              {SAVE_TEXT}
-
+              {saveBtnText ? saveBtnText : SAVE_TEXT}
               {disableSubmit && <CircularProgress size={20} color="inherit" />}
             </Button>
             : ''

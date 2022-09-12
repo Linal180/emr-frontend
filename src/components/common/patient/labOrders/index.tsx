@@ -266,27 +266,24 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Eleme
                         </TableCell>
                         <TableCell scope="row">
                           <Box display="flex" alignItems="center">
-                            <IconButton onClick={() => history.push(appointmentId ? `${ADD_LAB_ORDERS_RESULTS_ROUTE}/${id}/${orderNumber}/${appointmentId}` : `${ADD_LAB_ORDERS_RESULTS_ROUTE}/${id}/${orderNumber}`)}>
-                              <Box width={20}>
-                                <OutlinedAddIcon />
-                              </Box>
+                            <IconButton size='small' onClick={() => history.push(appointmentId ? `${ADD_LAB_ORDERS_RESULTS_ROUTE}/${id}/${orderNumber}/${appointmentId}` : `${ADD_LAB_ORDERS_RESULTS_ROUTE}/${id}/${orderNumber}`)}>
+                              <OutlinedAddIcon />
                             </IconButton>
 
-                            {/* <IconButton>
+                            {/* <IconButton size='small'>
                                   <Box width={20}>
                                     <EyeIcon />
                                   </Box>
                               </IconButton> */}
+
                             <ResultDownloadLink orderNumber={orderNumber || ''} />
 
                             <Box>
-                              <IconButton onClick={() => {
+                              <IconButton size='small' onClick={() => {
                                 dispatch({ type: ActionType.SET_IS_STICKER_MODAL_OPEN, isStickerModalOpen: true });
                                 dispatch({ type: ActionType.SET_STICKER_ORDER, stickerOrder: orderNumber || '' })
                               }}>
-                                <Box width={20}>
-                                  <PrintGrayIcon />
-                                </Box>
+                                <PrintGrayIcon />
                               </IconButton>
                             </Box>
                           </Box>

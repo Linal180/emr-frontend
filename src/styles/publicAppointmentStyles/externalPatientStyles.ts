@@ -187,7 +187,7 @@ export const useExternalPatientStyles = makeStyles({
   },
 
   privacyLabelDescription: {
-    paddingLeft: 25,
+    paddingLeft: 5,
     "& .MuiFormControlLabel-label": {
       fontSize: 14,
     },

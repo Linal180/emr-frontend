@@ -42,7 +42,7 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
     mode: "all",
     resolver: yupResolver(updatePracticeSchema(true))
   });
-  const { handleSubmit, setValue } = methods;
+  const { handleSubmit, setValue, trigger } = methods;
 
   const [getPractice, { loading }] = useGetPracticeLazyQuery({
     fetchPolicy: "network-only",
@@ -114,11 +114,11 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
     },
   });
 
-  const fetchAttachments = useCallback(async() => {
+  const fetchAttachments = useCallback(async () => {
     practiceId && await getAttachments({
       variables: { getAttachment: { typeId: practiceId, paginationOptions: { limit: 10, page: 1 } } }
     })
-  },[getAttachments, practiceId])
+  }, [getAttachments, practiceId])
 
   const setEditData = (practice: PracticePayload['practice']) => {
     const { name, phone, fax, ein, upin, medicaid, medicare, champus, npi, taxId } = practice || {};
@@ -133,6 +133,7 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
     medicaid && setValue('medicaid', medicaid)
     taxId && setValue('taxId', taxId)
     npi && setValue('npi', npi)
+    trigger()
   }
 
   const [updatePractice, { loading: updatePracticeLoading }] = useUpdatePracticeMutation({
@@ -201,9 +202,9 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
     fetchUser()
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchAttachments();
-  },[fetchAttachments])
+  }, [fetchAttachments])
 
   return (
     <Box p={4}>

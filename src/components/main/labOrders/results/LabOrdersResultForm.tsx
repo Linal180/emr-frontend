@@ -1,7 +1,6 @@
 // packages block
 import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import DatePicker from '../../../common/DatePicker';
 import { FormProvider, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import {
   Box, Card, colors, Grid, Typography, Button, CircularProgress, FormGroup, FormControlLabel, Checkbox,
@@ -18,8 +17,8 @@ import { getFormatDateString, renderItem, setRecord } from '../../../../utils';
 import { PatientProviderSelector } from '../../../common/Selector/PatientProviderSelector';
 import { GeneralFormProps, LabOrderResultsFormInput, LabOrdersResultOption1, LabOrdersResultOption2, ParamsType, SelectorOption } from "../../../../interfacesTypes";
 import {
-  ACCESSION_NUMBER, COLLECTED_DATE, DESCRIPTION, DOCTOR_SIGNOFF, LAB_TEXT, LOINC_CODE,
-  NOT_FOUND_EXCEPTION, ORDERS_RESULT_INITIAL_VALUES_1, ORDERS_RESULT_INITIAL_VALUES_2, OTHER_OPTION, RECEIVED_DATE,
+  ACCESSION_NUMBER, DESCRIPTION, DOCTOR_SIGNOFF, LAB_TEXT, LOINC_CODE, NOT_FOUND_EXCEPTION,
+  ORDERS_RESULT_INITIAL_VALUES_1, ORDERS_RESULT_INITIAL_VALUES_2, OTHER_OPTION,
   RESULTS, SAVE_TEXT, TESTS, USER_NOT_FOUND_EXCEPTION_MESSAGE, VENDOR_NAME,
 } from '../../../../constants';
 import {
@@ -274,13 +273,13 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
                   />
                 </Grid>
 
-                <Grid item md={3} sm={12} xs={12}>
+                {/* <Grid item md={3} sm={12} xs={12}>
                   <DatePicker name="collectedDate" label={COLLECTED_DATE} disableFuture={false} />
                 </Grid>
 
                 <Grid item md={3} sm={12} xs={12}>
                   <DatePicker name="receivedDate" label={RECEIVED_DATE} disableFuture={false} />
-                </Grid>
+                </Grid> */}
               </Grid>
             </Box>
           </Card>

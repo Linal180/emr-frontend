@@ -1,30 +1,35 @@
 // packages block
-import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
-import { FC, useCallback, useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
+import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
 //components block
 import AutocompleteTextField from "./AutocompleteTextField";
 // utils and interfaces/types block
 import { EMPTY_OPTION, INITIAL_PAGE_LIMIT, ITEM_MODULE } from '../../constants';
+import { ItemSelectForwardRef, ItemSelectorOption, ItemSelectorProps } from "../../interfacesTypes";
+import { renderListOptions, renderLoading, requiredLabel, setRecord } from "../../utils";
 import {
   ClaimStatus, CptFeeSchedule, DocumentType, FeeSchedule, IcdCodes, Insurance, SnoMedCodes,
   useFetchAllClaimStatusesLazyQuery, useFetchAllInsurancesLazyQuery, useFetchDocumentTypesLazyQuery,
   useFetchIcdCodesLazyQuery, useFindAllCptFeeScheduleLazyQuery, useFindAllFeeSchedulesLazyQuery,
   useSearchSnoMedCodesLazyQuery
 } from "../../generated/graphql";
-import { ItemSelectorOption, ItemSelectorProps } from "../../interfacesTypes";
-import { renderListOptions, renderLoading, requiredLabel, setRecord } from "../../utils";
 
-const ItemSelector: FC<ItemSelectorProps> = ({
-  name, label, disabled, isRequired, margin, modalName, value, isEdit, searchQuery, onSelect,
-  filteredOptions, practiceId, feeScheduleId, loading
-}): JSX.Element => {
+const ItemSelector = forwardRef<ItemSelectForwardRef, ItemSelectorProps>((props, ref): JSX.Element => {
+  const {
+    name, label, disabled, isRequired, margin, modalName, value, isEdit, searchQuery, onSelect,
+    filteredOptions, practiceId, feeScheduleId, loading, addEmpty
+  } = props
   const { control, setValue } = useFormContext()
   const [query, setQuery] = useState<string>('')
 
   const [options, setOptions] = useState<ItemSelectorOption[]>([])
-  const inputLabel = isRequired ? requiredLabel(label) : label
+  const inputLabel = isRequired ? requiredLabel(label) : label;
+  const itemOptions = useMemo(() => {
+    return addEmpty ? [EMPTY_OPTION, ...options] : options
+  }, [options, addEmpty])
+
 
   const [getSnoMedCodes, { loading: snoMedCodesLoading }] = useSearchSnoMedCodesLazyQuery({
     variables: {
@@ -192,7 +197,6 @@ const ItemSelector: FC<ItemSelectorProps> = ({
   const [searchIcdCodes, { loading: icdCodesLoading }] = useFetchIcdCodesLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
-    nextFetchPolicy: 'no-cache',
     variables: {
       searchIcdCodesInput: {
         searchTerm: query,
@@ -245,13 +249,11 @@ const ItemSelector: FC<ItemSelectorProps> = ({
   useEffect(() => {
     if (isEdit) {
       if (value) {
-        const { id, name } = value
-        modalName === ITEM_MODULE.snoMedCode && setValue('snowMedCodeId', setRecord(id, name || ''))
-        modalName === ITEM_MODULE.insurance && setValue('insuranceId', value)
-        modalName === ITEM_MODULE.documentTypes && setValue('documentType', value)
+        const { id, name: nameValue } = value || {}
+        id && setValue(name, setRecord(id, nameValue || ''))
       }
     }
-  }, [isEdit, modalName, setValue, value])
+  }, [isEdit, modalName, setValue, value, name])
 
   const filterOptions = (options: ItemSelectorOption[]) => {
     if (filteredOptions) {
@@ -269,6 +271,12 @@ const ItemSelector: FC<ItemSelectorProps> = ({
     documentTypesLoading ||
     icdCodesLoading
 
+  useImperativeHandle(ref, () => ({
+    resetSearchQuery() {
+      setQuery('')
+    }
+  }));
+
   return (
     <>
       {loading ? renderLoading(inputLabel || '') :
@@ -276,12 +284,12 @@ const ItemSelector: FC<ItemSelectorProps> = ({
           rules={{ required: true }}
           name={name}
           control={control}
-          defaultValue={options[0]}
+          defaultValue={itemOptions[0]}
           render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
             return (
               <Autocomplete
                 filterOptions={filterOptions}
-                options={options ?? []}
+                options={itemOptions ?? []}
                 disableClearable
                 value={field.value ?? EMPTY_OPTION}
                 disabled={disabled}
@@ -320,6 +328,6 @@ const ItemSelector: FC<ItemSelectorProps> = ({
       }
     </>
   );
-};
+});
 
 export default ItemSelector;

@@ -1,7 +1,7 @@
 // packages block
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { Box, Button, Grid, Typography } from '@material-ui/core';
+import { Box, Button, Grid, IconButton, Typography } from '@material-ui/core';
 // component block
 import Alert from '../../common/Alert';
 import Selector from '../../common/Selector';
@@ -87,13 +87,12 @@ const AutoLogoutComponent = (): JSX.Element => {
                     : <Box>
                       <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
                         <Typography variant='inherit'>{AUTO_LOGOUT_DESCRIPTION}</Typography>
-                        <Box className='icon-button-hover'>
-                          <Button onClick={() => setIsEdit(!isEdit)}>
-                            <Edit />
-                          </Button>
-                        </Box>
+
+                        <IconButton size='small' onClick={() => setIsEdit(!isEdit)}>
+                          <Edit />
+                        </IconButton>
                       </Box>
-                      
+
                       <Selector
                         disabled
                         name="autoLogoutTime"

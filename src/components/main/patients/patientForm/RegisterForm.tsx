@@ -19,11 +19,12 @@ import RegistrationDatesCard from './RegistrationDates';
 import InsuranceSelectionCard from './InsuranceSelection';
 import InsuranceComponent from '../patientDetail/insurance';
 // utils. interfaces, constants
-import { INSURANCE, INSURANCE_SELECTION, RegisterPatientMenuNav } from '../../../../constants';
+import { INSURANCE, INSURANCE_SELECTION, NEXT, RegisterPatientMenuNav } from '../../../../constants';
 import { calculateAge } from '../../../../utils';
 import { ParamsType, PatientCardsProps, PatientInputProps } from '../../../../interfacesTypes';
 import { useExternalPatientStyles } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
 import { useFindAppointmentInsuranceStatusLazyQuery } from '../../../../generated/graphql';
+import CardComponent from '../../../common/CardComponent';
 
 const RegisterFormComponent: FC<PatientCardsProps> = ({
   getPatientLoading, dispatch, isEdit, state, shouldDisableEdit, disableSubmit, shouldShowBread
@@ -81,7 +82,17 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
         />
 
       case shouldShowInsuranceStep ? 1 : Infinity:
-        return <InsuranceComponent />
+        return (
+          <CardComponent
+            saveBtn
+            state={state}
+            isEdit={isEdit}
+            cardTitle={INSURANCE}
+            disableSubmit={disableSubmit}
+            saveBtnText={NEXT}
+          ><InsuranceComponent />
+          </CardComponent>
+        )
 
       case shouldShowInsuranceStep ? 2 : !shouldShowBread ? 1 : 0:
         return (<>
