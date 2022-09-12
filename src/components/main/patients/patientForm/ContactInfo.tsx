@@ -177,6 +177,7 @@ const ContactInfoCard: FC<PatientCardsProps> = ({
 
               <Grid item md={3} sm={12} xs={12}>
                 <PhoneField
+                  isRequired
                   name="basicPhone"
                   label={MOBILE_PHONE}
                   disabled={shouldDisableEdit}

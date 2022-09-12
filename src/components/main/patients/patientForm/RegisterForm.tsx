@@ -19,7 +19,7 @@ import RegistrationDatesCard from './RegistrationDates';
 import InsuranceSelectionCard from './InsuranceSelection';
 import InsuranceComponent from '../patientDetail/insurance';
 // utils. interfaces, constants
-import { INSURANCE, INSURANCE_SELECTION, RegisterPatientMenuNav } from '../../../../constants';
+import { INSURANCE, INSURANCE_SELECTION, NEXT, RegisterPatientMenuNav } from '../../../../constants';
 import { calculateAge } from '../../../../utils';
 import { ParamsType, PatientCardsProps, PatientInputProps } from '../../../../interfacesTypes';
 import { useExternalPatientStyles } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
@@ -89,6 +89,7 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
             isEdit={isEdit}
             cardTitle={INSURANCE}
             disableSubmit={disableSubmit}
+            saveBtnText={NEXT}
           ><InsuranceComponent />
           </CardComponent>
         )

@@ -42,7 +42,7 @@ const DatePicker: FC<PickerProps> = ({
                   open={openPicker}
                   placeholder={US_DATE_FORMAT}
                   disabled={disabled}
-                  value={field.value}
+                  value={field.value || null}
                   // onClick={disabled ? () => { } : () => setOpenPicker(!openPicker)}
                   onClose={disabled ? () => { } : () => setOpenPicker(!openPicker)}
                   // onKeyDown={(e) => e.preventDefault()}
@@ -70,7 +70,6 @@ const DatePicker: FC<PickerProps> = ({
                     </Button>
                   } : undefined
                   }
-                  className='hello'
                 />
               </MuiPickersUtilsProvider>
             </FormControl>

@@ -212,6 +212,7 @@ export interface CardComponentType extends Children {
   disableSubmit?: boolean;
   className?: string
   onSubmitClick?: Function
+  saveBtnText?: string
 }
 
 export interface ChartingCardComponentType {
