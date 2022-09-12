@@ -7,9 +7,9 @@ import DatePicker from '../../../common/DatePicker';
 import TimePicker from '../../../common/TimePicker';
 import InputController from '../../../../controller';
 import LabOrdersSpecimenTypeForm from './LabOrdersSpecimenTypeForm';
-import DiagnosesSelector from '../../../common/Selector/DiagnosesSelector';
+// import DiagnosesSelector from '../../../common/Selector/DiagnosesSelector';
 // interfaces, graphql, constants block
-import { DIAGNOSES, TEST_DATE, TEST_NOTES, TEST_TIME } from '../../../../constants';
+import { TEST_DATE, TEST_NOTES, TEST_TIME } from '../../../../constants';
 import { LabOrdersCreateFormInput, LabTestComponentProps, } from "../../../../interfacesTypes";
 
 const TestsComponent: FC<LabTestComponentProps> = ({ currentTest }): JSX.Element => {
@@ -18,9 +18,9 @@ const TestsComponent: FC<LabTestComponentProps> = ({ currentTest }): JSX.Element
   const { watch, setValue } = methods
   const { testFieldValues } = watch()
   const getTestFieldValues = testFieldValues.find((_, index) => index === currentTest)
-  const { test, diagnosesIds, testDate, testNotes, testTime } = getTestFieldValues || {}
+  const { test, testDate, testNotes, testTime } = getTestFieldValues || {}
   const { name } = test || {}
-  
+
   useEffect(() => {
     setValue(`testFieldValues.${currentTest}.testDate`, testDate || '')
     setValue(`testFieldValues.${currentTest}.testNotes`, testNotes || '')
@@ -67,14 +67,14 @@ const TestsComponent: FC<LabTestComponentProps> = ({ currentTest }): JSX.Element
                     />
                   </Grid>
 
-                  <Grid item md={12} sm={12} xs={12}>
+                  {/* <Grid item md={12} sm={12} xs={12}>
                     <DiagnosesSelector
                       isEdit={true}
                       label={DIAGNOSES}
                       name={`testFieldValues.${currentTest}.diagnosesIds`}
                       defaultValues={diagnosesIds}
                     />
-                  </Grid>
+                  </Grid> */}
 
                   <Grid item md={12} sm={12} xs={12}>
                     <LabOrdersSpecimenTypeForm index={currentTest} />

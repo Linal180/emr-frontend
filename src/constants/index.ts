@@ -1048,7 +1048,7 @@ export const SPECIMEN_NOTES = "Specimen Notes";
 export const INITIAL_CAPITAL_INVESTMENT = "2%";
 export const OTHER_RELATION = "Other Relation";
 export const ALL_INSURANCES = "All Insurances";
-export const DOCTOR_SIGNOFF = "Provider Signoff";
+export const DOCTOR_SIGNOFF = "Lab Manager Signoff";
 export const OTHER_PROVIDER = "Other Provider";
 export const EMAIL_VERIFIED = "Email Verified?";
 export const APPOINTMENTS_TEXT = "Appointments";
@@ -2867,6 +2867,7 @@ export const ABNORMAL_FLAG_OPTIONS: SelectorOption[] = [
 export const COVID_RESULT_OPTIONS: SelectorOption[] = [
   { id: 'Detected', name: 'Detected' },
   { id: 'Not Detected', name: 'Not Detected' },
+  { id: 'Corrupted', name: 'Corrupted' },
 ]
 
 export const FORM_BUILDER_INITIAL_VALUES: FormBuilderFormInitial = {
