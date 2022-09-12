@@ -349,6 +349,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
 
     if (user) {
       const { id: userId } = user;
+      const { id: languageId } = language || {}
       const { id: selectedRace } = race || {};
       const { id: selectedGender } = gender || {};
       const { id: selectedPronouns } = pronouns || {};
@@ -368,7 +369,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
 
       const patientItemInput = {
         suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
-        previouslastName, motherMaidenName, ssn: ssn || SSN_FORMAT, statementNote, language: language.id, patientNote,
+        previouslastName, motherMaidenName, ssn: ssn || SSN_FORMAT, statementNote, language: languageId, patientNote,
         email: formatEmail(basicEmail), callToConsent, privacyNotice, releaseOfInfoBill,
         ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None,
         homeBound: homeBound ? Homebound.Yes : Homebound.No, holdStatement: holdStatement || Holdstatement.None,

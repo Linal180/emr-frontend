@@ -22,6 +22,7 @@ const DemographicsCard: FC<PatientCardsProps> = ({
 }) => {
   const { control, setValue, watch } = useFormContext<PatientInputProps>()
   const { language } = watch()
+  const { id: languageId } = language || {}
   const classes = usePublicAppointmentStyles();
   const { isChecked } = state || {}
 
@@ -31,13 +32,13 @@ const DemographicsCard: FC<PatientCardsProps> = ({
     setValue('homeBound', checked)
   };
 
-  const transformedLanguageOptions= useMemo(() => {
-    if(language?.id){
+  const transformedLanguageOptions = useMemo(() => {
+    if (languageId) {
       return [...LANGUAGE_SPOKEN_OPTIONS, language]
     }
 
     return LANGUAGE_SPOKEN_OPTIONS
-  }, [language])
+  }, [language, languageId])
 
   return (
     <CardComponent

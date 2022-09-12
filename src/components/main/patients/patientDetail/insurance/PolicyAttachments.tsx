@@ -16,7 +16,7 @@ import {
 } from "../../../../../reducers/insuranceReducer";
 import {
   ATTACHMENT_TITLES, DELETE_POLICY_CARD_ATTACHMENT_DESCRIPTION, INSURANCE_CARD,
-  INSURANCE_CARD_DELETED, NOT_FOUND_EXCEPTION, PATIENT_INSURANCE, TAKE_A_PICTURE_OF_INSURANCE,
+  INSURANCE_CARD_DELETED, NOT_FOUND_EXCEPTION, OPEN_CAMERA, PATIENT_INSURANCE, TAKE_A_PICTURE_OF_INSURANCE,
   USER_NOT_FOUND_EXCEPTION_MESSAGE
 } from "../../../../../constants";
 import {
@@ -170,7 +170,7 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(
                 variant="contained"
                 color="secondary"
                 onClick={() => insuranceDispatch({ type: ActionType.SET_CAMERA_OPEN, cameraOpen: true })}>
-                Open Camera
+                {OPEN_CAMERA}
               </Button>
             </Box>}
 
