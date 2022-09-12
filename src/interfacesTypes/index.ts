@@ -2039,3 +2039,7 @@ export type InsuranceComponentProps = {
   showAddInsuranceBtn?: boolean;
   showEditInsuranceBtn?: boolean;
 }
+
+export type ItemSelectForwardRef = {
+  resetSearchQuery: () => void,
+}
