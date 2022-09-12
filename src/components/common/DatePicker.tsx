@@ -43,9 +43,9 @@ const DatePicker: FC<PickerProps> = ({
                   placeholder={US_DATE_FORMAT}
                   disabled={disabled}
                   value={field.value}
-                  onClick={disabled ? () => { } : () => setOpenPicker(!openPicker)}
+                  // onClick={disabled ? () => { } : () => setOpenPicker(!openPicker)}
                   onClose={disabled ? () => { } : () => setOpenPicker(!openPicker)}
-                  onKeyDown={(e) => e.preventDefault()}
+                  // onKeyDown={(e) => e.preventDefault()}
                   error={invalid}
                   helperText={invalid && message}
                   autoOk
@@ -53,7 +53,7 @@ const DatePicker: FC<PickerProps> = ({
                   disableFuture={disableFuture}
                   maxDate="2100-01-31"
                   minDate="1900-01-01"
-                  keyboardIcon={<Box width={20}> 
+                  keyboardIcon={<Box width={20} onClick={() => setOpenPicker(!openPicker)}>
                     <CalendarIcon />
                   </Box>
                   }

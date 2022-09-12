@@ -19,7 +19,7 @@ import { useHeaderStyles } from "../../styles/headerStyles";
 import { BLACK } from "../../theme";
 import { activeClass, checkPermission, getHigherRole, isBiller, isFacilityAdmin, isPracticeAdmin, isSuperAdmin } from "../../utils";
 
-const Header = ({ url }: { url: string }): JSX.Element => {
+const Header = (): JSX.Element => {
   const classes = useHeaderStyles();
   const { user, currentUser, userPermissions, userRoles } = useContext(AuthContext);
   const { firstName, lastName } = currentUser || {}
@@ -136,16 +136,9 @@ const Header = ({ url }: { url: string }): JSX.Element => {
     <>
       <AppBar className={classes.appBar}>
         <Toolbar className={classes.toolBar}>
-          {
-            !url ? <Link to={ROOT_ROUTE} className={classes.logo}>
+            <Link to={ROOT_ROUTE} className={classes.logo}>
               <AIMEDLOGO />
-            </Link> :
-              <Box onClick={() => history.push(ROOT_ROUTE)} width={200} height={64}>
-                {/* <Button onClick={()=>history.push(ROOT_ROUTE)}> */}
-                <img src={url} alt="practice-logo" className={classes.practiceLogo} />
-                {/* </Button> */}
-              </Box>
-          }
+            </Link> 
 
           <Box className={classes.grow} />
 
