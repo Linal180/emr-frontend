@@ -163,7 +163,7 @@ const mammographySchema = {
 }
 
 const dobSchema = {
-  dob: yup.string().test('', DOB_VALIDATION_MESSAGE,
+  dob: yup.string().typeError(DOB_VALIDATION_MESSAGE).test('', DOB_VALIDATION_MESSAGE,
     value => new Date(value || '') <= new Date() && moment().diff(moment(value), 'years') < 123)
 }
 

@@ -8,7 +8,7 @@ import RadioButton from "../../../common/RadioButton";
 import CardComponent from "../../../common/CardComponent";
 //constants, interfaces, reducer imports
 import {
-  CONTRACT, INSURANCE, INSURANCE_DISCLAIMER, INSURANCE_SELECTION, INTERNATIONAL_TRAVELER, NO_INSURANCE
+  CONTRACT, INSURANCE, INSURANCE_DISCLAIMER, INSURANCE_SELECTION, INTERNATIONAL_TRAVELER, NEXT, NO_INSURANCE
 } from "../../../../constants";
 import { useUpdateAppointmentMutation } from "../../../../generated/graphql";
 import { InsuranceSelectionProps, ParamsType } from "../../../../interfacesTypes";
@@ -50,7 +50,7 @@ const InsuranceSelectionCard: FC<InsuranceSelectionProps> = ({
   }
 
   return (
-    <CardComponent cardTitle={INSURANCE_SELECTION} saveBtn state={state} onSubmitClick={() => handleAppointmentUpdate()} disableSubmit={updateAppointmentLoading}>
+    <CardComponent saveBtnText={NEXT} cardTitle={INSURANCE_SELECTION} saveBtn state={state} onSubmitClick={() => handleAppointmentUpdate()} disableSubmit={updateAppointmentLoading}>
       <Grid item md={12} sm={12} xs={12}>
         <FormControl component="fieldset">
           <FormLabel className={classes.privacyLabelHeader} component="li">{INSURANCE_DISCLAIMER}</FormLabel>

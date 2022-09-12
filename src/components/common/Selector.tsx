@@ -32,6 +32,7 @@ const Selector: FC<SelectorProps> = ({
                 value={field.value}
                 disabled={disabled}
                 freeSolo={freeSolo}
+                forcePopupIcon
                 getOptionSelected={(option, value) => option.id === value.id}
                 getOptionLabel={(option) => option.name || ""}
                 renderOption={(option) => option.name}
