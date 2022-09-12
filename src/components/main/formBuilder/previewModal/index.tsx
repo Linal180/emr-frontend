@@ -1,7 +1,7 @@
 //packages block
 import { memo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { Dialog, DialogContent, Grid, Box, DialogTitle } from '@material-ui/core';
+import { Dialog, DialogContent, Grid, Box, DialogTitle, IconButton } from '@material-ui/core';
 //components
 import FieldController from '../../../common/FormFieldController';
 //interfaces & constants
@@ -10,6 +10,7 @@ import { parseColumnGrid, parseXmGrid } from '../../../../utils';
 //styles
 import { usePreviewModalStyles } from '../../../../styles/formbuilder/previewModalStyles'
 import CardComponent from '../../../common/CardComponent';
+import { CrossIcon } from '../../../../assets/svgs';
 //component
 const FormPreview = ({ open, closeModalHandler, data, formName }: FormBuilderPreviewProps) => {
   //style
@@ -22,7 +23,14 @@ const FormPreview = ({ open, closeModalHandler, data, formName }: FormBuilderPre
   //render
   return (
     <Dialog open={!!open} onClose={closeModalHandler} fullWidth maxWidth={'lg'}>
-      <DialogTitle>{formName}</DialogTitle>
+      <DialogTitle>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          {formName}
+          <IconButton size='small' onClick={closeModalHandler}>      
+              <CrossIcon />
+          </IconButton>
+        </Box>
+      </DialogTitle>
 
       <DialogContent dividers>
         <Box className={classes.main}>

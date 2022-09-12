@@ -614,7 +614,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                             {status === AppointmentStatus.Cancelled &&
                               appointmentCreateType === AppointmentCreateType.Telehealth &&
                               <Box className={classes.iconsBackgroundDisabled}>
-                                <IconButton>
+                                <IconButton size='small'>
                                   <VideoIcon />
                                 </IconButton>
                               </Box>
@@ -623,7 +623,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                             {status === AppointmentStatus.Cancelled &&
                               appointmentCreateType === AppointmentCreateType.Appointment &&
                               <Box className={classes.iconsBackgroundDisabled}>
-                                <IconButton>
+                                <IconButton size='small' >
                                   <CheckInTickIcon />
                                 </IconButton>
                               </Box>

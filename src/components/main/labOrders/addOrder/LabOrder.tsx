@@ -208,7 +208,7 @@ const LabOrderComponent: FC<LabOrderInitialScreenProps> = ({ appointmentInfo, se
               </Button>
 
 
-              <IconButton onClick={() => handleLabTestRemove(id)} >
+              <IconButton size='small' onClick={() => handleLabTestRemove(id)} >
                 <CrossIcon />
               </IconButton>
             </Box>

@@ -23,7 +23,7 @@ const MedicalBillingComponent: FC = (): JSX.Element =>
           <Typography variant="body2">{TOTAL_CLAIM_TEXT}</Typography>
         </Box>
 
-        <IconButton>
+        <IconButton size='small'>
           <RedirectIcon />
         </IconButton>
       </Box>

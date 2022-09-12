@@ -2,7 +2,7 @@
 import { ChangeEvent, memo } from 'react';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
-import { Box, Button, Grid, IconButton, Tab, TextField, Typography } from '@material-ui/core';
+import { Box, Grid, IconButton, Tab, TextField, Typography } from '@material-ui/core';
 import {
   Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon, ArrowUpward as ArrowUpwardIcon, ArrowDownward as ArrowDownwardIcon
 } from '@material-ui/icons';
@@ -148,18 +148,18 @@ const DropContainer = ({ formState, changeValues, dispatch }: DropContainerProps
         </Grid>
 
         <Grid item xs={12} sm={12} md={2} lg={2}>
-          <Box display={'flex'} justifyContent={'flex-end'} width={'100%'} className="icon-button-hover">
-            <Button onClick={addTabHandler}>
-              <AddIcon />
-            </Button>
+          <Box display={'flex'} justifyContent={'flex-end'} width={'100%'}>
+            <IconButton onClick={addTabHandler}>
+            <Box width={20}><AddIcon /></Box>
+            </IconButton>
             {formValues?.length > 1 &&
-              <Button onClick={delTabHandler}>
-                <DeleteIcon />
-              </Button>
+              <IconButton onClick={delTabHandler}>
+                <Box width={20}><DeleteIcon /></Box>
+              </IconButton>
             }
-            <Button onClick={editTabHandler}>
-              <EditIcon />
-            </Button>
+            <IconButton onClick={editTabHandler}>
+            <Box width={20}><EditIcon /></Box>
+            </IconButton>
           </Box>
         </Grid>
       </Grid>

@@ -71,19 +71,15 @@ const CameraComponent = ({ sendFile, invisibleHandler, open }: CameraComponentPr
         :
         <Box>
           <Box display="flex" justifyContent='center'>
-            <IconButton onClick={() => invisibleHandler(!open)}>
-              <Box width={20}>
-                <Cancel />
-              </Box>
+            <IconButton size='small' onClick={() => invisibleHandler(!open)}>
+              <Cancel />
             </IconButton>
             <Box p={1} />
-            <IconButton onClick={() => {
+            <IconButton size='small' onClick={() => {
               const imageSrc = webcamRef?.current?.getScreenshot();
               imageSrc && takePhoto(imageSrc)
             }} color="primary">
-              <Box width={20}>
-                <CameraAlt />
-              </Box>
+              <CameraAlt />
             </IconButton>
           </Box>
           <Box width="100%" height="100%">

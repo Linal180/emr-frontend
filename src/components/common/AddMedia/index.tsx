@@ -117,7 +117,7 @@ const AddImageModal: FC<MediaModalTypes> = ({
               <img src={fileUrl} alt={attachment?.key || 'emr images'} />
 
               <Box className="media-overlay">
-                <IconButton aria-label="delete" color="secondary" onClick={handleDelete}>
+                <IconButton size='small' aria-label="delete" color="secondary" onClick={handleDelete}>
                   <TrashNewIcon />
                 </IconButton>
               </Box>

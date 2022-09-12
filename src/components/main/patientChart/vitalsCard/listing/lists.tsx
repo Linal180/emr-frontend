@@ -1,6 +1,5 @@
 // packages block
 import {
-  Box,
   IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography
 } from '@material-ui/core';
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
@@ -59,10 +58,8 @@ export const VitalListingTable = ({
   }
 
   const renderIcon = (vital: PatientVitalPayload['patientVital']) =>
-    <IconButton className='py-0 ml-5' onClick={() => editHandler(vital)}>
-      <Box width={20}>
+    <IconButton className='py-0 ml-5' size='small' onClick={() => editHandler(vital)}>
         <FormEditNewIcon />
-      </Box>
     </IconButton>
 
   return (

@@ -46,7 +46,7 @@ const DocumentViewer: FC<DocumentViewerProps> = ({ title, isOpen, handleClose, u
       <DialogTitle>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h4">{title}</Typography>
-          <IconButton onClick={handleClose}><CrossIcon /></IconButton>
+          <IconButton size='small' onClick={handleClose}><CrossIcon /></IconButton>
         </Box>
       </DialogTitle>
 

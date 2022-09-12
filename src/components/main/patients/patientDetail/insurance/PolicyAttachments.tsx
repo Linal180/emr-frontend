@@ -153,7 +153,7 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(
                         </Box>
 
                         <Box className="card-overlay">
-                          <IconButton className="del-icon" onClick={() => onDeleteClick(attachment?.id || '')}>
+                          <IconButton className="del-icon" size='small' onClick={() => onDeleteClick(attachment?.id || '')}>
                             <TrashOutlinedIcon />
                           </IconButton>
                         </Box>

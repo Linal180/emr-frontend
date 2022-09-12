@@ -94,7 +94,7 @@ const InputController: FC<CustomInputControlProps> = ({
                       handleShowPassword={handleClickShowPassword}
                     />,
                   } : clearable ? {
-                    endAdornment: <IconButton aria-label="clear" onClick={handleClearField ?
+                    endAdornment: <IconButton size='small' aria-label="clear" onClick={handleClearField ?
                       () => handleClearField(controllerName) : () => { }}>
                       <ClearIcon />
                     </IconButton>

@@ -174,6 +174,7 @@ const RolesTable = ({ customRole = false }: RolesTableProps) => {
                           <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                             <IconButton
                               color="primary"
+                              size='small'
                               disabled={!isSuperAdmin}
                               className={isSuperAdmin ?
                                 classes.rolesIconsBackground : classes.rolesIconsBackgroundDisabled}

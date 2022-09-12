@@ -72,7 +72,7 @@ const DocumentsForm: FC<FieldComponentProps> = ({ item, dispatcher, state, docum
             </Typography>
           </Box>
 
-          <IconButton onClick={() => handleRemoveAttachment(attachmentId || '')} disabled={removeAttachmentLoading}>
+          <IconButton size='small' onClick={() => handleRemoveAttachment(attachmentId || '')} disabled={removeAttachmentLoading}>
             <CloseIcon color={removeAttachmentLoading ? 'disabled' : 'secondary'} />
           </IconButton>
         </Box>

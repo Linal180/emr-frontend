@@ -107,7 +107,7 @@ const VitalCardComponent: FC<ChartingCardComponentType> = ({
             action={
               hasAdd && (
                 <Box display="flex" alignItems="center">
-                  <IconButton disabled={disableAddIcon}
+                  <IconButton size='small' disabled={disableAddIcon}
                     onClick={vitalsCard ? () => history.push(`./chart/vitals`)
                       :
                       handleChartingCardsMenuOpen} aria-label="patient-charting"

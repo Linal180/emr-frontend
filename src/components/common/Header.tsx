@@ -1,5 +1,5 @@
 // packages block
-import { AppBar, Box, Button, Fade, Menu, MenuItem, Toolbar, Typography } from '@material-ui/core';
+import { AppBar, Box, Button, Fade, IconButton, Menu, MenuItem, Toolbar, Typography } from '@material-ui/core';
 import { Menu as MenuIcon } from "@material-ui/icons";
 import { MouseEvent, useContext, useState } from "react";
 import { Link } from "react-router-dom";
@@ -223,11 +223,11 @@ const Header = ({ url }: { url: string }): JSX.Element => {
 
           <Box className={classes.grow} />
 
-          <Box className="icon-button-hover" display="flex" alignItems="center">
+          <Box display="flex" alignItems="center">
             <Link to={SETTINGS_ROUTE}>
-              <Box width={20}>
+              <IconButton size='small'>
                 <SettingsIcon />
-              </Box>
+              </IconButton>
             </Link>
 
             <Box px={2} />

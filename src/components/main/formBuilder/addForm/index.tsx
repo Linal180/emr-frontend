@@ -672,11 +672,11 @@ const AddForm = () => {
 
             <Box mt={3}>
               <Grid container spacing={2}>
-                <Grid item lg={2} md={4} sm={12} xs={12}>
+                <Grid item lg={2} md={12} sm={12} xs={12}>
                   <Sidebar dispatch={dispatch} formState={state} />
                 </Grid>
 
-                <Grid item lg={7} md={4} sm={8} xs={12}>
+                <Grid item lg={7} md={8} sm={8} xs={12}>
                   <Box p={3} bgcolor={WHITE} borderRadius={6}>
                     {getFormLoader ? <ViewDataLoader rows={3} columns={3} hasMedia={false} /> :
                       <DropContainer
