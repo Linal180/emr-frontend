@@ -10,10 +10,11 @@ import PatientSearchComponent from "../../common/Dashboard/patientSearch";
 import { BLACK, WHITE } from "../../../theme";
 import { isBiller } from "../../../utils";
 import { AuthContext } from "../../../context";
-import { InfoSearchIcon, MessageIcon } from "../../../assets/svgs";
+import { InfoSearchIcon, MessageIcon, PlusRoundIcon } from "../../../assets/svgs";
 import { useDashboardStyles } from "../../../styles/dashboardStyles";
 import {
-  APPOINTMENTS_TEXT, INSURANCE_ELIGIBILITY_ROUTE, INSURANCE_ELIGIBILITY_TEXT, QUICK_ACTIONS, SEND_SMS, SEND_SMS_ROUTE
+  ADD_PATIENT, APPOINTMENTS_TEXT, INSURANCE_ELIGIBILITY_ROUTE, INSURANCE_ELIGIBILITY_TEXT, PATIENTS_ROUTE,
+  QUICK_ACTIONS, SEND_SMS, SEND_SMS_ROUTE
 } from "../../../constants";
 
 const StaffDashboardComponent: FC = (): JSX.Element => {
@@ -79,6 +80,19 @@ const StaffDashboardComponent: FC = (): JSX.Element => {
                     </Box>
                   </Link>
                 </Box>
+
+                <Box ml={2}>
+                  <Link to={`${PATIENTS_ROUTE}/new`}>
+                    <Box className={classes.cardBox}>
+                      <PlusRoundIcon />
+
+                      <Box p={0.2} />
+
+                      <Typography variant="h6">{ADD_PATIENT}</Typography>
+                    </Box>
+                  </Link>
+                </Box>
+
               </Box>
             </Box>
           </Card>
