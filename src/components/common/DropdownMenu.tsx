@@ -39,6 +39,7 @@ const DropdownMenu: FC<DropDownItems> = ({ itemName, menuItem, avatarIcon, curre
           aria-controls="menu-appBar"
           aria-haspopup="true"
           color="inherit"
+          size='small'
         >
           <NewAvatarIcon />
         </IconButton>

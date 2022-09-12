@@ -194,16 +194,16 @@ export const DateFieldComponent = ({ field, isCreating, item }: FieldComponentPr
         open={openPicker}
         placeholder={US_DATE_FORMAT}
         value={isCreating ? date : value}
-        onClick={() => setOpenPicker(!openPicker)}
+        // onClick={() => setOpenPicker(!openPicker)}
         onClose={() => setOpenPicker(!openPicker)}
         disableFuture={!!!futureEnable}
         disablePast={!!!pastEnable}
         onChange={(date) => {
           isCreating ? setDate(date) : onChange && date && onChange(getTimestamps(date?.toString()))
         }}
-        onKeyDown={(e) => e.preventDefault()}
+        // onKeyDown={(e) => e.preventDefault()}
         autoOk
-        keyboardIcon={<Box width={20}><CalendarIcon /></Box>}
+        keyboardIcon={<Box width={20} onClick={() => setOpenPicker(!openPicker)}><CalendarIcon /></Box>}
       />
     </MuiPickersUtilsProvider>
   )

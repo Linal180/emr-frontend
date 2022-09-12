@@ -24,6 +24,7 @@ import { calculateAge } from '../../../../utils';
 import { ParamsType, PatientCardsProps, PatientInputProps } from '../../../../interfacesTypes';
 import { useExternalPatientStyles } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
 import { useFindAppointmentInsuranceStatusLazyQuery } from '../../../../generated/graphql';
+import CardComponent from '../../../common/CardComponent';
 
 const RegisterFormComponent: FC<PatientCardsProps> = ({
   getPatientLoading, dispatch, isEdit, state, shouldDisableEdit, disableSubmit, shouldShowBread
@@ -81,7 +82,16 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
         />
 
       case shouldShowInsuranceStep ? 1 : Infinity:
-        return <InsuranceComponent />
+        return (
+          <CardComponent
+            saveBtn
+            state={state}
+            isEdit={isEdit}
+            cardTitle={INSURANCE}
+            disableSubmit={disableSubmit}
+          ><InsuranceComponent />
+          </CardComponent>
+        )
 
       case shouldShowInsuranceStep ? 2 : !shouldShowBread ? 1 : 0:
         return (<>

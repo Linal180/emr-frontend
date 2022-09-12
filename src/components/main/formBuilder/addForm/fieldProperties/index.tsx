@@ -212,7 +212,7 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
                       {fields?.length > 1 &&
                         <td>
                           <Box>
-                            <IconButton onClick={() => remove(index)}>
+                            <IconButton size='small' onClick={() => remove(index)}>
                               <TrashOutlinedIcon />
                             </IconButton>
                           </Box>
