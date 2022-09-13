@@ -6,6 +6,7 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useParams } from "react-router";
 // components
 import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
+import Alert from "../../../../common/Alert";
 import TableLoader from "../../../../common/TableLoader";
 //constants, interfaces, utils
 import { CONFLICT_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, FORBIDDEN_EXCEPTION, NOTES, PAGE_LIMIT, SAVE_TEXT, VITALS_TEXT, VITAL_LIST_PAGE_LIMIT } from "../../../../../constants";
@@ -14,7 +15,6 @@ import { TriageNotesPayload, useAddPatientTriageNoteMutation, useFindAllPatientT
 import { ChartComponentProps, ParamsType, PatientTriageNotesInputProps } from "../../../../../interfacesTypes";
 import { Action, ActionType, initialState, patientReducer, State } from "../../../../../reducers/patientReducer";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
-import Alert from "../../../../common/Alert";
 
 const TriageNoteTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
   const classes = useChartingStyles()

@@ -6,6 +6,7 @@ import { TabContext, TabList, TabPanel } from '@material-ui/lab';
 import VitalTab from './tabs/VitalListing';
 import AllergyTab from './tabs/AllergyListing';
 import ProblemTab from './tabs/ProblemListing';
+import TriageNoteTab from './tabs/TriageNotesListing';
 // interfaces, graphql, constants block /styles
 import { PATIENT_CHARTING_TABS } from "../../../../constants";
 import { ChartComponentProps } from "../../../../interfacesTypes";
@@ -13,7 +14,6 @@ import { useChartingStyles } from "../../../../styles/chartingStyles";
 import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
 import { ChartContextProvider } from '../../../../context';
 import { WHITE } from '../../../../theme';
-import TriageNoteTab from './tabs/TriageNotesListing';
 
 const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit }): JSX.Element => {
   const classes = useChartingStyles()
