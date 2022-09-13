@@ -1,0 +1,76 @@
+query GetTriageNotes($getPatientTriageNote: GetPatientTriageNote!) {
+  getTriageNotes(getPatientTriageNote: $getPatientTriageNote) {
+    response {
+      name
+      error
+      status
+      message
+    }
+
+    triageNotes {
+      id
+      notes 
+      patient {
+        id
+      }
+
+      appointment {
+        id
+      }
+    }
+  }
+}
+
+query findAllPatientTriageNotes($patientTriageNoteInput: PatientTriageNoteInput!) {
+  findAllPatientTriageNotes(patientTriageNoteInput: $patientTriageNoteInput) {
+    response {
+      name
+      error
+      status
+      message
+    }
+
+    pagination {
+      totalPages
+      page
+    }
+
+   triageNotes {
+      id
+      notes 
+      patient {
+        id
+      }
+    }
+  }
+}
+
+mutation addPatientTriageNote($createTriageNoteInput: CreateTriageNoteInput!) {
+  addPatientTriageNote(createTriageNoteInput: $createTriageNoteInput) {
+    response {
+      name
+      error
+      status
+      message
+    }
+
+    triageNotes {
+      id
+    }
+  }
+}
+
+mutation updatePatientTriageNote($updateTriageNoteInput: UpdateTriageNoteInput!) {
+  updatePatientTriageNote(updateTriageNoteInput: $updateTriageNoteInput) {
+    response {
+      name
+      error
+      status
+      message
+    }
+
+   triageNotes {
+      id
+    }
+  }
+}

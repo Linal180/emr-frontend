@@ -1,11 +1,11 @@
 import { usStreet } from "smartystreets-javascript-sdk";
-import { formatValue } from "../utils";
 import { IN_TEXT, KG_TEXT } from "../constants";
 import {
-  AttachmentPayload, AttachmentsPayload, HeadCircumferenceType, PatientPayload, PatientProviderPayload, PatientsPayload,
-  PatientVitalPayload, PatientVitalsPayload, TempUnitType, UnitType, WeightType, AppointmentPayload
-} from "../generated/graphql"
+  AppointmentPayload, AttachmentPayload, AttachmentsPayload, HeadCircumferenceType, PatientPayload, PatientProviderPayload, PatientsPayload,
+  PatientVitalPayload, PatientVitalsPayload, TempUnitType, TriageNotesPayload, UnitType, WeightType
+} from "../generated/graphql";
 import { SmartyUserData } from "../interfacesTypes";
+import { formatValue } from "../utils";
 
 export interface State {
   page: number;
@@ -86,7 +86,9 @@ export interface State {
   resultConsent: boolean;
   immunizationConsent: boolean;
   medicationHistoryConsent: boolean;
-  patientEmail: string
+  patientEmail: string;
+  patientTriageNotes: TriageNotesPayload['triageNotes'],
+  triageNoteId: string
 }
 
 export const initialState: State = {
@@ -168,7 +170,9 @@ export const initialState: State = {
   resultConsent: false,
   immunizationConsent: false,
   medicationHistoryConsent: false,
-  patientEmail: ''
+  patientEmail: '',
+  patientTriageNotes: [],
+  triageNoteId: ''
 }
 
 export enum ActionType {
@@ -248,7 +252,9 @@ export enum ActionType {
   SET_RESULT_CONSENT = 'setResultConsent',
   SET_IMMUNIZATION_CONSENT = 'setImmunizationConsent',
   SET_MEDICATION_HISTORY_CONSENT = 'setMedicationHistoryConsent',
-  SET_PATIENT_EMAIL='setPatientEmail'
+  SET_PATIENT_EMAIL = 'setPatientEmail',
+  SET_PATIENT_TRIAGE_NOTES = 'setPatientTriageNotes',
+  SET_TRIAGE_NOTE_ID = "setTriageNoteId"
 }
 
 export type Action =
@@ -329,6 +335,8 @@ export type Action =
   | { type: ActionType.SET_IMMUNIZATION_CONSENT; immunizationConsent: boolean }
   | { type: ActionType.SET_MEDICATION_HISTORY_CONSENT; medicationHistoryConsent: boolean }
   | { type: ActionType.SET_PATIENT_EMAIL; patientEmail: string }
+  | { type: ActionType.SET_PATIENT_TRIAGE_NOTES; patientTriageNotes: TriageNotesPayload['triageNotes'] }
+  | { type: ActionType.SET_TRIAGE_NOTE_ID; triageNoteId: string }
 
 export const patientReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -791,6 +799,18 @@ export const patientReducer = (state: State, action: Action): State => {
       return {
         ...state,
         patientEmail: action.patientEmail
+      }
+
+    case ActionType.SET_PATIENT_TRIAGE_NOTES:
+      return {
+        ...state,
+        patientTriageNotes: action.patientTriageNotes
+      }
+
+    case ActionType.SET_TRIAGE_NOTE_ID:
+      return {
+        ...state,
+        triageNoteId: action.triageNoteId
       }
 
   }
