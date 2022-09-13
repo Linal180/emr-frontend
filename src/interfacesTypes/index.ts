@@ -746,6 +746,10 @@ export type ExternalPatientInputProps = {
     | "emergencyAddress2"
   >;
 
+export type PatientTriageNotesInputProps = {
+  notes: string
+}
+
 export type ExtendedAppointmentInputProps = Omit<
   CreateAppointmentInput,
   "patientId" | "facilityId" | "serviceId" | "providerId"

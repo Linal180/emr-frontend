@@ -255,6 +255,7 @@ export type Appointment = {
   timeZone?: Maybe<Scalars['String']>;
   token?: Maybe<Scalars['String']>;
   transaction?: Maybe<Transactions>;
+  triageNote?: Maybe<TriageNotes>;
   updatedAt?: Maybe<Scalars['String']>;
 };
 
@@ -1541,6 +1542,12 @@ export type CreateStaffItemInput = {
   username: Scalars['String'];
 };
 
+export type CreateTriageNoteInput = {
+  appointmentId?: Maybe<Scalars['String']>;
+  notes?: Maybe<Scalars['String']>;
+  patientId?: Maybe<Scalars['String']>;
+};
+
 export type CreateUserFormInput = {
   DoctorId?: Maybe<Scalars['String']>;
   FormId: Scalars['String'];
@@ -2227,6 +2234,10 @@ export type GetPatientProblem = {
   id: Scalars['String'];
 };
 
+export type GetPatientTriageNote = {
+  id: Scalars['String'];
+};
+
 export type GetPatientVital = {
   id: Scalars['String'];
 };
@@ -2676,6 +2687,7 @@ export type Mutation = {
   activateUser: UserPayload;
   addPatientAllergy: PatientAllergyPayload;
   addPatientProblem: PatientProblemPayload;
+  addPatientTriageNote: TriageNotePayload;
   addPatientVital: PatientVitalPayload;
   assignPermissionToRole: PermissionPayload;
   cancelAppointment: AppointmentPayload;
@@ -2744,6 +2756,7 @@ export type Mutation = {
   removePatient: PatientPayload;
   removePatientAllergy: PatientAllergyPayload;
   removePatientProblem: PatientProblemPayload;
+  removePatientTriageNote: TriageNotePayload;
   removePatientVital: PatientVitalPayload;
   removePermission: PermissionPayload;
   removePractice: PracticePayload;
@@ -2790,6 +2803,7 @@ export type Mutation = {
   updatePatientProfile: PatientPayload;
   updatePatientProvider: PatientPayload;
   updatePatientProviderRelation: PatientDoctorPayload;
+  updatePatientTriageNote: TriageNotePayload;
   updatePatientVital: PatientVitalPayload;
   updatePermission: PermissionPayload;
   updatePolicy: PolicyPayload;
@@ -2822,6 +2836,11 @@ export type MutationAddPatientAllergyArgs = {
 
 export type MutationAddPatientProblemArgs = {
   createProblemInput: CreateProblemInput;
+};
+
+
+export type MutationAddPatientTriageNoteArgs = {
+  createTriageNoteInput: CreateTriageNoteInput;
 };
 
 
@@ -3160,6 +3179,11 @@ export type MutationRemovePatientProblemArgs = {
 };
 
 
+export type MutationRemovePatientTriageNoteArgs = {
+  removeTriageNote: RemoveTriageNote;
+};
+
+
 export type MutationRemovePatientVitalArgs = {
   removeVital: RemoveVital;
 };
@@ -3385,6 +3409,11 @@ export type MutationUpdatePatientProviderRelationArgs = {
 };
 
 
+export type MutationUpdatePatientTriageNoteArgs = {
+  updateTriageNoteInput: UpdateTriageNoteInput;
+};
+
+
 export type MutationUpdatePatientVitalArgs = {
   updateVitalInput: UpdateVitalInput;
 };
@@ -3599,6 +3628,7 @@ export type Patient = {
   statementNoteDateTo?: Maybe<Scalars['String']>;
   suffix?: Maybe<Scalars['String']>;
   transaction?: Maybe<Array<Transactions>>;
+  triageNotes?: Maybe<Array<TriageNotes>>;
   updatedAt: Scalars['String'];
   user?: Maybe<User>;
 };
@@ -3791,6 +3821,12 @@ export type PatientProviderPayload = {
   __typename?: 'PatientProviderPayload';
   providers?: Maybe<Array<DoctorPatient>>;
   response?: Maybe<ResponsePayload>;
+};
+
+export type PatientTriageNoteInput = {
+  appointmentId?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+  patientId?: Maybe<Scalars['String']>;
 };
 
 export type PatientVitalInput = {
@@ -4352,6 +4388,7 @@ export type Query = {
   findAllPatient: PatientsPayload;
   findAllPatientAllergies: PatientAllergiesPayload;
   findAllPatientProblem: PatientProblemsPayload;
+  findAllPatientTriageNotes: TriageNotesPayload;
   findAllPatientVitals: PatientVitalsPayload;
   findAllPermissions: PermissionsPayload;
   findAllPractices: PracticesPayload;
@@ -4427,6 +4464,7 @@ export type Query = {
   getSuperBillInfo: SuperBillPayload;
   getToken: BraintreePayload;
   getTransaction: TransactionPayload;
+  getTriageNotes: TriageNotePayload;
   getUser: UserPayload;
   getUsersWithRoles: PracticeUserRolesPayload;
   me: UserPayload;
@@ -4618,6 +4656,11 @@ export type QueryFindAllPatientAllergiesArgs = {
 
 export type QueryFindAllPatientProblemArgs = {
   patientProblemInput: PatientProblemInput;
+};
+
+
+export type QueryFindAllPatientTriageNotesArgs = {
+  patientTriageNoteInput: PatientTriageNoteInput;
 };
 
 
@@ -4971,6 +5014,11 @@ export type QueryGetTransactionArgs = {
 };
 
 
+export type QueryGetTriageNotesArgs = {
+  getPatientTriageNote: GetPatientTriageNote;
+};
+
+
 export type QueryGetUserArgs = {
   getUser: GetUser;
 };
@@ -5157,6 +5205,10 @@ export type RemoveService = {
 };
 
 export type RemoveStaff = {
+  id: Scalars['String'];
+};
+
+export type RemoveTriageNote = {
   id: Scalars['String'];
 };
 
@@ -5787,6 +5839,31 @@ export type TransactionsPayload = {
   pagination?: Maybe<PaginationPayload>;
   response?: Maybe<ResponsePayload>;
   transactions?: Maybe<Array<Maybe<Transactions>>>;
+};
+
+export type TriageNotePayload = {
+  __typename?: 'TriageNotePayload';
+  response?: Maybe<ResponsePayload>;
+  triageNotes?: Maybe<TriageNotes>;
+};
+
+export type TriageNotes = {
+  __typename?: 'TriageNotes';
+  appointment?: Maybe<Appointment>;
+  appointmentId?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  notes?: Maybe<Scalars['String']>;
+  patient?: Maybe<Patient>;
+  patientId?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type TriageNotesPayload = {
+  __typename?: 'TriageNotesPayload';
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+  triageNotes?: Maybe<Array<TriageNotes>>;
 };
 
 export type TwoFactorInput = {
@@ -6430,6 +6507,13 @@ export type UpdateStaffItemInput = {
   /** Send Investor Type from the ENUM - Sign-up */
   roleType?: Maybe<Scalars['String']>;
   username?: Maybe<Scalars['String']>;
+};
+
+export type UpdateTriageNoteInput = {
+  appointmentId?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  notes?: Maybe<Scalars['String']>;
+  patientId?: Maybe<Scalars['String']>;
 };
 
 export type UpdateUserInput = {
@@ -7127,6 +7211,34 @@ export type SearchSnoMedCodesQueryVariables = Exact<{
 
 
 export type SearchSnoMedCodesQuery = { __typename?: 'Query', searchSnoMedCodeByIcdCodes: { __typename?: 'snoMedCodesPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, snoMedCodes?: Array<{ __typename: 'SnoMedCodes', id: string, referencedComponentId?: string | null } | null> | null } };
+
+export type GetTriageNotesQueryVariables = Exact<{
+  getPatientTriageNote: GetPatientTriageNote;
+}>;
+
+
+export type GetTriageNotesQuery = { __typename?: 'Query', getTriageNotes: { __typename?: 'TriageNotePayload', response?: { __typename?: 'ResponsePayload', name?: string | null, error?: string | null, status?: number | null, message?: string | null } | null, triageNotes?: { __typename?: 'TriageNotes', id: string, notes?: string | null, patient?: { __typename?: 'Patient', id: string } | null, appointment?: { __typename?: 'Appointment', id: string } | null } | null } };
+
+export type FindAllPatientTriageNotesQueryVariables = Exact<{
+  patientTriageNoteInput: PatientTriageNoteInput;
+}>;
+
+
+export type FindAllPatientTriageNotesQuery = { __typename?: 'Query', findAllPatientTriageNotes: { __typename?: 'TriageNotesPayload', response?: { __typename?: 'ResponsePayload', name?: string | null, error?: string | null, status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null, page?: number | null } | null, triageNotes?: Array<{ __typename?: 'TriageNotes', id: string, notes?: string | null, patient?: { __typename?: 'Patient', id: string } | null }> | null } };
+
+export type AddPatientTriageNoteMutationVariables = Exact<{
+  createTriageNoteInput: CreateTriageNoteInput;
+}>;
+
+
+export type AddPatientTriageNoteMutation = { __typename?: 'Mutation', addPatientTriageNote: { __typename?: 'TriageNotePayload', response?: { __typename?: 'ResponsePayload', name?: string | null, error?: string | null, status?: number | null, message?: string | null } | null, triageNotes?: { __typename?: 'TriageNotes', id: string } | null } };
+
+export type UpdatePatientTriageNoteMutationVariables = Exact<{
+  updateTriageNoteInput: UpdateTriageNoteInput;
+}>;
+
+
+export type UpdatePatientTriageNoteMutation = { __typename?: 'Mutation', updatePatientTriageNote: { __typename?: 'TriageNotePayload', response?: { __typename?: 'ResponsePayload', name?: string | null, error?: string | null, status?: number | null, message?: string | null } | null, triageNotes?: { __typename?: 'TriageNotes', id: string } | null } };
 
 export type GetPatientVitalQueryVariables = Exact<{
   getPatientVital: GetPatientVital;
@@ -11451,6 +11563,189 @@ export function useSearchSnoMedCodesLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type SearchSnoMedCodesQueryHookResult = ReturnType<typeof useSearchSnoMedCodesQuery>;
 export type SearchSnoMedCodesLazyQueryHookResult = ReturnType<typeof useSearchSnoMedCodesLazyQuery>;
 export type SearchSnoMedCodesQueryResult = Apollo.QueryResult<SearchSnoMedCodesQuery, SearchSnoMedCodesQueryVariables>;
+export const GetTriageNotesDocument = gql`
+    query GetTriageNotes($getPatientTriageNote: GetPatientTriageNote!) {
+  getTriageNotes(getPatientTriageNote: $getPatientTriageNote) {
+    response {
+      name
+      error
+      status
+      message
+    }
+    triageNotes {
+      id
+      notes
+      patient {
+        id
+      }
+      appointment {
+        id
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetTriageNotesQuery__
+ *
+ * To run a query within a React component, call `useGetTriageNotesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTriageNotesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTriageNotesQuery({
+ *   variables: {
+ *      getPatientTriageNote: // value for 'getPatientTriageNote'
+ *   },
+ * });
+ */
+export function useGetTriageNotesQuery(baseOptions: Apollo.QueryHookOptions<GetTriageNotesQuery, GetTriageNotesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetTriageNotesQuery, GetTriageNotesQueryVariables>(GetTriageNotesDocument, options);
+      }
+export function useGetTriageNotesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTriageNotesQuery, GetTriageNotesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetTriageNotesQuery, GetTriageNotesQueryVariables>(GetTriageNotesDocument, options);
+        }
+export type GetTriageNotesQueryHookResult = ReturnType<typeof useGetTriageNotesQuery>;
+export type GetTriageNotesLazyQueryHookResult = ReturnType<typeof useGetTriageNotesLazyQuery>;
+export type GetTriageNotesQueryResult = Apollo.QueryResult<GetTriageNotesQuery, GetTriageNotesQueryVariables>;
+export const FindAllPatientTriageNotesDocument = gql`
+    query findAllPatientTriageNotes($patientTriageNoteInput: PatientTriageNoteInput!) {
+  findAllPatientTriageNotes(patientTriageNoteInput: $patientTriageNoteInput) {
+    response {
+      name
+      error
+      status
+      message
+    }
+    pagination {
+      totalPages
+      page
+    }
+    triageNotes {
+      id
+      notes
+      patient {
+        id
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllPatientTriageNotesQuery__
+ *
+ * To run a query within a React component, call `useFindAllPatientTriageNotesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllPatientTriageNotesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllPatientTriageNotesQuery({
+ *   variables: {
+ *      patientTriageNoteInput: // value for 'patientTriageNoteInput'
+ *   },
+ * });
+ */
+export function useFindAllPatientTriageNotesQuery(baseOptions: Apollo.QueryHookOptions<FindAllPatientTriageNotesQuery, FindAllPatientTriageNotesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllPatientTriageNotesQuery, FindAllPatientTriageNotesQueryVariables>(FindAllPatientTriageNotesDocument, options);
+      }
+export function useFindAllPatientTriageNotesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllPatientTriageNotesQuery, FindAllPatientTriageNotesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllPatientTriageNotesQuery, FindAllPatientTriageNotesQueryVariables>(FindAllPatientTriageNotesDocument, options);
+        }
+export type FindAllPatientTriageNotesQueryHookResult = ReturnType<typeof useFindAllPatientTriageNotesQuery>;
+export type FindAllPatientTriageNotesLazyQueryHookResult = ReturnType<typeof useFindAllPatientTriageNotesLazyQuery>;
+export type FindAllPatientTriageNotesQueryResult = Apollo.QueryResult<FindAllPatientTriageNotesQuery, FindAllPatientTriageNotesQueryVariables>;
+export const AddPatientTriageNoteDocument = gql`
+    mutation addPatientTriageNote($createTriageNoteInput: CreateTriageNoteInput!) {
+  addPatientTriageNote(createTriageNoteInput: $createTriageNoteInput) {
+    response {
+      name
+      error
+      status
+      message
+    }
+    triageNotes {
+      id
+    }
+  }
+}
+    `;
+export type AddPatientTriageNoteMutationFn = Apollo.MutationFunction<AddPatientTriageNoteMutation, AddPatientTriageNoteMutationVariables>;
+
+/**
+ * __useAddPatientTriageNoteMutation__
+ *
+ * To run a mutation, you first call `useAddPatientTriageNoteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddPatientTriageNoteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addPatientTriageNoteMutation, { data, loading, error }] = useAddPatientTriageNoteMutation({
+ *   variables: {
+ *      createTriageNoteInput: // value for 'createTriageNoteInput'
+ *   },
+ * });
+ */
+export function useAddPatientTriageNoteMutation(baseOptions?: Apollo.MutationHookOptions<AddPatientTriageNoteMutation, AddPatientTriageNoteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddPatientTriageNoteMutation, AddPatientTriageNoteMutationVariables>(AddPatientTriageNoteDocument, options);
+      }
+export type AddPatientTriageNoteMutationHookResult = ReturnType<typeof useAddPatientTriageNoteMutation>;
+export type AddPatientTriageNoteMutationResult = Apollo.MutationResult<AddPatientTriageNoteMutation>;
+export type AddPatientTriageNoteMutationOptions = Apollo.BaseMutationOptions<AddPatientTriageNoteMutation, AddPatientTriageNoteMutationVariables>;
+export const UpdatePatientTriageNoteDocument = gql`
+    mutation updatePatientTriageNote($updateTriageNoteInput: UpdateTriageNoteInput!) {
+  updatePatientTriageNote(updateTriageNoteInput: $updateTriageNoteInput) {
+    response {
+      name
+      error
+      status
+      message
+    }
+    triageNotes {
+      id
+    }
+  }
+}
+    `;
+export type UpdatePatientTriageNoteMutationFn = Apollo.MutationFunction<UpdatePatientTriageNoteMutation, UpdatePatientTriageNoteMutationVariables>;
+
+/**
+ * __useUpdatePatientTriageNoteMutation__
+ *
+ * To run a mutation, you first call `useUpdatePatientTriageNoteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePatientTriageNoteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePatientTriageNoteMutation, { data, loading, error }] = useUpdatePatientTriageNoteMutation({
+ *   variables: {
+ *      updateTriageNoteInput: // value for 'updateTriageNoteInput'
+ *   },
+ * });
+ */
+export function useUpdatePatientTriageNoteMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePatientTriageNoteMutation, UpdatePatientTriageNoteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdatePatientTriageNoteMutation, UpdatePatientTriageNoteMutationVariables>(UpdatePatientTriageNoteDocument, options);
+      }
+export type UpdatePatientTriageNoteMutationHookResult = ReturnType<typeof useUpdatePatientTriageNoteMutation>;
+export type UpdatePatientTriageNoteMutationResult = Apollo.MutationResult<UpdatePatientTriageNoteMutation>;
+export type UpdatePatientTriageNoteMutationOptions = Apollo.BaseMutationOptions<UpdatePatientTriageNoteMutation, UpdatePatientTriageNoteMutationVariables>;
 export const GetPatientVitalDocument = gql`
     query getPatientVital($getPatientVital: GetPatientVital!) {
   getPatientVital(getPatientVital: $getPatientVital) {

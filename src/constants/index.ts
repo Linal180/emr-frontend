@@ -9,7 +9,7 @@ import {
 } from "../utils";
 import {
   CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, NumberIcon, RadioGroupIcon, SelectIcon, TextAreaIcon,
-  TextIcon, VitalsIcon, ProblemsIcon, AllergiesIcon
+  TextIcon, VitalsIcon, ProblemsIcon, AllergiesIcon, TriageIcon
 } from "../assets/svgs";
 import {
   AbnormalFlag, AllergySeverity, AppointmentStatus, Communicationtype, CopayType, DoctorPatientRelationType, ElementType,
@@ -3573,19 +3573,24 @@ export const CLAIM_SUCCESS_MESSAGES = [
 
 export const PATIENT_CHARTING_TABS = [
   {
+    icon: TriageIcon,
+    title: "Triage Notes",
+    value: "1",
+  },
+  {
     icon: VitalsIcon,
     title: "Vitals",
-    value: "1",
+    value: "2",
   },
   {
     icon: ProblemsIcon,
     title: "Problems",
-    value: "2",
+    value: "3",
   },
   {
     icon: AllergiesIcon,
     title: "Allergies",
-    value: "3",
+    value: "4",
   }
 ]
 

@@ -6,6 +6,7 @@ import { TabContext, TabList, TabPanel } from '@material-ui/lab';
 import VitalTab from './tabs/VitalListing';
 import AllergyTab from './tabs/AllergyListing';
 import ProblemTab from './tabs/ProblemListing';
+import TriageNoteTab from './tabs/TriageNotesListing';
 // interfaces, graphql, constants block /styles
 import { PATIENT_CHARTING_TABS } from "../../../../constants";
 import { ChartComponentProps } from "../../../../interfacesTypes";
@@ -52,18 +53,24 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit }): JSX.Element
             <Box className={classes.tabPanelPadding}>
               <Box pt={0} bgcolor={WHITE} borderRadius={8}>
                 <TabPanel value="1">
-                  <VitalTab shouldDisableEdit={shouldDisableEdit} />
+                  <TriageNoteTab shouldDisableEdit={shouldDisableEdit} />
                 </TabPanel>
               </Box>
 
               <Box pt={0} bgcolor={WHITE} borderRadius={8}>
                 <TabPanel value="2">
-                  <ProblemTab shouldDisableEdit={shouldDisableEdit} />
+                  <VitalTab shouldDisableEdit={shouldDisableEdit} />
                 </TabPanel>
               </Box>
 
               <Box pt={0} bgcolor={WHITE} borderRadius={8}>
                 <TabPanel value="3">
+                  <ProblemTab shouldDisableEdit={shouldDisableEdit} />
+                </TabPanel>
+              </Box>
+
+              <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                <TabPanel value="4">
                   <ChartContextProvider>
                     <AllergyTab shouldDisableEdit={shouldDisableEdit} />
                   </ChartContextProvider>
