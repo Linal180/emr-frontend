@@ -1,5 +1,5 @@
 import {
-  Allergies, AllergiesPayload, IcdCodes, IcdCodesPayload, IcdCodesWithSnowMedCode, PatientAllergiesPayload, PatientProblemsPayload, PatientVitalPayload, ReactionsPayload
+  Allergies, AllergiesPayload, IcdCodes, IcdCodesPayload, IcdCodesWithSnowMedCode, Medications, MedicationsPayload, PatientAllergiesPayload, PatientMedicationsPayload, PatientProblemsPayload, PatientVitalPayload, ReactionsPayload
 } from "../generated/graphql";
 import { multiOptionType } from "../interfacesTypes";
 
@@ -25,8 +25,10 @@ export interface State {
   patientVitals: PatientVitalPayload['patientVital'];
   patientProblems: PatientProblemsPayload['patientProblems'],
   patientAllergies: PatientAllergiesPayload['patientAllergies'],
-  selectedItem: Allergies | IcdCodesWithSnowMedCode | IcdCodes | undefined;
-  searchedData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'];
+  selectedItem: Allergies | Medications | IcdCodesWithSnowMedCode | IcdCodes | undefined;
+  searchedData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'] | MedicationsPayload['medications'];
+  medicationDeleteId: string;
+  patientMedications: PatientMedicationsPayload['patientMedications']
 }
 
 export const initialState: State = {
@@ -53,6 +55,8 @@ export const initialState: State = {
   patientProblems: [],
   patientAllergies: [],
   openDelete: false,
+  medicationDeleteId: '',
+  patientMedications: []
 }
 
 export enum ActionType {
@@ -79,6 +83,8 @@ export enum ActionType {
   SET_ALLERGY_DELETE_ID = "setAllergyDeleteId",
   SET_PROBLEM_DELETE_ID = "setProblemDeleteId",
   SET_SELECTED_REACTIONS = "setSelectedReactions",
+  SET_MEDICATION_DELETE_ID = "setMedicationDeleteId",
+  SET_PATIENT_MEDICATIONS = "setPatientMedication"
 }
 
 export type Action =
@@ -97,14 +103,16 @@ export type Action =
   | { type: ActionType.SET_IS_SEARCH_OPEN, isSearchOpen: HTMLElement | null }
   | { type: ActionType.SET_SELECTED_REACTIONS, selectedReactions: multiOptionType[] }
   | { type: ActionType.SET_REACTION_LIST, reactionList: ReactionsPayload['reactions'] }
-  | { type: ActionType.SET_SELECTED_ITEM, selectedItem: Allergies | IcdCodesWithSnowMedCode | IcdCodes | undefined }
+  | { type: ActionType.SET_SELECTED_ITEM, selectedItem: Allergies | Medications | IcdCodesWithSnowMedCode | IcdCodes | undefined }
   | { type: ActionType.SET_PATIENT_VITALS, patientVitals: PatientVitalPayload['patientVital'] }
   | { type: ActionType.SET_PATIENT_PROBLEMS, patientProblems: PatientProblemsPayload['patientProblems'] }
   | { type: ActionType.SET_PATIENT_ALLERGIES, patientAllergies: PatientAllergiesPayload['patientAllergies'] }
-  | { type: ActionType.SET_SEARCHED_DATA, searchedData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'] }
+  | { type: ActionType.SET_SEARCHED_DATA, searchedData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'] | MedicationsPayload['medications'] }
   | { type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: boolean }
   | { type: ActionType.SET_ALLERGY_DELETE_ID, allergyDeleteId: string }
   | { type: ActionType.SET_PROBLEM_DELETE_ID, problemDeleteId: string }
+  | { type: ActionType.SET_MEDICATION_DELETE_ID, medicationDeleteId: string }
+  | { type: ActionType.SET_PATIENT_MEDICATIONS, patientMedications: PatientMedicationsPayload['patientMedications'] }
 
 
 export const chartReducer = (state: State, action: Action): State => {
@@ -245,6 +253,18 @@ export const chartReducer = (state: State, action: Action): State => {
       return {
         ...state,
         reactionPages: action.reactionPages
+      }
+
+    case ActionType.SET_MEDICATION_DELETE_ID:
+      return {
+        ...state,
+        medicationDeleteId: action.medicationDeleteId
+      }
+
+    case ActionType.SET_PATIENT_MEDICATIONS:
+      return {
+        ...state,
+        patientMedications: action.patientMedications
       }
   }
 };

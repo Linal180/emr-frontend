@@ -1,0 +1,113 @@
+query FindAllPatientMedications($patientMedicationInput: PatientMedicationInput!){
+  findAllPatientMedications(patientMedicationInput: $patientMedicationInput){
+    response {
+      status
+      message
+    }
+    
+    pagination {
+      totalPages
+      page
+    }
+    
+    patientMedications {
+     id
+     sig
+     takeAmount
+     tabletUnit
+     timeDuration
+     noOfDays
+     startDate
+     status
+     stopDate
+     stopReason
+     note
+     medicationId
+     medication {
+      id
+      fullName
+      termType
+      rxNumber
+     }
+    }
+  }
+}
+
+query FindAllMedications($medicationInput: MedicationInput!){
+  findAllMedications(medicationInput: $medicationInput){
+    response {
+      status
+      message
+    }
+    
+    pagination {
+      totalPages
+      page
+    }
+    
+    medications {
+     id
+     fullName
+     termType
+     rxNumber
+    }
+  }
+}
+
+query GetPatientMedications($getPatientMedication: GetPatientMedication!){
+  getPatientMedications(getPatientMedication: $getPatientMedication){
+    response {
+      status
+      message
+    }
+    
+    patientMedication {
+     id
+     sig
+     takeAmount
+     tabletUnit
+     timeDuration
+     noOfDays
+     startDate
+     status
+     stopDate
+     stopReason
+     oralRoute
+     note
+     medicationId
+     medication {
+      id
+      fullName
+      termType
+      rxNumber
+     }
+    }
+  }
+}
+
+mutation AddPatientMedication($createPatientMedicationInput: CreatePatientMedicationInput!){
+  addPatientMedication(createPatientMedicationInput: $createPatientMedicationInput){
+    response {
+      status
+      message
+    }
+  }
+}
+
+mutation updatePatientMedication($updatePatientMedicationInput: UpdatePatientMedicationInput!){
+  updatePatientMedication(updatePatientMedicationInput: $updatePatientMedicationInput){
+    response {
+      status
+      message
+    }
+  }
+}
+
+mutation RemovePatientMedication($removePatientMedication: RemovePatientMedication!){
+  removePatientMedication(removePatientMedication: $removePatientMedication){
+    response {
+      status
+      message
+    }
+  }
+}

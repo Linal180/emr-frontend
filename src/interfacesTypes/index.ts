@@ -42,7 +42,7 @@ import {
   Practice, PracticePayload, ReactionsPayload, ResponsePayloadResponse, SectionsInputs,
   TwoFactorInput, UpdateAttachmentInput, UpdateContactInput, CreateFeeScheduleInput, LabTests,
   UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, PolicyEligibilityWithPatientPayload,
-  FetchBillingClaimStatusesInput, BillingPayload, LabTestsPayload
+  FetchBillingClaimStatusesInput, BillingPayload, LabTestsPayload, Medications, CreatePatientMedicationInput
 } from "../generated/graphql";
 import { AutocompleteRenderInputParams } from "@material-ui/lab";
 
@@ -1510,7 +1510,7 @@ export interface AddModalProps {
   isOpen?: boolean;
   isEdit?: boolean;
   recordId?: string;
-  item?: Allergies | IcdCodesWithSnowMedCode | IcdCodes;
+  item?: Allergies | Medications | IcdCodesWithSnowMedCode | IcdCodes;
   dispatcher: Dispatch<ChartAction>;
   fetch: () => void;
   handleClose?: () => void
@@ -1520,6 +1520,10 @@ export type CreatePatientAllergyProps = Pick<CreatePatientAllergyInput, | 'comme
 
 export type PatientProblemInputs = Pick<CreateProblemInput, | 'note' | 'problemStartDate'>
   & { appointmentId: SelectorOption } & { snowMedCodeId: SelectorOption }
+
+export type PatientMedicationInputs = Pick<CreatePatientMedicationInput, "status" | "sig" | "note" | "startDate" | "stopDate" | "takeAmount" | "noOfDays">
+  & { stopReason: SelectorOption } & { tabletUnit: SelectorOption } & { timeDuration: SelectorOption } 
+  & { structured: boolean } & { oralRoute: SelectorOption };
 
 export interface CreateTemplateTypes extends DialogTypes {
   title?: string;
