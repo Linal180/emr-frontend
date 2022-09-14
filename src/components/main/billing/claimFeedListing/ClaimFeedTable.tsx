@@ -168,7 +168,7 @@ const ClaimFeedTable: FC = (): JSX.Element => {
 
   const csvData = useMemo(() => {
     if (!!liveClaimFeeds?.length) {
-      return (liveClaimFeeds.map((item) => {
+      return (liveClaimFeeds?.map((item) => {
         const { eraId, patientFullName, fromDos, provName, charge, payerName } = item || {}
         const parseCharge = JSON.parse(charge)
         const allowedAmount = getArrayOfObjSum(parseCharge, 'allowed')
