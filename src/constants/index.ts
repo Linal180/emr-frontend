@@ -9,7 +9,7 @@ import {
 } from "../utils";
 import {
   CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, NumberIcon, RadioGroupIcon, SelectIcon, TextAreaIcon,
-  TextIcon, VitalsIcon, ProblemsIcon, AllergiesIcon, TriageIcon
+  TextIcon, VitalsIcon, ProblemsIcon, AllergiesIcon, NotesOutlinedCardIcon, TriageIcon, HistoryIcon, MedicationIcon
 } from "../assets/svgs";
 import {
   AbnormalFlag, AllergySeverity, AppointmentStatus, Communicationtype, CopayType, DoctorPatientRelationType, ElementType,
@@ -3591,7 +3591,32 @@ export const PATIENT_CHARTING_TABS = [
     icon: AllergiesIcon,
     title: "Allergies",
     value: "4",
+  },
+  {
+    icon: MedicationIcon,
+    title: "Medication",
+    value: "5",
+  },
+  {
+    icon: HistoryIcon,
+    title: "History",
+    value: "6",
   }
+]
+
+export const HISTORY_CHARTING_TABS = [
+  {
+    title: "Social History",
+    value: "1",
+  },
+  {
+    title: "Family History",
+    value: "2",
+  },
+  {
+    title: "Surgical History",
+    value: "3",
+  },
 ]
 
 export enum FormBuilderApiSelector {

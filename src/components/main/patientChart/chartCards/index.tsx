@@ -14,6 +14,7 @@ import { useChartingStyles } from "../../../../styles/chartingStyles";
 import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
 import { ChartContextProvider } from '../../../../context';
 import { WHITE } from '../../../../theme';
+import HistoryTab from './tabs/HistoryTab';
 
 const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit }): JSX.Element => {
   const classes = useChartingStyles()
@@ -64,6 +65,12 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit }): JSX.Element
               </Box>
 
               <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                <TabPanel value="2">
+                  <VitalTab shouldDisableEdit={shouldDisableEdit} />
+                </TabPanel>
+              </Box>
+
+              <Box pt={0} bgcolor={WHITE} borderRadius={8}>
                 <TabPanel value="3">
                   <ProblemTab shouldDisableEdit={shouldDisableEdit} />
                 </TabPanel>
@@ -73,6 +80,22 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit }): JSX.Element
                 <TabPanel value="4">
                   <ChartContextProvider>
                     <AllergyTab shouldDisableEdit={shouldDisableEdit} />
+                  </ChartContextProvider>
+                </TabPanel>
+              </Box>
+
+              <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                <TabPanel value="5">
+                  <ChartContextProvider>
+                    <ProblemTab shouldDisableEdit={shouldDisableEdit} />
+                  </ChartContextProvider>
+                </TabPanel>
+              </Box>
+
+              <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                <TabPanel value="6">
+                  <ChartContextProvider>
+                    <HistoryTab shouldDisableEdit={shouldDisableEdit} />
                   </ChartContextProvider>
                 </TabPanel>
               </Box>
