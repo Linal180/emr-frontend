@@ -34,6 +34,7 @@ import {
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import InputController from "../../../../../controller";
 import { AntSwitch } from "../../../../../styles/publicAppointmentStyles/externalPatientStyles";
+import SurgicalHistoryTab from "./SurgicalHistoryListing";
 
 const HistoryTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
   const { id } = useParams<ParamsType>()
@@ -241,17 +242,7 @@ const HistoryTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
                 </TabPanel>
 
                 <TabPanel value="3">
-                  <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
-                    <Typography variant='h3'>{SURGICAL_HISTORY_TEXT}</Typography>
-
-                    {!shouldDisableEdit &&
-                      <Button
-                        variant='contained' color='primary'
-                        startIcon={<Box width={20}><AddWhiteIcon /></Box>}
-                        onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
-                        {ADD_NEW_TEXT}
-                      </Button>}
-                  </Box>
+                  <SurgicalHistoryTab shouldDisableEdit={shouldDisableEdit} />
                 </TabPanel>
 
                 {/* <Box className={classes.tableBox}>
