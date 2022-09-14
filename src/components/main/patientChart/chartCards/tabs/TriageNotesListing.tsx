@@ -187,30 +187,32 @@ const TriageNoteTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
 
               <Box px={2} pb={2}>
                 {appointmentId ?
-                  <FormProvider {...methods}>
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                      <InputController
-                        multiline
-                        fieldType="text"
-                        loading={loading}
-                        controllerName="notes"
-                        placeholder={NOTES}
-                      />
+                  shouldDisableEdit ?
+                    <Typography>{patientTriageNotes?.[0].notes}</Typography> :
+                    <FormProvider {...methods}>
+                      <form onSubmit={handleSubmit(onSubmit)}>
+                        <InputController
+                          multiline
+                          fieldType="text"
+                          loading={loading}
+                          controllerName="notes"
+                          placeholder={NOTES}
+                        />
 
-                      <Button
-                        type='submit'
-                        variant="contained" color="primary"
-                        disabled={createTriageNotesLoading || updateTriageNotesLoading}
-                      >
-                        {SAVE_TEXT}
-                      </Button>
-                    </form>
-                  </FormProvider>
+                        <Button
+                          type='submit'
+                          variant="contained" color="primary"
+                          disabled={createTriageNotesLoading || updateTriageNotesLoading}
+                        >
+                          {SAVE_TEXT}
+                        </Button>
+                      </form>
+                    </FormProvider>
                   :
                   patientTriageNotes?.map(triageNote => {
                     return (<>
                       <li>{triageNote.notes}</li>
-                      </>)
+                    </>)
                   })
                 }
 
