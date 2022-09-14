@@ -12,6 +12,7 @@ import Alert from '../../../../common/Alert';
 import CheckboxController from '../../../../common/CheckboxController';
 import DatePicker from '../../../../common/DatePicker';
 import TextLoader from '../../../../common/TextLoader';
+import Selector from '../../../../common/Selector';
 // constants block
 import { PageBackIcon } from '../../../../../assets/svgs';
 import {
@@ -29,7 +30,6 @@ import { useChartingStyles } from '../../../../../styles/chartingStyles';
 import { GRAY_SIX, GREEN, GREY_TWO, WHITE } from '../../../../../theme';
 import { renderLoading, setRecord } from '../../../../../utils';
 import { patientMedicationSchema } from '../../../../../validationSchemas';
-import Selector from '../../../../common/Selector';
 
 const MedicationModal: FC<AddModalProps> = ({
   dispatcher, fetch, isEdit, item, recordId, isOpen = false, handleClose
