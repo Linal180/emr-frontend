@@ -9,7 +9,7 @@ import {
 } from "../utils";
 import {
   CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, NumberIcon, RadioGroupIcon, SelectIcon, TextAreaIcon,
-  TextIcon, VitalsIcon, ProblemsIcon, AllergiesIcon, NotesOutlinedCardIcon, TriageIcon, HistoryIcon, MedicationIcon
+  TextIcon, VitalsIcon, ProblemsIcon, AllergiesIcon, TriageIcon, HistoryIcon, MedicationIcon
 } from "../assets/svgs";
 import {
   AbnormalFlag, AllergySeverity, AppointmentStatus, Communicationtype, CopayType, DoctorPatientRelationType, ElementType,
@@ -477,6 +477,7 @@ export const FACILITY_CONTACT_INFO = "Facility Contact Information";
 export const FACILITY_BILLING_INFO = "Facility BIling Information";
 export const ENABLE = "Enable";
 export const VITALS_TEXT = "Vitals";
+export const TRIAGE_NOTES = "Triage Notes";
 export const TO_CHART = "To Chart";
 export const SAVE_TEXT = "Save";
 export const HCFA_1500_FORM = "HCFA - 1500 Form"

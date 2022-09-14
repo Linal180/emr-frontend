@@ -52,7 +52,7 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit }): JSX.Element
 
           <Grid item lg={10} md={9} sm={12} xs={12}>
             <Box className={classes.tabPanelPadding}>
-              <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+              <Box pt={0} borderRadius={8}>
                 <TabPanel value="1">
                   <TriageNoteTab shouldDisableEdit={shouldDisableEdit} />
                 </TabPanel>
