@@ -828,7 +828,7 @@ export const renderTests = (loincCodes: LoincCodesPayload['loincCodes']) => {
       if (loincCode) {
         const { id, loincNum, component } = loincCode;
 
-        loincNum && data.push({ id, name: `${loincNum} | ${component}` })
+        component && data.push({ id, name: loincNum ? `${loincNum} | ${component}` : component })
       }
     }
   }

@@ -499,6 +499,7 @@ export const VACCINE_TEXT = "Vaccine";
 export const PROBLEMS_TEXT = "Problems";
 export const PROBLEM_TEXT = "Problem";
 export const MEDICATION_TEXT = "Medication";
+export const SURGICAL_TEXT = "Surgical History";
 export const UPDATE_PROBLEM = "Update Problem"
 export const UPDATE_MEDICATION = "Update Medication"
 export const ALLERGIES_TEXT = "Allergies";
@@ -658,6 +659,9 @@ export const SOCIAL_SECURITY_TYPE = "Social Security Type";
 export const SOCIAL_SECURITY_NUMBER = "Social Security Number";
 export const PRIMARY_SERVICE_LOCATION = "Primary Service Location";
 export const CPT_CODE_PROCEDURE_CODE = "CPT Code / Procedure Code";
+export const PROCEDURE_TEXT = "Procedure"
+export const PROCEDURES_TEXT = "Procedures"
+export const SURGERY_DATE = "Surgery Date"
 export const FAX = "Fax";
 export const CITY = "City";
 export const SUPER = "Super";
@@ -966,6 +970,8 @@ export const EXPIRY_DATE = "Expiry Date";
 export const RESEND_OTP = "Resend OTP ?";
 export const ADD_PROBLEM = "Add Problem";
 export const ADD_MEDICATION = "Add Medication";
+export const ADD_SURGICAL_HISTORY = "Add Surgical History";
+export const UPDATE_SURGICAL_HISTORY = "Update Surgical History";
 export const MY_PATIENTS = "My Patients";
 export const PASSWORD_LABEL = "Password";
 export const DESCRIPTION = "Description";
@@ -1427,6 +1433,7 @@ export const NOT_FOUND_EXCEPTION = "Not Found Exception";
 export const FORBIDDEN_EXCEPTION = "Forbidden Exception";
 export const SEARCH_FOR_PROBLEMS = "Search for Problems";
 export const SEARCH_FOR_MEDICATIONS = "Search for Medications";
+export const SEARCH_FOR_PROCEDURES = "Search for Procedures";
 export const CONTACT_INFORMATION = "Contact Information";
 export const PREVIOUS_FIRST_NAME = "Previous First Name";
 export const INDIVIDUAL_NAME = "Individual Name / Trust";
@@ -1493,6 +1500,7 @@ export const PUBLIC_FORM_FAIL_MESSAGE = 'Your record is not created.';
 export const VERIFICATION_MESSAGE = "You are verified. Please login.";
 export const DELETE_PROBLEM_DESCRIPTION = "Confirm to delete problem";
 export const DELETE_MEDICATION_DESCRIPTION = "Confirm to delete medication";
+export const DELETE_SURGICAL_HISTORY_DESCRIPTION = "Confirm to delete surgical history";
 export const DELETE_ALLERGY_DESCRIPTION = "Confirm to delete allergy";
 export const CHOOSE_YOUR_PAYMENT_METHOD = "Choose your Payment Method";
 export const NEXT_SCHEDULED_APPOINTMENT = "Next Scheduled Appointment";
@@ -2128,7 +2136,7 @@ export const STOP_REASON_OPTIONS: SelectorOption[] = [
   { id: "unknown", name: "unknown" },
 ];
 
-export const ORAL_ROUTE_OPTIONS= [
+export const ORAL_ROUTE_OPTIONS = [
   { id: "before meals", name: "before meals" },
   { id: "with meals", name: "with meals" },
   { id: "after meals", name: "after meals" },

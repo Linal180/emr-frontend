@@ -1,7 +1,8 @@
 import {
-  Allergies, AllergiesPayload, IcdCodes, IcdCodesPayload, IcdCodesWithSnowMedCode, Medications, MedicationsPayload, PatientAllergiesPayload, PatientMedicationsPayload, PatientProblemsPayload, PatientVitalPayload, ReactionsPayload
+  AllCptCodePayload,
+  Allergies, AllergiesPayload, IcdCodes, IcdCodesPayload, IcdCodesWithSnowMedCode, Medications, MedicationsPayload, PatientAllergiesPayload, PatientMedicationsPayload, PatientProblemsPayload, PatientVitalPayload, ReactionsPayload, SurgicalHistoriesPayload
 } from "../generated/graphql";
-import { multiOptionType } from "../interfacesTypes";
+import { multiOptionType, SurgicalCode } from "../interfacesTypes";
 
 export interface State {
   page: number;
@@ -25,10 +26,12 @@ export interface State {
   patientVitals: PatientVitalPayload['patientVital'];
   patientProblems: PatientProblemsPayload['patientProblems'],
   patientAllergies: PatientAllergiesPayload['patientAllergies'],
-  selectedItem: Allergies | Medications | IcdCodesWithSnowMedCode | IcdCodes | undefined;
-  searchedData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'] | MedicationsPayload['medications'];
+  selectedItem: Allergies | Medications | IcdCodesWithSnowMedCode | IcdCodes | SurgicalCode | undefined;
+  searchedData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'] | MedicationsPayload['medications'] | AllCptCodePayload['cptCodes'];
   medicationDeleteId: string;
   patientMedications: PatientMedicationsPayload['patientMedications']
+  patientSurgicalHistory: SurgicalHistoriesPayload['surgicalHistories']
+  surgicalHistoryDeleteId: string
 }
 
 export const initialState: State = {
@@ -56,7 +59,9 @@ export const initialState: State = {
   patientAllergies: [],
   openDelete: false,
   medicationDeleteId: '',
-  patientMedications: []
+  patientMedications: [],
+  patientSurgicalHistory: [],
+  surgicalHistoryDeleteId: ''
 }
 
 export enum ActionType {
@@ -84,7 +89,9 @@ export enum ActionType {
   SET_PROBLEM_DELETE_ID = "setProblemDeleteId",
   SET_SELECTED_REACTIONS = "setSelectedReactions",
   SET_MEDICATION_DELETE_ID = "setMedicationDeleteId",
-  SET_PATIENT_MEDICATIONS = "setPatientMedication"
+  SET_PATIENT_MEDICATIONS = "setPatientMedication",
+  SET_PATIENT_SURGICAL_HISTORY = "setPatientSurgicalHistory",
+  SET_SURGICAL_HISTORY_DELETE_ID = "setSurgicalHistoryDeleteId"
 }
 
 export type Action =
@@ -103,16 +110,18 @@ export type Action =
   | { type: ActionType.SET_IS_SEARCH_OPEN, isSearchOpen: HTMLElement | null }
   | { type: ActionType.SET_SELECTED_REACTIONS, selectedReactions: multiOptionType[] }
   | { type: ActionType.SET_REACTION_LIST, reactionList: ReactionsPayload['reactions'] }
-  | { type: ActionType.SET_SELECTED_ITEM, selectedItem: Allergies | Medications | IcdCodesWithSnowMedCode | IcdCodes | undefined }
+  | { type: ActionType.SET_SELECTED_ITEM, selectedItem: Allergies | Medications | IcdCodesWithSnowMedCode | IcdCodes | SurgicalCode | undefined }
   | { type: ActionType.SET_PATIENT_VITALS, patientVitals: PatientVitalPayload['patientVital'] }
   | { type: ActionType.SET_PATIENT_PROBLEMS, patientProblems: PatientProblemsPayload['patientProblems'] }
   | { type: ActionType.SET_PATIENT_ALLERGIES, patientAllergies: PatientAllergiesPayload['patientAllergies'] }
-  | { type: ActionType.SET_SEARCHED_DATA, searchedData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'] | MedicationsPayload['medications'] }
+  | { type: ActionType.SET_SEARCHED_DATA, searchedData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'] | MedicationsPayload['medications'] | AllCptCodePayload['cptCodes'] }
   | { type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: boolean }
   | { type: ActionType.SET_ALLERGY_DELETE_ID, allergyDeleteId: string }
   | { type: ActionType.SET_PROBLEM_DELETE_ID, problemDeleteId: string }
   | { type: ActionType.SET_MEDICATION_DELETE_ID, medicationDeleteId: string }
   | { type: ActionType.SET_PATIENT_MEDICATIONS, patientMedications: PatientMedicationsPayload['patientMedications'] }
+  | { type: ActionType.SET_PATIENT_SURGICAL_HISTORY, patientSurgicalHistory: SurgicalHistoriesPayload['surgicalHistories'] }
+  | { type: ActionType.SET_SURGICAL_HISTORY_DELETE_ID, surgicalHistoryDeleteId: string }
 
 
 export const chartReducer = (state: State, action: Action): State => {
@@ -265,6 +274,18 @@ export const chartReducer = (state: State, action: Action): State => {
       return {
         ...state,
         patientMedications: action.patientMedications
+      }
+
+    case ActionType.SET_PATIENT_SURGICAL_HISTORY:
+      return {
+        ...state,
+        patientSurgicalHistory: action.patientSurgicalHistory
+      }
+
+    case ActionType.SET_SURGICAL_HISTORY_DELETE_ID:
+      return {
+        ...state,
+        surgicalHistoryDeleteId: action.surgicalHistoryDeleteId
       }
   }
 };

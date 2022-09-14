@@ -698,6 +698,11 @@ export const patientMedicationSchema = yup.object({
     value => new Date(value || '') <= new Date()),
 })
 
+export const patientSurgicalHistorySchema = yup.object({
+  surgeryDate: yup.string().test('', DATE_VALIDATION_MESSAGE,
+    value => new Date(value || '') <= new Date()),
+})
+
 export const patientVitalSchema = yup.object({
   pulseRate: yup.string().test('', invalidMessage(PULSE_TEXT), value => {
     if (!value) return true
