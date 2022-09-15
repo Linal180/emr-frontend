@@ -1,28 +1,36 @@
 import { useParams } from 'react-router';
-import { Add as AddIcon } from '@material-ui/icons';
+import { Add as AddCircleOutline } from '@material-ui/icons';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { FC, Fragment, Reducer, useCallback, useEffect, useReducer } from "react"
-import { FormProvider, useForm, useFieldArray, SubmitHandler } from "react-hook-form"
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, Typography } from "@material-ui/core"
+import { FC, Fragment, Reducer, useCallback, useEffect, useReducer } from "react";
+import { FormProvider, useForm, useFieldArray, SubmitHandler } from "react-hook-form";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, Typography } from "@material-ui/core";
 //components
 import Alert from '../../../../../common/Alert';
 import Selector from "../../../../../common/Selector";
 import InputController from "../../../../../../controller";
-import ItemSelector from "../../../../../common/ItemSelector"
+import ItemSelector from "../../../../../common/ItemSelector";
 //interfaces
 import {
 	ADD_FAMILY_HISTORY, CANCEL, CLOSE, DIED_TEXT, EMPTY_OPTION, familyRelativeFormDefaultValue, FAMILY_RELATIVE_MAPPED,
-	ITEM_MODULE, NOTES, ONSET_AGE_TEXT, OPTION_TEXT, PROBLEM_TEXT, RELATIVE, SUBMIT,
-} from "../../../../../../constants"
+	ITEM_MODULE, NOTES, ONSET_AGE_TEXT, PROBLEM_TEXT, RELATIVE, SUBMIT,
+} from "../../../../../../constants";
 import { FamilyHistorySchema } from '../../../../../../validationSchemas';
 import { PageBackIcon, TrashOutlinedIcon } from "../../../../../../assets/svgs";
-import { useCreateFamilyHistoryMutation, useGetFamilyHistoryLazyQuery, useUpdateFamilyHistoryMutation } from '../../../../../../generated/graphql';
+import { 
+	useCreateFamilyHistoryMutation, useGetFamilyHistoryLazyQuery, useUpdateFamilyHistoryMutation 
+} from '../../../../../../generated/graphql';
 import { useFamilyHistoryStyles } from "../../../../../../styles/history/familyHistoryStyles";
-import { FamilyHistoryFormProps, FamilyHistoryFormType, ParamsType, SelectorOption, SideDrawerCloseReason } from "../../../../../../interfacesTypes"
-import { familyHistoryFormReducer, Action, ActionType, State, initialState } from "../../../../../../reducers/familyHistoryFormReducer";
+import { 
+	FamilyHistoryFormProps, FamilyHistoryFormType, ParamsType, SelectorOption, SideDrawerCloseReason 
+} from "../../../../../../interfacesTypes";
+import { 
+	familyHistoryFormReducer, Action, ActionType, State, initialState 
+} from "../../../../../../reducers/familyHistoryFormReducer";
 import { setRecord } from '../../../../../../utils';
 
-const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({ handleClose, isOpen, isEdit, id: familyHistoryId, fetchFamilyHistory: fetchFamilyHistories }): JSX.Element => {
+const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({ 
+	handleClose, isOpen, isEdit, id: familyHistoryId, fetchFamilyHistory: fetchFamilyHistories 
+}): JSX.Element => {
 	const { id } = useParams<ParamsType>()
 	const methods = useForm<FamilyHistoryFormType>({
 		defaultValues: {
@@ -34,7 +42,6 @@ const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({ handleClose, isOpen, is
 
 	const classes = useFamilyHistoryStyles()
 	const [state, dispatch] = useReducer<Reducer<State, Action>>(familyHistoryFormReducer, initialState);
-
 
 	const { problem: stateProblem } = state || {}
 	const { watch, control, setValue, handleSubmit } = methods;
@@ -96,9 +103,9 @@ const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({ handleClose, isOpen, is
 				icdCodeId && dispatch({ type: ActionType.SET_PROBLEM, problem: icdCodeId })
 
 				if (familyHistoryRelatives?.length) {
-					
+
 					const newArray = familyHistoryRelatives?.map((item) => {
-						const { relativeName, died, notes, onsetAge,id } = item || {}
+						const { relativeName, died, notes, onsetAge, id } = item || {}
 						const relative = FAMILY_RELATIVE_MAPPED?.find(({ id }) => id === relativeName)
 
 						return {
@@ -184,11 +191,9 @@ const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({ handleClose, isOpen, is
 
 	}, [familyHistoryId, getFamilyHistory])
 
-
 	useEffect(() => {
 		familyHistoryId && isEdit && fetchFamilyHistory()
 	}, [familyHistoryId, fetchFamilyHistory, isEdit])
-
 
 	const loading = createLoading || getLoading || updateLoading
 
@@ -208,99 +213,96 @@ const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({ handleClose, isOpen, is
 							<Typography>{name}</Typography>
 						</Box>
 					</Box>
-					<Box>
-						<Button
-							variant='contained'
-							color='primary'
-							onClick={onFieldAddHandler}
-							startIcon={<AddIcon />}
-							disabled={loading}
-						>
-							{OPTION_TEXT}
+
+					<Box display="flex" alignItems="center" justifyContent="flex-end">
+						<Button onClick={onFieldAddHandler} disabled={loading}>
+							<AddCircleOutline color='secondary' />
+							<Box ml={1} />
+							<Typography color="secondary">{RELATIVE}</Typography>
 						</Button>
 					</Box>
 				</Box>
 			</> : <Typography variant="h4">{ADD_FAMILY_HISTORY}</Typography>}
 		</DialogTitle>
+
 		<FormProvider  {...methods}>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<DialogContent className={classes.modalContentBox}>
-
-					<Grid container spacing={3}>
-						{!problemId && !stateProblem ? <Grid item xs={12}>
-							<ItemSelector
-								name="problem"
-								isRequired
-								noCodeRenderer
-								label={PROBLEM_TEXT}
-								modalName={ITEM_MODULE.icdCodes}
-								onSelect={onProblemSelect}
-							/>
-						</Grid>
-							: <Fragment>
-								<Grid item xs={12}>
-									{fields?.map((option, index) => {
-										const { id } = option || {}
-										return (
-											<Grid key={`${index}-${id}`} container>
-												<Grid item xs={12}>
-													{fields?.length > 1 &&
-														<Grid item xs={12}>
-															<Box mt={1} mb={2} display="flex" justifyContent="flex-end">
-																<IconButton size='small' onClick={() => remove(index)}>
-																	<TrashOutlinedIcon />
-																</IconButton>
-															</Box>
-														</Grid>
-													}
-
-													<Box px={2}>
-														<Grid container spacing={3}>
-															<Grid item xs={4}>
-																<Selector
-																	isRequired
-																	key={`familyRelative.${index}.relative`}
-																	name={`familyRelative.${index}.relative`}
-																	options={FAMILY_RELATIVE_MAPPED}
-																	label={RELATIVE}
-																/>
-															</Grid>
-															<Grid item xs={4}>
-																<InputController
-																	controllerName={`familyRelative.${index}.onsetAge`}
-																	key={`familyRelative.${index}.onsetAge`}
-																	controllerLabel={ONSET_AGE_TEXT}
-																/>
-															</Grid>
-															<Grid item xs={4}>
-																<InputController
-																	controllerName={`familyRelative.${index}.died`}
-																	key={`familyRelative.${index}.died`}
-																	controllerLabel={DIED_TEXT}
-																/>
-															</Grid>
+					<Box mt={2} maxHeight={600}>
+						<Grid container spacing={3}>
+							{!problemId && !stateProblem ? <Grid item xs={12}>
+								<ItemSelector
+									name="problem"
+									isRequired
+									noCodeRenderer
+									label={PROBLEM_TEXT}
+									modalName={ITEM_MODULE.icdCodes}
+									onSelect={onProblemSelect}
+								/>
+							</Grid>
+								: <Fragment>
+									<Grid item xs={12}>
+										{fields?.map((option, index) => {
+											const { id } = option || {}
+											return (
+												<Grid key={`${index}-${id}`} container>
+													<Grid item xs={12}>
+														{fields?.length > 1 &&
 															<Grid item xs={12}>
-																<InputController
-																	controllerName={`familyRelative.${index}.notes`}
-																	key={`familyRelative.${index}.notes`}
-																	controllerLabel={NOTES}
-																	multiline
-
-																/>
+																<Box mt={1} mb={2} display="flex" justifyContent="flex-end">
+																	<IconButton size='small' onClick={() => remove(index)}>
+																		<TrashOutlinedIcon />
+																	</IconButton>
+																</Box>
 															</Grid>
-														</Grid>
-													</Box>
+														}
+
+														<Box px={2}>
+															<Grid container spacing={3}>
+																<Grid item xs={4}>
+																	<Selector
+																		isRequired
+																		key={`familyRelative.${index}.relative`}
+																		name={`familyRelative.${index}.relative`}
+																		options={FAMILY_RELATIVE_MAPPED}
+																		label={RELATIVE}
+																	/>
+																</Grid>
+																<Grid item xs={4}>
+																	<InputController
+																		controllerName={`familyRelative.${index}.onsetAge`}
+																		key={`familyRelative.${index}.onsetAge`}
+																		controllerLabel={ONSET_AGE_TEXT}
+																	/>
+																</Grid>
+																<Grid item xs={4}>
+																	<InputController
+																		controllerName={`familyRelative.${index}.died`}
+																		key={`familyRelative.${index}.died`}
+																		controllerLabel={DIED_TEXT}
+																	/>
+																</Grid>
+																<Grid item xs={12}>
+																	<InputController
+																		controllerName={`familyRelative.${index}.notes`}
+																		key={`familyRelative.${index}.notes`}
+																		controllerLabel={NOTES}
+																		multiline
+																	/>
+																</Grid>
+															</Grid>
+														</Box>
+													</Grid>
 												</Grid>
-											</Grid>
-										)
-									})}
-								</Grid>
-							</Fragment>
-						}
-
-					</Grid>
-
+											)
+										})}
+									</Grid>
+								</Fragment>
+							}
+						</Grid>
+					</Box>
 				</DialogContent>
+
 				<DialogActions>
 					<Box display='flex' justifyContent='flex-end'>
 						{stateProblem && stateProblem ?
@@ -345,4 +347,4 @@ const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({ handleClose, isOpen, is
 	</Dialog>)
 }
 
-export default FamilyHistoryForm
+export default FamilyHistoryForm;

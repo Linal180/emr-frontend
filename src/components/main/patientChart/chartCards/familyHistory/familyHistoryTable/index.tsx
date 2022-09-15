@@ -148,7 +148,7 @@ const FamilyHistoryTable: FC<FamilyHistoryProps> = ({ shouldDisableEdit = false 
 												<TableCell rowSpan={familyHistoryRelatives?.length}>
 													{name}
 												</TableCell>}
-											<TableCell>{relativeName}</TableCell>
+											<TableCell style={{paddingLeft: index ===0 ?  'inherited': 10}}>{relativeName}</TableCell>
 											<TableCell>{onsetAge}</TableCell>
 											<TableCell>{died}</TableCell>
 											<TableCell>{notes}</TableCell>
