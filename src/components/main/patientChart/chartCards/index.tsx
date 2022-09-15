@@ -6,6 +6,7 @@ import { TabContext, TabList, TabPanel } from '@material-ui/lab';
 import VitalTab from './tabs/VitalListing';
 import AllergyTab from './tabs/AllergyListing';
 import ProblemTab from './tabs/ProblemListing';
+import TriageNoteTab from './tabs/TriageNotesListing';
 // interfaces, graphql, constants block /styles
 import { PATIENT_CHARTING_TABS } from "../../../../constants";
 import { ChartComponentProps } from "../../../../interfacesTypes";
@@ -13,6 +14,8 @@ import { useChartingStyles } from "../../../../styles/chartingStyles";
 import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
 import { ChartContextProvider } from '../../../../context';
 import { WHITE } from '../../../../theme';
+import HistoryTab from './tabs/HistoryTab';
+import MedicationTab from './tabs/MedicationsListing';
 
 const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit }): JSX.Element => {
   const classes = useChartingStyles()
@@ -50,22 +53,44 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit }): JSX.Element
 
           <Grid item lg={10} md={9} sm={12} xs={12}>
             <Box className={classes.tabPanelPadding}>
-              <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+              <Box pt={0} borderRadius={8}>
                 <TabPanel value="1">
-                  <VitalTab shouldDisableEdit={shouldDisableEdit} />
+                  <TriageNoteTab shouldDisableEdit={shouldDisableEdit} />
                 </TabPanel>
               </Box>
 
               <Box pt={0} bgcolor={WHITE} borderRadius={8}>
                 <TabPanel value="2">
-                  <ProblemTab shouldDisableEdit={shouldDisableEdit} />
+                  <VitalTab shouldDisableEdit={shouldDisableEdit} />
                 </TabPanel>
               </Box>
 
               <Box pt={0} bgcolor={WHITE} borderRadius={8}>
                 <TabPanel value="3">
+                  <ProblemTab shouldDisableEdit={shouldDisableEdit} />
+                </TabPanel>
+              </Box>
+
+              <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                <TabPanel value="4">
                   <ChartContextProvider>
                     <AllergyTab shouldDisableEdit={shouldDisableEdit} />
+                  </ChartContextProvider>
+                </TabPanel>
+              </Box>
+
+              <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                <TabPanel value="5">
+                  <ChartContextProvider>
+                    <MedicationTab shouldDisableEdit={shouldDisableEdit} />
+                  </ChartContextProvider>
+                </TabPanel>
+              </Box>
+
+              <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                <TabPanel value="6">
+                  <ChartContextProvider>
+                    <HistoryTab shouldDisableEdit={shouldDisableEdit} />
                   </ChartContextProvider>
                 </TabPanel>
               </Box>
