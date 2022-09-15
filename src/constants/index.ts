@@ -4105,6 +4105,48 @@ export const ACTIVITIES_DAILY_LIVING_MAPPED = [
   }
 ]
 
+export const CIGARETTE_LEVEL_MAPPED = [
+  {
+    id: 'never_used_electronic_cigarettes',
+    name: "Never used electronic cigarettes"
+  },
+  {
+    name: "Former user of electronic cigarettes",
+    id: 'former_user_of_electronic_cigarettes'
+  },
+  {
+    id: 'current_user_of_electronic_cigarettes',
+    name: "Current user of electronic cigarettes"
+  }
+]
+
+export const SMOKELESS_TOBACCO_MAPPED = [
+  {
+    id: "never_used_smokeless_tobacco",
+    name: "Never used smokeless tobacco",
+  },
+  {
+    name: "Former smokeless tobacco user",
+    id: "former_smokeless_tobacco_user",
+  },
+  {
+    id: "currently_uses_moist_powdered_tobacco",
+    name: "Currently uses moist powdered tobacco",
+  },
+  {
+    id: "not_tolerated",
+    name: "Not tolerated",
+  },
+  {
+    id: "patient_refused",
+    name: "Patient refused",
+  },
+  {
+    id: "not_indicated",
+    name: "Not indicated",
+  },
+];
+
 export const RESIDE_IN_OR_HAVE_YOU_TRAVELED_FIELDS_MAPPED = [
   {
     title: "Have you had other close contact with an Ebola virus disease patient in health care facilities or community settings?",
@@ -4132,6 +4174,21 @@ export const RESIDE_IN_OR_HAVE_YOU_TRAVELED_FIELDS_MAPPED = [
     notesName: 'knownHighRiskNote',
   },
 ]
+
+export const SEX_PROTECTION_MAPPED = [
+  {
+    id: "always",
+    name: "Always",
+  },
+  {
+    id: "usually",
+    name: "Usually",
+  },
+  {
+    id: "no",
+    name: "No",
+  },
+];
 
 export const HAVE_YOU_RECENTLY_PLANNING_TO_TRAVEL_FIELDS_MAPPED = [
   {
