@@ -394,7 +394,8 @@ export const theme = createTheme({
         },
 
         "& .MuiAutocomplete-inputRoot": {
-          minHeight: 48,
+          // minHeight: 48,
+          height: 40,
         }
       }
     },

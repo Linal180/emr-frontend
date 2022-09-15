@@ -828,7 +828,7 @@ export const renderTests = (loincCodes: LoincCodesPayload['loincCodes']) => {
       if (loincCode) {
         const { id, loincNum, component } = loincCode;
 
-        loincNum && data.push({ id, name: `${loincNum} | ${component}` })
+        component && data.push({ id, name: loincNum ? `${loincNum} | ${component}` : component })
       }
     }
   }
@@ -1651,7 +1651,7 @@ export const roundOffUpto2Decimal = (str: number | undefined | string | null): s
   return ""
 }
 
-export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[], modalName: ITEM_MODULE) {
+export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[], modalName: ITEM_MODULE, noCodeRenderer?: boolean) {
   const data: ItemSelectorOption[] = [];
 
   if (!!list) {
@@ -1665,7 +1665,7 @@ export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[], moda
         case ITEM_MODULE.icdCodes:
           let { id: icdCodesId, code, description } = (item as unknown as IcdCodes) || {};
 
-          data.push({ id: icdCodesId, name: `${code} | ${description}` })
+          data.push({ id: icdCodesId, name: noCodeRenderer ? `${description}` : `${code} | ${description}` })
           break;
         case ITEM_MODULE.insurance:
           let { id: insuranceId, payerId, payerName } = (item as unknown as Insurance) || {};
@@ -2163,7 +2163,7 @@ export function sortingArray<arrayType>(array: arrayType, by: string, order: Ord
 export const excludeLeadingZero = (value: string) => parseInt(value).toString()
 export const formatModuleTypes = (param: string[]): SelectorOption[] => param?.map((val) => ({ id: val, name: val }))
 
-export const getArrayOfObjSum = (arr: any[], key: string) => arr.map(value => value[key]).reduce((acc, value) => acc += isNaN(Number(value)) ? 0 : Number(value), 0)
+export const getArrayOfObjSum = (arr: any[], key: string) => arr?.map(value => value[key])?.reduce((acc, value) => acc += isNaN(Number(value)) ? 0 : Number(value), 0) || []
 
 export const getCharFromNumber = (num: number, isUpper = true) => {
   const caseNumber = isUpper ? 65 : 97

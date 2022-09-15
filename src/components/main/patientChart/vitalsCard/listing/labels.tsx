@@ -28,7 +28,7 @@ export const VitalsLabels = () => {
     <Table>
       <TableHead>
         <TableRow className="vitals-header">
-          <Box py={0.37}>
+          <Box>
             {renderTh(DATE)}
           </Box>
         </TableRow>

@@ -238,7 +238,7 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Eleme
                         <TableCell scope="row">
                           <ul>
                             {labOrders.map((labOrder: LabTestPayload['labTest']) => (
-                              <li>{labOrder?.test?.loincNum ?? '- -'}</li>
+                              <li>{labOrder?.test?.component?.slice(0, 20) ?? '- -'}...</li>
                             ))}
                           </ul>
                         </TableCell>
