@@ -19,7 +19,7 @@ import {
 const ItemSelector = forwardRef<ItemSelectForwardRef, ItemSelectorProps>((props, ref): JSX.Element => {
   const {
     name, label, disabled, isRequired, margin, modalName, value, isEdit, searchQuery, onSelect,
-    filteredOptions, practiceId, feeScheduleId, loading, addEmpty
+    filteredOptions, practiceId, feeScheduleId, loading, addEmpty, noCodeRenderer
   } = props
   const { control, setValue } = useFormContext()
   const [query, setQuery] = useState<string>('')
@@ -215,7 +215,7 @@ const ItemSelector = forwardRef<ItemSelectForwardRef, ItemSelectorProps>((props,
         if (fetchICDCodes) {
           const { icdCodes } = fetchICDCodes
 
-          setOptions(renderListOptions<IcdCodes>(icdCodes as IcdCodes[], modalName))
+          setOptions(renderListOptions<IcdCodes>(icdCodes as IcdCodes[], modalName, noCodeRenderer))
         }
       } else {
         setOptions([])

@@ -1651,7 +1651,7 @@ export const roundOffUpto2Decimal = (str: number | undefined | string | null): s
   return ""
 }
 
-export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[], modalName: ITEM_MODULE) {
+export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[], modalName: ITEM_MODULE, noCodeRenderer?: boolean) {
   const data: ItemSelectorOption[] = [];
 
   if (!!list) {
@@ -1665,7 +1665,7 @@ export function renderListOptions<ListOptionTypes>(list: ListOptionTypes[], moda
         case ITEM_MODULE.icdCodes:
           let { id: icdCodesId, code, description } = (item as unknown as IcdCodes) || {};
 
-          data.push({ id: icdCodesId, name: `${code} | ${description}` })
+          data.push({ id: icdCodesId, name: noCodeRenderer ? `${description}` : `${code} | ${description}` })
           break;
         case ITEM_MODULE.insurance:
           let { id: insuranceId, payerId, payerName } = (item as unknown as Insurance) || {};

@@ -1,0 +1,98 @@
+mutation CreateFamilyHistory(
+  $createFamilyHistoryInput: CreateFamilyHistoryInput!
+) {
+  createFamilyHistory(createFamilyHistoryInput: $createFamilyHistoryInput) {
+    response {
+      status
+      message
+    }
+
+    familyHistory {
+      id
+    }
+  }
+}
+
+mutation UpdateFamilyHistory(
+  $updateFamilyHistoryInput: UpdateFamilyHistoryInput!
+) {
+  updateFamilyHistory(updateFamilyHistoryInput: $updateFamilyHistoryInput) {
+    response {
+      status
+      message
+    }
+
+    familyHistory {
+      id
+    }
+  }
+}
+
+mutation RemoveFamilyHistory(
+  $removeFamilyHistoryInput: RemoveFamilyHistoryInput!
+) {
+  removeFamilyHistory(removeFamilyHistoryInput: $removeFamilyHistoryInput) {
+    response {
+      status
+      message
+    }
+
+    familyHistory {
+      id
+    }
+  }
+}
+
+query FindAllFamilyHistory(
+  $findAllFamilyHistoryInput: FindAllFamilyHistoryInput!
+) {
+  findAllFamilyHistory(findAllFamilyHistoryInput: $findAllFamilyHistoryInput) {
+    response {
+      status
+      message
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+
+    familyHistories {
+      id
+      name
+
+      familyHistoryRelatives {
+        died
+        notes
+        onsetAge
+        relativeName
+      }
+    }
+  }
+}
+
+
+query GetFamilyHistory(
+  $getFamilyHistoryInput: GetFamilyHistoryInput!
+) {
+  getFamilyHistory(getFamilyHistoryInput: $getFamilyHistoryInput) {
+    response {
+      status
+      message
+    }
+
+    familyHistory {
+      id
+      name
+      icdCodeId
+
+      familyHistoryRelatives {
+        id
+        died
+        notes
+        onsetAge
+        relativeName
+      }
+    }
+  }
+}
