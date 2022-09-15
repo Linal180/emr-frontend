@@ -3,12 +3,12 @@ import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 import { ChangeEvent, FC, useState } from "react";
 // components block
 import FamilyHistory from "../familyHistory";
-import SocialHistory from "../socialHistory";
+import SurgicalHistoryTab from "./SurgicalHistoryListing";
+// import SocialHistory from "../socialHistory";
 // constants, utils, styles, interfaces and graphql block
 import { HISTORY_CHARTING_TABS } from "../../../../../constants";
 import { ChartComponentProps } from "../../../../../interfacesTypes";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
-import SurgicalHistoryTab from "./SurgicalHistoryListing";
 
 const HistoryTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
 
@@ -42,11 +42,11 @@ const HistoryTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
 
             <Card>
               <Box className={classes.cardBox} px={2}>
-                <TabPanel value="1">
+                {/* <TabPanel value="1">
                   <SocialHistory shouldDisableEdit={shouldDisableEdit} />
-                </TabPanel>
+                </TabPanel> */}
 
-                <TabPanel value="2">
+                <TabPanel value="1">
                   <FamilyHistory shouldDisableEdit={shouldDisableEdit} />
                 </TabPanel>
 
