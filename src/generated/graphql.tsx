@@ -1268,6 +1268,20 @@ export type CreateFacilityItemInput = {
   timeZone?: Maybe<Scalars['String']>;
 };
 
+export type CreateFamilyHistoryInput = {
+  familyHistoryRelatives?: Maybe<Array<CreateFamilyHistoryRelativeInput>>;
+  icdCodeId?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  patientId?: Maybe<Scalars['String']>;
+};
+
+export type CreateFamilyHistoryRelativeInput = {
+  died?: Maybe<Scalars['String']>;
+  notes?: Maybe<Scalars['String']>;
+  onsetAge?: Maybe<Scalars['String']>;
+  relativeName?: Maybe<Scalars['String']>;
+};
+
 export type CreateFeeScheduleInput = {
   cptCode?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
@@ -1880,6 +1894,45 @@ export type FacilityPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+export type FamilyHistoriesPayload = {
+  __typename?: 'FamilyHistoriesPayload';
+  familyHistories?: Maybe<Array<FamilyHistory>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
+export type FamilyHistory = {
+  __typename?: 'FamilyHistory';
+  createdAt?: Maybe<Scalars['String']>;
+  familyHistoryRelatives?: Maybe<Array<FamilyHistoryRelative>>;
+  icdCode?: Maybe<IcdCodes>;
+  icdCodeId?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  patient?: Maybe<Patient>;
+  patientId?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type FamilyHistoryPayload = {
+  __typename?: 'FamilyHistoryPayload';
+  familyHistory?: Maybe<FamilyHistory>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
+export type FamilyHistoryRelative = {
+  __typename?: 'FamilyHistoryRelative';
+  createdAt?: Maybe<Scalars['String']>;
+  died?: Maybe<Scalars['String']>;
+  familyHistory?: Maybe<FamilyHistory>;
+  familyHistoryId?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  notes?: Maybe<Scalars['String']>;
+  onsetAge?: Maybe<Scalars['String']>;
+  relativeName?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
 export type FeeSchedule = {
   __typename?: 'FeeSchedule';
   billing?: Maybe<Array<Billing>>;
@@ -1978,6 +2031,11 @@ export type FindAllCptFeeScheduleInput = {
   feeScheduleId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
   searchString?: Maybe<Scalars['String']>;
+};
+
+export type FindAllFamilyHistoryInput = {
+  paginationOptions: PaginationInput;
+  patientId?: Maybe<Scalars['String']>;
 };
 
 export type FindAllFeeScheduleInput = {
@@ -2192,6 +2250,10 @@ export type GetFacilityPatientsInput = {
 
 export type GetFacilitySchedule = {
   id: Scalars['String'];
+};
+
+export type GetFamilyHistoryInput = {
+  id?: Maybe<Scalars['String']>;
 };
 
 export type GetFeeScheduleInput = {
@@ -2708,6 +2770,7 @@ export type Mutation = {
   createExternalAppointment: AppointmentPayload;
   createExternalInvoice: InvoicePayload;
   createFacility: FacilityPayload;
+  createFamilyHistory: FamilyHistoryPayload;
   createFeeSchedule: FeeSchedulePayload;
   createForm: FormPayload;
   createFormTemplate: FormPayload;
@@ -2748,6 +2811,7 @@ export type Mutation = {
   removeCptFeeSchedule: CptFeeSchedulePayload;
   removeDoctor: DoctorPayload;
   removeFacility: FacilityPayload;
+  removeFamilyHistory: FamilyHistoryPayload;
   removeFeeSchedule: FeeSchedulePayload;
   removeForm: FormPayload;
   removeLabTest: LabTestPayload;
@@ -2787,6 +2851,7 @@ export type Mutation = {
   updateDoctor: DoctorPayload;
   updateFacility: FacilityPayload;
   updateFacilityTimeZone: FacilityPayload;
+  updateFamilyHistory: FamilyHistoryPayload;
   updateFeeSchedule: FeeSchedulePayload;
   updateForm: FormPayload;
   updateInvoiceStatus: InvoicePayload;
@@ -2941,6 +3006,11 @@ export type MutationCreateExternalInvoiceArgs = {
 
 export type MutationCreateFacilityArgs = {
   createFacilityInput: CreateFacilityInput;
+};
+
+
+export type MutationCreateFamilyHistoryArgs = {
+  createFamilyHistoryInput: CreateFamilyHistoryInput;
 };
 
 
@@ -3139,6 +3209,11 @@ export type MutationRemoveFacilityArgs = {
 };
 
 
+export type MutationRemoveFamilyHistoryArgs = {
+  removeFamilyHistoryInput: RemoveFamilyHistoryInput;
+};
+
+
 export type MutationRemoveFeeScheduleArgs = {
   removeFeeScheduleInput: RemoveFeeScheduleInput;
 };
@@ -3326,6 +3401,11 @@ export type MutationUpdateFacilityArgs = {
 
 export type MutationUpdateFacilityTimeZoneArgs = {
   updateFacilityTimeZoneInput: UpdateFacilityTimeZoneInput;
+};
+
+
+export type MutationUpdateFamilyHistoryArgs = {
+  updateFamilyHistoryInput: UpdateFamilyHistoryInput;
 };
 
 
@@ -3579,6 +3659,7 @@ export type Patient = {
   ethnicity?: Maybe<Ethnicity>;
   facility?: Maybe<Facility>;
   facilityId?: Maybe<Scalars['String']>;
+  familyHistory?: Maybe<Array<FamilyHistory>>;
   firstName?: Maybe<Scalars['String']>;
   firstNameUsed?: Maybe<Scalars['String']>;
   gender: Genderidentity;
@@ -4379,6 +4460,7 @@ export type Query = {
   findAllDoctor: AllDoctorPayload;
   findAllDoctorPatients: DoctorPatientsPayload;
   findAllFacility: FacilitiesPayload;
+  findAllFamilyHistory: FamilyHistoriesPayload;
   findAllFeeSchedules: AllFeeSchedulesPayload;
   findAllForms: FormsPayload;
   findAllLabTest: LabTestsPayload;
@@ -4431,6 +4513,7 @@ export type Query = {
   getFacility: FacilityPayload;
   getFacilityPatients: PatientsPayload;
   getFacilitySchedule: SchedulesPayload;
+  getFamilyHistory: FamilyHistoryPayload;
   getFeeSchedule: FeeSchedulePayload;
   getForm: FormPayload;
   getInsurance: InsurancePayload;
@@ -4611,6 +4694,11 @@ export type QueryFindAllDoctorPatientsArgs = {
 
 export type QueryFindAllFacilityArgs = {
   facilityInput: FacilityInput;
+};
+
+
+export type QueryFindAllFamilyHistoryArgs = {
+  findAllFamilyHistoryInput: FindAllFamilyHistoryInput;
 };
 
 
@@ -4861,6 +4949,11 @@ export type QueryGetFacilityPatientsArgs = {
 
 export type QueryGetFacilityScheduleArgs = {
   getFacilitySchedule: GetFacilitySchedule;
+};
+
+
+export type QueryGetFamilyHistoryArgs = {
+  getFamilyHistoryInput: GetFamilyHistoryInput;
 };
 
 
@@ -5150,6 +5243,10 @@ export type RemoveDoctor = {
 
 export type RemoveFacility = {
   id: Scalars['String'];
+};
+
+export type RemoveFamilyHistoryInput = {
+  id?: Maybe<Scalars['String']>;
 };
 
 export type RemoveFeeScheduleInput = {
@@ -6170,6 +6267,22 @@ export type UpdateFacilityTimeZoneInput = {
   timeZone?: Maybe<Scalars['String']>;
 };
 
+export type UpdateFamilyHistoryInput = {
+  familyHistoryRelatives?: Maybe<Array<UpdateFamilyHistoryRelativeInput>>;
+  icdCodeId?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  patientId?: Maybe<Scalars['String']>;
+};
+
+export type UpdateFamilyHistoryRelativeInput = {
+  died?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
+  notes?: Maybe<Scalars['String']>;
+  onsetAge?: Maybe<Scalars['String']>;
+  relativeName?: Maybe<Scalars['String']>;
+};
+
 export type UpdateFeeScheduleInput = {
   cptCode?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
@@ -7169,6 +7282,41 @@ export type FindAllAllergiesQueryVariables = Exact<{
 
 
 export type FindAllAllergiesQuery = { __typename?: 'Query', findAllAllergies: { __typename?: 'AllergiesPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, allergies?: Array<{ __typename?: 'Allergies', id: string, name?: string | null } | null> | null } };
+
+export type CreateFamilyHistoryMutationVariables = Exact<{
+  createFamilyHistoryInput: CreateFamilyHistoryInput;
+}>;
+
+
+export type CreateFamilyHistoryMutation = { __typename?: 'Mutation', createFamilyHistory: { __typename?: 'FamilyHistoryPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, familyHistory?: { __typename?: 'FamilyHistory', id: string } | null } };
+
+export type UpdateFamilyHistoryMutationVariables = Exact<{
+  updateFamilyHistoryInput: UpdateFamilyHistoryInput;
+}>;
+
+
+export type UpdateFamilyHistoryMutation = { __typename?: 'Mutation', updateFamilyHistory: { __typename?: 'FamilyHistoryPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, familyHistory?: { __typename?: 'FamilyHistory', id: string } | null } };
+
+export type RemoveFamilyHistoryMutationVariables = Exact<{
+  removeFamilyHistoryInput: RemoveFamilyHistoryInput;
+}>;
+
+
+export type RemoveFamilyHistoryMutation = { __typename?: 'Mutation', removeFamilyHistory: { __typename?: 'FamilyHistoryPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, familyHistory?: { __typename?: 'FamilyHistory', id: string } | null } };
+
+export type FindAllFamilyHistoryQueryVariables = Exact<{
+  findAllFamilyHistoryInput: FindAllFamilyHistoryInput;
+}>;
+
+
+export type FindAllFamilyHistoryQuery = { __typename?: 'Query', findAllFamilyHistory: { __typename?: 'FamilyHistoriesPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, familyHistories?: Array<{ __typename?: 'FamilyHistory', id: string, name?: string | null, familyHistoryRelatives?: Array<{ __typename?: 'FamilyHistoryRelative', died?: string | null, notes?: string | null, onsetAge?: string | null, relativeName?: string | null }> | null }> | null } };
+
+export type GetFamilyHistoryQueryVariables = Exact<{
+  getFamilyHistoryInput: GetFamilyHistoryInput;
+}>;
+
+
+export type GetFamilyHistoryQuery = { __typename?: 'Query', getFamilyHistory: { __typename?: 'FamilyHistoryPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, familyHistory?: { __typename?: 'FamilyHistory', id: string, name?: string | null, icdCodeId?: string | null, familyHistoryRelatives?: Array<{ __typename?: 'FamilyHistoryRelative', id: string, died?: string | null, notes?: string | null, onsetAge?: string | null, relativeName?: string | null }> | null } | null } };
 
 export type FindAllPatientProblemsQueryVariables = Exact<{
   patientProblemInput: PatientProblemInput;
@@ -11297,6 +11445,225 @@ export function useFindAllAllergiesLazyQuery(baseOptions?: Apollo.LazyQueryHookO
 export type FindAllAllergiesQueryHookResult = ReturnType<typeof useFindAllAllergiesQuery>;
 export type FindAllAllergiesLazyQueryHookResult = ReturnType<typeof useFindAllAllergiesLazyQuery>;
 export type FindAllAllergiesQueryResult = Apollo.QueryResult<FindAllAllergiesQuery, FindAllAllergiesQueryVariables>;
+export const CreateFamilyHistoryDocument = gql`
+    mutation CreateFamilyHistory($createFamilyHistoryInput: CreateFamilyHistoryInput!) {
+  createFamilyHistory(createFamilyHistoryInput: $createFamilyHistoryInput) {
+    response {
+      status
+      message
+    }
+    familyHistory {
+      id
+    }
+  }
+}
+    `;
+export type CreateFamilyHistoryMutationFn = Apollo.MutationFunction<CreateFamilyHistoryMutation, CreateFamilyHistoryMutationVariables>;
+
+/**
+ * __useCreateFamilyHistoryMutation__
+ *
+ * To run a mutation, you first call `useCreateFamilyHistoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateFamilyHistoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createFamilyHistoryMutation, { data, loading, error }] = useCreateFamilyHistoryMutation({
+ *   variables: {
+ *      createFamilyHistoryInput: // value for 'createFamilyHistoryInput'
+ *   },
+ * });
+ */
+export function useCreateFamilyHistoryMutation(baseOptions?: Apollo.MutationHookOptions<CreateFamilyHistoryMutation, CreateFamilyHistoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateFamilyHistoryMutation, CreateFamilyHistoryMutationVariables>(CreateFamilyHistoryDocument, options);
+      }
+export type CreateFamilyHistoryMutationHookResult = ReturnType<typeof useCreateFamilyHistoryMutation>;
+export type CreateFamilyHistoryMutationResult = Apollo.MutationResult<CreateFamilyHistoryMutation>;
+export type CreateFamilyHistoryMutationOptions = Apollo.BaseMutationOptions<CreateFamilyHistoryMutation, CreateFamilyHistoryMutationVariables>;
+export const UpdateFamilyHistoryDocument = gql`
+    mutation UpdateFamilyHistory($updateFamilyHistoryInput: UpdateFamilyHistoryInput!) {
+  updateFamilyHistory(updateFamilyHistoryInput: $updateFamilyHistoryInput) {
+    response {
+      status
+      message
+    }
+    familyHistory {
+      id
+    }
+  }
+}
+    `;
+export type UpdateFamilyHistoryMutationFn = Apollo.MutationFunction<UpdateFamilyHistoryMutation, UpdateFamilyHistoryMutationVariables>;
+
+/**
+ * __useUpdateFamilyHistoryMutation__
+ *
+ * To run a mutation, you first call `useUpdateFamilyHistoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateFamilyHistoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateFamilyHistoryMutation, { data, loading, error }] = useUpdateFamilyHistoryMutation({
+ *   variables: {
+ *      updateFamilyHistoryInput: // value for 'updateFamilyHistoryInput'
+ *   },
+ * });
+ */
+export function useUpdateFamilyHistoryMutation(baseOptions?: Apollo.MutationHookOptions<UpdateFamilyHistoryMutation, UpdateFamilyHistoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateFamilyHistoryMutation, UpdateFamilyHistoryMutationVariables>(UpdateFamilyHistoryDocument, options);
+      }
+export type UpdateFamilyHistoryMutationHookResult = ReturnType<typeof useUpdateFamilyHistoryMutation>;
+export type UpdateFamilyHistoryMutationResult = Apollo.MutationResult<UpdateFamilyHistoryMutation>;
+export type UpdateFamilyHistoryMutationOptions = Apollo.BaseMutationOptions<UpdateFamilyHistoryMutation, UpdateFamilyHistoryMutationVariables>;
+export const RemoveFamilyHistoryDocument = gql`
+    mutation RemoveFamilyHistory($removeFamilyHistoryInput: RemoveFamilyHistoryInput!) {
+  removeFamilyHistory(removeFamilyHistoryInput: $removeFamilyHistoryInput) {
+    response {
+      status
+      message
+    }
+    familyHistory {
+      id
+    }
+  }
+}
+    `;
+export type RemoveFamilyHistoryMutationFn = Apollo.MutationFunction<RemoveFamilyHistoryMutation, RemoveFamilyHistoryMutationVariables>;
+
+/**
+ * __useRemoveFamilyHistoryMutation__
+ *
+ * To run a mutation, you first call `useRemoveFamilyHistoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveFamilyHistoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeFamilyHistoryMutation, { data, loading, error }] = useRemoveFamilyHistoryMutation({
+ *   variables: {
+ *      removeFamilyHistoryInput: // value for 'removeFamilyHistoryInput'
+ *   },
+ * });
+ */
+export function useRemoveFamilyHistoryMutation(baseOptions?: Apollo.MutationHookOptions<RemoveFamilyHistoryMutation, RemoveFamilyHistoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveFamilyHistoryMutation, RemoveFamilyHistoryMutationVariables>(RemoveFamilyHistoryDocument, options);
+      }
+export type RemoveFamilyHistoryMutationHookResult = ReturnType<typeof useRemoveFamilyHistoryMutation>;
+export type RemoveFamilyHistoryMutationResult = Apollo.MutationResult<RemoveFamilyHistoryMutation>;
+export type RemoveFamilyHistoryMutationOptions = Apollo.BaseMutationOptions<RemoveFamilyHistoryMutation, RemoveFamilyHistoryMutationVariables>;
+export const FindAllFamilyHistoryDocument = gql`
+    query FindAllFamilyHistory($findAllFamilyHistoryInput: FindAllFamilyHistoryInput!) {
+  findAllFamilyHistory(findAllFamilyHistoryInput: $findAllFamilyHistoryInput) {
+    response {
+      status
+      message
+    }
+    pagination {
+      page
+      totalPages
+    }
+    familyHistories {
+      id
+      name
+      familyHistoryRelatives {
+        died
+        notes
+        onsetAge
+        relativeName
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllFamilyHistoryQuery__
+ *
+ * To run a query within a React component, call `useFindAllFamilyHistoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllFamilyHistoryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllFamilyHistoryQuery({
+ *   variables: {
+ *      findAllFamilyHistoryInput: // value for 'findAllFamilyHistoryInput'
+ *   },
+ * });
+ */
+export function useFindAllFamilyHistoryQuery(baseOptions: Apollo.QueryHookOptions<FindAllFamilyHistoryQuery, FindAllFamilyHistoryQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllFamilyHistoryQuery, FindAllFamilyHistoryQueryVariables>(FindAllFamilyHistoryDocument, options);
+      }
+export function useFindAllFamilyHistoryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllFamilyHistoryQuery, FindAllFamilyHistoryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllFamilyHistoryQuery, FindAllFamilyHistoryQueryVariables>(FindAllFamilyHistoryDocument, options);
+        }
+export type FindAllFamilyHistoryQueryHookResult = ReturnType<typeof useFindAllFamilyHistoryQuery>;
+export type FindAllFamilyHistoryLazyQueryHookResult = ReturnType<typeof useFindAllFamilyHistoryLazyQuery>;
+export type FindAllFamilyHistoryQueryResult = Apollo.QueryResult<FindAllFamilyHistoryQuery, FindAllFamilyHistoryQueryVariables>;
+export const GetFamilyHistoryDocument = gql`
+    query GetFamilyHistory($getFamilyHistoryInput: GetFamilyHistoryInput!) {
+  getFamilyHistory(getFamilyHistoryInput: $getFamilyHistoryInput) {
+    response {
+      status
+      message
+    }
+    familyHistory {
+      id
+      name
+      icdCodeId
+      familyHistoryRelatives {
+        id
+        died
+        notes
+        onsetAge
+        relativeName
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetFamilyHistoryQuery__
+ *
+ * To run a query within a React component, call `useGetFamilyHistoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetFamilyHistoryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetFamilyHistoryQuery({
+ *   variables: {
+ *      getFamilyHistoryInput: // value for 'getFamilyHistoryInput'
+ *   },
+ * });
+ */
+export function useGetFamilyHistoryQuery(baseOptions: Apollo.QueryHookOptions<GetFamilyHistoryQuery, GetFamilyHistoryQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetFamilyHistoryQuery, GetFamilyHistoryQueryVariables>(GetFamilyHistoryDocument, options);
+      }
+export function useGetFamilyHistoryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFamilyHistoryQuery, GetFamilyHistoryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetFamilyHistoryQuery, GetFamilyHistoryQueryVariables>(GetFamilyHistoryDocument, options);
+        }
+export type GetFamilyHistoryQueryHookResult = ReturnType<typeof useGetFamilyHistoryQuery>;
+export type GetFamilyHistoryLazyQueryHookResult = ReturnType<typeof useGetFamilyHistoryLazyQuery>;
+export type GetFamilyHistoryQueryResult = Apollo.QueryResult<GetFamilyHistoryQuery, GetFamilyHistoryQueryVariables>;
 export const FindAllPatientProblemsDocument = gql`
     query FindAllPatientProblems($patientProblemInput: PatientProblemInput!) {
   findAllPatientProblem(patientProblemInput: $patientProblemInput) {

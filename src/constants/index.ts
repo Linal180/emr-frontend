@@ -9,7 +9,7 @@ import {
 } from "../utils";
 import {
   CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, NumberIcon, RadioGroupIcon, SelectIcon, TextAreaIcon,
-  TextIcon, VitalsIcon, ProblemsIcon, AllergiesIcon, NotesOutlinedCardIcon, TriageIcon, HistoryIcon, MedicationIcon
+  TextIcon, VitalsIcon, ProblemsIcon, AllergiesIcon, TriageIcon, HistoryIcon, MedicationIcon
 } from "../assets/svgs";
 import {
   AbnormalFlag, AllergySeverity, AppointmentStatus, Communicationtype, CopayType, DoctorPatientRelationType, ElementType,
@@ -89,6 +89,11 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
+export const DIED_TEXT = 'Died'
+export const ONSET_AGE_TEXT = 'Onset Age'
+export const RELATIVE = 'Relative'
+export const FAMILY_RELATIVE = 'Family Relative'
+export const ADD_FAMILY_HISTORY = 'Add Family History'
 export const LAST_FOUR_DIGIT = 'Card Last Four Digit'
 export const SELF_CHECK_IN = 'Self Check in'
 export const CHECK_IN_AT_TEXT = 'Checked in at'
@@ -1507,6 +1512,7 @@ export const PRECONDITION_FAILED_EXCEPTION = "Precondition Failed Exception";
 export const INTERNAL_SERVER_ERROR_EXCEPTION = "InternalServerErrorException";
 export const GUARANTOR_NOTE = "Guarantor (Name to whom statements are sent)";
 export const DELETE_APPOINTMENT_DESCRIPTION = "Confirm to delete appointment";
+export const DELETE_FAMILY_DESCRIPTION = "Confirm to delete family history";
 export const CANCEL_APPOINTMENT_DESCRIPTION = "Confirm to cancel appointment";
 export const PREFERRED_COMMUNICATION_METHOD = "Preferred Communication Method";
 export const UPLOADS_DOCUMENT_LEARN_MORE_TEXT = "Drop your image here, or browse";
@@ -3733,3 +3739,29 @@ export const MAPPED_APPOINTMENT_PAYMENT_TYPE = [
     name: PAY_VIA_CASH
   }
 ]
+
+export const FAMILY_RELATIVE_MAPPED = [
+  { id: "BROTHER", name: "Brother" },
+  { id: "DAUGHTER", name: "Daughter" },
+  { id: "FATHER", name: "Father" },
+  { id: "MATERNAL_AUNT", name: "Maternal Aunt" },
+  { id: "MATERNAL_GRANDFATHER", name: "Maternal Grandfather" },
+  { id: "MATERNAL_GRANDMOTHER", name: "Maternal Grandmother" },
+  { id: "MATERNAL_UNCLE", name: "Maternal Uncle" },
+  { id: "MOTHER", name: "Mother" },
+  { id: "PATERNAL_AUNT", name: "Paternal Aunt" },
+  { id: "PATERNAL_GRANDFATHER", name: "Paternal Grandfather" },
+  { id: "PATERNAL_GRANDMOTHER", name: "Paternal Grandmother" },
+  { id: "PATERNAL_UNCLE", name: "Paternal Uncle" },
+  { id: "SISTER", name: "Sister" },
+  { id: "SON", name: "Son" },
+  { id: "UNSPECIFIED", name: "Unspecified Relation" },
+]
+
+
+export const familyRelativeFormDefaultValue = {
+  relative: { id: '', name: '' },
+  onsetAge: '',
+  died: '',
+  notes: '',
+}

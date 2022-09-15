@@ -1349,6 +1349,7 @@ export interface ItemSelectorProps extends SelectorProps {
   shouldFilter?: boolean
   practiceId?: string
   feeScheduleId?: string
+  noCodeRenderer?: boolean
 }
 
 export interface FieldEditModalProps {
@@ -2048,4 +2049,32 @@ export type InsuranceComponentProps = {
 
 export type ItemSelectForwardRef = {
   resetSearchQuery: () => void,
+}
+
+export type FamilyHistoryProps = {
+  shouldDisableEdit?: boolean
+}
+
+export type FamilyHistoryFormProps = {
+  isOpen: boolean
+  handleClose: (open: boolean) => void
+  id?: string;
+  isEdit?: boolean
+  fetchFamilyHistory?: Function
+}
+
+type FamilyRelativeArrayFields = {
+  relative: SelectorOption
+  onsetAge: string;
+  died: string;
+  notes: string;
+}
+
+export type FamilyHistoryFormType = {
+  problem: SelectorOption;
+  familyRelative: FamilyRelativeArrayFields[]
+}
+
+export type SocialHistoryProps = {
+  shouldDisableEdit?: boolean
 }
