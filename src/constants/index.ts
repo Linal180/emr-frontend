@@ -1,15 +1,12 @@
 //packages block
+import { Phone as PhoneIcon } from '@material-ui/icons';
+import moment from "moment-timezone";
 import states from "states-us";
 import { v4 as uuid } from "uuid";
-import moment from "moment-timezone";
-import { Phone as PhoneIcon } from '@material-ui/icons';
 // graphql and interfaces block
 import {
-  formatValue, getFormattedDate, getStandardTime, mapEnum, mapEnumWithCode, setRecord, sortingValue
-} from "../utils";
-import {
-  CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, NumberIcon, RadioGroupIcon, SelectIcon, TextAreaIcon,
-  TextIcon, VitalsIcon, ProblemsIcon, AllergiesIcon, TriageIcon, HistoryIcon, MedicationIcon
+  AllergiesIcon, CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, HistoryIcon, MedicationIcon, NumberIcon, ProblemsIcon, RadioGroupIcon, SelectIcon, TextAreaIcon,
+  TextIcon, TriageIcon, VitalsIcon
 } from "../assets/svgs";
 import {
   AbnormalFlag, AllergySeverity, AppointmentStatus, Communicationtype, CopayType, DoctorPatientRelationType, ElementType,
@@ -23,6 +20,9 @@ import {
   FormInitialType, ItemsTypes, LabOrdersResultOption1, LabOrdersResultOption2, SelectOptions, SelectorOption,
   SpecimenTypeOption, StepLabelType, TestOption
 } from "../interfacesTypes";
+import {
+  formatValue, getFormattedDate, getStandardTime, mapEnum, mapEnumWithCode, setRecord, sortingValue
+} from "../utils";
 
 // regex
 export const TID_REGEX = /^\d{9}$/;
@@ -301,6 +301,29 @@ export const BILLING_PROFILE = "Billing Profile";
 export const GO_TO_PROFILE = "Go To Profile";
 export const PAYABLE_ADDRESS = "Payable Address";
 export const BILLING_IDENTIFIER = "Billing Identifier";
+export const DOD = "Date of Death";
+export const ADDRESS_LINE_1 = "ADDRESS LINE 1";
+export const ADDRESS_LINE_2 = "ADDRESS LINE 2";
+export const CONTACT_BY = "CONTACT_BY";
+export const OFFICE_EXTENSION = "Office Extension";
+export const FAMILY_INFORMATION = "Family Information";
+export const MEDICATIONS = "Medications";
+export const START_STOP = "Start/Stop";
+export const ASSOCIATED_DX = "Associated DX";
+export const NO_HISTORICAL_DIAGNOSIS = "No historical diagnosis";
+export const PATIENTS_MOTHERS_MAIDEN_NAME = "Patient's Mother's Maiden Name";
+export const DRUG_ALLERGIES = "Drug Allergies";
+export const ONSET = "Onset";
+export const SEVERITY_REACTIONS = "Severity/Reactions";
+export const FOOD_ALLERGIES = "Food Allergies";
+export const ENVIRONMENTAL_ALLERGIES = "Environmental Allergies";
+export const NO_DRUG_ALLERGIES_RECORDED = "No Drug Allergies Recorded";
+export const NO_FOOD_ALLERGIES_RECORDED = "No Food Allergies Recorded";
+export const NO_ENVIRONMENTAL_ALLERGIES_RECORDED = "No Environmental Allergies Recorded";
+export const CURRENT = "Current";
+export const ACUITY = "Acuity";
+export const START = "Start";
+export const STOP = "Stop";
 export const PUBLIC_LINK = "Public Appointment Link";
 export const FACILITY_LOCATION = "Facility Location";
 export const ADD_FACILITY_BILLING = "Add billing for this facility";
@@ -784,6 +807,7 @@ export const INS = "Ins";
 export const VALUE = "Value";
 export const VISIT = "Visit";
 export const ISSUES = "Issues";
+export const PRINT_PATIENT_CHART = "Print Patient Chart"
 export const LAB_TEST_STICKERS = "Lab Test Stickers";
 export const ALLOWED = "Allowed";
 export const PT_PAID = "Pt Paid";

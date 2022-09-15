@@ -2,7 +2,7 @@ import {
   AllCptCodePayload,
   Allergies, AllergiesPayload, IcdCodes, IcdCodesPayload, IcdCodesWithSnowMedCode, Medications, MedicationsPayload, PatientAllergiesPayload, PatientMedicationsPayload, PatientProblemsPayload, PatientVitalPayload, ReactionsPayload, SurgicalHistoriesPayload
 } from "../generated/graphql";
-import { multiOptionType, SurgicalCode } from "../interfacesTypes";
+import { multiOptionType, PatientChartingInfo, SurgicalCode } from "../interfacesTypes";
 
 export interface State {
   page: number;
@@ -31,7 +31,8 @@ export interface State {
   medicationDeleteId: string;
   patientMedications: PatientMedicationsPayload['patientMedications']
   patientSurgicalHistory: SurgicalHistoriesPayload['surgicalHistories']
-  surgicalHistoryDeleteId: string
+  surgicalHistoryDeleteId: string;
+  patientChartingInfo: PatientChartingInfo | null
 }
 
 export const initialState: State = {
@@ -61,7 +62,8 @@ export const initialState: State = {
   medicationDeleteId: '',
   patientMedications: [],
   patientSurgicalHistory: [],
-  surgicalHistoryDeleteId: ''
+  surgicalHistoryDeleteId: '',
+  patientChartingInfo: null
 }
 
 export enum ActionType {
@@ -91,7 +93,8 @@ export enum ActionType {
   SET_MEDICATION_DELETE_ID = "setMedicationDeleteId",
   SET_PATIENT_MEDICATIONS = "setPatientMedication",
   SET_PATIENT_SURGICAL_HISTORY = "setPatientSurgicalHistory",
-  SET_SURGICAL_HISTORY_DELETE_ID = "setSurgicalHistoryDeleteId"
+  SET_SURGICAL_HISTORY_DELETE_ID = "setSurgicalHistoryDeleteId",
+  SET_PATIENT_CHARTING_INFO = "setPatientChartingInfo"
 }
 
 export type Action =
@@ -122,6 +125,7 @@ export type Action =
   | { type: ActionType.SET_PATIENT_MEDICATIONS, patientMedications: PatientMedicationsPayload['patientMedications'] }
   | { type: ActionType.SET_PATIENT_SURGICAL_HISTORY, patientSurgicalHistory: SurgicalHistoriesPayload['surgicalHistories'] }
   | { type: ActionType.SET_SURGICAL_HISTORY_DELETE_ID, surgicalHistoryDeleteId: string }
+  | { type: ActionType.SET_PATIENT_CHARTING_INFO, patientChartingInfo: PatientChartingInfo | null }
 
 
 export const chartReducer = (state: State, action: Action): State => {
@@ -286,6 +290,12 @@ export const chartReducer = (state: State, action: Action): State => {
       return {
         ...state,
         surgicalHistoryDeleteId: action.surgicalHistoryDeleteId
+      }
+
+    case ActionType.SET_PATIENT_CHARTING_INFO:
+      return {
+        ...state,
+        patientChartingInfo: action.patientChartingInfo
       }
   }
 };
