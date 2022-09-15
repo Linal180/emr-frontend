@@ -1,0 +1,125 @@
+query GetPatientChartingInfo(
+  $patientChartingInfoInput: PatientChartingInfoInput!
+) {
+  getPatientChartingInfo(patientChartingInfoInput: $patientChartingInfoInput) {
+    response {
+      status
+      message
+    }
+
+    patientInfo {
+      firstName
+      lastName
+      middleName
+      ssn
+      dob
+      email
+      genderIdentity
+      patientRecord
+      race
+      ethnicity
+      language
+
+      contacts {
+        phone
+        address
+        address2
+        zipCode
+        city
+        state
+        mobile
+      }
+
+      facility {
+        name
+
+        practice {
+          name
+        }
+
+        contacts {
+          phone
+          address
+          address2
+          zipCode
+          city
+          state
+        }
+      }
+    }
+
+    patientVitals {
+      id
+      vitalCreationDate
+      patientTemperature
+      systolicBloodPressure
+      diastolicBloodPressure
+      respiratoryRate
+      PatientBMI
+    }
+
+    patientAllergies {
+      id
+      allergySeverity
+      allergyOnset
+      allergyStartDate
+      comments
+      isActive
+      allergy {
+        name
+        allergyType
+      }
+    }
+
+    patientProblems {
+      id
+      problemType
+      problemSeverity
+      problemStartDate
+      note
+
+      ICDCode {
+        code
+        description
+      }
+    }
+
+    triageNotes {
+      id
+      notes
+    }
+
+    patientMedications {
+      id
+      sig
+      startDate
+      status
+      stopDate
+      stopReason
+      note
+      medication {
+        fullName
+      }
+    }
+
+    surgicalHistories {
+      id
+      code
+      description
+      surgeryDate
+      notes
+    }
+
+    familyHistories {
+      id
+      name
+
+      familyHistoryRelatives {
+        relativeName
+        onsetAge
+        died
+        notes
+      }
+    }
+  }
+}

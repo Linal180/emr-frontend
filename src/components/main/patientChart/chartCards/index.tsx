@@ -1,25 +1,30 @@
 // packages block
-import { ChangeEvent, FC, ReactElement, Reducer, useReducer } from 'react';
-import { Box, Card, Grid, Tab } from "@material-ui/core";
+import { Box, Button, Card, Grid, Tab } from "@material-ui/core";
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
+import { PrintOutlined } from "@material-ui/icons";
+import { ChangeEvent, FC, ReactElement, Reducer, useReducer, useState } from 'react';
 // components block
-import VitalTab from './tabs/VitalListing';
 import AllergyTab from './tabs/AllergyListing';
 import ProblemTab from './tabs/ProblemListing';
 import TriageNoteTab from './tabs/TriageNotesListing';
-// interfaces, graphql, constants block /styles
-import { PATIENT_CHARTING_TABS } from "../../../../constants";
-import { ChartComponentProps } from "../../../../interfacesTypes";
-import { useChartingStyles } from "../../../../styles/chartingStyles";
-import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
-import { ChartContextProvider } from '../../../../context';
-import { WHITE } from '../../../../theme';
+import ChartSelectionModal from './ChartModal/ChartSelectionModal';
 import HistoryTab from './tabs/HistoryTab';
 import MedicationTab from './tabs/MedicationsListing';
+import ChartPrintModal from "./ChartModal/ChartPrintModal";
+import VitalTab from './tabs/VitalListing';
+// interfaces, graphql, constants block /styles
+import { PATIENT_CHARTING_TABS, PRINT_CHART } from "../../../../constants";
+import { ChartContextProvider } from '../../../../context';
+import { ChartComponentProps } from "../../../../interfacesTypes";
+import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
+import { useChartingStyles } from "../../../../styles/chartingStyles";
+import { WHITE } from '../../../../theme';
 
 const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit }): JSX.Element => {
   const classes = useChartingStyles()
-
+  const [isChartingModalOpen, setIsChartingModalOpen] = useState(false)
+  const [modulesToPrint, setModulesToPrint] = useState<string[]>([])
+  const [isChartPdfModalOpen, setIsChartPdfModalOpen] = useState<boolean>(false)
   const [{ tabValue }, dispatch] =
     useReducer<Reducer<State, Action>>(patientReducer, initialState)
 
@@ -28,6 +33,20 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit }): JSX.Element
 
   return (
     <Box mt={3}>
+      <Box mb={2} px={2} display='flex' justifyContent='flex-end'>
+        <Button
+          type="button"
+          variant="contained"
+          color="secondary"
+          startIcon={
+            <Box width={20} color={WHITE}><PrintOutlined /></Box>
+          }
+          onClick={() => setIsChartingModalOpen(true)}
+        >
+          {PRINT_CHART}
+        </Button>
+      </Box>
+
       <TabContext value={tabValue}>
         <Grid container spacing={3}>
           <Grid item lg={2} md={3} sm={12} xs={12}>
@@ -98,6 +117,19 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit }): JSX.Element
           </Grid>
         </Grid>
       </TabContext>
+      {isChartingModalOpen && <ChartSelectionModal
+        isOpen={isChartingModalOpen}
+        handleClose={() => setIsChartingModalOpen(false)}
+        setIsChartPdfModalOpen={setIsChartPdfModalOpen}
+        modulesToPrint={modulesToPrint}
+        setModulesToPrint={setModulesToPrint}
+      />}
+
+      {isChartPdfModalOpen && <ChartPrintModal
+        modulesToPrint={modulesToPrint}
+        isOpen={isChartPdfModalOpen}
+        handleClose={() => setIsChartPdfModalOpen(false)}
+      />}
     </Box>
   )
 };
