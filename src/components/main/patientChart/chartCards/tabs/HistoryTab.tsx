@@ -50,7 +50,7 @@ const HistoryTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
                   <FamilyHistory shouldDisableEdit={shouldDisableEdit} />
                 </TabPanel>
 
-                <TabPanel value="3">
+                <TabPanel value="2">
                   <SurgicalHistoryTab shouldDisableEdit={shouldDisableEdit} />
                 </TabPanel>
               </Box>
