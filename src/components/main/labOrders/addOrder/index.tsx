@@ -143,7 +143,7 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
       labTestStatus && setValue('labTestStatus', setRecord(labTestStatus, labTestStatus))
       primaryProvider?.id && setValue('primaryProviderId', setRecord(primaryProvider?.id, `${primaryProvider?.firstName} ${primaryProvider?.lastName}`))
       referringProvider?.id && setValue('referringProviderId', setRecord(referringProvider?.id, `${referringProvider?.firstName} ${referringProvider?.lastName}`))
-      
+
       labTestsToEdit?.forEach((labTest, index) => {
         const { test, testDate, testNotes, testSpecimens, testTime, diagnoses, id } = labTest || {}
         const diagnosesIds = diagnoses?.map((value) => {
@@ -158,7 +158,7 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
         testNotes && setValue(`testFieldValues.${index}.testNotes`, testNotes)
         testNotes && setValue(`testFieldValues.${index}.testNotes`, testNotes)
         diagnosesIds && setValue(`testFieldValues.${index}.diagnosesIds`, diagnosesIds)
-        test?.id && setValue(`testFieldValues.${index}.test`, setRecord(test.id, `${test.loincNum} | ${test.component}`))
+        test?.id && setValue(`testFieldValues.${index}.test`, setRecord(test.id, test.loincNum ? `${test.loincNum} | ${test.component}` : `${test.component}`))
         id && setValue(`testFieldValues.${index}.testId`, id)
 
         testSpecimens?.forEach((testSpecimen, subIndex) => {

@@ -98,6 +98,7 @@ export const LAST_FOUR_DIGIT = 'Card Last Four Digit'
 export const SELF_CHECK_IN = 'Self Check in'
 export const CHECK_IN_AT_TEXT = 'Checked in at'
 export const TAKE_AGAIN = 'Take again'
+export const TAKE = 'Take'
 export const DOWNLOAD_TEXT = 'Download'
 export const SELF_PAY = 'Self Pay'
 export const NO_ERROR_FOUND = 'No error found'
@@ -440,6 +441,8 @@ export const INVENTORY = "Inventory";
 export const RESOURCE = "Resource";
 export const RENDERING = "Rendering";
 export const ONSET_DATE = "Onset Date";
+export const STRUCTURED = "Structured";
+export const SIG = "Sig";
 export const ADD_ANOTHER = "ADD ANOTHER";
 export const ADD_ANOTHER_COPAY = "ADD ANOTHER COPAY";
 export const SERVICE_DATE = "Service Date";
@@ -482,6 +485,7 @@ export const FACILITY_CONTACT_INFO = "Facility Contact Information";
 export const FACILITY_BILLING_INFO = "Facility BIling Information";
 export const ENABLE = "Enable";
 export const VITALS_TEXT = "Vitals";
+export const TRIAGE_NOTES = "Triage Notes";
 export const TO_CHART = "To Chart";
 export const SAVE_TEXT = "Save";
 export const HCFA_1500_FORM = "HCFA - 1500 Form"
@@ -499,7 +503,10 @@ export const ALLOW_CANCELLATION = "Allow Cancellations";
 export const VACCINE_TEXT = "Vaccine";
 export const PROBLEMS_TEXT = "Problems";
 export const PROBLEM_TEXT = "Problem";
+export const MEDICATION_TEXT = "Medication";
+export const SURGICAL_TEXT = "Surgical History";
 export const UPDATE_PROBLEM = "Update Problem"
+export const UPDATE_MEDICATION = "Update Medication"
 export const ALLERGIES_TEXT = "Allergies";
 export const ALLERGY_TEXT = "Allergy";
 export const CARE_PLAN_TEXT = "Care Plan";
@@ -657,6 +664,9 @@ export const SOCIAL_SECURITY_TYPE = "Social Security Type";
 export const SOCIAL_SECURITY_NUMBER = "Social Security Number";
 export const PRIMARY_SERVICE_LOCATION = "Primary Service Location";
 export const CPT_CODE_PROCEDURE_CODE = "CPT Code / Procedure Code";
+export const PROCEDURE_TEXT = "Procedure"
+export const PROCEDURES_TEXT = "Procedures"
+export const SURGERY_DATE = "Surgery Date"
 export const FAX = "Fax";
 export const CITY = "City";
 export const SUPER = "Super";
@@ -950,6 +960,8 @@ export const SEND_EMAIL = "Send Email";
 export const FIRST_NAME = "First Name";
 export const START_TIME = "Start Time";
 export const START_DATE = "Start Date";
+export const STOP_DATE = "Stop Date"
+export const STOP_REASON = "Stop Reason"
 export const SUPER_BILL = "Super Bill";
 export const SELECT_ANOTHER_STATUS = 'Please Select another status';
 export const DEACTIVATE = "DEACTIVATE";
@@ -962,6 +974,9 @@ export const CARD_NUMBER = "Card Number";
 export const EXPIRY_DATE = "Expiry Date";
 export const RESEND_OTP = "Resend OTP ?";
 export const ADD_PROBLEM = "Add Problem";
+export const ADD_MEDICATION = "Add Medication";
+export const ADD_SURGICAL_HISTORY = "Add Surgical History";
+export const UPDATE_SURGICAL_HISTORY = "Update Surgical History";
 export const MY_PATIENTS = "My Patients";
 export const PASSWORD_LABEL = "Password";
 export const DESCRIPTION = "Description";
@@ -974,6 +989,7 @@ export const ADD_SERVICE = "Add Service";
 export const LOCATIONS_TEXT = "Locations";
 export const DASHBOARD_TEXT = "Home";
 export const ADD_PROBLEMS = "Add Problems";
+export const ADD_MEDICATIONS = "Add Medications";
 export const VIEW_BILLING = "View Billing";
 export const SEND_SMS = "Send SMS";
 export const US_DATE_FORMAT = "mm/dd/yyyy";
@@ -1421,6 +1437,8 @@ export const REMOVE_COPAY_AMOUNT = "Remove Copay Amount";
 export const NOT_FOUND_EXCEPTION = "Not Found Exception";
 export const FORBIDDEN_EXCEPTION = "Forbidden Exception";
 export const SEARCH_FOR_PROBLEMS = "Search for Problems";
+export const SEARCH_FOR_MEDICATIONS = "Search for Medications";
+export const SEARCH_FOR_PROCEDURES = "Search for Procedures";
 export const CONTACT_INFORMATION = "Contact Information";
 export const PREVIOUS_FIRST_NAME = "Previous First Name";
 export const INDIVIDUAL_NAME = "Individual Name / Trust";
@@ -1486,6 +1504,8 @@ export const DELETE_SERVICE_DESCRIPTION = "Confirm to delete Service";
 export const PUBLIC_FORM_FAIL_MESSAGE = 'Your record is not created.';
 export const VERIFICATION_MESSAGE = "You are verified. Please login.";
 export const DELETE_PROBLEM_DESCRIPTION = "Confirm to delete problem";
+export const DELETE_MEDICATION_DESCRIPTION = "Confirm to delete medication";
+export const DELETE_SURGICAL_HISTORY_DESCRIPTION = "Confirm to delete surgical history";
 export const DELETE_ALLERGY_DESCRIPTION = "Confirm to delete allergy";
 export const CHOOSE_YOUR_PAYMENT_METHOD = "Choose your Payment Method";
 export const NEXT_SCHEDULED_APPOINTMENT = "Next Scheduled Appointment";
@@ -2076,6 +2096,70 @@ export const MAPPED_PRONOUNS: SelectorOption[] = [
   { id: Pronouns.He, name: formatValue(Pronouns.He) },
   { id: Pronouns.She, name: formatValue(Pronouns.She) },
   { id: Pronouns.None, name: formatValue(Pronouns.None) },
+];
+
+export const TIME_DURATION_OPTIONS: SelectorOption[] = [
+  { id: "every day", name: "every day" },
+  { id: "twice a day", name: "twice a day" },
+  { id: "3 times a day", name: "3 times a day" },
+  { id: "4 times a day", name: "4 times a day" },
+  { id: "5 times a day", name: "5 times a day" },
+  { id: "6 times a day", name: "6 times a day" },
+  { id: "every other day", name: "every other day" },
+  { id: "every hour", name: "every hour" },
+  { id: "every 2 hours", name: "every 2 hours" },
+  { id: "every 3-4 hours", name: "every 3-4 hours" },
+  { id: "every 4 hours", name: "every 4 hours" },
+  { id: "every 4-6 hours", name: "every 4-6 hours" },
+  { id: "every 6 hours", name: "every 6 hours" },
+  { id: "every 6-8 hours", name: "every 6-8 hours" },
+  { id: "every 8 hours", name: "every 8 hours" },
+  { id: "every 12 hours", name: "every 12 hours" },
+  { id: "every 24 hours", name: "every 24 hours" },
+  { id: "every 72 hours", name: "every 72 hours" },
+  { id: "every week", name: "every week" },
+  { id: "twice a week", name: "twice a week" },
+  { id: "3 times a week", name: "3 times a week" },
+  { id: "every 2 weeks", name: "every 2 weeks" },
+  { id: "every 3 weeks", name: "every 3 weeks" },
+  { id: "every 4 weeks", name: "every 4 weeks" },
+  { id: "every month", name: "every month" },
+  { id: "every 2 months", name: "every 2 months" },
+  { id: "every 3 months", name: "every 3 months" },
+  { id: "as needed", name: "as needed" },
+];
+
+export const STOP_REASON_OPTIONS: SelectorOption[] = [
+  { id: "adverse reaction", name: "adverse reaction" },
+  { id: "end of course", name: "end of course" },
+  { id: "ineffective", name: "ineffective" },
+  { id: "not in stock", name: "not in stock" },
+  { id: "off formulary", name: "off formulary" },
+  { id: "patient refused", name: "patient refused" },
+  { id: "stopped by PCP", name: "stopped by PCP" },
+  { id: "stopped by specialist", name: "stopped by specialist" },
+  { id: "too expensive", name: "too expensive" },
+  { id: "unknown", name: "unknown" },
+];
+
+export const ORAL_ROUTE_OPTIONS = [
+  { id: "before meals", name: "before meals" },
+  { id: "with meals", name: "with meals" },
+  { id: "after meals", name: "after meals" },
+  { id: "in the morning", name: "in the morning" },
+  { id: "at noon", name: "at noon" },
+  { id: "in the evening", name: "in the evening" },
+  { id: "at dinner", name: "at dinner" },
+  { id: "at bedtime", name: "at bedtime" },
+  { id: "around the clock", name: "around the clock" },
+  { id: "as directed", name: "as directed" },
+  { id: "as needed", name: "as needed" },
+]
+
+
+export const TABLET_UNIT_OPTIONS: SelectorOption[] = [
+  { id: "mg", name: "mg" },
+  { id: "mL", name: "mL" },
 ];
 
 export const MAPPED_RACE: SelectorOption[] = [

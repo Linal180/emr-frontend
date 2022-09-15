@@ -1448,6 +1448,22 @@ export type CreatePatientItemInput = {
   usualProviderId?: Maybe<Scalars['String']>;
 };
 
+export type CreatePatientMedicationInput = {
+  medicationId?: Maybe<Scalars['String']>;
+  noOfDays?: Maybe<Scalars['String']>;
+  note?: Maybe<Scalars['String']>;
+  oralRoute?: Maybe<Scalars['String']>;
+  patientId?: Maybe<Scalars['String']>;
+  sig?: Maybe<Scalars['String']>;
+  startDate?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['String']>;
+  stopDate?: Maybe<Scalars['String']>;
+  stopReason?: Maybe<Scalars['String']>;
+  tabletUnit?: Maybe<Scalars['String']>;
+  takeAmount?: Maybe<Scalars['String']>;
+  timeDuration?: Maybe<Scalars['String']>;
+};
+
 export type CreatePolicyInput = {
   coinsurancePercentage?: Maybe<Scalars['String']>;
   copays?: Maybe<Array<CopayInput>>;
@@ -1554,6 +1570,15 @@ export type CreateStaffItemInput = {
   /** Send Investor Type from the ENUM - Sign-up */
   roleType?: Maybe<Scalars['String']>;
   username: Scalars['String'];
+};
+
+export type CreateSurgicalHistoryInput = {
+  code?: Maybe<Scalars['String']>;
+  codeType?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  notes?: Maybe<Scalars['String']>;
+  patientId?: Maybe<Scalars['String']>;
+  surgeryDate?: Maybe<Scalars['String']>;
 };
 
 export type CreateTriageNoteInput = {
@@ -2292,6 +2317,10 @@ export type GetPatientAppointmentInput = {
   patientId: Scalars['String'];
 };
 
+export type GetPatientMedication = {
+  id: Scalars['String'];
+};
+
 export type GetPatientProblem = {
   id: Scalars['String'];
 };
@@ -2344,6 +2373,10 @@ export type GetSlots = {
 };
 
 export type GetStaff = {
+  id: Scalars['String'];
+};
+
+export type GetSurgicalHistory = {
   id: Scalars['String'];
 };
 
@@ -2728,6 +2761,29 @@ export enum Maritialstatus {
   Widowed = 'WIDOWED'
 }
 
+export type MedicationInput = {
+  paginationOptions: PaginationInput;
+  searchString?: Maybe<Scalars['String']>;
+};
+
+export type Medications = {
+  __typename?: 'Medications';
+  createdAt?: Maybe<Scalars['String']>;
+  fullName?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  patientMedications?: Maybe<Array<PatientMedication>>;
+  rxNumber?: Maybe<Scalars['String']>;
+  termType?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type MedicationsPayload = {
+  __typename?: 'MedicationsPayload';
+  medications?: Maybe<Array<Medications>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+};
+
 export type Modifier = {
   __typename?: 'Modifier';
   code?: Maybe<Scalars['String']>;
@@ -2748,9 +2804,11 @@ export type Mutation = {
   achPayment: TransactionPayload;
   activateUser: UserPayload;
   addPatientAllergy: PatientAllergyPayload;
+  addPatientMedication: PatientMedicationPayload;
   addPatientProblem: PatientProblemPayload;
   addPatientTriageNote: TriageNotePayload;
   addPatientVital: PatientVitalPayload;
+  addSurgicalHistory: SurgicalHistoryPayload;
   assignPermissionToRole: PermissionPayload;
   cancelAppointment: AppointmentPayload;
   chargeAfterAppointment: AppointmentPayload;
@@ -2819,6 +2877,7 @@ export type Mutation = {
   removeModifier: ModifierPayload;
   removePatient: PatientPayload;
   removePatientAllergy: PatientAllergyPayload;
+  removePatientMedication: PatientMedicationPayload;
   removePatientProblem: PatientProblemPayload;
   removePatientTriageNote: TriageNotePayload;
   removePatientVital: PatientVitalPayload;
@@ -2828,6 +2887,7 @@ export type Mutation = {
   removeSchedule: SchedulePayload;
   removeService: ServicePayload;
   removeStaff: StaffPayload;
+  removeSurgicalHistory: SurgicalHistoryPayload;
   removeUser: UserPayload;
   resendVerificationEmail: UserPayload;
   resentOTP: UserPayload;
@@ -2863,6 +2923,7 @@ export type Mutation = {
   updatePassword: UserPayload;
   updatePatient: PatientPayload;
   updatePatientAllergy: PatientAllergyPayload;
+  updatePatientMedication: PatientMedicationPayload;
   updatePatientNoteInfo: PatientPayload;
   updatePatientProblem: PatientProblemPayload;
   updatePatientProfile: PatientPayload;
@@ -2877,6 +2938,7 @@ export type Mutation = {
   updateSchedule: SchedulePayload;
   updateService: ServicePayload;
   updateStaff: StaffPayload;
+  updateSurgicalHistory: SurgicalHistoryPayload;
   updateUser: UserPayload;
   updateUserRole: UserPayload;
   verifyEmail: UserPayload;
@@ -2899,6 +2961,11 @@ export type MutationAddPatientAllergyArgs = {
 };
 
 
+export type MutationAddPatientMedicationArgs = {
+  createPatientMedicationInput: CreatePatientMedicationInput;
+};
+
+
 export type MutationAddPatientProblemArgs = {
   createProblemInput: CreateProblemInput;
 };
@@ -2911,6 +2978,11 @@ export type MutationAddPatientTriageNoteArgs = {
 
 export type MutationAddPatientVitalArgs = {
   createVitalInput: CreateVitalInput;
+};
+
+
+export type MutationAddSurgicalHistoryArgs = {
+  createSurgicalHistoryInput: CreateSurgicalHistoryInput;
 };
 
 
@@ -3249,6 +3321,11 @@ export type MutationRemovePatientAllergyArgs = {
 };
 
 
+export type MutationRemovePatientMedicationArgs = {
+  removePatientMedication: RemovePatientMedication;
+};
+
+
 export type MutationRemovePatientProblemArgs = {
   removeProblem: RemoveProblem;
 };
@@ -3291,6 +3368,11 @@ export type MutationRemoveServiceArgs = {
 
 export type MutationRemoveStaffArgs = {
   removeStaff: RemoveStaff;
+};
+
+
+export type MutationRemoveSurgicalHistoryArgs = {
+  removeSurgicalHistory: RemoveSurgicalHistory;
 };
 
 
@@ -3464,6 +3546,11 @@ export type MutationUpdatePatientAllergyArgs = {
 };
 
 
+export type MutationUpdatePatientMedicationArgs = {
+  updatePatientMedicationInput: UpdatePatientMedicationInput;
+};
+
+
 export type MutationUpdatePatientNoteInfoArgs = {
   updatePatientNoteInfoInputs: UpdatePatientNoteInfoInputs;
 };
@@ -3531,6 +3618,11 @@ export type MutationUpdateServiceArgs = {
 
 export type MutationUpdateStaffArgs = {
   updateStaffInput: UpdateStaffInput;
+};
+
+
+export type MutationUpdateSurgicalHistoryArgs = {
+  updateSurgicalHistoryInput: UpdateSurgicalHistoryInput;
 };
 
 
@@ -3678,6 +3770,7 @@ export type Patient = {
   middleName?: Maybe<Scalars['String']>;
   motherMaidenName?: Maybe<Scalars['String']>;
   patientAllergies?: Maybe<Array<PatientAllergies>>;
+  patientMedications?: Maybe<Array<PatientMedication>>;
   patientNote?: Maybe<Scalars['String']>;
   patientNoteOpen?: Maybe<Scalars['Boolean']>;
   patientProblems?: Maybe<Array<PatientProblems>>;
@@ -3708,6 +3801,7 @@ export type Patient = {
   statementNoteDateFrom?: Maybe<Scalars['String']>;
   statementNoteDateTo?: Maybe<Scalars['String']>;
   suffix?: Maybe<Scalars['String']>;
+  surgicalHistories?: Maybe<Array<SurgicalHistory>>;
   transaction?: Maybe<Array<Transactions>>;
   triageNotes?: Maybe<Array<TriageNotes>>;
   updatedAt: Scalars['String'];
@@ -3831,6 +3925,46 @@ export type PatientInput = {
 export type PatientInviteInput = {
   adminId: Scalars['String'];
   id: Scalars['String'];
+};
+
+export type PatientMedication = {
+  __typename?: 'PatientMedication';
+  createdAt?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  medication?: Maybe<Medications>;
+  medicationId?: Maybe<Scalars['String']>;
+  noOfDays?: Maybe<Scalars['String']>;
+  note?: Maybe<Scalars['String']>;
+  oralRoute?: Maybe<Scalars['String']>;
+  patient?: Maybe<Patient>;
+  patientId?: Maybe<Scalars['String']>;
+  sig?: Maybe<Scalars['String']>;
+  startDate?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['String']>;
+  stopDate?: Maybe<Scalars['String']>;
+  stopReason?: Maybe<Scalars['String']>;
+  tabletUnit?: Maybe<Scalars['String']>;
+  takeAmount?: Maybe<Scalars['String']>;
+  timeDuration?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type PatientMedicationInput = {
+  paginationOptions: PaginationInput;
+  patientId?: Maybe<Scalars['String']>;
+};
+
+export type PatientMedicationPayload = {
+  __typename?: 'PatientMedicationPayload';
+  patientMedication?: Maybe<PatientMedication>;
+  response?: Maybe<ResponsePayload>;
+};
+
+export type PatientMedicationsPayload = {
+  __typename?: 'PatientMedicationsPayload';
+  pagination?: Maybe<PaginationPayload>;
+  patientMedications?: Maybe<Array<PatientMedication>>;
+  response?: Maybe<ResponsePayload>;
 };
 
 export type PatientPastUpcomingAppointment = {
@@ -4466,9 +4600,11 @@ export type Query = {
   findAllLabTest: LabTestsPayload;
   findAllLiveClaimFeeds: LiveClaimFeedPayload;
   findAllLoincCodes: LoincCodesPayload;
+  findAllMedications: MedicationsPayload;
   findAllModifiers: AllModifiersPayload;
   findAllPatient: PatientsPayload;
   findAllPatientAllergies: PatientAllergiesPayload;
+  findAllPatientMedications: PatientMedicationsPayload;
   findAllPatientProblem: PatientProblemsPayload;
   findAllPatientTriageNotes: TriageNotesPayload;
   findAllPatientVitals: PatientVitalsPayload;
@@ -4479,6 +4615,7 @@ export type Query = {
   findAllSchedules: SchedulesPayload;
   findAllServices: ServicesPayload;
   findAllStaff: AllStaffPayload;
+  findAllSurgicalHistory: SurgicalHistoriesPayload;
   findAllTaxonomy: TaxonomyPayload;
   findAllTestSpecimenTypes: TestSpecimenTypesPayload;
   findAllUpcomingAppointments: AppointmentsPayload;
@@ -4523,6 +4660,7 @@ export type Query = {
   getPatientAllergy: PatientAllergyPayload;
   getPatientAppointment: AppointmentsPayload;
   getPatientLatestVital: PatientVitalPayload;
+  getPatientMedications: PatientMedicationPayload;
   getPatientPastUpcomingAppointment: PatientPastUpcomingAppointmentPayload;
   getPatientProblem: PatientProblemPayload;
   getPatientProvider: PatientDoctorPayload;
@@ -4545,6 +4683,7 @@ export type Query = {
   getSpecimenTypeByName: SpecimenTypes;
   getStaff: StaffPayload;
   getSuperBillInfo: SuperBillPayload;
+  getSurgicalHistory: SurgicalHistoryPayload;
   getToken: BraintreePayload;
   getTransaction: TransactionPayload;
   getTriageNotes: TriageNotePayload;
@@ -4727,6 +4866,11 @@ export type QueryFindAllLoincCodesArgs = {
 };
 
 
+export type QueryFindAllMedicationsArgs = {
+  medicationInput: MedicationInput;
+};
+
+
 export type QueryFindAllModifiersArgs = {
   findAllModifierInput: FindAllModifierInput;
 };
@@ -4739,6 +4883,11 @@ export type QueryFindAllPatientArgs = {
 
 export type QueryFindAllPatientAllergiesArgs = {
   patientAllergyInput: PatientAllergyInput;
+};
+
+
+export type QueryFindAllPatientMedicationsArgs = {
+  patientMedicationInput: PatientMedicationInput;
 };
 
 
@@ -4789,6 +4938,11 @@ export type QueryFindAllServicesArgs = {
 
 export type QueryFindAllStaffArgs = {
   staffInput: StaffInput;
+};
+
+
+export type QueryFindAllSurgicalHistoryArgs = {
+  surgicalHistoryInput: SurgicalHistoryInput;
 };
 
 
@@ -5002,6 +5156,11 @@ export type QueryGetPatientLatestVitalArgs = {
 };
 
 
+export type QueryGetPatientMedicationsArgs = {
+  getPatientMedication: GetPatientMedication;
+};
+
+
 export type QueryGetPatientPastUpcomingAppointmentArgs = {
   getPatientAppointmentInput: GetPatientAppointmentInput;
 };
@@ -5099,6 +5258,11 @@ export type QueryGetStaffArgs = {
 
 export type QueryGetSuperBillInfoArgs = {
   superBillInput: SuperBillInput;
+};
+
+
+export type QueryGetSurgicalHistoryArgs = {
+  surgicalHistoryInput: GetSurgicalHistory;
 };
 
 
@@ -5277,6 +5441,10 @@ export type RemovePatientAllergy = {
   id: Scalars['String'];
 };
 
+export type RemovePatientMedication = {
+  id: Scalars['String'];
+};
+
 export type RemovePermission = {
   id?: Maybe<Scalars['String']>;
 };
@@ -5302,6 +5470,10 @@ export type RemoveService = {
 };
 
 export type RemoveStaff = {
+  id: Scalars['String'];
+};
+
+export type RemoveSurgicalHistory = {
   id: Scalars['String'];
 };
 
@@ -5840,6 +6012,38 @@ export type SuperBillPayload = {
   policyHolderInfo?: Maybe<PolicyHolder>;
   providerInfo?: Maybe<Doctor>;
   response?: Maybe<ResponsePayload>;
+};
+
+export type SurgicalHistoriesPayload = {
+  __typename?: 'SurgicalHistoriesPayload';
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+  surgicalHistories?: Maybe<Array<SurgicalHistory>>;
+};
+
+export type SurgicalHistory = {
+  __typename?: 'SurgicalHistory';
+  code?: Maybe<Scalars['String']>;
+  codeType?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  notes?: Maybe<Scalars['String']>;
+  patient?: Maybe<Patient>;
+  patientId?: Maybe<Scalars['String']>;
+  surgeryDate?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type SurgicalHistoryInput = {
+  paginationOptions: PaginationInput;
+  patientId?: Maybe<Scalars['String']>;
+};
+
+export type SurgicalHistoryPayload = {
+  __typename?: 'SurgicalHistoryPayload';
+  response?: Maybe<ResponsePayload>;
+  surgicalHistory?: Maybe<SurgicalHistory>;
 };
 
 /** The transaction payment status type assigned */
@@ -6452,6 +6656,23 @@ export type UpdatePatientItemInput = {
   usualProviderId?: Maybe<Scalars['String']>;
 };
 
+export type UpdatePatientMedicationInput = {
+  id: Scalars['String'];
+  medicationId?: Maybe<Scalars['String']>;
+  noOfDays?: Maybe<Scalars['String']>;
+  note?: Maybe<Scalars['String']>;
+  oralRoute?: Maybe<Scalars['String']>;
+  patientId?: Maybe<Scalars['String']>;
+  sig?: Maybe<Scalars['String']>;
+  startDate?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['String']>;
+  stopDate?: Maybe<Scalars['String']>;
+  stopReason?: Maybe<Scalars['String']>;
+  tabletUnit?: Maybe<Scalars['String']>;
+  takeAmount?: Maybe<Scalars['String']>;
+  timeDuration?: Maybe<Scalars['String']>;
+};
+
 export type UpdatePatientNoteInfoInputs = {
   id: Scalars['String'];
   patientNote?: Maybe<Scalars['String']>;
@@ -6620,6 +6841,16 @@ export type UpdateStaffItemInput = {
   /** Send Investor Type from the ENUM - Sign-up */
   roleType?: Maybe<Scalars['String']>;
   username?: Maybe<Scalars['String']>;
+};
+
+export type UpdateSurgicalHistoryInput = {
+  code?: Maybe<Scalars['String']>;
+  codeType?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  notes?: Maybe<Scalars['String']>;
+  patientId?: Maybe<Scalars['String']>;
+  surgeryDate?: Maybe<Scalars['String']>;
 };
 
 export type UpdateTriageNoteInput = {
@@ -7318,6 +7549,48 @@ export type GetFamilyHistoryQueryVariables = Exact<{
 
 export type GetFamilyHistoryQuery = { __typename?: 'Query', getFamilyHistory: { __typename?: 'FamilyHistoryPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, familyHistory?: { __typename?: 'FamilyHistory', id: string, name?: string | null, icdCodeId?: string | null, familyHistoryRelatives?: Array<{ __typename?: 'FamilyHistoryRelative', id: string, died?: string | null, notes?: string | null, onsetAge?: string | null, relativeName?: string | null }> | null } | null } };
 
+export type FindAllPatientMedicationsQueryVariables = Exact<{
+  patientMedicationInput: PatientMedicationInput;
+}>;
+
+
+export type FindAllPatientMedicationsQuery = { __typename?: 'Query', findAllPatientMedications: { __typename?: 'PatientMedicationsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null, page?: number | null } | null, patientMedications?: Array<{ __typename?: 'PatientMedication', id: string, sig?: string | null, takeAmount?: string | null, tabletUnit?: string | null, timeDuration?: string | null, noOfDays?: string | null, startDate?: string | null, status?: string | null, stopDate?: string | null, stopReason?: string | null, note?: string | null, medicationId?: string | null, medication?: { __typename?: 'Medications', id: string, fullName?: string | null, termType?: string | null, rxNumber?: string | null } | null }> | null } };
+
+export type FindAllMedicationsQueryVariables = Exact<{
+  medicationInput: MedicationInput;
+}>;
+
+
+export type FindAllMedicationsQuery = { __typename?: 'Query', findAllMedications: { __typename?: 'MedicationsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null, page?: number | null } | null, medications?: Array<{ __typename?: 'Medications', id: string, fullName?: string | null, termType?: string | null, rxNumber?: string | null }> | null } };
+
+export type GetPatientMedicationsQueryVariables = Exact<{
+  getPatientMedication: GetPatientMedication;
+}>;
+
+
+export type GetPatientMedicationsQuery = { __typename?: 'Query', getPatientMedications: { __typename?: 'PatientMedicationPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, patientMedication?: { __typename?: 'PatientMedication', id: string, sig?: string | null, takeAmount?: string | null, tabletUnit?: string | null, timeDuration?: string | null, noOfDays?: string | null, startDate?: string | null, status?: string | null, stopDate?: string | null, stopReason?: string | null, oralRoute?: string | null, note?: string | null, medicationId?: string | null, medication?: { __typename?: 'Medications', id: string, fullName?: string | null, termType?: string | null, rxNumber?: string | null } | null } | null } };
+
+export type AddPatientMedicationMutationVariables = Exact<{
+  createPatientMedicationInput: CreatePatientMedicationInput;
+}>;
+
+
+export type AddPatientMedicationMutation = { __typename?: 'Mutation', addPatientMedication: { __typename?: 'PatientMedicationPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null } };
+
+export type UpdatePatientMedicationMutationVariables = Exact<{
+  updatePatientMedicationInput: UpdatePatientMedicationInput;
+}>;
+
+
+export type UpdatePatientMedicationMutation = { __typename?: 'Mutation', updatePatientMedication: { __typename?: 'PatientMedicationPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null } };
+
+export type RemovePatientMedicationMutationVariables = Exact<{
+  removePatientMedication: RemovePatientMedication;
+}>;
+
+
+export type RemovePatientMedicationMutation = { __typename?: 'Mutation', removePatientMedication: { __typename?: 'PatientMedicationPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null } };
+
 export type FindAllPatientProblemsQueryVariables = Exact<{
   patientProblemInput: PatientProblemInput;
 }>;
@@ -7359,6 +7632,41 @@ export type SearchSnoMedCodesQueryVariables = Exact<{
 
 
 export type SearchSnoMedCodesQuery = { __typename?: 'Query', searchSnoMedCodeByIcdCodes: { __typename?: 'snoMedCodesPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, snoMedCodes?: Array<{ __typename: 'SnoMedCodes', id: string, referencedComponentId?: string | null } | null> | null } };
+
+export type FindAllSurgicalHistoryQueryVariables = Exact<{
+  surgicalHistoryInput: SurgicalHistoryInput;
+}>;
+
+
+export type FindAllSurgicalHistoryQuery = { __typename?: 'Query', findAllSurgicalHistory: { __typename?: 'SurgicalHistoriesPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null, page?: number | null } | null, surgicalHistories?: Array<{ __typename?: 'SurgicalHistory', id: string, code?: string | null, codeType?: string | null, description?: string | null, surgeryDate?: string | null, notes?: string | null }> | null } };
+
+export type GetSurgicalHistoryQueryVariables = Exact<{
+  surgicalHistoryInput: GetSurgicalHistory;
+}>;
+
+
+export type GetSurgicalHistoryQuery = { __typename?: 'Query', getSurgicalHistory: { __typename?: 'SurgicalHistoryPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, surgicalHistory?: { __typename?: 'SurgicalHistory', id: string, code?: string | null, codeType?: string | null, description?: string | null, surgeryDate?: string | null, notes?: string | null } | null } };
+
+export type AddSurgicalHistoryMutationVariables = Exact<{
+  createSurgicalHistoryInput: CreateSurgicalHistoryInput;
+}>;
+
+
+export type AddSurgicalHistoryMutation = { __typename?: 'Mutation', addSurgicalHistory: { __typename?: 'SurgicalHistoryPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null } };
+
+export type UpdateSurgicalHistoryMutationVariables = Exact<{
+  updateSurgicalHistoryInput: UpdateSurgicalHistoryInput;
+}>;
+
+
+export type UpdateSurgicalHistoryMutation = { __typename?: 'Mutation', updateSurgicalHistory: { __typename?: 'SurgicalHistoryPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null } };
+
+export type RemoveSurgicalHistoryMutationVariables = Exact<{
+  removeSurgicalHistory: RemoveSurgicalHistory;
+}>;
+
+
+export type RemoveSurgicalHistoryMutation = { __typename?: 'Mutation', removeSurgicalHistory: { __typename?: 'SurgicalHistoryPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null } };
 
 export type GetTriageNotesQueryVariables = Exact<{
   getPatientTriageNote: GetPatientTriageNote;
@@ -11664,6 +11972,287 @@ export function useGetFamilyHistoryLazyQuery(baseOptions?: Apollo.LazyQueryHookO
 export type GetFamilyHistoryQueryHookResult = ReturnType<typeof useGetFamilyHistoryQuery>;
 export type GetFamilyHistoryLazyQueryHookResult = ReturnType<typeof useGetFamilyHistoryLazyQuery>;
 export type GetFamilyHistoryQueryResult = Apollo.QueryResult<GetFamilyHistoryQuery, GetFamilyHistoryQueryVariables>;
+export const FindAllPatientMedicationsDocument = gql`
+    query FindAllPatientMedications($patientMedicationInput: PatientMedicationInput!) {
+  findAllPatientMedications(patientMedicationInput: $patientMedicationInput) {
+    response {
+      status
+      message
+    }
+    pagination {
+      totalPages
+      page
+    }
+    patientMedications {
+      id
+      sig
+      takeAmount
+      tabletUnit
+      timeDuration
+      noOfDays
+      startDate
+      status
+      stopDate
+      stopReason
+      note
+      medicationId
+      medication {
+        id
+        fullName
+        termType
+        rxNumber
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllPatientMedicationsQuery__
+ *
+ * To run a query within a React component, call `useFindAllPatientMedicationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllPatientMedicationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllPatientMedicationsQuery({
+ *   variables: {
+ *      patientMedicationInput: // value for 'patientMedicationInput'
+ *   },
+ * });
+ */
+export function useFindAllPatientMedicationsQuery(baseOptions: Apollo.QueryHookOptions<FindAllPatientMedicationsQuery, FindAllPatientMedicationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllPatientMedicationsQuery, FindAllPatientMedicationsQueryVariables>(FindAllPatientMedicationsDocument, options);
+      }
+export function useFindAllPatientMedicationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllPatientMedicationsQuery, FindAllPatientMedicationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllPatientMedicationsQuery, FindAllPatientMedicationsQueryVariables>(FindAllPatientMedicationsDocument, options);
+        }
+export type FindAllPatientMedicationsQueryHookResult = ReturnType<typeof useFindAllPatientMedicationsQuery>;
+export type FindAllPatientMedicationsLazyQueryHookResult = ReturnType<typeof useFindAllPatientMedicationsLazyQuery>;
+export type FindAllPatientMedicationsQueryResult = Apollo.QueryResult<FindAllPatientMedicationsQuery, FindAllPatientMedicationsQueryVariables>;
+export const FindAllMedicationsDocument = gql`
+    query FindAllMedications($medicationInput: MedicationInput!) {
+  findAllMedications(medicationInput: $medicationInput) {
+    response {
+      status
+      message
+    }
+    pagination {
+      totalPages
+      page
+    }
+    medications {
+      id
+      fullName
+      termType
+      rxNumber
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllMedicationsQuery__
+ *
+ * To run a query within a React component, call `useFindAllMedicationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllMedicationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllMedicationsQuery({
+ *   variables: {
+ *      medicationInput: // value for 'medicationInput'
+ *   },
+ * });
+ */
+export function useFindAllMedicationsQuery(baseOptions: Apollo.QueryHookOptions<FindAllMedicationsQuery, FindAllMedicationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllMedicationsQuery, FindAllMedicationsQueryVariables>(FindAllMedicationsDocument, options);
+      }
+export function useFindAllMedicationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllMedicationsQuery, FindAllMedicationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllMedicationsQuery, FindAllMedicationsQueryVariables>(FindAllMedicationsDocument, options);
+        }
+export type FindAllMedicationsQueryHookResult = ReturnType<typeof useFindAllMedicationsQuery>;
+export type FindAllMedicationsLazyQueryHookResult = ReturnType<typeof useFindAllMedicationsLazyQuery>;
+export type FindAllMedicationsQueryResult = Apollo.QueryResult<FindAllMedicationsQuery, FindAllMedicationsQueryVariables>;
+export const GetPatientMedicationsDocument = gql`
+    query GetPatientMedications($getPatientMedication: GetPatientMedication!) {
+  getPatientMedications(getPatientMedication: $getPatientMedication) {
+    response {
+      status
+      message
+    }
+    patientMedication {
+      id
+      sig
+      takeAmount
+      tabletUnit
+      timeDuration
+      noOfDays
+      startDate
+      status
+      stopDate
+      stopReason
+      oralRoute
+      note
+      medicationId
+      medication {
+        id
+        fullName
+        termType
+        rxNumber
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPatientMedicationsQuery__
+ *
+ * To run a query within a React component, call `useGetPatientMedicationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPatientMedicationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPatientMedicationsQuery({
+ *   variables: {
+ *      getPatientMedication: // value for 'getPatientMedication'
+ *   },
+ * });
+ */
+export function useGetPatientMedicationsQuery(baseOptions: Apollo.QueryHookOptions<GetPatientMedicationsQuery, GetPatientMedicationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPatientMedicationsQuery, GetPatientMedicationsQueryVariables>(GetPatientMedicationsDocument, options);
+      }
+export function useGetPatientMedicationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPatientMedicationsQuery, GetPatientMedicationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPatientMedicationsQuery, GetPatientMedicationsQueryVariables>(GetPatientMedicationsDocument, options);
+        }
+export type GetPatientMedicationsQueryHookResult = ReturnType<typeof useGetPatientMedicationsQuery>;
+export type GetPatientMedicationsLazyQueryHookResult = ReturnType<typeof useGetPatientMedicationsLazyQuery>;
+export type GetPatientMedicationsQueryResult = Apollo.QueryResult<GetPatientMedicationsQuery, GetPatientMedicationsQueryVariables>;
+export const AddPatientMedicationDocument = gql`
+    mutation AddPatientMedication($createPatientMedicationInput: CreatePatientMedicationInput!) {
+  addPatientMedication(
+    createPatientMedicationInput: $createPatientMedicationInput
+  ) {
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+export type AddPatientMedicationMutationFn = Apollo.MutationFunction<AddPatientMedicationMutation, AddPatientMedicationMutationVariables>;
+
+/**
+ * __useAddPatientMedicationMutation__
+ *
+ * To run a mutation, you first call `useAddPatientMedicationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddPatientMedicationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addPatientMedicationMutation, { data, loading, error }] = useAddPatientMedicationMutation({
+ *   variables: {
+ *      createPatientMedicationInput: // value for 'createPatientMedicationInput'
+ *   },
+ * });
+ */
+export function useAddPatientMedicationMutation(baseOptions?: Apollo.MutationHookOptions<AddPatientMedicationMutation, AddPatientMedicationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddPatientMedicationMutation, AddPatientMedicationMutationVariables>(AddPatientMedicationDocument, options);
+      }
+export type AddPatientMedicationMutationHookResult = ReturnType<typeof useAddPatientMedicationMutation>;
+export type AddPatientMedicationMutationResult = Apollo.MutationResult<AddPatientMedicationMutation>;
+export type AddPatientMedicationMutationOptions = Apollo.BaseMutationOptions<AddPatientMedicationMutation, AddPatientMedicationMutationVariables>;
+export const UpdatePatientMedicationDocument = gql`
+    mutation updatePatientMedication($updatePatientMedicationInput: UpdatePatientMedicationInput!) {
+  updatePatientMedication(
+    updatePatientMedicationInput: $updatePatientMedicationInput
+  ) {
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+export type UpdatePatientMedicationMutationFn = Apollo.MutationFunction<UpdatePatientMedicationMutation, UpdatePatientMedicationMutationVariables>;
+
+/**
+ * __useUpdatePatientMedicationMutation__
+ *
+ * To run a mutation, you first call `useUpdatePatientMedicationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePatientMedicationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePatientMedicationMutation, { data, loading, error }] = useUpdatePatientMedicationMutation({
+ *   variables: {
+ *      updatePatientMedicationInput: // value for 'updatePatientMedicationInput'
+ *   },
+ * });
+ */
+export function useUpdatePatientMedicationMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePatientMedicationMutation, UpdatePatientMedicationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdatePatientMedicationMutation, UpdatePatientMedicationMutationVariables>(UpdatePatientMedicationDocument, options);
+      }
+export type UpdatePatientMedicationMutationHookResult = ReturnType<typeof useUpdatePatientMedicationMutation>;
+export type UpdatePatientMedicationMutationResult = Apollo.MutationResult<UpdatePatientMedicationMutation>;
+export type UpdatePatientMedicationMutationOptions = Apollo.BaseMutationOptions<UpdatePatientMedicationMutation, UpdatePatientMedicationMutationVariables>;
+export const RemovePatientMedicationDocument = gql`
+    mutation RemovePatientMedication($removePatientMedication: RemovePatientMedication!) {
+  removePatientMedication(removePatientMedication: $removePatientMedication) {
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+export type RemovePatientMedicationMutationFn = Apollo.MutationFunction<RemovePatientMedicationMutation, RemovePatientMedicationMutationVariables>;
+
+/**
+ * __useRemovePatientMedicationMutation__
+ *
+ * To run a mutation, you first call `useRemovePatientMedicationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemovePatientMedicationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removePatientMedicationMutation, { data, loading, error }] = useRemovePatientMedicationMutation({
+ *   variables: {
+ *      removePatientMedication: // value for 'removePatientMedication'
+ *   },
+ * });
+ */
+export function useRemovePatientMedicationMutation(baseOptions?: Apollo.MutationHookOptions<RemovePatientMedicationMutation, RemovePatientMedicationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemovePatientMedicationMutation, RemovePatientMedicationMutationVariables>(RemovePatientMedicationDocument, options);
+      }
+export type RemovePatientMedicationMutationHookResult = ReturnType<typeof useRemovePatientMedicationMutation>;
+export type RemovePatientMedicationMutationResult = Apollo.MutationResult<RemovePatientMedicationMutation>;
+export type RemovePatientMedicationMutationOptions = Apollo.BaseMutationOptions<RemovePatientMedicationMutation, RemovePatientMedicationMutationVariables>;
 export const FindAllPatientProblemsDocument = gql`
     query FindAllPatientProblems($patientProblemInput: PatientProblemInput!) {
   findAllPatientProblem(patientProblemInput: $patientProblemInput) {
@@ -11930,6 +12519,210 @@ export function useSearchSnoMedCodesLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type SearchSnoMedCodesQueryHookResult = ReturnType<typeof useSearchSnoMedCodesQuery>;
 export type SearchSnoMedCodesLazyQueryHookResult = ReturnType<typeof useSearchSnoMedCodesLazyQuery>;
 export type SearchSnoMedCodesQueryResult = Apollo.QueryResult<SearchSnoMedCodesQuery, SearchSnoMedCodesQueryVariables>;
+export const FindAllSurgicalHistoryDocument = gql`
+    query FindAllSurgicalHistory($surgicalHistoryInput: SurgicalHistoryInput!) {
+  findAllSurgicalHistory(surgicalHistoryInput: $surgicalHistoryInput) {
+    response {
+      status
+      message
+    }
+    pagination {
+      totalPages
+      page
+    }
+    surgicalHistories {
+      id
+      code
+      codeType
+      description
+      surgeryDate
+      notes
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllSurgicalHistoryQuery__
+ *
+ * To run a query within a React component, call `useFindAllSurgicalHistoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllSurgicalHistoryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllSurgicalHistoryQuery({
+ *   variables: {
+ *      surgicalHistoryInput: // value for 'surgicalHistoryInput'
+ *   },
+ * });
+ */
+export function useFindAllSurgicalHistoryQuery(baseOptions: Apollo.QueryHookOptions<FindAllSurgicalHistoryQuery, FindAllSurgicalHistoryQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllSurgicalHistoryQuery, FindAllSurgicalHistoryQueryVariables>(FindAllSurgicalHistoryDocument, options);
+      }
+export function useFindAllSurgicalHistoryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllSurgicalHistoryQuery, FindAllSurgicalHistoryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllSurgicalHistoryQuery, FindAllSurgicalHistoryQueryVariables>(FindAllSurgicalHistoryDocument, options);
+        }
+export type FindAllSurgicalHistoryQueryHookResult = ReturnType<typeof useFindAllSurgicalHistoryQuery>;
+export type FindAllSurgicalHistoryLazyQueryHookResult = ReturnType<typeof useFindAllSurgicalHistoryLazyQuery>;
+export type FindAllSurgicalHistoryQueryResult = Apollo.QueryResult<FindAllSurgicalHistoryQuery, FindAllSurgicalHistoryQueryVariables>;
+export const GetSurgicalHistoryDocument = gql`
+    query GetSurgicalHistory($surgicalHistoryInput: GetSurgicalHistory!) {
+  getSurgicalHistory(surgicalHistoryInput: $surgicalHistoryInput) {
+    response {
+      status
+      message
+    }
+    surgicalHistory {
+      id
+      code
+      codeType
+      description
+      surgeryDate
+      notes
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetSurgicalHistoryQuery__
+ *
+ * To run a query within a React component, call `useGetSurgicalHistoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSurgicalHistoryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSurgicalHistoryQuery({
+ *   variables: {
+ *      surgicalHistoryInput: // value for 'surgicalHistoryInput'
+ *   },
+ * });
+ */
+export function useGetSurgicalHistoryQuery(baseOptions: Apollo.QueryHookOptions<GetSurgicalHistoryQuery, GetSurgicalHistoryQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetSurgicalHistoryQuery, GetSurgicalHistoryQueryVariables>(GetSurgicalHistoryDocument, options);
+      }
+export function useGetSurgicalHistoryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSurgicalHistoryQuery, GetSurgicalHistoryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetSurgicalHistoryQuery, GetSurgicalHistoryQueryVariables>(GetSurgicalHistoryDocument, options);
+        }
+export type GetSurgicalHistoryQueryHookResult = ReturnType<typeof useGetSurgicalHistoryQuery>;
+export type GetSurgicalHistoryLazyQueryHookResult = ReturnType<typeof useGetSurgicalHistoryLazyQuery>;
+export type GetSurgicalHistoryQueryResult = Apollo.QueryResult<GetSurgicalHistoryQuery, GetSurgicalHistoryQueryVariables>;
+export const AddSurgicalHistoryDocument = gql`
+    mutation AddSurgicalHistory($createSurgicalHistoryInput: CreateSurgicalHistoryInput!) {
+  addSurgicalHistory(createSurgicalHistoryInput: $createSurgicalHistoryInput) {
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+export type AddSurgicalHistoryMutationFn = Apollo.MutationFunction<AddSurgicalHistoryMutation, AddSurgicalHistoryMutationVariables>;
+
+/**
+ * __useAddSurgicalHistoryMutation__
+ *
+ * To run a mutation, you first call `useAddSurgicalHistoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddSurgicalHistoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addSurgicalHistoryMutation, { data, loading, error }] = useAddSurgicalHistoryMutation({
+ *   variables: {
+ *      createSurgicalHistoryInput: // value for 'createSurgicalHistoryInput'
+ *   },
+ * });
+ */
+export function useAddSurgicalHistoryMutation(baseOptions?: Apollo.MutationHookOptions<AddSurgicalHistoryMutation, AddSurgicalHistoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddSurgicalHistoryMutation, AddSurgicalHistoryMutationVariables>(AddSurgicalHistoryDocument, options);
+      }
+export type AddSurgicalHistoryMutationHookResult = ReturnType<typeof useAddSurgicalHistoryMutation>;
+export type AddSurgicalHistoryMutationResult = Apollo.MutationResult<AddSurgicalHistoryMutation>;
+export type AddSurgicalHistoryMutationOptions = Apollo.BaseMutationOptions<AddSurgicalHistoryMutation, AddSurgicalHistoryMutationVariables>;
+export const UpdateSurgicalHistoryDocument = gql`
+    mutation updateSurgicalHistory($updateSurgicalHistoryInput: UpdateSurgicalHistoryInput!) {
+  updateSurgicalHistory(updateSurgicalHistoryInput: $updateSurgicalHistoryInput) {
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+export type UpdateSurgicalHistoryMutationFn = Apollo.MutationFunction<UpdateSurgicalHistoryMutation, UpdateSurgicalHistoryMutationVariables>;
+
+/**
+ * __useUpdateSurgicalHistoryMutation__
+ *
+ * To run a mutation, you first call `useUpdateSurgicalHistoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateSurgicalHistoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateSurgicalHistoryMutation, { data, loading, error }] = useUpdateSurgicalHistoryMutation({
+ *   variables: {
+ *      updateSurgicalHistoryInput: // value for 'updateSurgicalHistoryInput'
+ *   },
+ * });
+ */
+export function useUpdateSurgicalHistoryMutation(baseOptions?: Apollo.MutationHookOptions<UpdateSurgicalHistoryMutation, UpdateSurgicalHistoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateSurgicalHistoryMutation, UpdateSurgicalHistoryMutationVariables>(UpdateSurgicalHistoryDocument, options);
+      }
+export type UpdateSurgicalHistoryMutationHookResult = ReturnType<typeof useUpdateSurgicalHistoryMutation>;
+export type UpdateSurgicalHistoryMutationResult = Apollo.MutationResult<UpdateSurgicalHistoryMutation>;
+export type UpdateSurgicalHistoryMutationOptions = Apollo.BaseMutationOptions<UpdateSurgicalHistoryMutation, UpdateSurgicalHistoryMutationVariables>;
+export const RemoveSurgicalHistoryDocument = gql`
+    mutation RemoveSurgicalHistory($removeSurgicalHistory: RemoveSurgicalHistory!) {
+  removeSurgicalHistory(removeSurgicalHistory: $removeSurgicalHistory) {
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+export type RemoveSurgicalHistoryMutationFn = Apollo.MutationFunction<RemoveSurgicalHistoryMutation, RemoveSurgicalHistoryMutationVariables>;
+
+/**
+ * __useRemoveSurgicalHistoryMutation__
+ *
+ * To run a mutation, you first call `useRemoveSurgicalHistoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveSurgicalHistoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeSurgicalHistoryMutation, { data, loading, error }] = useRemoveSurgicalHistoryMutation({
+ *   variables: {
+ *      removeSurgicalHistory: // value for 'removeSurgicalHistory'
+ *   },
+ * });
+ */
+export function useRemoveSurgicalHistoryMutation(baseOptions?: Apollo.MutationHookOptions<RemoveSurgicalHistoryMutation, RemoveSurgicalHistoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveSurgicalHistoryMutation, RemoveSurgicalHistoryMutationVariables>(RemoveSurgicalHistoryDocument, options);
+      }
+export type RemoveSurgicalHistoryMutationHookResult = ReturnType<typeof useRemoveSurgicalHistoryMutation>;
+export type RemoveSurgicalHistoryMutationResult = Apollo.MutationResult<RemoveSurgicalHistoryMutation>;
+export type RemoveSurgicalHistoryMutationOptions = Apollo.BaseMutationOptions<RemoveSurgicalHistoryMutation, RemoveSurgicalHistoryMutationVariables>;
 export const GetTriageNotesDocument = gql`
     query GetTriageNotes($getPatientTriageNote: GetPatientTriageNote!) {
   getTriageNotes(getPatientTriageNote: $getPatientTriageNote) {

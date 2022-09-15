@@ -9,9 +9,15 @@ import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
 import Alert from "../../../../common/Alert";
 import TableLoader from "../../../../common/TableLoader";
 //constants, interfaces, utils
-import { CONFLICT_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, FORBIDDEN_EXCEPTION, NOTES, PAGE_LIMIT, SAVE_TEXT, VITALS_TEXT, VITAL_LIST_PAGE_LIMIT } from "../../../../../constants";
+import {
+  CONFLICT_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, FORBIDDEN_EXCEPTION, NOTES, PAGE_LIMIT, SAVE_TEXT,
+  TRIAGE_NOTES, VITAL_LIST_PAGE_LIMIT
+} from "../../../../../constants";
 import InputController from "../../../../../controller";
-import { TriageNotesPayload, useAddPatientTriageNoteMutation, useFindAllPatientTriageNotesLazyQuery, useUpdatePatientTriageNoteMutation } from "../../../../../generated/graphql";
+import {
+  TriageNotesPayload, useAddPatientTriageNoteMutation, useFindAllPatientTriageNotesLazyQuery,
+  useUpdatePatientTriageNoteMutation
+} from "../../../../../generated/graphql";
 import { ChartComponentProps, ParamsType, PatientTriageNotesInputProps } from "../../../../../interfacesTypes";
 import { Action, ActionType, initialState, patientReducer, State } from "../../../../../reducers/patientReducer";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
@@ -173,49 +179,45 @@ const TriageNoteTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
             ) : <Box className={classes.cardBox}>
               <FormProvider {...methods}>
                 <form>
-                  <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
-                    <Typography variant='h3'>{VITALS_TEXT}</Typography>
+                  <Box px={2} py={2}>
+                    <Typography variant='h3'>{TRIAGE_NOTES}</Typography>
                   </Box>
                 </form>
               </FormProvider>
 
-              <Box className={classes.tableBox}>
-                <Box display="flex">
-                  <Box flex={3}>
-                    <Box>
-                      {appointmentId ?
-                        <FormProvider {...methods}>
-                          <form onSubmit={handleSubmit(onSubmit)}>
-                            <InputController
-                              multiline
-                              fieldType="text"
-                              loading={loading}
-                              controllerName="notes"
-                              controllerLabel={NOTES}
-                            />
+              <Box px={2} pb={2}>
+                {appointmentId ?
+                  shouldDisableEdit ?
+                    <Typography>{patientTriageNotes?.[0].notes}</Typography> :
+                    <FormProvider {...methods}>
+                      <form onSubmit={handleSubmit(onSubmit)}>
+                        <InputController
+                          multiline
+                          fieldType="text"
+                          loading={loading}
+                          controllerName="notes"
+                          placeholder={NOTES}
+                        />
 
-                            <Button
-                              type='submit'
-                              variant="contained" color="primary"
-                              disabled={createTriageNotesLoading || updateTriageNotesLoading}
-                            >
-                              {SAVE_TEXT}
-                            </Button>
-                          </form>
-                        </FormProvider>
-                        :
-                        patientTriageNotes?.map(triageNote => {
-                          return (
-                            <li>{triageNote.notes}</li>
-                          )
-                        })
-                      }
+                        <Button
+                          type='submit'
+                          variant="contained" color="primary"
+                          disabled={createTriageNotesLoading || updateTriageNotesLoading}
+                        >
+                          {SAVE_TEXT}
+                        </Button>
+                      </form>
+                    </FormProvider>
+                  :
+                  patientTriageNotes?.map(triageNote => {
+                    return (<>
+                      <li>{triageNote.notes}</li>
+                    </>)
+                  })
+                }
 
-                      {!appointmentId && !loading && !patientTriageNotes?.length &&
-                        <NoDataFoundComponent />}
-                    </Box>
-                  </Box>
-                </Box>
+                {!appointmentId && !loading && !patientTriageNotes?.length &&
+                  <NoDataFoundComponent />}
               </Box>
             </Box>}
           </Card>

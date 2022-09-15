@@ -1,0 +1,67 @@
+query FindAllSurgicalHistory($surgicalHistoryInput: SurgicalHistoryInput!){
+  findAllSurgicalHistory(surgicalHistoryInput: $surgicalHistoryInput){
+    response {
+      status
+      message
+    }
+    
+    pagination {
+      totalPages
+      page
+    }
+    
+    surgicalHistories {
+      id
+      code
+      codeType
+      description
+      surgeryDate
+      notes
+    }
+  }
+}
+
+query GetSurgicalHistory($surgicalHistoryInput: GetSurgicalHistory!){
+  getSurgicalHistory(surgicalHistoryInput: $surgicalHistoryInput){
+    response {
+      status
+      message
+    }
+    
+    surgicalHistory {
+     id
+     code
+     codeType
+     description
+     surgeryDate
+     notes
+    }
+  }
+}
+
+mutation AddSurgicalHistory($createSurgicalHistoryInput: CreateSurgicalHistoryInput!){
+  addSurgicalHistory(createSurgicalHistoryInput: $createSurgicalHistoryInput){
+    response {
+      status
+      message
+    }
+  }
+}
+
+mutation updateSurgicalHistory($updateSurgicalHistoryInput: UpdateSurgicalHistoryInput!){
+  updateSurgicalHistory(updateSurgicalHistoryInput: $updateSurgicalHistoryInput){
+    response {
+      status
+      message
+    }
+  }
+}
+
+mutation RemoveSurgicalHistory($removeSurgicalHistory: RemoveSurgicalHistory!){
+  removeSurgicalHistory(removeSurgicalHistory: $removeSurgicalHistory){
+    response {
+      status
+      message
+    }
+  }
+}
