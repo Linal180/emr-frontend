@@ -1214,6 +1214,7 @@ export const PAYMENTS = "Payments";
 export const GUARDIAN = "Guardian";
 export const EMPLOYER = "Employer";
 export const CHECKOUT = "checkout";
+export const CHECKOUT_DISCHARGE = "checkout & discharge";
 export const INDUSTRY = "Industry";
 export const ADDED_BY = "Added by";
 export const RELOAD = "Go To Home";
