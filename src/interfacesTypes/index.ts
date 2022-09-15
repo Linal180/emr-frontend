@@ -2072,6 +2072,27 @@ type FamilyRelativeArrayFields = {
   notes: string;
 }
 
+export type SocialSwitchCardPropsType = {
+  title: string;
+  notesName: string;
+  switchName: string;
+}
+
+export type SocialInputCardPropsType = {
+  title: string;
+  notesName: string;
+  inputName: string;
+  inputFieldType?: string
+  notStep?: boolean
+}
+
+export type SocialSelectorCardPropsType  = {
+  title: string;
+  notesName: string;
+  selectorName: string;
+  selectorOptions: SelectorOption[];
+}
+
 export type FamilyHistoryFormType = {
   problem: SelectorOption;
   familyRelative: FamilyRelativeArrayFields[]
