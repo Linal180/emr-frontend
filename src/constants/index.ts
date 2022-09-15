@@ -3720,17 +3720,17 @@ export const PATIENT_CHARTING_TABS = [
 ]
 
 export const HISTORY_CHARTING_TABS = [
+  // {
+  //   title: "Social History",
+  //   value: "1",
+  // },
   {
-    title: "Social History",
+    title: "Family History",
     value: "1",
   },
   {
-    title: "Family History",
-    value: "2",
-  },
-  {
     title: "Surgical History",
-    value: "3",
+    value: "2",
   },
 ]
 
