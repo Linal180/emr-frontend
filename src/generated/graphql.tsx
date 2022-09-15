@@ -2198,6 +2198,10 @@ export type GetAppointment = {
   id: Scalars['String'];
 };
 
+export type GetAppointmentWithToken = {
+  token: Scalars['String'];
+};
+
 export type GetAppointments = {
   doctorId?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
@@ -4634,6 +4638,7 @@ export type Query = {
   getAllInvoices: InvoicesPayload;
   getAllRoles: RolesPayload;
   getAppointment: AppointmentPayload;
+  getAppointmentWithToken: AppointmentPayload;
   getAppointments: AppointmentsPayload;
   getAttachment: AttachmentMediaPayload;
   getAttachments: AttachmentsPayload;
@@ -5023,6 +5028,11 @@ export type QueryGetAllRolesArgs = {
 
 export type QueryGetAppointmentArgs = {
   getAppointment: GetAppointment;
+};
+
+
+export type QueryGetAppointmentWithTokenArgs = {
+  getAppointmentWithToken: GetAppointmentWithToken;
 };
 
 
@@ -7220,6 +7230,13 @@ export type UpdateAppointmentBillingStatusMutationVariables = Exact<{
 
 
 export type UpdateAppointmentBillingStatusMutation = { __typename?: 'Mutation', updateAppointmentBillingStatus: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null } };
+
+export type GetPublicAppointmentQueryVariables = Exact<{
+  getAppointmentWithToken: GetAppointmentWithToken;
+}>;
+
+
+export type GetPublicAppointmentQuery = { __typename?: 'Query', getAppointmentWithToken: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, appointment?: { __typename?: 'Appointment', id: string, scheduleEndDateTime?: string | null, scheduleStartDateTime?: string | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null } | null } | null } };
 
 export type GetAttachmentsQueryVariables = Exact<{
   getAttachment: GetAttachment;
@@ -9689,6 +9706,55 @@ export function useUpdateAppointmentBillingStatusMutation(baseOptions?: Apollo.M
 export type UpdateAppointmentBillingStatusMutationHookResult = ReturnType<typeof useUpdateAppointmentBillingStatusMutation>;
 export type UpdateAppointmentBillingStatusMutationResult = Apollo.MutationResult<UpdateAppointmentBillingStatusMutation>;
 export type UpdateAppointmentBillingStatusMutationOptions = Apollo.BaseMutationOptions<UpdateAppointmentBillingStatusMutation, UpdateAppointmentBillingStatusMutationVariables>;
+export const GetPublicAppointmentDocument = gql`
+    query GetPublicAppointment($getAppointmentWithToken: GetAppointmentWithToken!) {
+  getAppointmentWithToken(getAppointmentWithToken: $getAppointmentWithToken) {
+    response {
+      error
+      status
+      message
+    }
+    appointment {
+      id
+      scheduleEndDateTime
+      scheduleStartDateTime
+      patient {
+        id
+        firstName
+        lastName
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPublicAppointmentQuery__
+ *
+ * To run a query within a React component, call `useGetPublicAppointmentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPublicAppointmentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPublicAppointmentQuery({
+ *   variables: {
+ *      getAppointmentWithToken: // value for 'getAppointmentWithToken'
+ *   },
+ * });
+ */
+export function useGetPublicAppointmentQuery(baseOptions: Apollo.QueryHookOptions<GetPublicAppointmentQuery, GetPublicAppointmentQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPublicAppointmentQuery, GetPublicAppointmentQueryVariables>(GetPublicAppointmentDocument, options);
+      }
+export function useGetPublicAppointmentLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPublicAppointmentQuery, GetPublicAppointmentQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPublicAppointmentQuery, GetPublicAppointmentQueryVariables>(GetPublicAppointmentDocument, options);
+        }
+export type GetPublicAppointmentQueryHookResult = ReturnType<typeof useGetPublicAppointmentQuery>;
+export type GetPublicAppointmentLazyQueryHookResult = ReturnType<typeof useGetPublicAppointmentLazyQuery>;
+export type GetPublicAppointmentQueryResult = Apollo.QueryResult<GetPublicAppointmentQuery, GetPublicAppointmentQueryVariables>;
 export const GetAttachmentsDocument = gql`
     query GetAttachments($getAttachment: GetAttachment!) {
   getAttachments(getAttachment: $getAttachment) {

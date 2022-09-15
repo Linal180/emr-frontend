@@ -1,5 +1,5 @@
 // packages block
-import { FC } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Box, Button, Card, colors, Typography } from '@material-ui/core';
 // components block
@@ -7,18 +7,21 @@ import Alert from "../../../common/Alert";
 // utils, styles  block, constants
 import { GREY_ELEVEN, GREY_THREE, GREY_TWO, WHITE_TWO } from '../../../../theme';
 import { ParamsType } from "../../../../interfacesTypes";
-import { useCancelAppointmentMutation } from "../../../../generated/graphql";
+import { AppointmentPayload, useCancelAppointmentMutation, useGetPublicAppointmentLazyQuery } from "../../../../generated/graphql";
 import { confirmationStyles } from "../../../../styles/publicAppointmentStyles/confirmationStyles"
 import {
   appointmentCancellationDescription, APPOINTMENT_CANCEL_SUBHEADING, APPOINTMENT_NOT_EXIST,
   CANCEL_APPOINTMENT_TEXT, CANT_CANCELLED_APPOINTMENT, DISMISS, LOGIN_ROUTE, NOT_FOUND_EXCEPTION,
-  PATIENT_CANCELLED_APPOINTMENT, YES_CANCEL,
+  PATIENT_CANCELLED_APPOINTMENT, YES_CANCEL, APPOINTMENT_ON, AT
 } from "../../../../constants";
 import history from "../../../../history";
+import { dateFormateForEmail } from "../../../../utils";
 
 const CancelAppointmentComponent: FC = (): JSX.Element => {
   const classes = confirmationStyles();
   const { id } = useParams<ParamsType>();
+
+  const [appointment, setAppointment] = useState<AppointmentPayload['appointment']>(null)
 
   const [cancelAppointment,] = useCancelAppointmentMutation({
     onError({ message }) {
@@ -37,6 +40,21 @@ const CancelAppointmentComponent: FC = (): JSX.Element => {
       }
     }
   });
+  const [publicAppointment] = useGetPublicAppointmentLazyQuery({
+    onCompleted: (data) => {
+      if (data) {
+        const { getAppointmentWithToken: { response, appointment } } = data || {}
+        const { status } = response || {}
+        if (status === 200) {
+          setAppointment(appointment as AppointmentPayload['appointment'])
+        }
+      }
+    },
+    onError: ({ message }) => {
+      Alert.error(message)
+      history.push(LOGIN_ROUTE)
+    }
+  })
 
   const cancelAppointmentHandler = async () => {
     if (id) {
@@ -46,6 +64,14 @@ const CancelAppointmentComponent: FC = (): JSX.Element => {
     }
   };
 
+  const fetchAppointment = useCallback(async () => {
+    await publicAppointment({ variables: { getAppointmentWithToken: { token: id } } })
+  }, [id, publicAppointment]
+  )
+  useEffect(() => {
+    id && fetchAppointment()
+  }, [id, fetchAppointment])
+
   return (
     <Box bgcolor={WHITE_TWO} minHeight="100vh" p={3.75} display="flex" justifyContent="center" alignItems="center">
       <Card>
@@ -54,7 +80,7 @@ const CancelAppointmentComponent: FC = (): JSX.Element => {
         </Box>
 
         <Box className={classes.container}>
-          <Typography variant="h6">{appointmentCancellationDescription}</Typography>
+          <Typography variant="h6">{appointmentCancellationDescription} {`${appointment?.patient?.firstName}'s`}  {APPOINTMENT_ON} {dateFormateForEmail(appointment?.scheduleStartDateTime).date} {AT} {dateFormateForEmail(appointment?.scheduleStartDateTime).time} </Typography>
 
           <Box mt={3} color={GREY_THREE}>
             <Typography variant="h6" component="h5">{APPOINTMENT_CANCEL_SUBHEADING}</Typography>

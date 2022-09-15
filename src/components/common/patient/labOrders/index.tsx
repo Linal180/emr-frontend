@@ -181,7 +181,12 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Eleme
               </Box>
 
               <Box mb={2}>
-                <Button variant="outlined" color="inherit" className='blue-button-new' startIcon={<Box width={20}><Add /></Box>} onClick={toggleSideDrawer}>
+                <Button variant="outlined"
+                  color="inherit" className='blue-button-new'
+                  startIcon={<Box width={20}><Add /></Box>}
+                  onClick={toggleSideDrawer}
+                  disabled={loading}
+                >
                   {MANUAL_ENTRY}
                 </Button>
               </Box>
