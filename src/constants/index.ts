@@ -90,6 +90,7 @@ export enum Heart_RATE_RANGES {
 
 // constants
 export const DIED_TEXT = 'Died'
+export const DISEASE_TEXT = 'Disease'
 export const ONSET_AGE_TEXT = 'Onset Age'
 export const RELATIVE = 'Relative'
 export const FAMILY_RELATIVE = 'Family Relative'
