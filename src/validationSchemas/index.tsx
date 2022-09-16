@@ -919,10 +919,6 @@ export const attachmentNameUpdateSchema = yup.object({
 
 export const createLabOrdersSchema = (isSpecimenForm?: boolean) => (
   yup.object({
-    labTestStatus: yup.object().shape({
-      name: yup.string().required(),
-      id: yup.string().required()
-    }).test('', 'required', ({ id }) => !!id),
     testFieldValues: yup.array().of(
       yup.object().shape({
         test: yup.object().shape({
@@ -947,7 +943,6 @@ export const createLabOrdersSchema = (isSpecimenForm?: boolean) => (
       })
     ).test('', TESTS_FIELD_VALIDATION_MESSAGE, (value) => !!value && value.length > 0),
     primaryProviderId: selectorSchema(PRIMARY_PROVIDER, !isSpecimenForm),
-    referringProviderId: selectorSchema(REFERRING_PROVIDER, !isSpecimenForm),
   })
 )
 

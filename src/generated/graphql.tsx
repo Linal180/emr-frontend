@@ -302,6 +302,7 @@ export type AppointmentReminderInput = {
 export enum AppointmentStatus {
   Arrived = 'ARRIVED',
   Cancelled = 'CANCELLED',
+  Checkout = 'CHECKOUT',
   CheckInOnline = 'CHECK_IN_ONLINE',
   Discharged = 'DISCHARGED',
   InLobby = 'IN_LOBBY',
@@ -3867,6 +3868,23 @@ export type PatientAttachmentsPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+export type PatientChartingInfoInput = {
+  patientId?: Maybe<Scalars['String']>;
+};
+
+export type PatientChartingInfoPayload = {
+  __typename?: 'PatientChartingInfoPayload';
+  familyHistories?: Maybe<Array<Maybe<FamilyHistory>>>;
+  patientAllergies?: Maybe<Array<Maybe<PatientAllergies>>>;
+  patientInfo?: Maybe<Patient>;
+  patientMedications?: Maybe<Array<Maybe<PatientMedication>>>;
+  patientProblems?: Maybe<Array<Maybe<PatientProblems>>>;
+  patientVitals?: Maybe<Array<Maybe<PatientVitals>>>;
+  response?: Maybe<ResponsePayload>;
+  surgicalHistories?: Maybe<Array<Maybe<SurgicalHistory>>>;
+  triageNotes?: Maybe<Array<Maybe<TriageNotes>>>;
+};
+
 export type PatientConsent = {
   __typename?: 'PatientConsent';
   agreements?: Maybe<Array<Agreement>>;
@@ -4664,6 +4682,7 @@ export type Query = {
   getPatient: PatientPayload;
   getPatientAllergy: PatientAllergyPayload;
   getPatientAppointment: AppointmentsPayload;
+  getPatientChartingInfo: PatientChartingInfoPayload;
   getPatientLatestVital: PatientVitalPayload;
   getPatientMedications: PatientMedicationPayload;
   getPatientPastUpcomingAppointment: PatientPastUpcomingAppointmentPayload;
@@ -5158,6 +5177,11 @@ export type QueryGetPatientAllergyArgs = {
 
 export type QueryGetPatientAppointmentArgs = {
   getPatientAppointmentInput: GetPatientAppointmentInput;
+};
+
+
+export type QueryGetPatientChartingInfoArgs = {
+  patientChartingInfoInput: PatientChartingInfoInput;
 };
 
 
@@ -7531,6 +7555,13 @@ export type FindAllAllergiesQueryVariables = Exact<{
 
 export type FindAllAllergiesQuery = { __typename?: 'Query', findAllAllergies: { __typename?: 'AllergiesPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, allergies?: Array<{ __typename?: 'Allergies', id: string, name?: string | null } | null> | null } };
 
+export type GetPatientChartingInfoQueryVariables = Exact<{
+  patientChartingInfoInput: PatientChartingInfoInput;
+}>;
+
+
+export type GetPatientChartingInfoQuery = { __typename?: 'Query', getPatientChartingInfo: { __typename?: 'PatientChartingInfoPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, patientInfo?: { __typename?: 'Patient', firstName?: string | null, lastName?: string | null, middleName?: string | null, ssn?: string | null, dob?: string | null, email?: string | null, genderIdentity?: Genderidentity | null, patientRecord?: string | null, race?: Race | null, ethnicity?: Ethnicity | null, language?: string | null, contacts?: Array<{ __typename?: 'Contact', name?: string | null, relationship?: RelationshipType | null, contactType?: ContactType | null, primaryContact?: boolean | null, phone?: string | null, address?: string | null, address2?: string | null, zipCode?: string | null, city?: string | null, state?: string | null, mobile?: string | null }> | null, facility?: { __typename?: 'Facility', name: string, practice?: { __typename?: 'Practice', name: string, attachments?: Array<{ __typename?: 'Attachment', url?: string | null }> | null } | null, contacts?: Array<{ __typename?: 'Contact', primaryContact?: boolean | null, phone?: string | null, address?: string | null, address2?: string | null, zipCode?: string | null, city?: string | null, state?: string | null }> | null } | null } | null, patientVitals?: Array<{ __typename?: 'PatientVitals', id: string, vitalCreationDate?: string | null, patientTemperature?: string | null, systolicBloodPressure?: string | null, diastolicBloodPressure?: string | null, respiratoryRate?: string | null, PatientBMI?: string | null } | null> | null, patientAllergies?: Array<{ __typename?: 'PatientAllergies', id: string, allergySeverity: AllergySeverity, allergyOnset: AllergyOnset, allergyStartDate?: string | null, comments?: string | null, isActive?: boolean | null, allergy?: { __typename?: 'Allergies', name?: string | null, allergyType: AllergyType } | null } | null> | null, patientProblems?: Array<{ __typename?: 'PatientProblems', id: string, problemType: ProblemType, problemSeverity: ProblemSeverity, problemStartDate?: string | null, note?: string | null, ICDCode?: { __typename?: 'ICDCodes', code: string, description?: string | null } | null } | null> | null, triageNotes?: Array<{ __typename?: 'TriageNotes', id: string, notes?: string | null } | null> | null, patientMedications?: Array<{ __typename?: 'PatientMedication', id: string, sig?: string | null, startDate?: string | null, status?: string | null, stopDate?: string | null, stopReason?: string | null, note?: string | null, medication?: { __typename?: 'Medications', fullName?: string | null } | null } | null> | null, surgicalHistories?: Array<{ __typename?: 'SurgicalHistory', id: string, code?: string | null, description?: string | null, surgeryDate?: string | null, notes?: string | null } | null> | null, familyHistories?: Array<{ __typename?: 'FamilyHistory', id: string, name?: string | null, familyHistoryRelatives?: Array<{ __typename?: 'FamilyHistoryRelative', relativeName?: string | null, onsetAge?: string | null, died?: string | null, notes?: string | null }> | null } | null> | null } };
+
 export type CreateFamilyHistoryMutationVariables = Exact<{
   createFamilyHistoryInput: CreateFamilyHistoryInput;
 }>;
@@ -8190,7 +8221,7 @@ export type FindAllLabTestQueryVariables = Exact<{
 }>;
 
 
-export type FindAllLabTestQuery = { __typename?: 'Query', findAllLabTest: { __typename?: 'LabTestsPayload', labTests?: Array<{ __typename?: 'LabTests', id: string, orderNumber?: string | null, accessionNumber?: string | null, labTestStatus: LabTestStatus, testDate?: string | null, testTime?: string | null, patientId?: string | null, createdAt?: string | null, testNotes?: string | null, receivedDate?: string | null, collectedDate?: string | null, appointmentId?: string | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, dob?: string | null, lastName?: string | null, doctorPatients?: Array<{ __typename?: 'DoctorPatient', currentProvider?: boolean | null, doctor?: { __typename?: 'Doctor', firstName?: string | null, lastName?: string | null } | null }> | null } | null, diagnoses?: Array<{ __typename?: 'ICDCodes', id: string, code: string, description?: string | null } | null> | null, test?: { __typename?: 'LoincCodes', id: string, loincNum?: string | null, component?: string | null } | null, primaryProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, referringProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, testSpecimens?: Array<{ __typename?: 'TestSpecimens', id: string, collectionDate?: string | null, collectionTime?: string | null, specimenNotes?: string | null, specimenTypes?: { __typename?: 'SpecimenTypes', id: string, name?: string | null } | null }> | null, testObservations?: Array<{ __typename?: 'Observations', createdAt?: string | null, doctorsSignOff?: boolean | null, resultValue?: string | null, attachments?: Array<{ __typename?: 'Attachment', title?: string | null, id: string, attachmentName?: string | null, url?: string | null }> | null }> | null, appointment?: { __typename?: 'Appointment', id: string, scheduleStartDateTime?: string | null, appointmentType?: { __typename?: 'Service', name: string } | null } | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
+export type FindAllLabTestQuery = { __typename?: 'Query', findAllLabTest: { __typename?: 'LabTestsPayload', labTests?: Array<{ __typename?: 'LabTests', id: string, orderNumber?: string | null, accessionNumber?: string | null, labTestStatus: LabTestStatus, testDate?: string | null, testTime?: string | null, patientId?: string | null, createdAt?: string | null, testNotes?: string | null, receivedDate?: string | null, collectedDate?: string | null, appointmentId?: string | null, providerNotes?: string | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, dob?: string | null, lastName?: string | null, doctorPatients?: Array<{ __typename?: 'DoctorPatient', currentProvider?: boolean | null, doctor?: { __typename?: 'Doctor', firstName?: string | null, lastName?: string | null } | null }> | null } | null, diagnoses?: Array<{ __typename?: 'ICDCodes', id: string, code: string, description?: string | null } | null> | null, test?: { __typename?: 'LoincCodes', id: string, loincNum?: string | null, component?: string | null } | null, primaryProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, referringProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, testSpecimens?: Array<{ __typename?: 'TestSpecimens', id: string, collectionDate?: string | null, collectionTime?: string | null, specimenNotes?: string | null, specimenTypes?: { __typename?: 'SpecimenTypes', id: string, name?: string | null } | null }> | null, testObservations?: Array<{ __typename?: 'Observations', createdAt?: string | null, doctorsSignOff?: boolean | null, resultValue?: string | null, attachments?: Array<{ __typename?: 'Attachment', title?: string | null, id: string, attachmentName?: string | null, url?: string | null }> | null }> | null, appointment?: { __typename?: 'Appointment', id: string, scheduleStartDateTime?: string | null, appointmentType?: { __typename?: 'Service', name: string } | null } | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
 
 export type GetLabTestQueryVariables = Exact<{
   getLabTest: GetLabTest;
@@ -11819,6 +11850,153 @@ export function useFindAllAllergiesLazyQuery(baseOptions?: Apollo.LazyQueryHookO
 export type FindAllAllergiesQueryHookResult = ReturnType<typeof useFindAllAllergiesQuery>;
 export type FindAllAllergiesLazyQueryHookResult = ReturnType<typeof useFindAllAllergiesLazyQuery>;
 export type FindAllAllergiesQueryResult = Apollo.QueryResult<FindAllAllergiesQuery, FindAllAllergiesQueryVariables>;
+export const GetPatientChartingInfoDocument = gql`
+    query GetPatientChartingInfo($patientChartingInfoInput: PatientChartingInfoInput!) {
+  getPatientChartingInfo(patientChartingInfoInput: $patientChartingInfoInput) {
+    response {
+      status
+      message
+    }
+    patientInfo {
+      firstName
+      lastName
+      middleName
+      ssn
+      dob
+      email
+      genderIdentity
+      patientRecord
+      race
+      ethnicity
+      language
+      contacts {
+        name
+        relationship
+        contactType
+        primaryContact
+        phone
+        address
+        address2
+        zipCode
+        city
+        state
+        mobile
+      }
+      facility {
+        name
+        practice {
+          name
+          attachments {
+            url
+          }
+        }
+        contacts {
+          primaryContact
+          phone
+          address
+          address2
+          zipCode
+          city
+          state
+        }
+      }
+    }
+    patientVitals {
+      id
+      vitalCreationDate
+      patientTemperature
+      systolicBloodPressure
+      diastolicBloodPressure
+      respiratoryRate
+      PatientBMI
+    }
+    patientAllergies {
+      id
+      allergySeverity
+      allergyOnset
+      allergyStartDate
+      comments
+      isActive
+      allergy {
+        name
+        allergyType
+      }
+    }
+    patientProblems {
+      id
+      problemType
+      problemSeverity
+      problemStartDate
+      note
+      ICDCode {
+        code
+        description
+      }
+    }
+    triageNotes {
+      id
+      notes
+    }
+    patientMedications {
+      id
+      sig
+      startDate
+      status
+      stopDate
+      stopReason
+      note
+      medication {
+        fullName
+      }
+    }
+    surgicalHistories {
+      id
+      code
+      description
+      surgeryDate
+      notes
+    }
+    familyHistories {
+      id
+      name
+      familyHistoryRelatives {
+        relativeName
+        onsetAge
+        died
+        notes
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPatientChartingInfoQuery__
+ *
+ * To run a query within a React component, call `useGetPatientChartingInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPatientChartingInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPatientChartingInfoQuery({
+ *   variables: {
+ *      patientChartingInfoInput: // value for 'patientChartingInfoInput'
+ *   },
+ * });
+ */
+export function useGetPatientChartingInfoQuery(baseOptions: Apollo.QueryHookOptions<GetPatientChartingInfoQuery, GetPatientChartingInfoQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPatientChartingInfoQuery, GetPatientChartingInfoQueryVariables>(GetPatientChartingInfoDocument, options);
+      }
+export function useGetPatientChartingInfoLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPatientChartingInfoQuery, GetPatientChartingInfoQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPatientChartingInfoQuery, GetPatientChartingInfoQueryVariables>(GetPatientChartingInfoDocument, options);
+        }
+export type GetPatientChartingInfoQueryHookResult = ReturnType<typeof useGetPatientChartingInfoQuery>;
+export type GetPatientChartingInfoLazyQueryHookResult = ReturnType<typeof useGetPatientChartingInfoLazyQuery>;
+export type GetPatientChartingInfoQueryResult = Apollo.QueryResult<GetPatientChartingInfoQuery, GetPatientChartingInfoQueryVariables>;
 export const CreateFamilyHistoryDocument = gql`
     mutation CreateFamilyHistory($createFamilyHistoryInput: CreateFamilyHistoryInput!) {
   createFamilyHistory(createFamilyHistoryInput: $createFamilyHistoryInput) {
@@ -16502,6 +16680,7 @@ export const FindAllLabTestDocument = gql`
       receivedDate
       collectedDate
       appointmentId
+      providerNotes
       patient {
         doctorPatients {
           doctor {

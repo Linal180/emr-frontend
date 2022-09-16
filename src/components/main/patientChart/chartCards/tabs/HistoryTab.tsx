@@ -1,10 +1,10 @@
-import { ChangeEvent, FC, useState } from "react";
 import { Box, Card, Grid, Tab } from "@material-ui/core";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
+import { ChangeEvent, FC, useState } from "react";
 // components block
 import FamilyHistory from "../familyHistory";
-import SocialHistory from "../socialHistory";
-import SurgicalHistory from "../surgicalHistory";
+import SurgicalHistoryTab from "./SurgicalHistoryListing";
+// import SocialHistory from "../socialHistory";
 // constants, utils, styles, interfaces and graphql block
 import { HISTORY_CHARTING_TABS } from "../../../../../constants";
 import { ChartComponentProps } from "../../../../../interfacesTypes";
@@ -42,16 +42,16 @@ const HistoryTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
 
             <Card>
               <Box className={classes.cardBox} px={2}>
-                <TabPanel value="1">
+                {/* <TabPanel value="1">
                   <SocialHistory shouldDisableEdit={shouldDisableEdit} />
-                </TabPanel>
+                </TabPanel> */}
 
-                <TabPanel value="2">
+                <TabPanel value="1">
                   <FamilyHistory shouldDisableEdit={shouldDisableEdit} />
                 </TabPanel>
 
-                <TabPanel value="3">
-                  <SurgicalHistory shouldDisableEdit={shouldDisableEdit} />
+                <TabPanel value="2">
+                  <SurgicalHistoryTab shouldDisableEdit={shouldDisableEdit} />
                 </TabPanel>
               </Box>
             </Card>

@@ -16,7 +16,7 @@ import {
   AllDoctorPayload, Allergies, AppointmentsPayload, AppointmentStatus, Attachment, AttachmentPayload, AttachmentType, BillingPayload, CodeType, CreateAppointmentInput,
   CreateContactInput, CreateCptFeeScheduleInput, CreateDoctorItemInput, CreateExternalAppointmentItemInput, CreateFeeScheduleInput, CreatePatientAllergyInput, CreatePatientItemInput, CreatePatientMedicationInput, CreatePracticeItemInput, CreateProblemInput,
   CreateScheduleInput, CreateServiceInput, CreateStaffItemInput, Doctor, DoctorPatient,
-  FacilitiesPayload, FetchBillingClaimStatusesInput, FieldsInputs, FormElement, FormTabsInputs, IcdCodes, IcdCodesWithSnowMedCode, LabTests, LabTestsPayload, LoginUserInput, Medications, Patient, PatientPayload, PatientProviderPayload, PatientsPayload, PermissionsPayload, PolicyEligibilityWithPatientPayload, Practice, PracticePayload, ReactionsPayload, ResponsePayloadResponse, RolesPayload, Schedule, SectionsInputs, ServicesPayload, Staff, TwoFactorInput, UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, User, UsersFormsElements, VerifyCodeInput
+  FacilitiesPayload, FamilyHistory, FetchBillingClaimStatusesInput, FieldsInputs, FormElement, FormTabsInputs, IcdCodes, IcdCodesWithSnowMedCode, LabTests, LabTestsPayload, LoginUserInput, Medications, Patient, PatientAllergies, PatientMedication, PatientPayload, PatientProblems, PatientProviderPayload, PatientsPayload, PatientVitals, PermissionsPayload, PolicyEligibilityWithPatientPayload, Practice, PracticePayload, ReactionsPayload, ResponsePayloadResponse, RolesPayload, Schedule, SectionsInputs, ServicesPayload, Staff, SurgicalHistory, TriageNotes, TwoFactorInput, UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, User, UsersFormsElements, VerifyCodeInput
 } from "../generated/graphql";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
 import {
@@ -559,6 +559,17 @@ export type ScheduleInputProps = Omit<CreateScheduleInput, "servicesIds" | "day"
   & { serviceId: multiOptionType[] | multiOptionType } & { day: SelectorOption[] | SelectorOption }
   & { shouldHaveRecursion: boolean };
 
+export type PatientChartingInfo = {
+  patientAllergies: PatientAllergies[]
+  patientInfo: Patient
+  patientMedications: PatientMedication[]
+  patientProblems: PatientProblems[]
+  patientVitals: PatientVitals[]
+  surgicalHistories: SurgicalHistory[]
+  triageNotes: TriageNotes[]
+  familyHistories: FamilyHistory[]
+}
+
 interface CustomBillingAddressInputs {
   billingFax: string;
   billingCity: string;
@@ -795,6 +806,16 @@ export type ViewerProps = {
 export type DocumentViewerProps = ViewerProps & {
   url: string
   title?: string
+}
+
+export type ChartSelectionViewerProps = ViewerProps & {
+  modulesToPrint: string[]
+  setModulesToPrint: Function
+  setIsChartPdfModalOpen: Function
+}
+
+export type ChartPrintModalProps = ViewerProps & {
+  modulesToPrint: string[]
 }
 
 export type LabModalProps = ViewerProps & {
@@ -1857,6 +1878,7 @@ export interface FormBuilderFacilitySelectorProps extends SelectorProps {
 
 export interface ChartComponentProps {
   shouldDisableEdit?: boolean
+  status?: string
 }
 
 export interface BillingComponentProps extends GeneralFormProps {
