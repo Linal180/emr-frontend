@@ -1878,6 +1878,7 @@ export interface FormBuilderFacilitySelectorProps extends SelectorProps {
 
 export interface ChartComponentProps {
   shouldDisableEdit?: boolean
+  status?: string
 }
 
 export interface BillingComponentProps extends GeneralFormProps {

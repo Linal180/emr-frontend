@@ -1,45 +1,25 @@
 // packages block
-import { Box, Button, Step, StepIconProps, StepLabel, Stepper, Typography } from '@material-ui/core';
-import { Check, ChevronRight } from '@material-ui/icons';
-import clsx from 'clsx';
-import { FC, useEffect, useState } from 'react';
-import {
-  BACK_TEXT, EDIT_LAB_ORDER, LAB_ORDER_CREATE_SUCCESS, LAB_ORDER_SIDEDRAWER_STEPS, NEW_LAB_ORDER, NEXT, NOT_FOUND_EXCEPTION,
-  SUBMIT, USER_NOT_FOUND_EXCEPTION_MESSAGE
-} from '../../../../constants';
-import { CheckInConnector, useCheckInStepIconStyles } from '../../../../styles/checkInStyles';
-import { useLabOrderStyles } from '../../../../styles/labOrderStyles';
-import { GREY_SIXTEEN } from '../../../../theme';
-import LabOrderComponent from './LabOrder';
-import PaymentsComponent from './Payments';
-import { LabOrderCreateProps, LabOrdersCreateFormInput, ParamsType } from '../../../../interfacesTypes';
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import TestsComponent from './Tests';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { createLabOrdersSchema } from '../../../../validationSchemas';
-import { convertDateFromUnix, generateString, getFormatDateString, setRecord } from '../../../../utils';
+import { Box, Button, Typography } from '@material-ui/core';
 import { useParams } from 'react-router';
-import { LabTestStatus, useCreateLabTestMutation, useRemoveLabTestMutation, useUpdateLabTestMutation } from '../../../../generated/graphql';
+import { FC, useEffect, useState } from 'react';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+//components block
+import { LabOrderCreateProps, LabOrdersCreateFormInput, ParamsType } from '../../../../interfacesTypes';
+import { GREY_SIXTEEN } from '../../../../theme';
 import Alert from '../../../common/Alert';
 import Loader from '../../../common/Loader';
-
-const CheckInStepIcon = (props: StepIconProps) => {
-  const classes = useCheckInStepIconStyles();
-  const { active, completed } = props;
-
-  return (
-    <div
-      className={clsx(classes.root, {
-        [classes.active]: active,
-      })}
-    >
-      {completed ? <Check className={classes.completed} /> : <div className={classes.circle} />}
-    </div>
-  );
-}
+import LabOrderComponent from './LabOrder';
+// utils, constants, interfaces block
+import {
+  CREATE, EDIT_LAB_ORDER, LAB_ORDER_CREATE_SUCCESS, LAB_ORDER_SIDEDRAWER_STEPS,
+  NEW_LAB_ORDER, NOT_FOUND_EXCEPTION, UPDATE, USER_NOT_FOUND_EXCEPTION_MESSAGE
+} from '../../../../constants';
+import { LabTestStatus, useCreateLabTestMutation, useRemoveLabTestMutation, useUpdateLabTestMutation } from '../../../../generated/graphql';
+import { convertDateFromUnix, generateString, getFormatDateString, setRecord } from '../../../../utils';
+import { createLabOrdersSchema } from '../../../../validationSchemas';
 
 export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo, toggleSideDrawer, isEdit, labTestsToEdit, orderNumber }): JSX.Element => {
-  const labOrderClasses = useLabOrderStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [currentTest, setCurrentTest] = useState(0)
   const [testsToRemove, setTestsToRemove] = useState<string[]>([])
@@ -86,10 +66,10 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
           handleStep={handleStep}
           setCurrentTest={setCurrentTest}
         />
-      case 1:
-        return <TestsComponent currentTest={currentTest} />
-      case 2:
-        return <PaymentsComponent />
+      // case 1:
+      //   return <TestsComponent currentTest={currentTest} />
+      // case 2:
+      //   return <PaymentsComponent />
       default:
         return 'Unknown step';
     }
@@ -134,7 +114,7 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
 
   useEffect(() => {
     if (isEdit) {
-      const { appointment, labTestStatus, primaryProvider, referringProvider, accessionNumber } = labTestsToEdit?.[0] || {}
+      const { appointment, labTestStatus, primaryProvider, referringProvider, accessionNumber, providerNotes } = labTestsToEdit?.[0] || {}
       accessionNumber && setAccessionNumber(accessionNumber)
       appointment?.id && setValue('appointment', {
         id: appointment?.id,
@@ -143,6 +123,7 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
       labTestStatus && setValue('labTestStatus', setRecord(labTestStatus, labTestStatus))
       primaryProvider?.id && setValue('primaryProviderId', setRecord(primaryProvider?.id, `${primaryProvider?.firstName} ${primaryProvider?.lastName}`))
       referringProvider?.id && setValue('referringProviderId', setRecord(referringProvider?.id, `${referringProvider?.firstName} ${referringProvider?.lastName}`))
+      providerNotes && setValue('providerNotes', providerNotes)
 
       labTestsToEdit?.forEach((labTest, index) => {
         const { test, testDate, testNotes, testSpecimens, testTime, diagnoses, id } = labTest || {}
@@ -180,8 +161,7 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
   }, [toggleSideDrawer])
 
   const handleTestCreation = (values: LabOrdersCreateFormInput) => {
-    const { appointment, labTestStatus, testFieldValues, orderNum, accessionNumber, primaryProviderId, referringProviderId } = values
-    const { id: testStatus } = labTestStatus ?? {}
+    const { appointment, testFieldValues, orderNum, accessionNumber, primaryProviderId, referringProviderId, providerNotes } = values
 
     let appointmentId = ''
     if (appointmentInfo) {
@@ -196,8 +176,9 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
       const createLabTestItemInput = {
         patientId: patientId ?? '',
         ...(appointmentId && { appointmentId }),
-        status: testStatus as LabTestStatus, testNotes, testTime,
+        status: LabTestStatus.OrderEntered, testNotes, testTime,
         testDate: getFormatDateString(testDate, 'MM-DD-YYYY'),
+        providerNotes,
         orderNumber: orderNum, accessionNumber: accessionNumber,
         ...(primaryProviderId?.id && { primaryProviderId: primaryProviderId?.id }),
         ...(referringProviderId?.id && { referringProviderId: referringProviderId?.id }),
@@ -264,7 +245,7 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
       accessionNum = generateString(6)
     }
 
-    const { appointment, labTestStatus, testFieldValues, primaryProviderId, referringProviderId } = values
+    const { appointment, labTestStatus, testFieldValues, primaryProviderId, referringProviderId, providerNotes } = values
 
     const newTests = testFieldValues.filter((testFieldValue) => !!testFieldValue?.newTest)
     const oldTests = testFieldValues.filter((testFieldValue) => !testFieldValue?.newTest)
@@ -292,6 +273,7 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
         testNotes,
         testDate: getFormatDateString(testDate, 'MM-DD-YYYY'),
         testTime,
+        providerNotes,
         orderNumber: orderNum,
         id: testId ?? '',
         accessionNumber: accessionNum,
@@ -337,7 +319,7 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
     })
   }
 
-  const isFinalStep = LAB_ORDER_SIDEDRAWER_STEPS.length === activeStep + 1 && currentTest + 1 === testFieldValues.length
+  // const isFinalStep = LAB_ORDER_SIDEDRAWER_STEPS.length === activeStep + 1 && currentTest + 1 === testFieldValues?.length
 
   if (createLabTestLoading) {
     return <Loader loading loaderText='Creating Lab Order' />
@@ -352,7 +334,7 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
   }
 
   return (
-    <Box maxWidth={480}>
+    <Box minWidth={480}>
       <FormProvider {...methods}>
         <form>
           <Box
@@ -361,7 +343,7 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
           >
             <Typography variant='h3'>{isEdit ? EDIT_LAB_ORDER : NEW_LAB_ORDER}</Typography>
 
-            <Box display='flex' alignItems='center'>
+            {/* <Box display='flex' alignItems='center'>
               {activeStep > 0 && <Button variant="outlined" color="secondary" onClick={() => handleStep(activeStep - 1)}>{BACK_TEXT}</Button>}
               <Box p={1} />
               <Button
@@ -372,10 +354,10 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
               >
                 {isFinalStep ? SUBMIT : NEXT}
               </Button>
-            </Box>
+            </Box> */}
           </Box>
 
-          <Box className={labOrderClasses.labOrderBox}>
+          {/* <Box className={labOrderClasses.labOrderBox}>
             <Stepper alternativeLabel activeStep={activeStep} connector={<CheckInConnector />}>
               {LAB_ORDER_SIDEDRAWER_STEPS.map((label, index) => (
                 <Step key={label}>
@@ -389,12 +371,23 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
                 </Step>
               ))}
             </Stepper>
-          </Box>
+          </Box> */}
 
           <Box p={1} />
 
           <Box maxHeight="calc(100vh - 170px)" className="overflowY-auto">
             <Typography>{getStepContent(activeStep)}</Typography>
+          </Box>
+
+          <Box display="flex" justifyContent="center">
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              onClick={() => handleSubmit(onSubmit)()}
+            >
+              {isEdit ? UPDATE : CREATE}
+            </Button>
           </Box>
         </form>
       </FormProvider>
