@@ -330,10 +330,10 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                 </View>
 
                 <View style={[styles.w50]}>
-                  <View style={styles.fieldRow3}>
+                  {/* <View style={styles.fieldRow3}>
                     <Text style={[styles.fieldTitle, styles.w100px]}>{CONTACT_BY}</Text>
                     <Text style={styles.fieldText}>-</Text>
-                  </View>
+                  </View> */}
 
                   <View style={styles.fieldRow3}>
                     <Text style={[styles.fieldTitle, styles.w100px]}>{HOME_PHONE}</Text>
