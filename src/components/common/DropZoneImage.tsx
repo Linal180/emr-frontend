@@ -30,7 +30,7 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
   const [loading, setLoading] = useState<boolean>(false);
 
   const [imageEdit, setImageEdit] = useState<boolean>(false);
-  const [files, setFiles] = useState<File[]>();
+  const [files, setFiles] = useState<File[]>([]);
   const token = getToken();
   let moduleRoute = "";
 

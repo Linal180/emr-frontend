@@ -1,27 +1,38 @@
 // packages block
-import { Box, Button, Card, Grid, Tab } from "@material-ui/core";
-import { TabContext, TabList, TabPanel } from '@material-ui/lab';
+import { Box, Button, Card, Grid, Tab, } from "@material-ui/core";
 import { PrintOutlined } from "@material-ui/icons";
-import { ChangeEvent, FC, ReactElement, Reducer, useReducer, useState } from 'react';
+import { TabContext, TabList, TabPanel } from '@material-ui/lab';
+import { ChangeEvent, FC, ReactElement, Reducer, useContext, useReducer, useState } from 'react';
 // components block
-import AllergyTab from './tabs/AllergyListing';
-import ProblemTab from './tabs/ProblemListing';
-import TriageNoteTab from './tabs/TriageNotesListing';
+import ChartPrintModal from "./ChartModal/ChartPrintModal";
 import ChartSelectionModal from './ChartModal/ChartSelectionModal';
+import AllergyTab from './tabs/AllergyListing';
 import HistoryTab from './tabs/HistoryTab';
 import MedicationTab from './tabs/MedicationsListing';
-import ChartPrintModal from "./ChartModal/ChartPrintModal";
+import ProblemTab from './tabs/ProblemListing';
+import TriageNoteTab from './tabs/TriageNotesListing';
+import Alert from "../../../common/Alert";
+import Loader from "../../../common/Loader";
 import VitalTab from './tabs/VitalListing';
 // interfaces, graphql, constants block /styles
-import { PATIENT_CHARTING_TABS, PRINT_CHART } from "../../../../constants";
-import { ChartContextProvider } from '../../../../context';
-import { ChartComponentProps } from "../../../../interfacesTypes";
+import { useParams } from "react-router";
+import { DISCHARGE, PATIENT_CHARTING_TABS, PATIENT_DISCHARGED_SUCCESS, PRINT_CHART } from "../../../../constants";
+import { AuthContext, ChartContextProvider } from '../../../../context';
+import { AppointmentStatus, useUpdateAppointmentStatusMutation } from "../../../../generated/graphql";
+import { ChartComponentProps, ParamsType } from "../../../../interfacesTypes";
 import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
 import { useChartingStyles } from "../../../../styles/chartingStyles";
-import { WHITE } from '../../../../theme';
+import { BLUE, WHITE } from '../../../../theme';
+import { isAdmin, isOnlyDoctor } from "../../../../utils";
+import { DischargeIcon } from "../../../../assets/svgs";
 
-const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit }): JSX.Element => {
+const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status }): JSX.Element => {
   const classes = useChartingStyles()
+  const { user } = useContext(AuthContext);
+  const { roles } = user || {}
+  const isAdminUser = isAdmin(roles)
+  const isDoctorUser = isOnlyDoctor(roles)
+  const { appointmentId } = useParams<ParamsType>()
   const [isChartingModalOpen, setIsChartingModalOpen] = useState(false)
   const [modulesToPrint, setModulesToPrint] = useState<string[]>([])
   const [isChartPdfModalOpen, setIsChartPdfModalOpen] = useState<boolean>(false)
@@ -30,6 +41,43 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit }): JSX.Element
 
   const handleChange = (_: ChangeEvent<{}>, newValue: string) =>
     dispatch({ type: ActionType.SET_TAB_VALUE, tabValue: newValue })
+
+  const [updateAppointmentStatus, { loading: updateAppointmentStatusLoading }] = useUpdateAppointmentStatusMutation({
+    onError({ message }) {
+      Alert.error(message)
+    },
+
+    async onCompleted(data) {
+      if (data) {
+        const { updateAppointmentStatus } = data;
+        const { response } = updateAppointmentStatus || {}
+
+        if (response) {
+          const { status } = response
+          if (status === 200) {
+            Alert.success(PATIENT_DISCHARGED_SUCCESS)
+          }
+        }
+      }
+    }
+  });
+
+  const updateAppointment = () => {
+    try {
+      updateAppointmentStatus({
+        variables: {
+          appointmentStatusInput: {
+            id: appointmentId || '',
+            status: AppointmentStatus.Discharged
+          }
+        }
+      })
+    } catch (error) { }
+  }
+
+  if (updateAppointmentStatusLoading) {
+    return <Loader loading loaderText="Discharging Patient..." />
+  }
 
   return (
     <Box mt={3}>
@@ -66,6 +114,14 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit }): JSX.Element
                     />
                   })}
                 </TabList>
+
+                {appointmentId && status !== AppointmentStatus.Checkout && status !== AppointmentStatus.Discharged && (isAdminUser || isDoctorUser) &&
+                  <Box pl={2} mt={1} display="flex" justifyContent="flex-start" alignItems="center" maxWidth="100%" minHeight={52} bgcolor={BLUE} borderRadius={4}>
+                    <Button variant="contained" size="small" color="secondary" startIcon={<DischargeIcon />} onClick={updateAppointment}>
+                      {DISCHARGE}
+                    </Button>
+                  </Box>
+                }
               </Box>
             </Card>
           </Grid>

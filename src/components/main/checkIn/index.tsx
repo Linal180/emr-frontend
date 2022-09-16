@@ -76,7 +76,7 @@ const CheckInComponent = (): JSX.Element => {
     id: appointmentId ?? ''
   }
 
-  const shouldDisableEdit = status === AppointmentStatus.Discharged
+  const shouldDisableEdit = status === AppointmentStatus.Checkout
 
   useEffect(() => {
     dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: Number(checkInActiveStep) ?? 0 })
@@ -124,8 +124,6 @@ const CheckInComponent = (): JSX.Element => {
             dispatch({ type: ActionType.SET_PRIMARY_INSURANCE, primaryInsurance: primaryInsurance?.insurance?.payerName ?? '' })
             return
           }
-          const { insurance } = policies[0] ?? {}
-          dispatch({ type: ActionType.SET_PRIMARY_INSURANCE, primaryInsurance: insurance?.payerName ?? '' })
         }
       }
     }
@@ -254,7 +252,7 @@ const CheckInComponent = (): JSX.Element => {
           </Button>
         </Box>
 
-        <ChartCards shouldDisableEdit={shouldDisableEdit} />
+        <ChartCards shouldDisableEdit={shouldDisableEdit} status={status} />
       </Card>
     </>
 
