@@ -1125,6 +1125,7 @@ export const TOTAL_CLAIM_TEXT = "7900 Claim in Total";
 export const LAB_PERMISSIONS_TEXT = "Lab Permissions";
 export const TOTAL_APPOINTMENTS = "Total Appointments";
 export const PATIENT_DISCHARGED = "Patient Discharged";
+export const PATIENT_DISCHARGED_SUCCESS = "Patient Discharged Successfully";
 export const QUICK_APPOINTMENTS = "Quick Appointments";
 export const DIAGNOSIS_POINTERS = "Diagnosis Pointers";
 export const LAST_READING_DATE = "Last Reading Date: ";
@@ -3089,7 +3090,8 @@ export const LAB_ORDER_STEPS = [
 ];
 
 export const LAB_ORDER_SIDEDRAWER_STEPS = [
-  LAB_ORDER, TESTS,
+  LAB_ORDER, 
+  // TESTS,
   // PAYMENTS
 ];
 

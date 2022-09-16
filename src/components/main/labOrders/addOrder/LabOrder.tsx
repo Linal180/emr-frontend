@@ -1,32 +1,29 @@
 // packages block
-import { useParams } from 'react-router';
+import { Box, Grid, IconButton, Typography } from '@material-ui/core';
 import { FC, useEffect, useState } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
-import { Box, Button, Grid, IconButton, Typography } from '@material-ui/core';
-
+import { useParams } from 'react-router';
 // components block
 import moment from 'moment';
-import Selector from '../../../common/Selector';
-import TestsSelector from '../../../common/Selector/TestSelector';
-import DoctorSelector from '../../../common/Selector/DoctorSelector';
+import Loader from '../../../common/Loader';
 import AppointmentSelector from '../../../common/Selector/AppointmentSelector';
+import DoctorSelector from '../../../common/Selector/DoctorSelector';
+import TestsSelector from '../../../common/Selector/TestSelector';
 // interfaces, graphql, constants block
-import { BLUE, GREY_THREE } from '../../../../theme';
 import { CrossIcon } from '../../../../assets/svgs';
-import { renderItem, setRecord } from '../../../../utils';
-import { ContactType, DoctorPatientRelationType, useGetPatientLazyQuery } from '../../../../generated/graphql';
+import {
+  APPOINTMENT_TEXT, NOTES, PRIMARY_PROVIDER, TEST, TESTS_FIELD_VALIDATION_MESSAGE
+} from '../../../../constants';
+import InputController from '../../../../controller';
+import { DoctorPatientRelationType, useGetPatientLazyQuery } from '../../../../generated/graphql';
 import {
   LabOrderInitialScreenProps, LabOrdersCreateFormInput, ParamsType, SelectorOption
 } from "../../../../interfacesTypes";
-import {
-  APPOINTMENT_TEXT, EMPTY_OPTION, GUARANTOR, LAB_TEST_STATUSES, N_A, PRIMARY_PROVIDER, REFERRING_PROVIDER,
-  STATUS, TEST, TESTS_FIELD_VALIDATION_MESSAGE
-} from '../../../../constants';
-import Loader from '../../../common/Loader';
+import { BLUE } from '../../../../theme';
+import { renderItem, setRecord } from '../../../../utils';
 
 const LabOrderComponent: FC<LabOrderInitialScreenProps> = ({ appointmentInfo, setTestsToRemove, handleStep, setCurrentTest }): JSX.Element => {
   const { id: patientId } = useParams<ParamsType>()
-  const [guarantorName, setGuarantorName] = useState<string>('')
   const [isLoading, setIsLoading] = useState(true)
 
   const methods = useFormContext<LabOrdersCreateFormInput>();
@@ -86,7 +83,7 @@ const LabOrderComponent: FC<LabOrderInitialScreenProps> = ({ appointmentInfo, se
       if (data) {
         const { getPatient } = data ?? {}
         const { patient } = getPatient ?? {}
-        const { contacts, doctorPatients } = patient ?? {}
+        const { doctorPatients } = patient ?? {}
 
         const { doctor: primaryDoctor } = doctorPatients?.find((doctorPatient) => {
           return doctorPatient?.relation === DoctorPatientRelationType.PrimaryProvider
@@ -95,10 +92,6 @@ const LabOrderComponent: FC<LabOrderInitialScreenProps> = ({ appointmentInfo, se
           return doctorPatient?.relation === DoctorPatientRelationType.ReferringProvider
         }) || {}
 
-        const guarantorInfo = contacts?.find((contact) => contact.contactType === ContactType.Guarandor)
-        const { firstName, lastName } = guarantorInfo ?? {}
-        const guarantorName = firstName ? `${firstName} ${lastName}` : ''
-        setGuarantorName(guarantorName)
         primaryDoctor && setValue('primaryProviderId', setRecord(primaryDoctor.id, `${primaryDoctor.firstName} ${primaryDoctor.lastName}`))
         referringDoctor && setValue('referringProviderId', setRecord(referringDoctor.id, `${referringDoctor.firstName} ${referringDoctor.lastName}`))
 
@@ -139,38 +132,10 @@ const LabOrderComponent: FC<LabOrderInitialScreenProps> = ({ appointmentInfo, se
         </Grid>
 
         <Grid item md={12} sm={12} xs={12}>
-          <Selector
-            addEmpty
-            isRequired
-            name="labTestStatus"
-            label={STATUS}
-            value={EMPTY_OPTION}
-            options={LAB_TEST_STATUSES}
-          />
-        </Grid>
-
-        <Grid item md={4} sm={12} xs={12}>
-          <Typography variant='h6'>{GUARANTOR}</Typography>
-
-          <Box py={0.6} mb={2} color={GREY_THREE}>
-            <Typography variant='body1'>{guarantorName || N_A}</Typography>
-          </Box>
-        </Grid>
-
-        <Grid item md={12} sm={12} xs={12}>
           <DoctorSelector
             isRequired
             label={PRIMARY_PROVIDER}
             name="primaryProviderId"
-            shouldOmitFacilityId
-          />
-        </Grid>
-
-        <Grid item md={12} sm={12} xs={12}>
-          <DoctorSelector
-            isRequired
-            label={REFERRING_PROVIDER}
-            name="referringProviderId"
             shouldOmitFacilityId
           />
         </Grid>
@@ -190,31 +155,35 @@ const LabOrderComponent: FC<LabOrderInitialScreenProps> = ({ appointmentInfo, se
       </Grid>
 
       {!testFieldValuesFields.length ?
-        <Typography className='danger' variant="caption">{TESTS_FIELD_VALIDATION_MESSAGE}</Typography> :
-        testFieldValuesFields.map(({ test }, index) => {
-          const { id, name } = test
-          return (
-            <Box minWidth="100%" display="flex" alignItems="center" justifyContent="space-between">
-              <Button
-                variant="text"
-                color="secondary"
-                onClick={() => {
-                  setCurrentTest && setCurrentTest(index);
-                  handleStep && handleStep(1)
-                }}
-              >
-                <Box color={BLUE} textAlign="start">
-                  <Typography variant="body2" color="inherit">{name}</Typography>
-                </Box>
-              </Button>
+        <Box mb={2}>
+          <Typography className='danger' variant="caption">{TESTS_FIELD_VALIDATION_MESSAGE}</Typography>
+        </Box> :
+        <Box mb={4}>
+          {testFieldValuesFields.map(({ test }, index) => {
+            const { id, name } = test
+            return (
+              <Box minWidth="100%" display="flex" alignItems="center" justifyContent="space-between">
+                  <Box color={BLUE} textAlign="start">
+                    <Typography variant="body2" color="inherit">{name}</Typography>
+                  </Box>
 
+                <IconButton size='small' onClick={() => handleLabTestRemove(id)} >
+                  <CrossIcon />
+                </IconButton>
+              </Box>
+            )
+          })}
+        </Box>
+      }
 
-              <IconButton size='small' onClick={() => handleLabTestRemove(id)} >
-                <CrossIcon />
-              </IconButton>
-            </Box>
-          )
-        })}
+      <Grid item md={12} sm={12} xs={12}>
+        <InputController
+          fieldType="text"
+          controllerName="providerNotes"
+          controllerLabel={NOTES}
+          multiline
+        />
+      </Grid>
     </Box>
   )
 }

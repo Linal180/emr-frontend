@@ -51,6 +51,7 @@ const DoctorAppointmentsAndPatients: FC<DoctorAppointmentsAndPatientsProps> = ({
           appointment?.status !== AppointmentStatus.Cancelled
           && appointment?.status !== AppointmentStatus.NoShow
           && appointment?.status !== AppointmentStatus.Discharged
+          && appointment?.status !== AppointmentStatus.Checkout
           && isCurrentDay(appointment?.scheduleStartDateTime || '')
         )
 
