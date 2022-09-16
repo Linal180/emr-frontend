@@ -409,17 +409,17 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
       <Box>
         <Box my={2}>
           <Grid container spacing={3}>
-            <Grid item md={4} sm={12} xs={12}>
+            <Grid item md={3} sm={12} xs={12}>
               <Box mt={2}>
                 <Search search={search} info tooltipData={AppointmentSearchingTooltipData} />
               </Box>
             </Grid>
 
-            <Grid item md={8} sm={12} xs={12}>
+            <Grid item md={9} sm={12} xs={12}>
               <FormProvider {...methods}>
                 <Grid container spacing={3}>
                   {isAdminUser &&
-                    <Grid item md={4} sm={12} xs={12}>
+                    <Grid item md={3} sm={12} xs={12}>
                       <FacilitySelector
                         addEmpty
                         label={FACILITY}
@@ -430,7 +430,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                     </Grid>
                   }
 
-                  <Grid item md={4} sm={12} xs={12}>
+                  <Grid item md={3} sm={12} xs={12}>
                     <ServicesSelector
                       name="serviceId"
                       label={APPOINTMENT_TYPE}
@@ -438,7 +438,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                     />
                   </Grid>
 
-                  <Grid item md={isAdminUser ? 4 : 8} sm={12} xs={12}>
+                  <Grid item md={isAdminUser ? 6 : 8} sm={12} xs={12}>
                     <Box className="date-box-wrap">
                       <Typography variant="body1" color="textPrimary">{DATE}</Typography>
 
