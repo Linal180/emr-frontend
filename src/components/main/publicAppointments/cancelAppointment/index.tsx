@@ -22,7 +22,8 @@ const CancelAppointmentComponent: FC = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
 
   const [appointment, setAppointment] = useState<AppointmentPayload['appointment']>(null)
-
+  const { scheduleStartDateTime } = appointment || {}
+  const { date, time } = dateFormateForEmail(scheduleStartDateTime || "")
   const [cancelAppointment,] = useCancelAppointmentMutation({
     onError({ message }) {
       Alert.error(message === NOT_FOUND_EXCEPTION ? APPOINTMENT_NOT_EXIST : CANT_CANCELLED_APPOINTMENT)
@@ -80,7 +81,7 @@ const CancelAppointmentComponent: FC = (): JSX.Element => {
         </Box>
 
         <Box className={classes.container}>
-          <Typography variant="h6">{appointmentCancellationDescription} {`${appointment?.patient?.firstName}'s`}  {APPOINTMENT_ON} {dateFormateForEmail(appointment?.scheduleStartDateTime).date} {AT} {dateFormateForEmail(appointment?.scheduleStartDateTime).time} </Typography>
+          <Typography variant="h6">{appointmentCancellationDescription} {appointment?.patient?.firstName}'s {APPOINTMENT_ON} {date} {AT} {time} </Typography>
 
           <Box mt={3} color={GREY_THREE}>
             <Typography variant="h6" component="h5">{APPOINTMENT_CANCEL_SUBHEADING}</Typography>
