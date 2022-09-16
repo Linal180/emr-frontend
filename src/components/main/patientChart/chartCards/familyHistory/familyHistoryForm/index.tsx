@@ -1,5 +1,5 @@
 import { useParams } from 'react-router';
-import { Add as AddCircleOutline } from '@material-ui/icons';
+import { AddCircleOutline } from '@material-ui/icons';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FC, Fragment, Reducer, useCallback, useEffect, useReducer } from "react";
 import { FormProvider, useForm, useFieldArray, SubmitHandler } from "react-hook-form";
@@ -29,7 +29,7 @@ import {
 } from "../../../../../../reducers/familyHistoryFormReducer";
 import { setRecord } from '../../../../../../utils';
 import { useChartingStyles } from '../../../../../../styles/chartingStyles';
-import { GREY_SEVEN } from '../../../../../../theme';
+import { BLUE, GREY_SEVEN } from '../../../../../../theme';
 
 const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({
   handleClose, isOpen, isEdit, id: familyHistoryId, fetchFamilyHistory: fetchFamilyHistories
@@ -305,22 +305,22 @@ const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({
       {problemId && stateProblem ? <>
         <Box display="flex" alignItems="center" justifyContent="space-between">
           <Box display="flex" alignItems="center" >
-            <Box>
-              <IconButton onClick={backHandler}
-                disabled={loading}
-              >
-                <PageBackIcon />
-              </IconButton>
-            </Box>
-            <Box>
-              <Typography>{name}</Typography>
-            </Box>
+            <Button size='small' onClick={backHandler}
+              disabled={loading}
+            >
+              <PageBackIcon />
+            </Button>
+
+            <Typography variant='h4'>{name}</Typography>
           </Box>
 
-          <Box display="flex" alignItems="center" justifyContent="flex-end">
+          <Box className="billing-box" display="flex" alignItems="center" justifyContent="flex-end" 
+            border={`1px solid ${BLUE}`} borderRadius={4} minWidth="fit-content">
             <Button onClick={onFieldAddHandler} disabled={loading}>
               <AddCircleOutline color='secondary' />
+
               <Box ml={1} />
+              
               <Typography color="secondary">{RELATIVE}</Typography>
             </Button>
           </Box>
