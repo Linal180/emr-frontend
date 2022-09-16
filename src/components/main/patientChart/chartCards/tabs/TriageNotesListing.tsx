@@ -188,7 +188,7 @@ const TriageNoteTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
               <Box px={2} pb={2}>
                 {appointmentId ?
                   shouldDisableEdit ?
-                    <Typography>{patientTriageNotes?.[0].notes}</Typography> :
+                    <Typography>{patientTriageNotes?.[0]?.notes || ''}</Typography> :
                     <FormProvider {...methods}>
                       <form onSubmit={handleSubmit(onSubmit)}>
                         <InputController

@@ -370,6 +370,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     return status === AppointmentStatus.Cancelled
       || status === AppointmentStatus.NoShow
       || status === AppointmentStatus.Discharged
+      || status === AppointmentStatus.Checkout
   };
 
   const renderIcon = () => <IconButton className={`py-0 ml-5 rotate-Icon ${sortBy === ASC ? 'to-180' : ''}`}
@@ -570,7 +571,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                                   isEdit={isEdit}
                                 />
                               </FormProvider>
-                              : <Box p={0} onClick={() => id && status !== AppointmentStatus.Discharged &&
+                              : <Box p={0} onClick={() => id && status !== AppointmentStatus.Discharged && status !== AppointmentStatus.Checkout &&
                                 handleStatusUpdate(id, text)}
                                 className={`${classes.status} pointer-cursor`}
                                 component='span' color={textColor}
@@ -629,10 +630,10 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                               </Box>
                             }
 
-                            <Box className={`${status === AppointmentStatus.Cancelled || status === AppointmentStatus.Discharged ? classes.iconsBackgroundDisabled : classes.iconsBackground}`}>
+                            <Box className={`${status === AppointmentStatus.Cancelled || status === AppointmentStatus.Discharged || status === AppointmentStatus.Checkout ? classes.iconsBackgroundDisabled : classes.iconsBackground}`}>
                               <Button
                                 onClick={() => id && handleAppointmentReminder(id, email, phone)}
-                                disabled={status === AppointmentStatus.Cancelled || status === AppointmentStatus.Discharged}
+                                disabled={status === AppointmentStatus.Cancelled || status === AppointmentStatus.Discharged || status === AppointmentStatus.Checkout}
                               >
                                 <BellIconNew />
                               </Button>
