@@ -170,6 +170,12 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Eleme
     toggleSideDrawer()
   }
 
+  const clearEdit = () => {
+    setValue('status', EMPTY_OPTION)
+    dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
+    dispatch({ type: ActionType.SET_ORDER_NUM, orderNum: '' })
+  }
+
   return (
     <>
       <Box className={classes.mainTableContainer}>
@@ -251,6 +257,7 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Eleme
                               value={EMPTY_OPTION}
                               options={LAB_TEST_STATUSES}
                               onSelect={({ id }: SelectorOption) => onSelectStatus(id)}
+                              onOutsideClick={clearEdit}
                             />
                           </>
                             :

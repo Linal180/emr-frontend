@@ -13,6 +13,7 @@ query FindAllLabTest($labTestInput: LabTestInput!) {
       receivedDate
       collectedDate
       appointmentId
+      providerNotes
       patient{
         doctorPatients{
           doctor{

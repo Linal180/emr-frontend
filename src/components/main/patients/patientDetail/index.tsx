@@ -87,7 +87,7 @@ const PatientDetailsComponent = (): JSX.Element => {
 
           appointmentDispatch({
             type: appointmentActionType.SET_UP_COMING,
-            upComing: appointments?.filter((appointment) => appointment?.status && ![AppointmentStatus.Cancelled, AppointmentStatus.Discharged].includes(appointment?.status)) as AppointmentsPayload['appointments']
+            upComing: appointments?.filter((appointment) => appointment?.status && ![AppointmentStatus.Cancelled, AppointmentStatus.Discharged, AppointmentStatus.Checkout].includes(appointment?.status)) as AppointmentsPayload['appointments']
           });
         }
       }
