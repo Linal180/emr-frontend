@@ -116,7 +116,7 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status }): JSX
                 </TabList>
 
                 {appointmentId && status !== AppointmentStatus.Checkout && status !== AppointmentStatus.Discharged && (isAdminUser || isDoctorUser) &&
-                  <Box pl={2} mt={1} display="flex" justifyContent="flex-start" alignItems="center" width={230} minHeight={52} bgcolor={BLUE} borderRadius={4}>
+                  <Box pl={2} mt={1} display="flex" justifyContent="flex-start" alignItems="center" maxWidth="100%" minHeight={52} bgcolor={BLUE} borderRadius={4}>
                     <Button variant="contained" size="small" color="secondary" startIcon={<DischargeIcon />} onClick={updateAppointment}>
                       {DISCHARGE}
                     </Button>
