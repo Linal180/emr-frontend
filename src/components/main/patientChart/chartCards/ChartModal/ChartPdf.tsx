@@ -6,7 +6,7 @@ import {
   FACILITY, FAMILY_HISTORY_TEXT, FAMILY_INFORMATION, FIRST_NAME, FOOD_ALLERGIES, HISTORICAL, HOME_PHONE, LAST_NAME,
   MEDICATIONS, MIDDLE_NAME, MOBILE_PHONE, NEXT_OF_KIN, NOTES, NO_DRUG_ALLERGIES_RECORDED, ONSET_DATE, PHONE, SSN,
   NO_ENVIRONMENTAL_ALLERGIES_RECORDED, NO_FOOD_ALLERGIES_RECORDED, ONSET, ONSET_AGE_TEXT, PRN, PROBLEM_TEXT, SIG,
-  PROCEDURE_TEXT, RACE, RELATIONSHIP_TO_PATIENT, RELATIVE, RESPIRATORY_RATE_TEXT, SEVERITY_REACTIONS, START_STOP, 
+  PROCEDURE_TEXT, RACE, RELATIONSHIP_TO_PATIENT, RELATIVE, RESPIRATORY_RATE_TEXT, SEVERITY_REACTIONS, START_STOP,
   STATE, STATUS, SURGERY_DATE, SURGICAL_HISTORY_TEXT, TEMPERATURE_TEXT, TRIAGE_NOTES, VITALS_TEXT, ZIP_CODE, SEX,
 } from "../../../../../constants";
 import { AllergyType, ContactType, Genderidentity, ProblemType } from "../../../../../generated/graphql";
@@ -547,9 +547,9 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                 <View style={[styles.w30]}>
                   <Text style={[styles.fieldTitle, styles.bgLightGrey,]}>{ONSET}</Text>
                   {drugAllergies?.length ? drugAllergies?.map((allergyValue) => {
-                    const { allergyOnset } = allergyValue || {}
+                    const { allergyStartDate, allergyOnset } = allergyValue || {}
                     return (
-                      <Text style={styles.fieldText}>{getFormatDateString(allergyOnset, 'MM-DD-YYYY')}</Text>
+                      <Text style={styles.fieldText}>{allergyStartDate ? getFormatDateString(allergyStartDate, 'MM-DD-YYYY') : formatValue(allergyOnset)}</Text>
                     )
                   }) : <Text style={[styles.fieldTitle]}> </Text>}
                 </View>
@@ -590,9 +590,9 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                 <View style={[styles.w30]}>
                   <Text style={[styles.fieldTitle, styles.bgLightGrey,]}>{ONSET}</Text>
                   {foodAllergies?.length ? foodAllergies?.map((allergyValue) => {
-                    const { allergyOnset } = allergyValue || {}
+                    const { allergyStartDate, allergyOnset } = allergyValue || {}
                     return (
-                      <Text style={styles.fieldText}>{getFormatDateString(allergyOnset, 'MM-DD-YYYY')}</Text>
+                      <Text style={styles.fieldText}>{allergyStartDate ? getFormatDateString(allergyStartDate, 'MM-DD-YYYY') : formatValue(allergyOnset)}</Text>
                     )
                   }) : <Text style={[styles.fieldTitle]}> </Text>}
                 </View>
@@ -633,9 +633,9 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                 <View style={[styles.w30]}>
                   <Text style={[styles.fieldTitle, styles.bgLightGrey,]}>{ONSET}</Text>
                   {environmentAllergies?.length ? environmentAllergies?.map((allergyValue) => {
-                    const { allergyOnset } = allergyValue || {}
+                    const { allergyStartDate, allergyOnset } = allergyValue || {}
                     return (
-                      <Text style={styles.fieldText}>{getFormatDateString(allergyOnset, 'MM-DD-YYYY')}</Text>
+                      <Text style={styles.fieldText}>{allergyStartDate ? getFormatDateString(allergyStartDate, 'MM-DD-YYYY') : formatValue(allergyOnset)}</Text>
                     )
                   }) : <Text style={[styles.fieldTitle]}> </Text>}
                 </View>
