@@ -1,14 +1,13 @@
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import Logo from "../../../../../assets/images/aimed-logo.png";
 import {
-  ACTIVE, ACUITY, ADDRESS, ADDRESS_LINE_1, ADDRESS_LINE_2, ASSOCIATED_DX, BLOOD_PRESSURE_TEXT, CITY, CONTACT_BY,
+  ACTIVE, ACUITY, ADDRESS, ADDRESS_LINE_1, ADDRESS_LINE_2, ASSOCIATED_DX, BLOOD_PRESSURE_TEXT, CITY, LANGUAGE, START,
   CONTACT_INFORMATION, CURRENT, DIAGNOSES, DOB, DOB_TEXT, DRUG_ALLERGIES, EMAIL, ENVIRONMENTAL_ALLERGIES, ETHNICITY,
   FACILITY, FAMILY_HISTORY_TEXT, FAMILY_INFORMATION, FIRST_NAME, FOOD_ALLERGIES, HISTORICAL, HOME_PHONE, LAST_NAME,
   MEDICATIONS, MIDDLE_NAME, MOBILE_PHONE, NEXT_OF_KIN, NOTES, NO_DRUG_ALLERGIES_RECORDED, ONSET_DATE, PHONE, SSN,
   NO_ENVIRONMENTAL_ALLERGIES_RECORDED, NO_FOOD_ALLERGIES_RECORDED, ONSET, ONSET_AGE_TEXT, PRN, PROBLEM_TEXT, SIG,
   PROCEDURE_TEXT, RACE, RELATIONSHIP_TO_PATIENT, RELATIVE, RESPIRATORY_RATE_TEXT, SEVERITY_REACTIONS, START_STOP, 
-  STATE, STATUS, SURGERY_DATE, SURGICAL_HISTORY_TEXT, TEMPERATURE_TEXT, TRIAGE_NOTES, VITALS_TEXT, ZIP_CODE, 
-  START, SEX, LANGUAGE,
+  STATE, STATUS, SURGERY_DATE, SURGICAL_HISTORY_TEXT, TEMPERATURE_TEXT, TRIAGE_NOTES, VITALS_TEXT, ZIP_CODE, SEX,
 } from "../../../../../constants";
 import { AllergyType, ContactType, Genderidentity, ProblemType } from "../../../../../generated/graphql";
 import { PatientChartingInfo } from "../../../../../interfacesTypes";
@@ -21,8 +20,8 @@ const styles = StyleSheet.create({
   },
   table: {
     width: "auto",
-    borderStyle: "solid",
-    borderWidth: 1,
+    // borderStyle: "solid",
+    // borderWidth: 1,
     fontSize: 12,
   },
   tableRow: {
@@ -60,16 +59,16 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
   },
   borderTopWidth: {
-    borderTopWidth: 1
+    borderTopWidth: 1,
   },
   borderBottomWidth: {
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
   },
   borderLeftWidth: {
-    borderLeftWidth: 1
+    borderLeftWidth: 1,
   },
   borderRightWidth: {
-    borderRightWidth: 1
+    borderRightWidth: 1,
   },
   w60px: {
     minWidth: '60px',
@@ -147,7 +146,8 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
     patientContacts?.find((patientContact) => patientContact?.contactType === ContactType.NextOfKin) || {}
   const { practice, contacts: facilityContacts } = facility || {}
   const { phone, address, address2, city, state, zipCode } = facilityContacts?.find((facilityContact) => facilityContact?.primaryContact) || {}
-  const { name: practiceName } = practice || {}
+  const { name: practiceName, attachments } = practice || {}
+  const { url } = attachments?.[0] || {}
 
   const activeProblems = patientProblems?.filter((problem) => problem.problemType === ProblemType.Active) || []
   const historicProblems = patientProblems?.filter((problem) => problem.problemType === ProblemType.Historic) || []
@@ -202,7 +202,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
 
             <View style={[styles.w30, styles.fieldRow2,]}>
               <Image
-                src={Logo}
+                src={url ? url + '?noCache=randomString' : Logo}
                 style={styles.logoImage}
               />
             </View>
@@ -652,7 +652,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
           {modulesToPrint.includes('Medications') ?
             <>
               {/* 9th-row */}
-              <View style={styles.tableRow}>
+              <View style={styles.tableRow} break>
                 <View style={[styles.w100]}>
                   <View style={[styles.bgLightGrey, styles.borderStyle, styles.borderTopWidth, styles.borderBottomWidth]}>
                     <Text style={styles.fieldTitle2}>{MEDICATIONS}</Text>
