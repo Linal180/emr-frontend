@@ -24,7 +24,7 @@ import InsuranceComponent from "../../patients/patientDetail/insurance";
 import SelfPayComponent from "./PaymentModal";
 //constants, utils, interfaces block
 import {
-  ADD_ANOTHER_COPAY, APPOINTMENT_FACILITY, AUTO_ACCIDENT, BILLING, BILLING_TABS, CHECKOUT_DISCHARGE, CLAIM_STATUS,
+  ADD_ANOTHER_COPAY, APPOINTMENT_FACILITY, AUTO_ACCIDENT, BILLING, BILLING_TABS, CHECKOUT, CLAIM_STATUS,
   COPAY_AMOUNT, CPT_CODES, EMPLOYMENT, FEE_SCHEDULE, FROM, HCFA_1500_FORM, HCFA_DESC, ICD_TEN_CODES,
   INVOICE_DATE, INVOICE_NO, ITEM_MODULE, LAST_VISITED, MAPPED_ONSET_DATE_TYPE, MAPPED_PATIENT_PAYMENT_TYPE, MAPPED_SERVICE_CODES, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, PATIENT_PAYMENT_TYPE, POS, PRACTICE, RENDERING_PROVIDER, SAVE_TEXT, SELECT_ANOTHER_STATUS, SERVICE_DATE, SERVICING_PROVIDER, SUPER_BILL, SUPER_BILL_ROUTE, SystemBillingStatuses, TO, UNCOVERED_AMT
 } from "../../../../constants";
@@ -178,7 +178,7 @@ const BillingForm: FC<BillingFormProps> = ({
                   variant="contained" color="primary" disabled={createBillingLoading}
                   onClick={() => handleCheckout(true)} endIcon={<Box width={20}><ChevronRight /></Box>}
                 >
-                  {submitButtonText ?? CHECKOUT_DISCHARGE}
+                  {submitButtonText ?? CHECKOUT}
                   {createBillingLoading && <CircularProgress size={20} color="inherit" />}
                 </Button>
               </Box>
