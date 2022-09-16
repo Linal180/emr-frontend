@@ -124,8 +124,6 @@ const CheckInComponent = (): JSX.Element => {
             dispatch({ type: ActionType.SET_PRIMARY_INSURANCE, primaryInsurance: primaryInsurance?.insurance?.payerName ?? '' })
             return
           }
-          const { insurance } = policies[0] ?? {}
-          dispatch({ type: ActionType.SET_PRIMARY_INSURANCE, primaryInsurance: insurance?.payerName ?? '' })
         }
       }
     }

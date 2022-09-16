@@ -1338,7 +1338,7 @@ export const getFormatDate = (date: Maybe<string> | undefined) => {
 
 export const getFormatDateString = (date: Maybe<string> | undefined, format = "YYYY-MM-DD") => {
   if (!date) return '';
-  return moment(date).format(format).toString()
+  return moment(date).format(format)
 };
 
 export const dobDateFormat = (date: Maybe<string> | undefined, format = "MM-DD-YYYY") => {
