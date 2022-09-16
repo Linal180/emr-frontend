@@ -22,7 +22,7 @@ import { AppointmentStatus, useUpdateAppointmentStatusMutation } from "../../../
 import { ChartComponentProps, ParamsType } from "../../../../interfacesTypes";
 import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
 import { useChartingStyles } from "../../../../styles/chartingStyles";
-import { BLUE, WHITE } from '../../../../theme';
+import { BLUE, GRAY_SIMPLE, WHITE } from '../../../../theme';
 import { isAdmin, isOnlyDoctor } from "../../../../utils";
 import { DischargeIcon } from "../../../../assets/svgs";
 
@@ -55,6 +55,7 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status }): JSX
         if (response) {
           const { status } = response
           if (status === 200) {
+
             Alert.success(PATIENT_DISCHARGED_SUCCESS)
           }
         }
@@ -62,9 +63,9 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status }): JSX
     }
   });
 
-  const updateAppointment = () => {
+  const updateAppointment = async () => {
     try {
-      updateAppointmentStatus({
+      await updateAppointmentStatus({
         variables: {
           appointmentStatusInput: {
             id: appointmentId || '',
@@ -78,6 +79,8 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status }): JSX
   if (updateAppointmentStatusLoading) {
     return <Loader loading loaderText="Discharging Patient..." />
   }
+
+  const isPatientDischarged = status === AppointmentStatus.Checkout || status === AppointmentStatus.Discharged
 
   return (
     <Box mt={3}>
@@ -115,10 +118,22 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status }): JSX
                   })}
                 </TabList>
 
-                {appointmentId && status !== AppointmentStatus.Checkout && status !== AppointmentStatus.Discharged && (isAdminUser || isDoctorUser) &&
-                  <Box pl={2} mt={1} display="flex" justifyContent="flex-start" alignItems="center" maxWidth="100%" minHeight={52} bgcolor={BLUE} borderRadius={4}>
-                    <Button variant="contained" size="small" color="secondary" startIcon={<DischargeIcon />} onClick={updateAppointment}>
-                      {DISCHARGE}
+                {appointmentId && (isAdminUser || isDoctorUser) &&
+                  <Box pl={2} mt={1} display="flex" justifyContent="flex-start" alignItems="center" width={230}
+                    minHeight={52} bgcolor={isPatientDischarged ? GRAY_SIMPLE : BLUE} borderRadius={4}
+
+                  >
+                    <Button
+                      variant="text"
+                      size="small"
+                      color={"inherit"}
+                      startIcon={<DischargeIcon color={isPatientDischarged ? "black" : 'white'} />}
+                      onClick={updateAppointment}
+                      disabled={isPatientDischarged}
+                    >
+                      <Box component="span" color={isPatientDischarged ? "black" : "white"} >
+                        {isPatientDischarged ? AppointmentStatus.Discharged : DISCHARGE}
+                      </Box>
                     </Button>
                   </Box>
                 }
