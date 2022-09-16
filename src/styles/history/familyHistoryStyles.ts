@@ -11,7 +11,7 @@ export const useFamilyHistoryStyles = makeStyles(() =>
         paddingBottom: 0,
 
         "& .MuiOutlinedInput-input": {
-          height: 40,
+          minHeight: 48,
         },
 
         "& .MuiAutocomplete-inputRoot": {

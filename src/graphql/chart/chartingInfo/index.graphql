@@ -21,6 +21,10 @@ query GetPatientChartingInfo(
       language
 
       contacts {
+        name
+        relationship
+        contactType
+        primaryContact
         phone
         address
         address2
@@ -38,6 +42,7 @@ query GetPatientChartingInfo(
         }
 
         contacts {
+          primaryContact
           phone
           address
           address2

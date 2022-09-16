@@ -1,5 +1,5 @@
 // packages block
-import { Box, Button, Card, Grid, Tab } from "@material-ui/core";
+import { Box, Button, Card, Grid, Tab, } from "@material-ui/core";
 import { PrintOutlined } from "@material-ui/icons";
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
 import { ChangeEvent, FC, ReactElement, Reducer, useContext, useReducer, useState } from 'react';
@@ -16,14 +16,15 @@ import Loader from "../../../common/Loader";
 import VitalTab from './tabs/VitalListing';
 // interfaces, graphql, constants block /styles
 import { useParams } from "react-router";
-import { PATIENT_CHARTING_TABS, PATIENT_DISCHARGED_SUCCESS, PRINT_CHART } from "../../../../constants";
+import { DISCHARGE, PATIENT_CHARTING_TABS, PATIENT_DISCHARGED_SUCCESS, PRINT_CHART } from "../../../../constants";
 import { AuthContext, ChartContextProvider } from '../../../../context';
 import { AppointmentStatus, useUpdateAppointmentStatusMutation } from "../../../../generated/graphql";
 import { ChartComponentProps, ParamsType } from "../../../../interfacesTypes";
 import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
 import { useChartingStyles } from "../../../../styles/chartingStyles";
-import { WHITE } from '../../../../theme';
+import { BLUE, WHITE } from '../../../../theme';
 import { isAdmin, isOnlyDoctor } from "../../../../utils";
+import { DischargeIcon } from "../../../../assets/svgs";
 
 const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status }): JSX.Element => {
   const classes = useChartingStyles()
@@ -115,9 +116,12 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status }): JSX
                 </TabList>
 
                 {appointmentId && status !== AppointmentStatus.Checkout && status !== AppointmentStatus.Discharged && (isAdminUser || isDoctorUser) &&
-                  <Button variant="contained" color="secondary" onClick={updateAppointment}>
-                    Discharge
-                  </Button>}
+                  <Box pl={2} mt={1} display="flex" justifyContent="flex-start" alignItems="center" width={230} minHeight={52} bgcolor={BLUE} borderRadius={4}>
+                    <Button variant="contained" size="small" color="secondary" startIcon={<DischargeIcon />} onClick={updateAppointment}>
+                      {DISCHARGE}
+                    </Button>
+                  </Box>
+                }
               </Box>
             </Card>
           </Grid>
