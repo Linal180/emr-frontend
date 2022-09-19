@@ -4,7 +4,7 @@ import FamilyHistoryTable from "./familyHistoryTable";
 import { FamilyHistoryProps } from "../../../../../interfacesTypes";
 
 const FamilyHistory: FC<FamilyHistoryProps> = ({ shouldDisableEdit = false }): JSX.Element => {
-	return (<FamilyHistoryTable />)
+	return (<FamilyHistoryTable shouldDisableEdit={shouldDisableEdit} />)
 }
 
 export default FamilyHistory;

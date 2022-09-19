@@ -76,7 +76,7 @@ const CheckInComponent = (): JSX.Element => {
     id: appointmentId ?? ''
   }
 
-  const shouldDisableEdit = status === AppointmentStatus.Checkout
+  const shouldDisableEdit = status === AppointmentStatus.Checkout || status === AppointmentStatus.Discharged
 
   useEffect(() => {
     dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: Number(checkInActiveStep) ?? 0 })
