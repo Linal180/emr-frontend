@@ -9,7 +9,7 @@ import { TO_BILLING } from "../../../constants";
 import { LabOrderCreateProps } from "../../../interfacesTypes";
 import LabOrdersTable from '../../common/patient/labOrders';
 
-const LabOrders: FC<LabOrderCreateProps> = ({ appointmentInfo, handleStep }) => {
+const LabOrders: FC<LabOrderCreateProps> = ({ appointmentInfo, handleStep, shouldDisableEdit }) => {
   return (
     <Card>
       <Box p={2} display="flex" flexWrap="wrap" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
@@ -22,7 +22,7 @@ const LabOrders: FC<LabOrderCreateProps> = ({ appointmentInfo, handleStep }) => 
       </Box>
 
       <Box>
-        <LabOrdersTable appointmentInfo={appointmentInfo} />
+        <LabOrdersTable appointmentInfo={appointmentInfo} shouldDisableEdit={shouldDisableEdit} />
       </Box>
     </Card>
   )

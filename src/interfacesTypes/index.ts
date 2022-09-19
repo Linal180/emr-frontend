@@ -885,6 +885,7 @@ export interface LabOrderCreateProps {
 
 export interface LabOrdersTableProps {
   appointmentInfo?: SelectorOption
+  shouldDisableEdit?: boolean
 }
 
 export interface LabOrderInitialScreenProps extends LabOrderCreateProps {
@@ -1879,6 +1880,7 @@ export interface FormBuilderFacilitySelectorProps extends SelectorProps {
 export interface ChartComponentProps {
   shouldDisableEdit?: boolean
   status?: string
+  appointmentInfo?: SelectorOption
 }
 
 export interface BillingComponentProps extends GeneralFormProps {

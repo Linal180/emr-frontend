@@ -14,6 +14,7 @@ import TriageNoteTab from './tabs/TriageNotesListing';
 import Alert from "../../../common/Alert";
 import Loader from "../../../common/Loader";
 import VitalTab from './tabs/VitalListing';
+import LabOrdersTable from "../../../common/patient/labOrders";
 // interfaces, graphql, constants block /styles
 import { useParams } from "react-router";
 import { DISCHARGE, PATIENT_CHARTING_TABS, PATIENT_DISCHARGED_SUCCESS, PRINT_CHART } from "../../../../constants";
@@ -26,7 +27,7 @@ import { BLUE, GRAY_SIMPLE, WHITE } from '../../../../theme';
 import { isAdmin, isOnlyDoctor } from "../../../../utils";
 import { DischargeIcon } from "../../../../assets/svgs";
 
-const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status }): JSX.Element => {
+const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appointmentInfo }): JSX.Element => {
   const classes = useChartingStyles()
   const { user } = useContext(AuthContext);
   const { roles } = user || {}
@@ -181,6 +182,14 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status }): JSX
                 <TabPanel value="6">
                   <ChartContextProvider>
                     <HistoryTab shouldDisableEdit={shouldDisableEdit} />
+                  </ChartContextProvider>
+                </TabPanel>
+              </Box>
+
+              <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                <TabPanel value="7">
+                  <ChartContextProvider>
+                    <LabOrdersTable appointmentInfo={appointmentInfo} shouldDisableEdit={shouldDisableEdit}/>
                   </ChartContextProvider>
                 </TabPanel>
               </Box>
