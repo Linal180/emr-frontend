@@ -29,12 +29,16 @@ import {
   useFetchPatientInsurancesLazyQuery, useGetAppointmentLazyQuery, useGetClaimFileLazyQuery, useGetFacilityLazyQuery,
   useFetchBillingDetailsByAppointmentIdLazyQuery, useGenerateClaimNoLazyQuery, useFindPatientLastAppointmentLazyQuery,
   useFindAppointmentInsuranceStatusLazyQuery,
+  useFindAllPatientProblemsIcdCodeLazyQuery,
 } from "../../../../generated/graphql";
 
 const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submitButtonText, labOrderNumber }) => {
   const { id, appointmentId } = useParams<ParamsType>()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(billingReducer, initialState)
-  const { employment, autoAccident, otherAccident, facilityId, claimNumber, shouldCheckout, claimModalOpen, claimErrorMessages } = state
+  const {
+    employment, autoAccident, otherAccident, facilityId, claimNumber, shouldCheckout, claimModalOpen, claimErrorMessages,
+    tableCodesData
+  } = state
 
   const methods = useForm<CreateBillingProps>({
     mode: "all",
@@ -250,8 +254,40 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
     }
   });
 
+  const [fetchPatientProblems] = useFindAllPatientProblemsIcdCodeLazyQuery({
+    onCompleted: (data) => {
+      const { findAllPatientProblem } = data || {}
+      const { patientProblems, response } = findAllPatientProblem || {}
+      const { status } = response || {}
+      if (status === 200 && patientProblems?.length) {
+        const icdCodes = patientProblems?.map((item) => {
+          const { ICDCode } = item || {}
+          const { code, id, description } = ICDCode || {}
+          return {
+            id: id || "",
+            codeId: code || '',
+            code: code || '',
+            description: description || '',
+            codeType: CodeType.Icd_10Code,
+            price:  0,
+            unit: '0'
+          }
+        })
+
+        const newData = [...(tableCodesData.ICD_10_CODE ?? []), ...icdCodes];
+        const transformedCodes = { ...tableCodesData, [CodeType.Icd_10Code]: newData }
+        transformedCodes && setValue(ITEM_MODULE.icdCodes, newData || [])
+        transformedCodes && dispatch({ type: ActionType.SET_TABLE_CODES_DATA, tableCodesData: transformedCodes })
+      }
+    },
+    onError: () => {
+
+    }
+  })
+
+
   const [fetchBillingDetailsByAppointmentId, { loading: fetchBillingDetailsLoading }] = useFetchBillingDetailsByAppointmentIdLazyQuery({
-    onCompleted(data) {
+    onCompleted: async (data) => {
       if (data) {
         const { fetchBillingDetailsByAppointmentId } = data ?? {}
         const { billing } = fetchBillingDetailsByAppointmentId ?? {}
@@ -305,6 +341,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
             return
           }
         })
+
         transformedCodes && dispatch({ type: ActionType.SET_TABLE_CODES_DATA, tableCodesData: transformedCodes })
 
         otherAccident && dispatch({ type: ActionType.SET_OTHER_ACCIDENT, otherAccident: otherAccident })
@@ -333,9 +370,30 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         servicingProvider?.id && setValue('servicingProvider', setRecord(servicingProvider.id, `${servicingProvider.firstName} ${servicingProvider.lastName}`))
         renderingProvider?.id && setValue('renderingProvider', setRecord(renderingProvider.id, `${renderingProvider.firstName} ${renderingProvider.lastName}`))
         dispatch({ type: ActionType.SET_CLAIM_CREATED, isClaimCreated: !!claim?.id })
+        tableCodesData?.ICD_10_CODE?.length === 0 &&  await fetchIcdCode()
       }
+    },
+    onError: async () => {
+      await fetchIcdCode()
     }
   })
+
+  const [findAppointmentInsuranceStatus] = useFindAppointmentInsuranceStatusLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
+    onCompleted(data) {
+      const { findAppointmentInsuranceStatus } = data || {};
+
+      if (findAppointmentInsuranceStatus) {
+        const { insuranceStatus } = findAppointmentInsuranceStatus
+        const patientPaymentType = insuranceStatus === 'insurance' ? setRecord(PatientPaymentType.Insurance, PatientPaymentType.Insurance) : setRecord(PatientPaymentType.NoInsurance, PatientPaymentType.NoInsurance)
+        insuranceStatus && setValue('paymentType', patientPaymentType)
+        insuranceStatus && dispatch({ type: ActionType.SET_INSURANCE_STATUS, insuranceStatus: patientPaymentType?.id })
+      }
+    }
+  });
 
   const createClaimCallback = useCallback(async (claimMethod?: boolean) => {
     try {
@@ -405,7 +463,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
 
   const fetchBillingDetails = useCallback(async () => {
     try {
-      fetchBillingDetailsByAppointmentId({
+      await fetchBillingDetailsByAppointmentId({
         variables: {
           appointmentId: appointmentId ?? ''
         }
@@ -444,23 +502,6 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
       await generateClaimNo()
     } catch (error) { }
   }, [generateClaimNo])
-
-  const [findAppointmentInsuranceStatus] = useFindAppointmentInsuranceStatusLazyQuery({
-    fetchPolicy: "network-only",
-    nextFetchPolicy: 'no-cache',
-    notifyOnNetworkStatusChange: true,
-
-    onCompleted(data) {
-      const { findAppointmentInsuranceStatus } = data || {};
-
-      if (findAppointmentInsuranceStatus) {
-        const { insuranceStatus } = findAppointmentInsuranceStatus
-        const patientPaymentType = insuranceStatus === 'insurance' ? setRecord(PatientPaymentType.Insurance, PatientPaymentType.Insurance) : setRecord(PatientPaymentType.NoInsurance, PatientPaymentType.NoInsurance)
-        insuranceStatus && setValue('paymentType', patientPaymentType)
-        insuranceStatus && dispatch({ type: ActionType.SET_INSURANCE_STATUS, insuranceStatus: patientPaymentType?.id })
-      }
-    }
-  });
 
   const findInsuranceStatus = useCallback(async () => {
     try {
@@ -538,7 +579,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
     }
   }
 
-  useEffect(() => {
+  const fetchDetail = useCallback(() => {
     if (shouldDisableEdit) {
       fetchBillingDetails()
     } else {
@@ -551,7 +592,20 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
       fetchBillingDetails()
       findInsuranceStatus()
     }
-  }, [fetchAllPatientsProviders, fetchAppointment, fetchPatientInsurances, fetchFacility, shouldDisableEdit, fetchBillingDetails, fetchClaimNumber, fetchPatientAppointment, findInsuranceStatus])
+  }, [
+    fetchBillingDetails, findInsuranceStatus, fetchPatientAppointment, fetchClaimNumber, fetchFacility,
+    fetchAllPatientsProviders, fetchAppointment, fetchPatientInsurances, shouldDisableEdit
+  ])
+
+  const fetchIcdCode = async () => {
+    try {
+      await fetchPatientProblems({ variables: { patientProblemInput: { paginationOptions: { limit: 50, page: 1 }, patientId: id } } })
+    } catch (error) { }
+  }
+
+  useEffect(() => {
+    fetchDetail()
+  }, [fetchDetail])
 
   const isLoading = shouldDisableEdit ? fetchBillingDetailsLoading
     : fetchPatientInsurancesLoading || getAppointmentLoading || getPatientProvidersLoading || getFacilityLoading || generateClaimNoLoading || fetchPatientAppointmentLoading
