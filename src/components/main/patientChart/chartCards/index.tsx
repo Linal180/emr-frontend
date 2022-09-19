@@ -1,33 +1,38 @@
 // packages block
-import { Box, Button, Card, Grid, Tab, } from "@material-ui/core";
+import { useParams } from "react-router";
 import { PrintOutlined } from "@material-ui/icons";
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
+import { Box, Button, Card, Grid, Tab, } from "@material-ui/core";
 import { ChangeEvent, FC, ReactElement, Reducer, useContext, useReducer, useState } from 'react';
 // components block
-import ChartPrintModal from "./ChartModal/ChartPrintModal";
-import ChartSelectionModal from './ChartModal/ChartSelectionModal';
-import AllergyTab from './tabs/AllergyListing';
-import HistoryTab from './tabs/HistoryTab';
-import MedicationTab from './tabs/MedicationsListing';
-import ProblemTab from './tabs/ProblemListing';
-import TriageNoteTab from './tabs/TriageNotesListing';
 import Alert from "../../../common/Alert";
-import Loader from "../../../common/Loader";
+import HistoryTab from './tabs/HistoryTab';
 import VitalTab from './tabs/VitalListing';
+import Loader from "../../../common/Loader";
+import AllergyTab from './tabs/AllergyListing';
+import ProblemTab from './tabs/ProblemListing';
+import MedicationTab from './tabs/MedicationsListing';
+import TriageNoteTab from './tabs/TriageNotesListing';
+import ChartPrintModal from "./ChartModal/ChartPrintModal";
 import LabOrdersTable from "../../../common/patient/labOrders";
+import ConfirmationModal from "../../../common/ConfirmationModal";
+import ChartSelectionModal from './ChartModal/ChartSelectionModal';
 // interfaces, graphql, constants block /styles
-import { useParams } from "react-router";
-import { DISCHARGE, PATIENT_CHARTING_TABS, PATIENT_DISCHARGED_SUCCESS, PRINT_CHART } from "../../../../constants";
-import { AuthContext, ChartContextProvider } from '../../../../context';
-import { AppointmentStatus, useUpdateAppointmentStatusMutation } from "../../../../generated/graphql";
-import { ChartComponentProps, ParamsType } from "../../../../interfacesTypes";
-import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
-import { useChartingStyles } from "../../../../styles/chartingStyles";
-import { BLUE, GRAY_SIMPLE, WHITE } from '../../../../theme';
-import { isAdmin, isOnlyDoctor } from "../../../../utils";
 import { DischargeIcon } from "../../../../assets/svgs";
+import { isAdmin, isOnlyDoctor } from "../../../../utils";
+import { BLUE, GRAY_SIMPLE, WHITE } from '../../../../theme';
+import { useChartingStyles } from "../../../../styles/chartingStyles";
+import { AuthContext, ChartContextProvider } from '../../../../context';
+import { ChartComponentProps, ParamsType } from "../../../../interfacesTypes";
+import { AppointmentStatus, useUpdateAppointmentStatusMutation } from "../../../../generated/graphql";
+import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
+import {
+  DISCHARGE_PATIENT_DESCRIPTION, DISCHARGE, PATIENT_CHARTING_TABS, PATIENT_DISCHARGED, PATIENT_DISCHARGED_SUCCESS,
+  PRINT_CHART,
+  CONFIRMATION_MODAL_TYPE
+} from "../../../../constants";
 
-const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appointmentInfo }): JSX.Element => {
+const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appointmentInfo, fetchAppointment }): JSX.Element => {
   const classes = useChartingStyles()
   const { user } = useContext(AuthContext);
   const { roles } = user || {}
@@ -37,6 +42,7 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
   const [isChartingModalOpen, setIsChartingModalOpen] = useState(false)
   const [modulesToPrint, setModulesToPrint] = useState<string[]>([])
   const [isChartPdfModalOpen, setIsChartPdfModalOpen] = useState<boolean>(false)
+  const [openDelete, setOpenDelete] = useState<boolean>(false)
   const [{ tabValue }, dispatch] =
     useReducer<Reducer<State, Action>>(patientReducer, initialState)
 
@@ -56,7 +62,7 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
         if (response) {
           const { status } = response
           if (status === 200) {
-
+            fetchAppointment && await fetchAppointment()
             Alert.success(PATIENT_DISCHARGED_SUCCESS)
           }
         }
@@ -129,7 +135,7 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
                       size="small"
                       color={"inherit"}
                       startIcon={<DischargeIcon color={isPatientDischarged ? "black" : 'white'} />}
-                      onClick={updateAppointment}
+                      onClick={()=> setOpenDelete(true)}
                       disabled={isPatientDischarged}
                     >
                       <Box component="span" color={isPatientDischarged ? "black" : "white"} >
@@ -210,6 +216,17 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
         isOpen={isChartPdfModalOpen}
         handleClose={() => setIsChartPdfModalOpen(false)}
       />}
+
+      <ConfirmationModal
+        title={PATIENT_DISCHARGED}
+        isOpen={openDelete}
+        isLoading={updateAppointmentStatusLoading}
+        description={DISCHARGE_PATIENT_DESCRIPTION}
+        handleDelete={updateAppointment}
+        actionText={DISCHARGE}
+        modalType={CONFIRMATION_MODAL_TYPE.DISCHARGE}
+        setOpen={(open: boolean) => setOpenDelete(open)}
+      />
     </Box>
   )
 };

@@ -91,3 +91,28 @@ mutation RemovePatientProblem($removeProblem: RemoveProblem!){
     }
   }
 }
+
+
+query FindAllPatientProblemsIcdCode($patientProblemInput: PatientProblemInput!){
+  findAllPatientProblem(patientProblemInput: $patientProblemInput){
+    response {
+      status
+      message
+    }
+    
+    pagination {
+      totalPages
+      page
+    }
+    
+    patientProblems {
+      id
+      
+      ICDCode {
+        id
+        code
+        description
+      }
+    }
+  }
+}
