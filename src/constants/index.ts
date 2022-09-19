@@ -320,6 +320,7 @@ export const FOOD_ALLERGIES = "Food Allergies";
 export const ENVIRONMENTAL_ALLERGIES = "Environmental Allergies";
 export const NO_DRUG_ALLERGIES_RECORDED = "No Drug Allergies Recorded";
 export const NO_FOOD_ALLERGIES_RECORDED = "No Food Allergies Recorded";
+export const NO_SURGICAL_PROCEDURE_RECORDED = "No Surgical Procedure Recorded";
 export const NO_ENVIRONMENTAL_ALLERGIES_RECORDED = "No Environmental Allergies Recorded";
 export const CURRENT = "Current";
 export const ACUITY = "Acuity";
@@ -3359,7 +3360,8 @@ export const MISCELLANEOUS_SETTINGS_ITEMS = [
   }
 ];
 
-export const TELEHEALTH_URL = 'https://doxy.me'
+export const TELEHEALTH_URL = 'https://doxy.me';
+export const EXPRESS_HEALTHCARE_URL ="https://www.expresshealthcaremd.com/wp-content/uploads/2022/04/new-transparent-logo.png";
 
 //Form Builder API urls
 export const USER_FORM_IMAGE_UPLOAD_URL = `/user-form/upload`
