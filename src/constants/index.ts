@@ -5,7 +5,7 @@ import states from "states-us";
 import { v4 as uuid } from "uuid";
 // graphql and interfaces block
 import {
-  AllergiesIcon, CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, HistoryIcon, MedicationIcon, NumberIcon, ProblemsIcon, 
+  AllergiesIcon, CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, HistoryIcon, LabOrderIcon, MedicationIcon, NumberIcon, ProblemsIcon, 
   RadioGroupIcon, SelectIcon, TextAreaIcon, TextIcon, TriageIcon, VitalsIcon
 } from "../assets/svgs";
 import {
@@ -3721,6 +3721,11 @@ export const PATIENT_CHARTING_TABS = [
     icon: HistoryIcon,
     title: "History",
     value: "6",
+  },
+  {
+    icon: LabOrderIcon,
+    title: "Lab Orders",
+    value: "7",
   }
 ]
 
