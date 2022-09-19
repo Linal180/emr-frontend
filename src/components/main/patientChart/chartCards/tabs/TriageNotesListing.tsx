@@ -11,7 +11,7 @@ import TableLoader from "../../../../common/TableLoader";
 //constants, interfaces, utils
 import {
   CONFLICT_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, FORBIDDEN_EXCEPTION, NOTES, PAGE_LIMIT, SAVE_TEXT,
-  TRIAGE_NOTES, VITAL_LIST_PAGE_LIMIT
+  TRIAGE_NOTES, UPDATE_TRIAGE_NOTES, VITAL_LIST_PAGE_LIMIT
 } from "../../../../../constants";
 import InputController from "../../../../../controller";
 import {
@@ -27,7 +27,7 @@ const TriageNoteTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
   const { id, appointmentId } = useParams<ParamsType>()
 
   const [patientStates, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
-  const { page, totalPages, patientTriageNotes, triageNoteId } = patientStates || {}
+  const { page, totalPages, patientTriageNotes, triageNoteId, isTriageNote } = patientStates || {}
   const methods = useForm<PatientTriageNotesInputProps>({ mode: "all" });
   const { handleSubmit, setValue } = methods
 
@@ -115,6 +115,8 @@ const TriageNoteTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
 
         if (status && status === 200) {
           id && dispatch({ type: ActionType.SET_TRIAGE_NOTE_ID, triageNoteId: id })
+          dispatch({ type: ActionType.SET_IS_TRIAGE_NOTE, isTriageNote: false })
+          Alert.success(UPDATE_TRIAGE_NOTES)
         }
       }
     }
@@ -137,6 +139,8 @@ const TriageNoteTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
 
         if (status && status === 200) {
           id && dispatch({ type: ActionType.SET_TRIAGE_NOTE_ID, triageNoteId: id })
+          dispatch({ type: ActionType.SET_IS_TRIAGE_NOTE, isTriageNote: false })
+          Alert.success(UPDATE_TRIAGE_NOTES)
         }
       }
     }
@@ -169,6 +173,10 @@ const TriageNoteTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
     }
   }
 
+  const triageNoteHandler = () => {
+    dispatch({ type: ActionType.SET_IS_TRIAGE_NOTE, isTriageNote: true })
+  }
+
   return (
     <>
       <Grid container spacing={3}>
@@ -197,12 +205,13 @@ const TriageNoteTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
                           loading={loading}
                           controllerName="notes"
                           placeholder={NOTES}
+                          onChange={triageNoteHandler}
                         />
 
                         <Button
                           type='submit'
                           variant="contained" color="primary"
-                          disabled={createTriageNotesLoading || updateTriageNotesLoading}
+                          disabled={createTriageNotesLoading || updateTriageNotesLoading || !isTriageNote || shouldDisableEdit}
                         >
                           {SAVE_TEXT}
                         </Button>

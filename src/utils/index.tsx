@@ -495,6 +495,9 @@ export const aboutToDelete = (recordType: string) =>
 export const aboutToCancel = (recordType: string) =>
   `You are about to cancel ${recordType.toLowerCase()} record`;
 
+export const aboutToDischarge = (recordType: string) =>
+  `You are about to ${recordType.toLowerCase()}`;
+
 
 export const aboutToSign = (recordType: string) =>
   `You are about to sign a patient ${recordType.toLowerCase()}`;

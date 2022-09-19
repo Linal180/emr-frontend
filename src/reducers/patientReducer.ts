@@ -89,6 +89,7 @@ export interface State {
   patientEmail: string;
   patientTriageNotes: TriageNotesPayload['triageNotes'],
   triageNoteId: string
+  isTriageNote: boolean;
 }
 
 export const initialState: State = {
@@ -172,7 +173,8 @@ export const initialState: State = {
   medicationHistoryConsent: false,
   patientEmail: '',
   patientTriageNotes: [],
-  triageNoteId: ''
+  triageNoteId: '',
+  isTriageNote: false
 }
 
 export enum ActionType {
@@ -254,7 +256,8 @@ export enum ActionType {
   SET_MEDICATION_HISTORY_CONSENT = 'setMedicationHistoryConsent',
   SET_PATIENT_EMAIL = 'setPatientEmail',
   SET_PATIENT_TRIAGE_NOTES = 'setPatientTriageNotes',
-  SET_TRIAGE_NOTE_ID = "setTriageNoteId"
+  SET_TRIAGE_NOTE_ID = "setTriageNoteId",
+  SET_IS_TRIAGE_NOTE = "setIsTriageNote",
 }
 
 export type Action =
@@ -337,6 +340,7 @@ export type Action =
   | { type: ActionType.SET_PATIENT_EMAIL; patientEmail: string }
   | { type: ActionType.SET_PATIENT_TRIAGE_NOTES; patientTriageNotes: TriageNotesPayload['triageNotes'] }
   | { type: ActionType.SET_TRIAGE_NOTE_ID; triageNoteId: string }
+  | { type: ActionType.SET_IS_TRIAGE_NOTE; isTriageNote: boolean }
 
 export const patientReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -811,6 +815,12 @@ export const patientReducer = (state: State, action: Action): State => {
       return {
         ...state,
         triageNoteId: action.triageNoteId
+      }
+
+    case ActionType.SET_IS_TRIAGE_NOTE:
+      return {
+        ...state,
+        isTriageNote: action.isTriageNote
       }
 
   }
