@@ -252,7 +252,7 @@ const CheckInComponent = (): JSX.Element => {
           </Button>
         </Box>
 
-        <ChartCards shouldDisableEdit={shouldDisableEdit} status={status} />
+        <ChartCards shouldDisableEdit={shouldDisableEdit} status={status} fetchAppointment={fetchAppointment} />
       </Card>
     </>
 

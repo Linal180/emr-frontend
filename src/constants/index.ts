@@ -5,7 +5,7 @@ import states from "states-us";
 import { v4 as uuid } from "uuid";
 // graphql and interfaces block
 import {
-  AllergiesIcon, CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, HistoryIcon, MedicationIcon, NumberIcon, ProblemsIcon, 
+  AllergiesIcon, CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, HistoryIcon, MedicationIcon, NumberIcon, ProblemsIcon,
   RadioGroupIcon, SelectIcon, TextAreaIcon, TextIcon, TriageIcon, VitalsIcon
 } from "../assets/svgs";
 import {
@@ -1558,6 +1558,7 @@ export const PATIENT_CANCELLED_APPOINTMENT = "Patient cancelled appointment";
 export const PRECONDITION_FAILED_EXCEPTION = "Precondition Failed Exception";
 export const GUARANTOR_NOTE = "Guarantor (Name to whom statements are sent)";
 export const DELETE_APPOINTMENT_DESCRIPTION = "Confirm to delete appointment";
+export const DISCHARGE_PATIENT_DESCRIPTION = "Are you sure you want to discharge the Patient?";
 export const INTERNAL_SERVER_ERROR_EXCEPTION = "InternalServerErrorException";
 export const CANCEL_APPOINTMENT_DESCRIPTION = "Confirm to cancel appointment";
 export const PREFERRED_COMMUNICATION_METHOD = "Preferred Communication Method";
@@ -1601,6 +1602,7 @@ export const CHECKOUT_MODAL_DESCRIPTION = "After checking out, you will not be a
 export const SIGN_RECORD_LEARN_MORE_TEXT = "You are about to sign this document permanently. Are you sure you want to sign this document?";
 export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure you want to delete this record?";
 export const CANCEL_RECORD_LEARN_MORE_TEXT = "You are about to cancel this record permanently. Are you sure you want to cancel this record?";
+export const DISCHARGE_MODAL_PATIENT_DESCRIPTION = "You are about to discharge the patient permanently. Are you sure you want to discharge the patient?";
 export const appointmentCancellationDescription = `Are you sure you want to cancel Devone Lane’s Appointment on 16 Feb, 2022 at time 11:00am?`;
 export const CONSENT_AGREEMENT_LABEL = "I agree to the terms & conditions and hereby, authorize AIMED health facilities to keep my personal health record.";
 export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING2 = "Please consult your personal benefit plan details for any out-of-pocket costs which might apply (if applicable).";
@@ -1875,9 +1877,9 @@ export const PATIENT_EMAIL_PHONE_INFO_MISSING = "Patient Email or Phone Info mis
 export const PATIENT_CANT_BE_INVITED = "Some information is missing. Patient can't be invited";
 export const RESET_TOKEN_EXPIRED = "Reset password token is expired. Please generate a new one!";
 export const WRONG_EMAIL_OR_PASSWORD =
-"You have entered wrong email or password";
+  "You have entered wrong email or password";
 export const PRACTICE_USER_ALREADY_EXISTS =
-"User with this email already exists";
+  "User with this email already exists";
 export const LOGIN_TEXT_MESSAGE =
   "Enter your credentials to login to your portal";
 export const APPOINTMENT_BOOKED_SUCCESSFULLY =
@@ -3094,7 +3096,7 @@ export const LAB_ORDER_STEPS = [
 ];
 
 export const LAB_ORDER_SIDEDRAWER_STEPS = [
-  LAB_ORDER, 
+  LAB_ORDER,
   // TESTS,
   // PAYMENTS
 ];
@@ -3879,4 +3881,10 @@ export const familyRelativeFormDefaultValue = {
   onsetAge: '',
   died: '',
   notes: '',
+}
+
+export enum CONFIRMATION_MODAL_TYPE {
+  DELETE = 'delete',
+  CANCEL = 'cancel',
+  DISCHARGE = 'discharge'
 }

@@ -11,7 +11,7 @@ import { RouteProps } from "react-router-dom";
 import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
 // constants, reducers, graphql block
 import { AutocompleteRenderInputParams } from "@material-ui/lab";
-import { ATTACHMENT_TITLES, ITEM_MODULE } from "../constants";
+import { ATTACHMENT_TITLES, CONFIRMATION_MODAL_TYPE, ITEM_MODULE } from "../constants";
 import {
   AllDoctorPayload, Allergies, AppointmentsPayload, AppointmentStatus, Attachment, AttachmentPayload, AttachmentType, BillingPayload, CodeType, CreateAppointmentInput,
   CreateContactInput, CreateCptFeeScheduleInput, CreateDoctorItemInput, CreateExternalAppointmentItemInput, CreateFeeScheduleInput, CreatePatientAllergyInput, CreatePatientItemInput, CreatePatientMedicationInput, CreatePracticeItemInput, CreateProblemInput,
@@ -153,6 +153,7 @@ export interface DialogTypes {
 
 export interface ConfirmationTypes extends DialogTypes {
   title?: string;
+  modalType?: CONFIRMATION_MODAL_TYPE;
   isSign?: boolean;
   success?: boolean;
   actionText?: string;
@@ -162,9 +163,9 @@ export interface ConfirmationTypes extends DialogTypes {
   learnMoreText?: string
   aboutToText?: string
   isCalendar?: boolean;
-  onSignatureEnd?: (file: File | null) => void;
   cancelText?: string;
   shouldDisplayCancel?: boolean
+  onSignatureEnd?: (file: File | null) => void;
 }
 
 interface ControlLabel {
@@ -1878,7 +1879,8 @@ export interface FormBuilderFacilitySelectorProps extends SelectorProps {
 
 export interface ChartComponentProps {
   shouldDisableEdit?: boolean
-  status?: string
+  status?: string;
+  fetchAppointment?: Function
 }
 
 export interface BillingComponentProps extends GeneralFormProps {
