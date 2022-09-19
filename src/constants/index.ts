@@ -1704,6 +1704,7 @@ export const BILLING_ROUTE = "billing";
 
 
 // HELPER TEXT MESSAGES
+export const UPDATE_TRIAGE_NOTES = "Triage notes is updated successfully."
 export const NO_CAMERA_FOUND = "No Camera found"
 export const OPEN_CAMERA = "Open Camera"
 export const LONG_URL_TEXT = "URL";
