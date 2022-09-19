@@ -886,6 +886,7 @@ export interface LabOrderCreateProps {
 
 export interface LabOrdersTableProps {
   appointmentInfo?: SelectorOption
+  shouldDisableEdit?: boolean
 }
 
 export interface LabOrderInitialScreenProps extends LabOrderCreateProps {
@@ -1881,6 +1882,7 @@ export interface ChartComponentProps {
   shouldDisableEdit?: boolean
   status?: string;
   fetchAppointment?: Function
+  appointmentInfo?: SelectorOption
 }
 
 export interface BillingComponentProps extends GeneralFormProps {
@@ -2027,7 +2029,6 @@ export interface FeeScheduleFormProps {
 export interface CptFeeScheduleFormProps extends FeeScheduleFormProps {
   id: string;
 }
-
 
 export type ClaimStatusForm = Omit<FetchBillingClaimStatusesInput, 'paginationOptions' | 'facilityId' | 'patientId' | 'claimStatusId'> & {
   facility: SelectorOption, patient: SelectorOption, claimStatus: SelectorOption

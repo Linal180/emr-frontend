@@ -202,7 +202,7 @@ const CheckInComponent = (): JSX.Element => {
       case 2:
         return <Chart />
       case 3:
-        return <LabOrders appointmentInfo={appointmentInfo} handleStep={() => handleStep(4)} />
+        return <LabOrders appointmentInfo={appointmentInfo} handleStep={() => handleStep(4)} shouldDisableEdit={shouldDisableEdit} />
       case 4:
       case 5:
         return <BillingComponent shouldDisableEdit={shouldDisableEdit} />
@@ -252,7 +252,7 @@ const CheckInComponent = (): JSX.Element => {
           </Button>
         </Box>
 
-        <ChartCards shouldDisableEdit={shouldDisableEdit} status={status} fetchAppointment={fetchAppointment} />
+        <ChartCards shouldDisableEdit={shouldDisableEdit} status={status} fetchAppointment={fetchAppointment} appointmentInfo={appointmentInfo} />
       </Card>
     </>
 

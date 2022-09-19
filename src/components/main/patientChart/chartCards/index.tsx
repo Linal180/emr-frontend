@@ -14,6 +14,7 @@ import ProblemTab from './tabs/ProblemListing';
 import MedicationTab from './tabs/MedicationsListing';
 import TriageNoteTab from './tabs/TriageNotesListing';
 import ChartPrintModal from "./ChartModal/ChartPrintModal";
+import LabOrdersTable from "../../../common/patient/labOrders";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import ChartSelectionModal from './ChartModal/ChartSelectionModal';
 // interfaces, graphql, constants block /styles
@@ -31,7 +32,7 @@ import {
   CONFIRMATION_MODAL_TYPE
 } from "../../../../constants";
 
-const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, fetchAppointment }): JSX.Element => {
+const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appointmentInfo, fetchAppointment }): JSX.Element => {
   const classes = useChartingStyles()
   const { user } = useContext(AuthContext);
   const { roles } = user || {}
@@ -187,6 +188,14 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, fetchA
                 <TabPanel value="6">
                   <ChartContextProvider>
                     <HistoryTab shouldDisableEdit={shouldDisableEdit} />
+                  </ChartContextProvider>
+                </TabPanel>
+              </Box>
+
+              <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                <TabPanel value="7">
+                  <ChartContextProvider>
+                    <LabOrdersTable appointmentInfo={appointmentInfo} shouldDisableEdit={shouldDisableEdit}/>
                   </ChartContextProvider>
                 </TabPanel>
               </Box>
