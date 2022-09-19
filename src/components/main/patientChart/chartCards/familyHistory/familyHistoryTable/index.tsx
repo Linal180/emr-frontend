@@ -106,14 +106,14 @@ const FamilyHistoryTable: FC<FamilyHistoryProps> = ({ shouldDisableEdit = false 
   return (<Fragment>
     <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
       <Typography variant='h3'>{FAMILY_HISTORY_TEXT}</Typography>
-
+      {!shouldDisableEdit &&
       <Button
         variant='contained' color='primary'
         startIcon={<Box width={20}><AddWhiteIcon /></Box>}
         onClick={() => dispatch({ type: ActionType.SET_OPEN_ADD, openAdd: !openAdd })}
       >
         {ADD_NEW_TEXT}
-      </Button>
+      </Button>}
     </Box>
     <Table aria-label="customized table">
       <TableHead>
@@ -123,7 +123,7 @@ const FamilyHistoryTable: FC<FamilyHistoryProps> = ({ shouldDisableEdit = false 
           {renderTh(ONSET_AGE_TEXT)}
           {renderTh(DIED_TEXT)}
           {renderTh(NOTES)}
-          {renderTh(ACTIONS, "center")}
+          {!shouldDisableEdit && renderTh(ACTIONS, "center")}
         </TableRow>
       </TableHead>
 
@@ -152,7 +152,7 @@ const FamilyHistoryTable: FC<FamilyHistoryProps> = ({ shouldDisableEdit = false 
                       <TableCell>{onsetAge}</TableCell>
                       <TableCell>{died}</TableCell>
                       <TableCell>{notes}</TableCell>
-                      {index === 0 &&
+                      {index === 0 && !shouldDisableEdit &&
                         <TableCell rowSpan={familyHistoryRelatives?.length}>
                           <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                             <Box className={classes.iconsBackground} onClick={() => editHandler(id || '')}>
