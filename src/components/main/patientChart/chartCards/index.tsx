@@ -119,9 +119,8 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status }): JSX
                 </TabList>
 
                 {appointmentId && (isAdminUser || isDoctorUser) &&
-                  <Box pl={2} mt={1} display="flex" justifyContent="flex-start" alignItems="center" width={230}
+                  <Box component="button" border="none" mt={1} width="100%"
                     minHeight={52} bgcolor={isPatientDischarged ? GRAY_SIMPLE : BLUE} borderRadius={4}
-
                   >
                     <Button
                       variant="text"
@@ -130,6 +129,7 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status }): JSX
                       startIcon={<DischargeIcon color={isPatientDischarged ? "black" : 'white'} />}
                       onClick={updateAppointment}
                       disabled={isPatientDischarged}
+                      fullWidth
                     >
                       <Box component="span" color={isPatientDischarged ? "black" : "white"} >
                         {isPatientDischarged ? AppointmentStatus.Discharged : DISCHARGE}
