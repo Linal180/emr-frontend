@@ -17,201 +17,201 @@ import { FamilyHistoryProps, ParamsType } from "../../../../../../interfacesType
 import { familyHistoryReducer, Action, ActionType, State, initialState } from "../../../../../../reducers/familyHistoryReducer";
 import { FamilyHistoriesPayload, useFindAllFamilyHistoryLazyQuery, useRemoveFamilyHistoryMutation } from "../../../../../../generated/graphql";
 import {
-	ACTIONS, ADD_NEW_TEXT, DELETE_FAMILY_DESCRIPTION, DIED_TEXT, FAMILY_HISTORY_TEXT, NAME, NOTES, ONSET_AGE_TEXT,
-	PAGE_LIMIT, RELATIVE
+  ACTIONS, ADD_NEW_TEXT, DELETE_FAMILY_DESCRIPTION, DIED_TEXT, FAMILY_HISTORY_TEXT, NAME, NOTES, ONSET_AGE_TEXT,
+  PAGE_LIMIT, RELATIVE
 } from "../../../../../../constants";
 
 
 const FamilyHistoryTable: FC<FamilyHistoryProps> = ({ shouldDisableEdit = false }): JSX.Element => {
-	const { id: patientId } = useParams<ParamsType>()
-	const classes = useTableStyles()
-	const [state, dispatch] = useReducer<Reducer<State, Action>>(familyHistoryReducer, initialState);
-	const { page, familyHistories, openAdd, totalPages, openDelete, delFamilyId, editFamilyId } = state || {}
+  const { id: patientId } = useParams<ParamsType>()
+  const classes = useTableStyles()
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(familyHistoryReducer, initialState);
+  const { page, familyHistories, openAdd, totalPages, openDelete, delFamilyId, editFamilyId } = state || {}
 
-	const [fetchAllFamilyHistory, { loading, error }] = useFindAllFamilyHistoryLazyQuery({
-		onCompleted: (data) => {
-			const { findAllFamilyHistory } = data || {}
-			const { familyHistories, response, pagination } = findAllFamilyHistory || {}
-			const { status } = response || {};
-			if (status === 200) {
-				const { totalPages } = pagination || {}
-				totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages });
-				if (!!familyHistories?.length) {
-					dispatch({ type: ActionType.SET_FAMILY_HISTORIES, familyHistories: familyHistories as FamilyHistoriesPayload['familyHistories'] })
-				} else {
-					dispatch({ type: ActionType.SET_FAMILY_HISTORIES, familyHistories: [] });
-					dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 });
-				}
+  const [fetchAllFamilyHistory, { loading, error }] = useFindAllFamilyHistoryLazyQuery({
+    onCompleted: (data) => {
+      const { findAllFamilyHistory } = data || {}
+      const { familyHistories, response, pagination } = findAllFamilyHistory || {}
+      const { status } = response || {};
+      if (status === 200) {
+        const { totalPages } = pagination || {}
+        totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages });
+        if (!!familyHistories?.length) {
+          dispatch({ type: ActionType.SET_FAMILY_HISTORIES, familyHistories: familyHistories as FamilyHistoriesPayload['familyHistories'] })
+        } else {
+          dispatch({ type: ActionType.SET_FAMILY_HISTORIES, familyHistories: [] });
+          dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 });
+        }
 
-			}
-		},
-		onError: () => {
-			dispatch({ type: ActionType.SET_FAMILY_HISTORIES, familyHistories: [] });
-			dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 });
-		}
-	})
+      }
+    },
+    onError: () => {
+      dispatch({ type: ActionType.SET_FAMILY_HISTORIES, familyHistories: [] });
+      dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 });
+    }
+  })
 
-	const [removeFamilyHistory, { loading: removeLoading }] = useRemoveFamilyHistoryMutation({
-		onCompleted: async (data) => {
-			const { removeFamilyHistory } = data || {}
-			const { familyHistory, response } = removeFamilyHistory || {}
-			const { status, message } = response || {};
-			const { id } = familyHistory || {}
-			if (status === 200 && id) {
-				dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
-				message && Alert.success(message)
-				await fetchFamilyHistory()
-			}
-		},
-		onError: ({ message }) => {
-			Alert.error(message)
-		}
-	})
+  const [removeFamilyHistory, { loading: removeLoading }] = useRemoveFamilyHistoryMutation({
+    onCompleted: async (data) => {
+      const { removeFamilyHistory } = data || {}
+      const { familyHistory, response } = removeFamilyHistory || {}
+      const { status, message } = response || {};
+      const { id } = familyHistory || {}
+      if (status === 200 && id) {
+        dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
+        message && Alert.success(message)
+        await fetchFamilyHistory()
+      }
+    },
+    onError: ({ message }) => {
+      Alert.error(message)
+    }
+  })
 
-	const handleDelete = (id: string) => {
-		dispatch({ type: ActionType.SET_DEL_FAMILY_ID, delFamilyId: id });
-		dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true });
-	}
+  const handleDelete = (id: string) => {
+    dispatch({ type: ActionType.SET_DEL_FAMILY_ID, delFamilyId: id });
+    dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true });
+  }
 
-	const fetchFamilyHistory = useCallback(async () => {
-		try {
-			const paginationOptions = { page, limit: PAGE_LIMIT }
-			const inputs = { paginationOptions, patientId }
-			await fetchAllFamilyHistory({ variables: { findAllFamilyHistoryInput: inputs } })
-		} catch (error) { }
-	}, [page, patientId, fetchAllFamilyHistory])
+  const fetchFamilyHistory = useCallback(async () => {
+    try {
+      const paginationOptions = { page, limit: PAGE_LIMIT }
+      const inputs = { paginationOptions, patientId }
+      await fetchAllFamilyHistory({ variables: { findAllFamilyHistoryInput: inputs } })
+    } catch (error) { }
+  }, [page, patientId, fetchAllFamilyHistory])
 
-	useEffect(() => {
-		patientId && fetchFamilyHistory()
-	}, [patientId, fetchFamilyHistory])
+  useEffect(() => {
+    patientId && fetchFamilyHistory()
+  }, [patientId, fetchFamilyHistory])
 
-	const handleClose = (open: boolean) => dispatch({ type: ActionType.SET_OPEN_ADD, openAdd: open })
+  const handleClose = (open: boolean) => dispatch({ type: ActionType.SET_OPEN_ADD, openAdd: open })
 
-	const onPageChange = (_: ChangeEvent<unknown>, value: number) => dispatch({
-		type: ActionType.SET_PAGE, page: value
-	});
+  const onPageChange = (_: ChangeEvent<unknown>, value: number) => dispatch({
+    type: ActionType.SET_PAGE, page: value
+  });
 
-	const handleCancelAppointment = async () => {
-		delFamilyId &&
-			await removeFamilyHistory({
-				variables: { removeFamilyHistoryInput: { id: delFamilyId } }
-			})
-	};
+  const handleCancelAppointment = async () => {
+    delFamilyId &&
+      await removeFamilyHistory({
+        variables: { removeFamilyHistoryInput: { id: delFamilyId } }
+      })
+  };
 
-	const editHandler = (id: string) => {
-		dispatch({ type: ActionType.SET_EDIT_FAMILY_ID, editFamilyId: id });
-		dispatch({ type: ActionType.SET_OPEN_ADD, openAdd: true });
-	}
+  const editHandler = (id: string) => {
+    dispatch({ type: ActionType.SET_EDIT_FAMILY_ID, editFamilyId: id });
+    dispatch({ type: ActionType.SET_OPEN_ADD, openAdd: true });
+  }
 
-	return (<Fragment>
-		<Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
-			<Typography variant='h3'>{FAMILY_HISTORY_TEXT}</Typography>
+  return (<Fragment>
+    <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
+      <Typography variant='h3'>{FAMILY_HISTORY_TEXT}</Typography>
 
-			<Button
-				variant='contained' color='primary'
-				startIcon={<Box width={20}><AddWhiteIcon /></Box>}
-				onClick={() => dispatch({ type: ActionType.SET_OPEN_ADD, openAdd: !openAdd })}
-			>
-				{ADD_NEW_TEXT}
-			</Button>
-		</Box>
-		<Table aria-label="customized table">
-			<TableHead>
-				<TableRow>
-					{renderTh(NAME)}
-					{renderTh(RELATIVE)}
-					{renderTh(ONSET_AGE_TEXT)}
-					{renderTh(DIED_TEXT)}
-					{renderTh(NOTES)}
-					{renderTh(ACTIONS, "center")}
-				</TableRow>
-			</TableHead>
+      <Button
+        variant='contained' color='primary'
+        startIcon={<Box width={20}><AddWhiteIcon /></Box>}
+        onClick={() => dispatch({ type: ActionType.SET_OPEN_ADD, openAdd: !openAdd })}
+      >
+        {ADD_NEW_TEXT}
+      </Button>
+    </Box>
+    <Table aria-label="customized table">
+      <TableHead>
+        <TableRow>
+          {renderTh(NAME)}
+          {renderTh(RELATIVE)}
+          {renderTh(ONSET_AGE_TEXT)}
+          {renderTh(DIED_TEXT)}
+          {renderTh(NOTES)}
+          {renderTh(ACTIONS, "center")}
+        </TableRow>
+      </TableHead>
 
-			<TableBody>
-				{loading ? (
-					<TableRow>
-						<TableCell colSpan={10}>
-							<TableLoader numberOfRows={4} numberOfColumns={4} />
-						</TableCell>
-					</TableRow>
-				) : (
-					familyHistories?.map((history) => {
-						const { id, name, familyHistoryRelatives } = history || {};
+      <TableBody>
+        {loading ? (
+          <TableRow>
+            <TableCell colSpan={10}>
+              <TableLoader numberOfRows={4} numberOfColumns={4} />
+            </TableCell>
+          </TableRow>
+        ) : (
+          familyHistories?.map((history) => {
+            const { id, name, familyHistoryRelatives } = history || {};
 
-						return (
-							<Fragment>
-								{familyHistoryRelatives?.map((family, index) => {
-									const { died, notes, onsetAge, relativeName } = family || {}
-									return (
-										<TableRow>
-											{index === 0 &&
-												<TableCell rowSpan={familyHistoryRelatives?.length}>
-													{name}
-												</TableCell>}
-											<TableCell>{relativeName}</TableCell>
-											<TableCell>{onsetAge}</TableCell>
-											<TableCell>{died}</TableCell>
-											<TableCell>{notes}</TableCell>
-											{index === 0 &&
-												<TableCell rowSpan={familyHistoryRelatives?.length}>
-													<Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-														<Box className={classes.iconsBackground} onClick={() => editHandler(id || '')}>
-															<EditIcon />
-														</Box>
-														<Box className={classes.iconsBackground} onClick={() => handleDelete(id || '')}>
-															<TrashNewIcon />
-														</Box>
-													</Box>
-												</TableCell>}
-										</TableRow>
-									)
-								})}
-							</Fragment>
-						)
-					})
-				)}
-			</TableBody>
-		</Table>
+            return (
+              <Fragment>
+                {familyHistoryRelatives?.map((family, index) => {
+                  const { died, notes, onsetAge, relativeName } = family || {}
+                  return (
+                    <TableRow>
+                      {index === 0 &&
+                        <TableCell rowSpan={familyHistoryRelatives?.length}>
+                          {name}
+                        </TableCell>}
+                      <TableCell style={{ paddingLeft: index === 0 ? 'inherited' : 10 }}>{relativeName}</TableCell>
+                      <TableCell>{onsetAge}</TableCell>
+                      <TableCell>{died}</TableCell>
+                      <TableCell>{notes}</TableCell>
+                      {index === 0 &&
+                        <TableCell rowSpan={familyHistoryRelatives?.length}>
+                          <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
+                            <Box className={classes.iconsBackground} onClick={() => editHandler(id || '')}>
+                              <EditIcon />
+                            </Box>
+                            <Box className={classes.iconsBackground} onClick={() => handleDelete(id || '')}>
+                              <TrashNewIcon />
+                            </Box>
+                          </Box>
+                        </TableCell>}
+                    </TableRow>
+                  )
+                })}
+              </Fragment>
+            )
+          })
+        )}
+      </TableBody>
+    </Table>
 
-		{((!loading && familyHistories?.length === 0) || error) &&
-			<Box display="flex" justifyContent="center" pb={12} pt={5}>
-				<NoDataFoundComponent />
-			</Box>
-		}
+    {((!loading && familyHistories?.length === 0) || error) &&
+      <Box display="flex" justifyContent="center" pb={12} pt={5}>
+        <NoDataFoundComponent />
+      </Box>
+    }
 
-		{totalPages > 1 && (
-			<Box display="flex" justifyContent="flex-end" p={3}>
-				<Pagination
-					shape="rounded"
-					variant="outlined"
-					page={page}
-					count={totalPages}
-					onChange={onPageChange}
-				/>
-			</Box>
-		)}
+    {totalPages > 1 && (
+      <Box display="flex" justifyContent="flex-end" p={3}>
+        <Pagination
+          shape="rounded"
+          variant="outlined"
+          page={page}
+          count={totalPages}
+          onChange={onPageChange}
+        />
+      </Box>
+    )}
 
-		<ConfirmationModal
-			title={FAMILY_HISTORY_TEXT}
-			isOpen={openDelete}
-			isLoading={removeLoading}
-			description={DELETE_FAMILY_DESCRIPTION}
-			handleDelete={handleCancelAppointment}
-			setOpen={(open: boolean) => dispatch({
-				type: ActionType.SET_OPEN_DELETE, openDelete: open
-			})}
-		/>
+    <ConfirmationModal
+      title={FAMILY_HISTORY_TEXT}
+      isOpen={openDelete}
+      isLoading={removeLoading}
+      description={DELETE_FAMILY_DESCRIPTION}
+      handleDelete={handleCancelAppointment}
+      setOpen={(open: boolean) => dispatch({
+        type: ActionType.SET_OPEN_DELETE, openDelete: open
+      })}
+    />
 
-		<FamilyHistoryForm
-			isOpen={openAdd}
-			id={editFamilyId}
-			isEdit={!!editFamilyId}
-			handleClose={handleClose}
-			fetchFamilyHistory={fetchFamilyHistory}
-		/>
+    <FamilyHistoryForm
+      isOpen={openAdd}
+      id={editFamilyId}
+      isEdit={!!editFamilyId}
+      handleClose={handleClose}
+      fetchFamilyHistory={fetchFamilyHistory}
+    />
 
-	</Fragment>
-	)
+  </Fragment>
+  )
 }
 
 export default FamilyHistoryTable

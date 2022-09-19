@@ -1152,6 +1152,13 @@ export const appointmentStatus = (status: string) => {
         textColor: DARK_GREEN
       }
 
+    case AppointmentStatus.Checkout:
+      return {
+        text: formatValue(AppointmentStatus.Checkout),
+        bgColor: DARK_GREEN_RGBA,
+        textColor: DARK_GREEN
+      }
+
     case AppointmentStatus.InLobby:
       return {
         text: formatValue(AppointmentStatus.InLobby),
@@ -1331,7 +1338,7 @@ export const getFormatDate = (date: Maybe<string> | undefined) => {
 
 export const getFormatDateString = (date: Maybe<string> | undefined, format = "YYYY-MM-DD") => {
   if (!date) return '';
-  return moment(date).format(format).toString()
+  return moment(date).format(format)
 };
 
 export const dobDateFormat = (date: Maybe<string> | undefined, format = "MM-DD-YYYY") => {
@@ -1938,6 +1945,9 @@ export const getAppointmentStatus = (status: string) => {
     case formatValue(AppointmentStatus.Discharged):
       return AppointmentStatus.Discharged;
 
+    case formatValue(AppointmentStatus.Checkout):
+      return AppointmentStatus.Checkout;
+
     case formatValue(AppointmentStatus.InLobby):
       return AppointmentStatus.InLobby;
 
@@ -1972,6 +1982,13 @@ export const getCheckInStatus = (
   }
 
   if (status === AppointmentStatus.Discharged) {
+    return {
+      stage: 'Discharged',
+      stageColor: GREEN
+    }
+  }
+
+  if (status === AppointmentStatus.Checkout) {
     return {
       stage: 'Completed',
       stageColor: GREEN
@@ -2032,6 +2049,7 @@ export const AppointmentStatusStateMachine = (
         AppointmentStatus.InSession,
         AppointmentStatus.NoShow,
         AppointmentStatus.Discharged,
+        AppointmentStatus.Checkout,
         AppointmentStatus.Cancelled
       ], id
     )
@@ -2046,6 +2064,7 @@ export const AppointmentStatusStateMachine = (
       AppointmentStatus.InSession,
       AppointmentStatus.NoShow,
       AppointmentStatus.Discharged,
+      AppointmentStatus.Checkout,
       AppointmentStatus.Cancelled
     ], id
   )
@@ -2152,6 +2171,7 @@ export const hasEncounter = (status: AppointmentStatus) => {
     && status !== AppointmentStatus.NoShow
     && status !== AppointmentStatus.Scheduled
     && status !== AppointmentStatus.Discharged
+    && status !== AppointmentStatus.Checkout
 }
 
 export function sortingArray<arrayType>(array: arrayType, by: string, order: Order): arrayType {

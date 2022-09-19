@@ -370,6 +370,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     return status === AppointmentStatus.Cancelled
       || status === AppointmentStatus.NoShow
       || status === AppointmentStatus.Discharged
+      || status === AppointmentStatus.Checkout
   };
 
   const renderIcon = () => <IconButton className={`py-0 ml-5 rotate-Icon ${sortBy === ASC ? 'to-180' : ''}`}
@@ -408,17 +409,17 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
       <Box>
         <Box my={2}>
           <Grid container spacing={3}>
-            <Grid item md={4} sm={12} xs={12}>
+            <Grid item md={3} sm={12} xs={12}>
               <Box mt={2}>
                 <Search search={search} info tooltipData={AppointmentSearchingTooltipData} />
               </Box>
             </Grid>
 
-            <Grid item md={8} sm={12} xs={12}>
+            <Grid item md={9} sm={12} xs={12}>
               <FormProvider {...methods}>
                 <Grid container spacing={3}>
                   {isAdminUser &&
-                    <Grid item md={4} sm={12} xs={12}>
+                    <Grid item md={3} sm={12} xs={12}>
                       <FacilitySelector
                         addEmpty
                         label={FACILITY}
@@ -429,7 +430,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                     </Grid>
                   }
 
-                  <Grid item md={4} sm={12} xs={12}>
+                  <Grid item md={3} sm={12} xs={12}>
                     <ServicesSelector
                       name="serviceId"
                       label={APPOINTMENT_TYPE}
@@ -437,7 +438,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                     />
                   </Grid>
 
-                  <Grid item md={isAdminUser ? 4 : 8} sm={12} xs={12}>
+                  <Grid item md={isAdminUser ? 6 : 8} sm={12} xs={12}>
                     <Box className="date-box-wrap">
                       <Typography variant="body1" color="textPrimary">{DATE}</Typography>
 
@@ -570,7 +571,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                                   isEdit={isEdit}
                                 />
                               </FormProvider>
-                              : <Box p={0} onClick={() => id && status !== AppointmentStatus.Discharged &&
+                              : <Box p={0} onClick={() => id && status !== AppointmentStatus.Discharged && status !== AppointmentStatus.Checkout &&
                                 handleStatusUpdate(id, text)}
                                 className={`${classes.status} pointer-cursor`}
                                 component='span' color={textColor}
@@ -629,10 +630,10 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                               </Box>
                             }
 
-                            <Box className={`${status === AppointmentStatus.Cancelled || status === AppointmentStatus.Discharged ? classes.iconsBackgroundDisabled : classes.iconsBackground}`}>
+                            <Box className={`${status === AppointmentStatus.Cancelled || status === AppointmentStatus.Discharged || status === AppointmentStatus.Checkout ? classes.iconsBackgroundDisabled : classes.iconsBackground}`}>
                               <Button
                                 onClick={() => id && handleAppointmentReminder(id, email, phone)}
-                                disabled={status === AppointmentStatus.Cancelled || status === AppointmentStatus.Discharged}
+                                disabled={status === AppointmentStatus.Cancelled || status === AppointmentStatus.Discharged || status === AppointmentStatus.Checkout}
                               >
                                 <BellIconNew />
                               </Button>
