@@ -44,7 +44,7 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
   const { roles, facility } = user || {};
   const [state, dispatch] = useReducer<Reducer<State, Action>>(agreementReducer, initialState)
   const { agreementId, agreementBody, signatureRequired, viewAgreementBeforeAgreeing,
-    descriptionType, isLoaded, withFile, files, bodyStatus, cameraOpen
+    descriptionType, isLoaded, withFile, files, cameraOpen
   } = state
 
   const { id: facilityId, practice } = facility || {};
@@ -177,6 +177,7 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
     }
     if ((descriptionType === descriptionTypes[0] && !agreementBody.length)) {
       dispatch({ type: ActionType.SET_BODY_STATUS, bodyStatus: true })
+      return Alert.error(AGREEMENT_BODY_REQUIRED)
     }
 
     if ((descriptionType === descriptionTypes[1] && !files?.length)) {
@@ -215,7 +216,7 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
               />
             </Box>
           </Box>
-          
+
           <Box p={2} display="flex" justifyContent="space-between" alignItems="center">
             <Typography variant="h4" color='textPrimary'>{AGREEMENTS}</Typography>
 
@@ -278,9 +279,9 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
                       data={agreementBody}
                       onChange={(_: any, editor: ClassicEditor) => onEditorChange(editor)}
                     />
-
+                    {/* 
                     {bodyStatus &&
-                      <Typography className='danger' variant="caption">{AGREEMENT_BODY_REQUIRED}</Typography>}
+                      <Typography className='danger' variant="caption">{AGREEMENT_BODY_REQUIRED}</Typography>} */}
                   </Grid>}
 
                   <Box p={2} />
