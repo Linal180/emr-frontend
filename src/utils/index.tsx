@@ -495,6 +495,9 @@ export const aboutToDelete = (recordType: string) =>
 export const aboutToCancel = (recordType: string) =>
   `You are about to cancel ${recordType.toLowerCase()} record`;
 
+export const aboutToDischarge = (recordType: string) =>
+  `You are about to ${recordType.toLowerCase()}`;
+
 
 export const aboutToSign = (recordType: string) =>
   `You are about to sign a patient ${recordType.toLowerCase()}`;
@@ -1338,7 +1341,7 @@ export const getFormatDate = (date: Maybe<string> | undefined) => {
 
 export const getFormatDateString = (date: Maybe<string> | undefined, format = "YYYY-MM-DD") => {
   if (!date) return '';
-  return moment(date).format(format).toString()
+  return moment(date).format(format)
 };
 
 export const dobDateFormat = (date: Maybe<string> | undefined, format = "MM-DD-YYYY") => {

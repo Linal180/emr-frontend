@@ -5,8 +5,8 @@ import states from "states-us";
 import { v4 as uuid } from "uuid";
 // graphql and interfaces block
 import {
-  AllergiesIcon, CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, HistoryIcon, MedicationIcon, NumberIcon, ProblemsIcon, 
-  RadioGroupIcon, SelectIcon, TextAreaIcon, TextIcon, TriageIcon, VitalsIcon
+  AllergiesIcon, CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, HistoryIcon, LabOrderIcon, MedicationIcon,
+  NumberIcon, ProblemsIcon, RadioGroupIcon, SelectIcon, TextAreaIcon, TextIcon, TriageIcon, VitalsIcon
 } from "../assets/svgs";
 import {
   AbnormalFlag, AllergySeverity, AppointmentStatus, Communicationtype, CopayType, DoctorPatientRelationType, ElementType,
@@ -320,6 +320,7 @@ export const FOOD_ALLERGIES = "Food Allergies";
 export const ENVIRONMENTAL_ALLERGIES = "Environmental Allergies";
 export const NO_DRUG_ALLERGIES_RECORDED = "No Drug Allergies Recorded";
 export const NO_FOOD_ALLERGIES_RECORDED = "No Food Allergies Recorded";
+export const NO_SURGICAL_PROCEDURE_RECORDED = "No Surgical Procedure Recorded";
 export const NO_ENVIRONMENTAL_ALLERGIES_RECORDED = "No Environmental Allergies Recorded";
 export const CURRENT = "Current";
 export const ACUITY = "Acuity";
@@ -1465,6 +1466,7 @@ export const REMOVE_COPAY_AMOUNT = "Remove Copay Amount";
 export const NOT_FOUND_EXCEPTION = "Not Found Exception";
 export const FORBIDDEN_EXCEPTION = "Forbidden Exception";
 export const SEARCH_FOR_PROBLEMS = "Search for Problems";
+export const SEARCH_FOR_DISEASE = "Search for Disease";
 export const CONTACT_INFORMATION = "Contact Information";
 export const PREVIOUS_FIRST_NAME = "Previous First Name";
 export const INDIVIDUAL_NAME = "Individual Name / Trust";
@@ -1557,6 +1559,7 @@ export const PATIENT_CANCELLED_APPOINTMENT = "Patient cancelled appointment";
 export const PRECONDITION_FAILED_EXCEPTION = "Precondition Failed Exception";
 export const GUARANTOR_NOTE = "Guarantor (Name to whom statements are sent)";
 export const DELETE_APPOINTMENT_DESCRIPTION = "Confirm to delete appointment";
+export const DISCHARGE_PATIENT_DESCRIPTION = "Are you sure you want to discharge the Patient?";
 export const INTERNAL_SERVER_ERROR_EXCEPTION = "InternalServerErrorException";
 export const CANCEL_APPOINTMENT_DESCRIPTION = "Confirm to cancel appointment";
 export const PREFERRED_COMMUNICATION_METHOD = "Preferred Communication Method";
@@ -1706,6 +1709,7 @@ export const BILLING_ROUTE = "billing";
 
 
 // HELPER TEXT MESSAGES
+export const UPDATE_TRIAGE_NOTES = "Triage notes is updated successfully."
 export const NO_CAMERA_FOUND = "No Camera found"
 export const OPEN_CAMERA = "Open Camera"
 export const LONG_URL_TEXT = "URL";
@@ -1876,9 +1880,9 @@ export const PATIENT_EMAIL_PHONE_INFO_MISSING = "Patient Email or Phone Info mis
 export const PATIENT_CANT_BE_INVITED = "Some information is missing. Patient can't be invited";
 export const RESET_TOKEN_EXPIRED = "Reset password token is expired. Please generate a new one!";
 export const WRONG_EMAIL_OR_PASSWORD =
-"You have entered wrong email or password";
+  "You have entered wrong email or password";
 export const PRACTICE_USER_ALREADY_EXISTS =
-"User with this email already exists";
+  "User with this email already exists";
 export const LOGIN_TEXT_MESSAGE =
   "Enter your credentials to login to your portal";
 export const APPOINTMENT_BOOKED_SUCCESSFULLY =
@@ -3095,7 +3099,7 @@ export const LAB_ORDER_STEPS = [
 ];
 
 export const LAB_ORDER_SIDEDRAWER_STEPS = [
-  LAB_ORDER, 
+  LAB_ORDER,
   // TESTS,
   // PAYMENTS
 ];
@@ -3358,7 +3362,8 @@ export const MISCELLANEOUS_SETTINGS_ITEMS = [
   }
 ];
 
-export const TELEHEALTH_URL = 'https://doxy.me'
+export const TELEHEALTH_URL = 'https://doxy.me';
+export const EXPRESS_HEALTHCARE_URL = "https://www.expresshealthcaremd.com/wp-content/uploads/2022/04/new-transparent-logo.png";
 
 //Form Builder API urls
 export const USER_FORM_IMAGE_UPLOAD_URL = `/user-form/upload`
@@ -3723,6 +3728,11 @@ export const PATIENT_CHARTING_TABS = [
     icon: HistoryIcon,
     title: "History",
     value: "6",
+  },
+  {
+    icon: LabOrderIcon,
+    title: "Lab Orders",
+    value: "7",
   }
 ]
 
@@ -3880,4 +3890,10 @@ export const familyRelativeFormDefaultValue = {
   onsetAge: '',
   died: '',
   notes: '',
+}
+
+export enum CONFIRMATION_MODAL_TYPE {
+  DELETE = 'delete',
+  CANCEL = 'cancel',
+  DISCHARGE = 'discharge'
 }

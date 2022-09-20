@@ -1,6 +1,6 @@
 // packages block
 import {
-  Box, Button, Card, Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography
+  Box, Button, Card, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography
 } from "@material-ui/core";
 import { Pagination } from "@material-ui/lab";
 import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer } from "react";
@@ -138,111 +138,105 @@ const SurgicalHistoryTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
 
   return (
     <>
-      <Grid container spacing={3}>
-        <Grid item md={12} sm={12} xs={12}>
-          <Card>
-            <Box className={classes.cardBox}>
-              <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
-                <Typography variant='h3'>{SURGICAL_HISTORY_TEXT}</Typography>
+      <Card>
+        <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
+          <Typography variant='h3'>{SURGICAL_HISTORY_TEXT}</Typography>
 
-                {!shouldDisableEdit &&
-                  <Button
-                    variant='contained' color='primary'
-                    startIcon={<Box width={20}><AddWhiteIcon /></Box>}
-                    onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
-                    {ADD_NEW_TEXT}
-                  </Button>}
-              </Box>
+          {!shouldDisableEdit &&
+            <Button
+              variant='contained' color='primary'
+              startIcon={<Box width={20}><AddWhiteIcon /></Box>}
+              onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
+              {ADD_NEW_TEXT}
+            </Button>}
+        </Box>
 
-              <Box className={classes.tableBox}>
-                <Table aria-label="customized table" className={classesTable.table}>
-                  <TableHead>
-                    <TableRow>
-                      {renderTh(PROCEDURE_TEXT)}
-                      {renderTh(SURGERY_DATE)}
-                      {renderTh(NOTES)}
-                      {!shouldDisableEdit && renderTh(ACTIONS)}
-                    </TableRow>
-                  </TableHead>
+        <Box className={classes.tableBox}>
+          <Table aria-label="customized table" className={classesTable.table}>
+            <TableHead>
+              <TableRow>
+                {renderTh(PROCEDURE_TEXT)}
+                {renderTh(SURGERY_DATE)}
+                {renderTh(NOTES)}
+                {!shouldDisableEdit && renderTh(ACTIONS)}
+              </TableRow>
+            </TableHead>
 
-                  {loading ? (
-                    <TableRow>
-                      <TableCell colSpan={8}>
-                        <TableLoader numberOfRows={EIGHT_PAGE_LIMIT} numberOfColumns={5} />
+            {loading ? (
+              <TableRow>
+                <TableCell colSpan={8}>
+                  <TableLoader numberOfRows={EIGHT_PAGE_LIMIT} numberOfColumns={5} />
+                </TableCell>
+              </TableRow>
+            ) : <TableBody>
+              {patientSurgicalHistory?.map((patientSurgicalHistory) => {
+                const { id, code, codeType, description, notes, surgeryDate } = patientSurgicalHistory ?? {}
+                const codeInfo = {
+                  code,
+                  description,
+                  codeType
+                } as SurgicalCode
+                return (
+                  <TableRow>
+                    <TableCell scope="row">
+                      <Typography>{`${code} | ${description}` ?? DASHES}</Typography>
+                    </TableCell>
+
+                    <TableCell scope="row">
+                      <Typography>{getFormatDateString(surgeryDate, "MM/DD/YYYY") ?? DASHES}</Typography>
+                    </TableCell>
+
+                    <TableCell scope="row">
+                      <Typography className={classes.textOverflow}>{notes}</Typography>
+                    </TableCell>
+
+                    {
+                      !shouldDisableEdit && <TableCell scope="row">
+                        <Box display='flex' alignItems='center'>
+                          <IconButton size='small' onClick={() => id && handleEdit(id, codeInfo)}>
+                            <EditOutlinedIcon />
+                          </IconButton>
+
+                          <IconButton size='small' onClick={() => id && onDeleteClick(id)}>
+                            <TrashOutlinedSmallIcon />
+                          </IconButton>
+                        </Box>
                       </TableCell>
-                    </TableRow>
-                  ) : <TableBody>
-                    {patientSurgicalHistory?.map((patientSurgicalHistory) => {
-                      const { id, code, codeType, description, notes, surgeryDate } = patientSurgicalHistory ?? {}
-                      const codeInfo = {
-                        code,
-                        description,
-                        codeType
-                      } as SurgicalCode
-                      return (
-                        <TableRow>
-                          <TableCell scope="row">
-                            <Typography>{`${code} | ${description}` ?? DASHES}</Typography>
-                          </TableCell>
+                    }
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+            }
+          </Table>
 
-                          <TableCell scope="row">
-                            <Typography>{getFormatDateString(surgeryDate, "MM/DD/YYYY") ?? DASHES}</Typography>
-                          </TableCell>
-
-                          <TableCell scope="row">
-                            <Typography className={classes.textOverflow}>{notes}</Typography>
-                          </TableCell>
-
-                          {
-                            !shouldDisableEdit && <TableCell scope="row">
-                              <Box display='flex' alignItems='center'>
-                                <IconButton size='small' onClick={() => id && handleEdit(id, codeInfo)}>
-                                  <EditOutlinedIcon />
-                                </IconButton>
-
-                                <IconButton size='small' onClick={() => id && onDeleteClick(id)}>
-                                  <TrashOutlinedSmallIcon />
-                                </IconButton>
-                              </Box>
-                            </TableCell>
-                          }
-                        </TableRow>
-                      )
-                    })}
-                  </TableBody>
-                  }
-                </Table>
-
-                {((!loading && patientSurgicalHistory?.length === 0) || error) && (
-                  <Box display="flex" justifyContent="center" pb={12} pt={5}>
-                    <NoDataFoundComponent />
-                  </Box>
-                )}
-              </Box>
+          {((!loading && patientSurgicalHistory?.length === 0) || error) && (
+            <Box display="flex" justifyContent="center" pb={12} pt={5}>
+              <NoDataFoundComponent />
             </Box>
-          </Card>
-        </Grid>
+          )}
+        </Box>
+      </Card>
 
-        <ConfirmationModal
-          title={SURGICAL_HISTORY_TEXT}
-          isOpen={openDelete}
-          isLoading={removeSurgicalHistoryLoading}
-          description={DELETE_SURGICAL_HISTORY_DESCRIPTION}
-          handleDelete={handleDelete}
-          setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
-        />
+      <ConfirmationModal
+        title={SURGICAL_HISTORY_TEXT}
+        isOpen={openDelete}
+        isLoading={removeSurgicalHistoryLoading}
+        description={DELETE_SURGICAL_HISTORY_DESCRIPTION}
+        handleDelete={handleDelete}
+        setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
+      />
 
-        {isSubModalOpen && <SurgicalHistoryModal
-          item={selectedItem}
-          dispatcher={dispatch}
-          isEdit
-          recordId={itemId}
-          fetch={async () => fetchSurgicalHistory()}
-          handleClose={handleEditModalClose}
-          isOpen={isSubModalOpen}
-        />
-        }
-      </Grid>
+      {isSubModalOpen && <SurgicalHistoryModal
+        item={selectedItem}
+        dispatcher={dispatch}
+        isEdit
+        recordId={itemId}
+        fetch={async () => fetchSurgicalHistory()}
+        handleClose={handleEditModalClose}
+        isOpen={isSubModalOpen}
+      />
+      }
 
       {isOpen &&
         <AddSurgicalHistory isOpen={isOpen} handleModalClose={handleModalClose} fetch={() => fetchSurgicalHistory()} />}

@@ -29,7 +29,7 @@ import { useTableStyles } from "../../../../styles/tableStyles";
 import { appointmentStatus, convertDateFromUnix, formatValue, renderTh } from "../../../../utils";
 import LabTestModal from "../../../main/reports/labResultsListing/LabTestModal";
 
-const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Element => {
+const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisableEdit }): JSX.Element => {
   const classes = useTableStyles();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(labReducer, initialState)
   const { isStickerModalOpen, labOrders, page, pages, searchQuery, stickerOrder, isEdit, drawerOpened, labTestIds, labTestsToEdit, orderNum } = state
@@ -186,7 +186,7 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Eleme
                 <Search search={search} />
               </Box>
 
-              <Box mb={2}>
+              {!shouldDisableEdit && <Box mb={2}>
                 <Button variant="outlined"
                   color="inherit" className='blue-button-new'
                   startIcon={<Box width={20}><Add /></Box>}
@@ -195,7 +195,7 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Eleme
                 >
                   {MANUAL_ENTRY}
                 </Button>
-              </Box>
+              </Box>}
             </Box>
 
 
@@ -234,7 +234,7 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Eleme
                     return (
                       <TableRow>
                         <TableCell scope="row">
-                          <Box className="pointer-cursor" onClick={() => handleLabOrderEdit(orderNumber || '', labOrders)}>
+                          <Box className={shouldDisableEdit ? "" : "pointer-cursor"} onClick={shouldDisableEdit ? () => { } : () => handleLabOrderEdit(orderNumber || '', labOrders)}>
                             <Typography color='secondary'>
                               {orderNumber}
                             </Typography>
@@ -244,7 +244,7 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo }): JSX.Eleme
                             </Link> */}
                         </TableCell>
                         <TableCell scope="row">
-                          {appointmentType?.name ? `${appointmentType?.name ?? ''}  ${convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm:ss')}` : '- -'}
+                          {appointmentType?.name ? `${appointmentType?.name ?? ''}  ${convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm:ss A')}` : '- -'}
                         </TableCell>
                         <TableCell scope="row">
                           <ul>

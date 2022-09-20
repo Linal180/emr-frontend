@@ -7674,6 +7674,13 @@ export type RemovePatientProblemMutationVariables = Exact<{
 
 export type RemovePatientProblemMutation = { __typename?: 'Mutation', removePatientProblem: { __typename?: 'PatientProblemPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null } };
 
+export type FindAllPatientProblemsIcdCodeQueryVariables = Exact<{
+  patientProblemInput: PatientProblemInput;
+}>;
+
+
+export type FindAllPatientProblemsIcdCodeQuery = { __typename?: 'Query', findAllPatientProblem: { __typename?: 'PatientProblemsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null, page?: number | null } | null, patientProblems?: Array<{ __typename?: 'PatientProblems', id: string, ICDCode?: { __typename?: 'ICDCodes', id: string, code: string, description?: string | null } | null } | null> | null } };
+
 export type SearchSnoMedCodesQueryVariables = Exact<{
   searchSnoMedCodesInput: SearchSnoMedCodesInput;
 }>;
@@ -12720,6 +12727,56 @@ export function useRemovePatientProblemMutation(baseOptions?: Apollo.MutationHoo
 export type RemovePatientProblemMutationHookResult = ReturnType<typeof useRemovePatientProblemMutation>;
 export type RemovePatientProblemMutationResult = Apollo.MutationResult<RemovePatientProblemMutation>;
 export type RemovePatientProblemMutationOptions = Apollo.BaseMutationOptions<RemovePatientProblemMutation, RemovePatientProblemMutationVariables>;
+export const FindAllPatientProblemsIcdCodeDocument = gql`
+    query FindAllPatientProblemsIcdCode($patientProblemInput: PatientProblemInput!) {
+  findAllPatientProblem(patientProblemInput: $patientProblemInput) {
+    response {
+      status
+      message
+    }
+    pagination {
+      totalPages
+      page
+    }
+    patientProblems {
+      id
+      ICDCode {
+        id
+        code
+        description
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllPatientProblemsIcdCodeQuery__
+ *
+ * To run a query within a React component, call `useFindAllPatientProblemsIcdCodeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllPatientProblemsIcdCodeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllPatientProblemsIcdCodeQuery({
+ *   variables: {
+ *      patientProblemInput: // value for 'patientProblemInput'
+ *   },
+ * });
+ */
+export function useFindAllPatientProblemsIcdCodeQuery(baseOptions: Apollo.QueryHookOptions<FindAllPatientProblemsIcdCodeQuery, FindAllPatientProblemsIcdCodeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllPatientProblemsIcdCodeQuery, FindAllPatientProblemsIcdCodeQueryVariables>(FindAllPatientProblemsIcdCodeDocument, options);
+      }
+export function useFindAllPatientProblemsIcdCodeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllPatientProblemsIcdCodeQuery, FindAllPatientProblemsIcdCodeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllPatientProblemsIcdCodeQuery, FindAllPatientProblemsIcdCodeQueryVariables>(FindAllPatientProblemsIcdCodeDocument, options);
+        }
+export type FindAllPatientProblemsIcdCodeQueryHookResult = ReturnType<typeof useFindAllPatientProblemsIcdCodeQuery>;
+export type FindAllPatientProblemsIcdCodeLazyQueryHookResult = ReturnType<typeof useFindAllPatientProblemsIcdCodeLazyQuery>;
+export type FindAllPatientProblemsIcdCodeQueryResult = Apollo.QueryResult<FindAllPatientProblemsIcdCodeQuery, FindAllPatientProblemsIcdCodeQueryVariables>;
 export const SearchSnoMedCodesDocument = gql`
     query SearchSnoMedCodes($searchSnoMedCodesInput: SearchSnoMedCodesInput!) {
   searchSnoMedCodeByIcdCodes(searchSnoMedCodesInput: $searchSnoMedCodesInput) {

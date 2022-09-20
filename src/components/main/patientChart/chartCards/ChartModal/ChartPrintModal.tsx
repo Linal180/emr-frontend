@@ -76,8 +76,9 @@ const ChartPrintModal: FC<ChartPrintModalProps> = ({ isOpen, handleClose, module
       aria-describedby="alert-dialog-description"
     >
       <DialogTitle id="alert-dialog-title">{PRINT_PATIENT_CHART}</DialogTitle>
+
       <DialogContent>
-        <Box className="dialogBg" style={{ border: "1px solid red" }}>
+        <Box className="dialogBg">
           <PDFViewer width={"100%"} height="500">
             <ChartPdf
               patientChartInfo={patientChartingInfo}
