@@ -239,7 +239,7 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisabl
                             </Link> */}
                         </TableCell>
                         <TableCell scope="row">
-                          {appointmentType?.name ? `${appointmentType?.name ?? ''}  ${convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm:ss')}` : '- -'}
+                          {appointmentType?.name ? `${appointmentType?.name ?? ''}  ${convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm:ss A')}` : '- -'}
                         </TableCell>
                         <TableCell scope="row">
                           <ul>
