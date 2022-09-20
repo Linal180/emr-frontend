@@ -192,10 +192,14 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
 
   const handleUpdateImage = () => setImageEdit(true)
 
-  const sendFileHandler = (file: File) => {
+  const sendFileHandler = (file: File | null | undefined) => {
     if (file) {
       setFiles([file])
       setAttachmentFiles && setAttachmentFiles([file])
+    }
+    else {
+      setFiles([])
+      setAttachmentFiles && setAttachmentFiles([])
     }
   }
 
