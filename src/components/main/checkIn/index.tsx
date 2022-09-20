@@ -4,7 +4,7 @@ import { useParams } from "react-router";
 import { Check, ChevronRight } from '@material-ui/icons';
 import { Reducer, useCallback, useContext, useEffect, useReducer, useRef, useState } from "react";
 import {
-  Box, Button, Card, CircularProgress, colors, Step, StepIconProps, StepLabel, Stepper, Typography
+  Box, Button, CircularProgress, colors, Step, StepIconProps, StepLabel, Stepper, Typography
 } from "@material-ui/core";
 // component block
 import CheckIn from "./CheckIn";
@@ -245,15 +245,13 @@ const CheckInComponent = (): JSX.Element => {
   // 3- CHART
   const Chart = () =>
     <>
-      <Card>
-        <ChartCards
-          status={status}
-          labOrderHandler={() => handleStep(3)}
-          appointmentInfo={appointmentInfo}
-          fetchAppointment={fetchAppointment}
-          shouldDisableEdit={shouldDisableEdit}
-        />
-      </Card>
+      <ChartCards
+        status={status}
+        labOrderHandler={() => handleStep(3)}
+        appointmentInfo={appointmentInfo}
+        fetchAppointment={fetchAppointment}
+        shouldDisableEdit={shouldDisableEdit}
+      />
     </>
 
   const handleStepChange = (index: number) => {

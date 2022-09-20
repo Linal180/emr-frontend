@@ -96,24 +96,6 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
       </Box>
 
       <Card>
-        {/* <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
-          <Typography variant="h4">{CHART_TEXT}</Typography>
-
-          <Box m={0.5}>
-            <Button
-              type="button"
-              variant="contained"
-              color="secondary"
-              startIcon={
-                <Box width={20} color={WHITE}><PrintOutlined /></Box>
-              }
-              onClick={() => setIsChartingModalOpen(true)}
-            >
-              {PRINT_CHART}
-            </Button>
-          </Box>
-        </Box> */}
-
         <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
           <Typography variant="h4">{CHART_TEXT}</Typography>
 
