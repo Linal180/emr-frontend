@@ -22,6 +22,9 @@ const CameraComponent = ({ sendFile, invisibleHandler, open }: CameraComponentPr
       setImageUrl(picture)
       const file = dataURLtoFile(picture, `picture`)
       file && sendFile(file)
+    } else {
+      setImageUrl('')
+      sendFile(null)
     }
   };
 
@@ -65,7 +68,7 @@ const CameraComponent = ({ sendFile, invisibleHandler, open }: CameraComponentPr
       {imageUrl ? <Box>
         <img src={imageUrl} alt={'selfie'} width="100%" />
         <Box>
-          <Button variant="contained" onClick={() => setImageUrl('')} color="secondary">{TAKE_AGAIN}</Button>
+          <Button variant="contained" onClick={() => takePhoto(null)} color="secondary">{TAKE_AGAIN}</Button>
         </Box>
       </Box>
         :

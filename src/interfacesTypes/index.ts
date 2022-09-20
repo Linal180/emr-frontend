@@ -2053,7 +2053,7 @@ export type SelfPayComponentProps = {
 }
 
 export type CameraComponentProps = {
-  sendFile: (blob: File) => void;
+  sendFile: (blob: File | null | undefined) => void;
   invisibleHandler: (open: boolean) => void;
   open: boolean
 }
