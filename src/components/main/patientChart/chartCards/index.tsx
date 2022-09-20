@@ -11,6 +11,7 @@ import VitalTab from './tabs/VitalListing';
 import Loader from "../../../common/Loader";
 import AllergyTab from './tabs/AllergyListing';
 import ProblemTab from './tabs/ProblemListing';
+import LatestVitalCard from "../latestVitalCard";
 import MedicationTab from './tabs/MedicationsListing';
 import TriageNoteTab from './tabs/TriageNotesListing';
 import ChartPrintModal from "./ChartModal/ChartPrintModal";
@@ -31,13 +32,13 @@ import {
   PRINT_CHART, CONFIRMATION_MODAL_TYPE, CHART_TEXT, TO_LAB_ORDERS
 } from "../../../../constants";
 
-const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appointmentInfo, fetchAppointment }): JSX.Element => {
+const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appointmentInfo, fetchAppointment, labOrderHandler }): JSX.Element => {
   const classes = useChartingStyles()
   const { user } = useContext(AuthContext);
   const { roles } = user || {}
   const isAdminUser = isAdmin(roles)
   const isDoctorUser = isOnlyDoctor(roles)
-  const { appointmentId } = useParams<ParamsType>()
+  const { appointmentId, id } = useParams<ParamsType>()
   const [isChartingModalOpen, setIsChartingModalOpen] = useState(false)
   const [modulesToPrint, setModulesToPrint] = useState<string[]>([])
   const [isChartPdfModalOpen, setIsChartPdfModalOpen] = useState<boolean>(false)
@@ -91,11 +92,7 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
   return (
     <>
       <Box className="card-box-shadow" mb={3}>
-        <Card>
-          <Box display="flex" width="100%" py={3} px={4} flexWrap="wrap">
-            <Typography variant="h4" color="initial">vitals row text here</Typography>
-          </Box>
-        </Card>
+        <LatestVitalCard patientId={id} />
       </Box>
 
       <Card>
@@ -135,13 +132,15 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
               </Button>
             </Box>
 
-            <Box m={0.5}>
+            {appointmentId && <Box m={0.5}>
               {/* <Button variant="contained" color="primary" onClick={() => handleStep(3)}> */}
-              <Button variant="contained" color="primary">
+              <Button variant="contained" color="primary" onClick={() => {
+                labOrderHandler && labOrderHandler()
+              }}>
                 {TO_LAB_ORDERS}
                 <ChevronRight />
               </Button>
-            </Box>
+            </Box>}
           </Box>
         </Box>
 

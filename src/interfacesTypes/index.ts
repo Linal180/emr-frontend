@@ -1883,6 +1883,7 @@ export interface ChartComponentProps {
   status?: string;
   fetchAppointment?: Function
   appointmentInfo?: SelectorOption
+  labOrderHandler?: Function
 }
 
 export interface BillingComponentProps extends GeneralFormProps {
@@ -2104,4 +2105,9 @@ export type FamilyHistoryFormType = {
 
 export type SocialHistoryProps = {
   shouldDisableEdit?: boolean
+}
+
+
+export type LatestVitalCardProps  = {
+  patientId: string
 }

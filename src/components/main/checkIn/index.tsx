@@ -1,11 +1,11 @@
 // packages block
-import { useParams } from "react-router";
-import { Reducer, useCallback, useContext, useEffect, useReducer, useRef, useState } from "react";
 import clsx from 'clsx';
+import { useParams } from "react-router";
+import { Check, ChevronRight } from '@material-ui/icons';
+import { Reducer, useCallback, useContext, useEffect, useReducer, useRef, useState } from "react";
 import {
   Box, Button, Card, CircularProgress, colors, Step, StepIconProps, StepLabel, Stepper, Typography
 } from "@material-ui/core";
-import { Check, ChevronRight, PrintOutlined } from '@material-ui/icons';
 // component block
 import CheckIn from "./CheckIn";
 import LabOrders from "./LabOrders";
@@ -14,9 +14,7 @@ import PatientForm from "../patients/patientForm";
 import BillingComponent from "../billing/addBill/BillingComponent";
 import PatientProfileHero from "../../common/patient/profileHero";
 // constants, interfaces, utils block
-import {
-  CHART_TEXT, CHECK_IN_STEPS, PATIENT_INFO, PRINT_CHART, TO_CHART, TO_LAB_ORDERS,
-} from "../../../constants";
+import { CHECK_IN_STEPS, PATIENT_INFO, TO_CHART, TO_LAB_ORDERS } from "../../../constants";
 import {
   AppointmentPayload, AppointmentStatus, AttachmentsPayload, OrderOfBenefitType, PatientPayload,
   useFetchPatientInsurancesLazyQuery, useGetAppointmentLazyQuery, useUpdateAppointmentMutation
@@ -36,7 +34,6 @@ import { convertDateFromUnix, getFormattedDate, isBiller, isFrontDesk } from "..
 import { ChevronRightIcon } from "../../../assets/svgs";
 import ChartCards from "../patientChart/chartCards";
 import { AuthContext } from "../../../context";
-import { WHITE } from "../../../theme";
 import ChartSelectionModal from "../patientChart/chartCards/ChartModal/ChartSelectionModal";
 import ChartPrintModal from "../patientChart/chartCards/ChartModal/ChartPrintModal";
 
@@ -277,7 +274,13 @@ const CheckInComponent = (): JSX.Element => {
           </Box>
         </Box> */}
 
-        <ChartCards shouldDisableEdit={shouldDisableEdit} status={status} fetchAppointment={fetchAppointment} appointmentInfo={appointmentInfo} />
+        <ChartCards
+          status={status}
+          labOrderHandler={() => handleStep(3)}
+          appointmentInfo={appointmentInfo}
+          fetchAppointment={fetchAppointment}
+          shouldDisableEdit={shouldDisableEdit}
+        />
       </Card>
     </>
 
