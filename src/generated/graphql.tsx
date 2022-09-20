@@ -2199,6 +2199,10 @@ export type GetAppointment = {
   id: Scalars['String'];
 };
 
+export type GetAppointmentWithToken = {
+  token: Scalars['String'];
+};
+
 export type GetAppointments = {
   doctorId?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
@@ -4652,6 +4656,7 @@ export type Query = {
   getAllInvoices: InvoicesPayload;
   getAllRoles: RolesPayload;
   getAppointment: AppointmentPayload;
+  getAppointmentWithToken: AppointmentPayload;
   getAppointments: AppointmentsPayload;
   getAttachment: AttachmentMediaPayload;
   getAttachments: AttachmentsPayload;
@@ -5042,6 +5047,11 @@ export type QueryGetAllRolesArgs = {
 
 export type QueryGetAppointmentArgs = {
   getAppointment: GetAppointment;
+};
+
+
+export type QueryGetAppointmentWithTokenArgs = {
+  getAppointmentWithToken: GetAppointmentWithToken;
 };
 
 
@@ -7245,6 +7255,13 @@ export type UpdateAppointmentBillingStatusMutationVariables = Exact<{
 
 export type UpdateAppointmentBillingStatusMutation = { __typename?: 'Mutation', updateAppointmentBillingStatus: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null } };
 
+export type GetPublicAppointmentQueryVariables = Exact<{
+  getAppointmentWithToken: GetAppointmentWithToken;
+}>;
+
+
+export type GetPublicAppointmentQuery = { __typename?: 'Query', getAppointmentWithToken: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, appointment?: { __typename?: 'Appointment', id: string, scheduleEndDateTime?: string | null, scheduleStartDateTime?: string | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null } | null } | null } };
+
 export type GetAttachmentsQueryVariables = Exact<{
   getAttachment: GetAttachment;
 }>;
@@ -7454,7 +7471,7 @@ export type GetSuperBillInfoQueryVariables = Exact<{
 }>;
 
 
-export type GetSuperBillInfoQuery = { __typename?: 'Query', getSuperBillInfo: { __typename?: 'SuperBillPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, appointmentInfo?: { __typename?: 'Appointment', scheduleStartDateTime?: string | null } | null, providerInfo?: { __typename?: 'Doctor', firstName?: string | null, lastName?: string | null, npi?: string | null, facility?: { __typename?: 'Facility', serviceCode?: ServiceCode | null, practice?: { __typename?: 'Practice', name: string } | null } | null, contacts?: Array<{ __typename?: 'Contact', phone?: string | null, address?: string | null, email?: string | null }> | null } | null, insuranceDetail?: { __typename?: 'Policy', memberId?: string | null, groupNumber?: string | null, insurance?: { __typename?: 'Insurance', payerId: string, payerName: string } | null } | null, policyHolderInfo?: { __typename?: 'PolicyHolder', firstName?: string | null, lastName?: string | null } | null, billingInfo?: { __typename?: 'Billing', claimDate?: string | null, codes?: Array<{ __typename?: 'Code', code?: string | null, codeType: CodeType, description?: string | null, price?: string | null, diagPointer?: string | null, m1?: string | null, m2?: string | null, m3?: string | null, m4?: string | null, unit?: string | null }> | null } | null, patientInfo?: { __typename?: 'Patient', firstName?: string | null, lastName?: string | null, dob?: string | null, contacts?: Array<{ __typename?: 'Contact', address?: string | null, phone?: string | null }> | null } | null } };
+export type GetSuperBillInfoQuery = { __typename?: 'Query', getSuperBillInfo: { __typename?: 'SuperBillPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, appointmentInfo?: { __typename?: 'Appointment', scheduleStartDateTime?: string | null } | null, providerInfo?: { __typename?: 'Doctor', firstName?: string | null, lastName?: string | null, npi?: string | null, facility?: { __typename?: 'Facility', serviceCode?: ServiceCode | null, practice?: { __typename?: 'Practice', name: string } | null } | null, contacts?: Array<{ __typename?: 'Contact', primaryContact?: boolean | null, phone?: string | null, address?: string | null, email?: string | null }> | null } | null, insuranceDetail?: { __typename?: 'Policy', memberId?: string | null, groupNumber?: string | null, insurance?: { __typename?: 'Insurance', payerId: string, payerName: string } | null } | null, policyHolderInfo?: { __typename?: 'PolicyHolder', firstName?: string | null, lastName?: string | null } | null, billingInfo?: { __typename?: 'Billing', claimDate?: string | null, codes?: Array<{ __typename?: 'Code', code?: string | null, codeType: CodeType, description?: string | null, price?: string | null, diagPointer?: string | null, m1?: string | null, m2?: string | null, m3?: string | null, m4?: string | null, unit?: string | null }> | null } | null, patientInfo?: { __typename?: 'Patient', firstName?: string | null, lastName?: string | null, dob?: string | null, contacts?: Array<{ __typename?: 'Contact', primaryContact?: boolean | null, address?: string | null, phone?: string | null, city?: string | null, state?: string | null, zipCode?: string | null }> | null } | null } };
 
 export type FindAllLiveClaimFeedsQueryVariables = Exact<{
   liveClaimFeedInput: LiveClaimFeedInput;
@@ -9727,6 +9744,55 @@ export function useUpdateAppointmentBillingStatusMutation(baseOptions?: Apollo.M
 export type UpdateAppointmentBillingStatusMutationHookResult = ReturnType<typeof useUpdateAppointmentBillingStatusMutation>;
 export type UpdateAppointmentBillingStatusMutationResult = Apollo.MutationResult<UpdateAppointmentBillingStatusMutation>;
 export type UpdateAppointmentBillingStatusMutationOptions = Apollo.BaseMutationOptions<UpdateAppointmentBillingStatusMutation, UpdateAppointmentBillingStatusMutationVariables>;
+export const GetPublicAppointmentDocument = gql`
+    query GetPublicAppointment($getAppointmentWithToken: GetAppointmentWithToken!) {
+  getAppointmentWithToken(getAppointmentWithToken: $getAppointmentWithToken) {
+    response {
+      error
+      status
+      message
+    }
+    appointment {
+      id
+      scheduleEndDateTime
+      scheduleStartDateTime
+      patient {
+        id
+        firstName
+        lastName
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPublicAppointmentQuery__
+ *
+ * To run a query within a React component, call `useGetPublicAppointmentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPublicAppointmentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPublicAppointmentQuery({
+ *   variables: {
+ *      getAppointmentWithToken: // value for 'getAppointmentWithToken'
+ *   },
+ * });
+ */
+export function useGetPublicAppointmentQuery(baseOptions: Apollo.QueryHookOptions<GetPublicAppointmentQuery, GetPublicAppointmentQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPublicAppointmentQuery, GetPublicAppointmentQueryVariables>(GetPublicAppointmentDocument, options);
+      }
+export function useGetPublicAppointmentLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPublicAppointmentQuery, GetPublicAppointmentQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPublicAppointmentQuery, GetPublicAppointmentQueryVariables>(GetPublicAppointmentDocument, options);
+        }
+export type GetPublicAppointmentQueryHookResult = ReturnType<typeof useGetPublicAppointmentQuery>;
+export type GetPublicAppointmentLazyQueryHookResult = ReturnType<typeof useGetPublicAppointmentLazyQuery>;
+export type GetPublicAppointmentQueryResult = Apollo.QueryResult<GetPublicAppointmentQuery, GetPublicAppointmentQueryVariables>;
 export const GetAttachmentsDocument = gql`
     query GetAttachments($getAttachment: GetAttachment!) {
   getAttachments(getAttachment: $getAttachment) {
@@ -11165,6 +11231,7 @@ export const GetSuperBillInfoDocument = gql`
         serviceCode
       }
       contacts {
+        primaryContact
         phone
         address
         email
@@ -11204,8 +11271,12 @@ export const GetSuperBillInfoDocument = gql`
       firstName
       lastName
       contacts {
+        primaryContact
         address
         phone
+        city
+        state
+        zipCode
       }
       dob
     }

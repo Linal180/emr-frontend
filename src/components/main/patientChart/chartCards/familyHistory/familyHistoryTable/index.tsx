@@ -10,7 +10,7 @@ import TableLoader from "../../../../../common/TableLoader";
 import ConfirmationModal from "../../../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../../../common/NoDataFoundComponent";
 //svgs
-import { renderTh } from "../../../../../../utils";
+import { formatValue, renderTh } from "../../../../../../utils";
 import { useTableStyles } from "../../../../../../styles/tableStyles";
 import { AddWhiteIcon, TrashNewIcon } from "../../../../../../assets/svgs";
 import { FamilyHistoryProps, ParamsType } from "../../../../../../interfacesTypes"
@@ -107,13 +107,13 @@ const FamilyHistoryTable: FC<FamilyHistoryProps> = ({ shouldDisableEdit = false 
     <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
       <Typography variant='h3'>{FAMILY_HISTORY_TEXT}</Typography>
       {!shouldDisableEdit &&
-      <Button
-        variant='contained' color='primary'
-        startIcon={<Box width={20}><AddWhiteIcon /></Box>}
-        onClick={() => dispatch({ type: ActionType.SET_OPEN_ADD, openAdd: !openAdd })}
-      >
-        {ADD_NEW_TEXT}
-      </Button>}
+        <Button
+          variant='contained' color='primary'
+          startIcon={<Box width={20}><AddWhiteIcon /></Box>}
+          onClick={() => dispatch({ type: ActionType.SET_OPEN_ADD, openAdd: !openAdd })}
+        >
+          {ADD_NEW_TEXT}
+        </Button>}
     </Box>
     <Table aria-label="customized table">
       <TableHead>
@@ -148,7 +148,7 @@ const FamilyHistoryTable: FC<FamilyHistoryProps> = ({ shouldDisableEdit = false 
                         <TableCell rowSpan={familyHistoryRelatives?.length}>
                           {name}
                         </TableCell>}
-                      <TableCell style={{ paddingLeft: index === 0 ? 'inherited' : 10 }}>{relativeName}</TableCell>
+                      <TableCell style={{ paddingLeft: index === 0 ? 'inherited' : 10 }}>{formatValue(relativeName || '')}</TableCell>
                       <TableCell>{onsetAge}</TableCell>
                       <TableCell>{died}</TableCell>
                       <TableCell>{notes}</TableCell>

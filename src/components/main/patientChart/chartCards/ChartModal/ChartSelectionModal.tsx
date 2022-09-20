@@ -53,7 +53,7 @@ const ChartSelectionModal: FC<ChartSelectionViewerProps> = ({
               control={
                 <Box>
                   <Checkbox color="primary" checked={isSelectAll}
-                  onChange={() => handleSelectAll()} />
+                    onChange={() => handleSelectAll()} />
                 </Box>
               }
 
