@@ -67,7 +67,6 @@ const SocialHistory: FC<SocialHistoryProps> = ({ shouldDisableEdit = false }): J
         {/* public health travel end */}
       </Fragment>
 
-
       <Fragment>
         {/* Substance Use start */}
         <Box pt={2} pb={1} borderBottom={`1px solid ${colors.grey[300]}`}>
@@ -120,6 +119,7 @@ const SocialHistory: FC<SocialHistoryProps> = ({ shouldDisableEdit = false }): J
 
         {/* Diet and Exercise end */}
       </Fragment>
+      
       <Fragment>
 
         {/* Advanced Directive start */}

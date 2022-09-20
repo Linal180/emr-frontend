@@ -3733,17 +3733,17 @@ export const PATIENT_CHARTING_TABS = [
 ]
 
 export const HISTORY_CHARTING_TABS = [
-  // {
-  //   title: "Social History",
-  //   value: "1",
-  // },
   {
-    title: "Family History",
+    title: "Social History",
     value: "1",
   },
   {
-    title: "Surgical History",
+    title: "Family History",
     value: "2",
+  },
+  {
+    title: "Surgical History",
+    value: "3",
   },
 ]
 
@@ -4132,11 +4132,6 @@ export const ACTIVITIES_DAILY_LIVING_MAPPED = [
     title: DIFFICULTY_DOING_ERRANDS_ALONE,
   },
   {
-    switchName: 'difficultyErrands',
-    notesName: 'difficultyErrandsNote',
-    title: DIFFICULTY_DOING_ERRANDS_ALONE,
-  },
-  {
     switchName: 'difficultyTransportation',
     notesName: 'difficultyTransportationNote',
     title: DO_YOU_HAVE_TRANSPORTATION_DIFFICULTIES,
@@ -4364,6 +4359,7 @@ export const LIFE_STYLE_MAPPED = [
     title: DO_YOU_USE_SEAT_BELT,
   }
 ]
+
 export enum CONFIRMATION_MODAL_TYPE {
   DELETE = 'delete',
   CANCEL = 'cancel',
