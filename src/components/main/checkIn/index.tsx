@@ -40,7 +40,6 @@ import ChartPrintModal from "../patientChart/chartCards/ChartModal/ChartPrintMod
 const CheckInStepIcon = (props: StepIconProps) => {
   const classes = useCheckInStepIconStyles();
   const { active, completed } = props;
-  const [isChartingModalOpen, setIsChartingModalOpen] = useState(false)
 
   return (
     <div
@@ -247,33 +246,6 @@ const CheckInComponent = (): JSX.Element => {
   const Chart = () =>
     <>
       <Card>
-        {/* <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
-          <Typography variant="h4">{CHART_TEXT}</Typography>
-
-          <Box display="flex" alignItems="center">
-            <Box m={0.5}>
-              <Button
-                type="button"
-                variant="contained"
-                color="secondary"
-                startIcon={
-                  <Box width={20} color={WHITE}><PrintOutlined /></Box>
-                }
-                onClick={() => setIsChartingModalOpen(true)}
-              >
-                {PRINT_CHART}
-              </Button>
-            </Box>
-
-            <Box m={0.5}>
-              <Button variant="contained" color="primary" onClick={() => handleStep(3)}>
-                {TO_LAB_ORDERS}
-                <ChevronRight />
-              </Button>
-            </Box>
-          </Box>
-        </Box> */}
-
         <ChartCards
           status={status}
           labOrderHandler={() => handleStep(3)}
