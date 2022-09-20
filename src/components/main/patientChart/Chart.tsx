@@ -13,6 +13,8 @@ const Chart = (): JSX.Element => {
     <Box className={classes.profileDetailsContainer}>
       <PatientProfileHero isChart setAttachmentsData={() => {}} setPatient={() => { }} />
 
+      <Box p={1.5} />
+
       <ChartCards />
     </Box>
   )

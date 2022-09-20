@@ -1,8 +1,8 @@
 // packages block
 import { useParams } from "react-router";
-import { PrintOutlined } from "@material-ui/icons";
+import { ChevronRight, PrintOutlined } from "@material-ui/icons";
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
-import { Box, Button, Card, Grid, Tab, } from "@material-ui/core";
+import { Box, Button, Card, colors, Grid, Tab, Typography, } from "@material-ui/core";
 import { ChangeEvent, FC, ReactElement, Reducer, useContext, useReducer, useState } from 'react';
 // components block
 import Alert from "../../../common/Alert";
@@ -28,8 +28,7 @@ import { AppointmentStatus, useUpdateAppointmentStatusMutation } from "../../../
 import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
 import {
   DISCHARGE_PATIENT_DESCRIPTION, DISCHARGE, PATIENT_CHARTING_TABS, PATIENT_DISCHARGED, PATIENT_DISCHARGED_SUCCESS,
-  PRINT_CHART,
-  CONFIRMATION_MODAL_TYPE
+  PRINT_CHART, CONFIRMATION_MODAL_TYPE, CHART_TEXT, TO_LAB_ORDERS
 } from "../../../../constants";
 
 const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appointmentInfo, fetchAppointment }): JSX.Element => {
@@ -90,144 +89,188 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
   const isPatientDischarged = status === AppointmentStatus.Checkout || status === AppointmentStatus.Discharged
 
   return (
-    <Box mt={3}>
-      <Box mb={2} px={2} display='flex' justifyContent='flex-end'>
-        <Button
-          type="button"
-          variant="contained"
-          color="secondary"
-          startIcon={
-            <Box width={20} color={WHITE}><PrintOutlined /></Box>
-          }
-          onClick={() => setIsChartingModalOpen(true)}
-        >
-          {PRINT_CHART}
-        </Button>
+    <>
+      <Box className="card-box-shadow" mb={3}>
+        <Card>
+          <Box display="flex" width="100%" py={3} px={4} flexWrap="wrap">
+            <Typography variant="h4" color="initial">vitals row text here</Typography>
+          </Box>
+        </Card>
       </Box>
 
-      <TabContext value={tabValue}>
-        <Grid container spacing={3}>
-          <Grid item lg={2} md={3} sm={12} xs={12}>
-            <Card>
-              <Box p={3} className={classes.cardBox} minHeight={250}>
-                <TabList className={classes.tabList}
-                  orientation='vertical'
-                  onChange={handleChange}
-                  aria-label="communication tabs"
-                >
-                  {PATIENT_CHARTING_TABS.map(item => {
-                    const { icon: Icon, title, value } = item
+      <Card>
+        {/* <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
+          <Typography variant="h4">{CHART_TEXT}</Typography>
 
-                    return <Tab className={classes.tab}
-                      key={`${title}-${value}`} label={title}
-                      value={value} icon={<Icon /> as unknown as ReactElement}
-                    />
-                  })}
-                </TabList>
+          <Box m={0.5}>
+            <Button
+              type="button"
+              variant="contained"
+              color="secondary"
+              startIcon={
+                <Box width={20} color={WHITE}><PrintOutlined /></Box>
+              }
+              onClick={() => setIsChartingModalOpen(true)}
+            >
+              {PRINT_CHART}
+            </Button>
+          </Box>
+        </Box> */}
 
-                {appointmentId && (isAdminUser || isDoctorUser) &&
-                  <Box component="button" border="none" mt={1} width="100%"
-                    minHeight={52} bgcolor={isPatientDischarged ? GRAY_SIMPLE : BLUE} borderRadius={4}
-                  >
-                    <Button
-                      variant="text"
-                      size="small"
-                      color={"inherit"}
-                      startIcon={<DischargeIcon color={isPatientDischarged ? "black" : 'white'} />}
-                      onClick={()=> setOpenDelete(true)}
-                      disabled={isPatientDischarged}
-                      fullWidth
-                    >
-                      <Box component="span" color={isPatientDischarged ? "black" : "white"} >
-                        {isPatientDischarged ? AppointmentStatus.Discharged : DISCHARGE}
-                      </Box>
-                    </Button>
-                  </Box>
+        <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
+          <Typography variant="h4">{CHART_TEXT}</Typography>
+
+          <Box display="flex" alignItems="center">
+            <Box m={0.5}>
+              <Button
+                type="button"
+                variant="contained"
+                color="secondary"
+                startIcon={
+                  <Box width={20} color={WHITE}><PrintOutlined /></Box>
                 }
-              </Box>
-            </Card>
-          </Grid>
-
-          <Grid item lg={10} md={9} sm={12} xs={12}>
-            <Box className={classes.tabPanelPadding}>
-              <Box pt={0} borderRadius={8}>
-                <TabPanel value="1">
-                  <TriageNoteTab shouldDisableEdit={shouldDisableEdit} />
-                </TabPanel>
-              </Box>
-
-              <Box pt={0} bgcolor={WHITE} borderRadius={8}>
-                <TabPanel value="2">
-                  <VitalTab shouldDisableEdit={shouldDisableEdit} />
-                </TabPanel>
-              </Box>
-
-              <Box pt={0} bgcolor={WHITE} borderRadius={8}>
-                <TabPanel value="3">
-                  <ProblemTab shouldDisableEdit={shouldDisableEdit} />
-                </TabPanel>
-              </Box>
-
-              <Box pt={0} bgcolor={WHITE} borderRadius={8}>
-                <TabPanel value="4">
-                  <ChartContextProvider>
-                    <AllergyTab shouldDisableEdit={shouldDisableEdit} />
-                  </ChartContextProvider>
-                </TabPanel>
-              </Box>
-
-              <Box pt={0} bgcolor={WHITE} borderRadius={8}>
-                <TabPanel value="5">
-                  <ChartContextProvider>
-                    <MedicationTab shouldDisableEdit={shouldDisableEdit} />
-                  </ChartContextProvider>
-                </TabPanel>
-              </Box>
-
-              <Box pt={0} bgcolor={WHITE} borderRadius={8}>
-                <TabPanel value="6">
-                  <ChartContextProvider>
-                    <HistoryTab shouldDisableEdit={shouldDisableEdit} />
-                  </ChartContextProvider>
-                </TabPanel>
-              </Box>
-
-              <Box pt={0} bgcolor={WHITE} borderRadius={8}>
-                <TabPanel value="7">
-                  <ChartContextProvider>
-                    <LabOrdersTable appointmentInfo={appointmentInfo} shouldDisableEdit={shouldDisableEdit}/>
-                  </ChartContextProvider>
-                </TabPanel>
-              </Box>
+                onClick={() => setIsChartingModalOpen(true)}
+              >
+                {PRINT_CHART}
+              </Button>
             </Box>
-          </Grid>
-        </Grid>
-      </TabContext>
-      {isChartingModalOpen && <ChartSelectionModal
-        isOpen={isChartingModalOpen}
-        handleClose={() => setIsChartingModalOpen(false)}
-        setIsChartPdfModalOpen={setIsChartPdfModalOpen}
-        modulesToPrint={modulesToPrint}
-        setModulesToPrint={setModulesToPrint}
-      />}
 
-      {isChartPdfModalOpen && <ChartPrintModal
-        modulesToPrint={modulesToPrint}
-        isOpen={isChartPdfModalOpen}
-        handleClose={() => setIsChartPdfModalOpen(false)}
-      />}
+            <Box m={0.5}>
+              {/* <Button variant="contained" color="primary" onClick={() => handleStep(3)}> */}
+              <Button variant="contained" color="primary">
+                {TO_LAB_ORDERS}
+                <ChevronRight />
+              </Button>
+            </Box>
+          </Box>
+        </Box>
 
-      <ConfirmationModal
-        title={PATIENT_DISCHARGED}
-        isOpen={openDelete}
-        isLoading={updateAppointmentStatusLoading}
-        description={DISCHARGE_PATIENT_DESCRIPTION}
-        handleDelete={updateAppointment}
-        actionText={DISCHARGE}
-        modalType={CONFIRMATION_MODAL_TYPE.DISCHARGE}
-        setOpen={(open: boolean) => setOpenDelete(open)}
-      />
-    </Box>
+        <Box mt={3}>
+          <TabContext value={tabValue}>
+            <Grid container spacing={2}>
+              <Grid item lg={2} md={3} sm={12} xs={12}>
+                <Card>
+                  <Box px={3} py={1} className={classes.cardBox}>
+                    <TabList className={classes.tabList}
+                      orientation='vertical'
+                      onChange={handleChange}
+                      aria-label="communication tabs"
+                    >
+                      {PATIENT_CHARTING_TABS.map(item => {
+                        const { icon: Icon, title, value } = item
+
+                        return <Tab className={classes.tab}
+                          key={`${title}-${value}`} label={title}
+                          value={value} icon={<Icon /> as unknown as ReactElement}
+                        />
+                      })}
+                    </TabList>
+
+                    {appointmentId && (isAdminUser || isDoctorUser) &&
+                      <Box component="button" border="none" width="100%" mb={1}
+                        minHeight={52} bgcolor={isPatientDischarged ? GRAY_SIMPLE : BLUE} borderRadius={4}
+                      >
+                        <Button
+                          variant="text"
+                          size="small"
+                          color={"inherit"}
+                          startIcon={<DischargeIcon color={isPatientDischarged ? "black" : 'white'} />}
+                          onClick={() => setOpenDelete(true)}
+                          disabled={isPatientDischarged}
+                          fullWidth
+                        >
+                          <Box component="span" color={isPatientDischarged ? "black" : "white"} >
+                            {isPatientDischarged ? AppointmentStatus.Discharged : DISCHARGE}
+                          </Box>
+                        </Button>
+                      </Box>
+                    }
+                  </Box>
+                </Card>
+              </Grid>
+
+              <Grid item lg={10} md={9} sm={12} xs={12}>
+                <Box className={classes.tabPanelPadding}>
+                  <Box pt={0} borderRadius={8}>
+                    <TabPanel value="1">
+                      <TriageNoteTab shouldDisableEdit={shouldDisableEdit} />
+                    </TabPanel>
+                  </Box>
+
+                  <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                    <TabPanel value="2">
+                      <VitalTab shouldDisableEdit={shouldDisableEdit} />
+                    </TabPanel>
+                  </Box>
+
+                  <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                    <TabPanel value="3">
+                      <ProblemTab shouldDisableEdit={shouldDisableEdit} />
+                    </TabPanel>
+                  </Box>
+
+                  <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                    <TabPanel value="4">
+                      <ChartContextProvider>
+                        <AllergyTab shouldDisableEdit={shouldDisableEdit} />
+                      </ChartContextProvider>
+                    </TabPanel>
+                  </Box>
+
+                  <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                    <TabPanel value="5">
+                      <ChartContextProvider>
+                        <MedicationTab shouldDisableEdit={shouldDisableEdit} />
+                      </ChartContextProvider>
+                    </TabPanel>
+                  </Box>
+
+                  <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                    <TabPanel value="6">
+                      <ChartContextProvider>
+                        <HistoryTab shouldDisableEdit={shouldDisableEdit} />
+                      </ChartContextProvider>
+                    </TabPanel>
+                  </Box>
+
+                  <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                    <TabPanel value="7">
+                      <ChartContextProvider>
+                        <LabOrdersTable appointmentInfo={appointmentInfo} shouldDisableEdit={shouldDisableEdit} />
+                      </ChartContextProvider>
+                    </TabPanel>
+                  </Box>
+                </Box>
+              </Grid>
+            </Grid>
+          </TabContext>
+          {isChartingModalOpen && <ChartSelectionModal
+            isOpen={isChartingModalOpen}
+            handleClose={() => setIsChartingModalOpen(false)}
+            setIsChartPdfModalOpen={setIsChartPdfModalOpen}
+            modulesToPrint={modulesToPrint}
+            setModulesToPrint={setModulesToPrint}
+          />}
+
+          {isChartPdfModalOpen && <ChartPrintModal
+            modulesToPrint={modulesToPrint}
+            isOpen={isChartPdfModalOpen}
+            handleClose={() => setIsChartPdfModalOpen(false)}
+          />}
+
+          <ConfirmationModal
+            title={PATIENT_DISCHARGED}
+            isOpen={openDelete}
+            isLoading={updateAppointmentStatusLoading}
+            description={DISCHARGE_PATIENT_DESCRIPTION}
+            handleDelete={updateAppointment}
+            actionText={DISCHARGE}
+            modalType={CONFIRMATION_MODAL_TYPE.DISCHARGE}
+            setOpen={(open: boolean) => setOpenDelete(open)}
+          />
+        </Box>
+      </Card>
+    </>
   )
 };
 
