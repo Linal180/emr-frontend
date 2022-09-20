@@ -1603,8 +1603,10 @@ export const CHECKOUT_MODAL_DESCRIPTION = "After checking out, you will not be a
 export const SIGN_RECORD_LEARN_MORE_TEXT = "You are about to sign this document permanently. Are you sure you want to sign this document?";
 export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure you want to delete this record?";
 export const CANCEL_RECORD_LEARN_MORE_TEXT = "You are about to cancel this record permanently. Are you sure you want to cancel this record?";
-export const DISCHARGE_MODAL_PATIENT_DESCRIPTION = "You are about to discharge the patient permanently. Are you sure you want to discharge the patient?";
-export const appointmentCancellationDescription = `Are you sure you want to cancel Devone Lane’s Appointment on 16 Feb, 2022 at time 11:00am?`;
+// export const appointmentCancellationDescription = `Are you sure you want to cancel Devone Lane’s Appointment on 16 Feb, 2022 at time 11:00am?`;
+export const appointmentCancellationDescription = `Are you sure you want to cancel`;
+export const APPOINTMENT_ON = `Appointment on`
+export const AT = `at`
 export const CONSENT_AGREEMENT_LABEL = "I agree to the terms & conditions and hereby, authorize AIMED health facilities to keep my personal health record.";
 export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING2 = "Please consult your personal benefit plan details for any out-of-pocket costs which might apply (if applicable).";
 export const APPOINTMENT_CONFIRM_SUBHEADING = "Skip some of the paperwork at the clinic by adding more information. You can access the information form now or later from your email or text message.";
@@ -3361,7 +3363,7 @@ export const MISCELLANEOUS_SETTINGS_ITEMS = [
 ];
 
 export const TELEHEALTH_URL = 'https://doxy.me';
-export const EXPRESS_HEALTHCARE_URL ="https://www.expresshealthcaremd.com/wp-content/uploads/2022/04/new-transparent-logo.png";
+export const EXPRESS_HEALTHCARE_URL = "https://www.expresshealthcaremd.com/wp-content/uploads/2022/04/new-transparent-logo.png";
 
 //Form Builder API urls
 export const USER_FORM_IMAGE_UPLOAD_URL = `/user-form/upload`
