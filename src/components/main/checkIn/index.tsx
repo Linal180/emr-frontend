@@ -1,11 +1,11 @@
 // packages block
-import { useParams } from "react-router";
-import { Reducer, useCallback, useContext, useEffect, useReducer, useRef } from "react";
 import clsx from 'clsx';
-import {
-  Box, Button, Card, CircularProgress, colors, Step, StepIconProps, StepLabel, Stepper, Typography
-} from "@material-ui/core";
+import { useParams } from "react-router";
 import { Check, ChevronRight } from '@material-ui/icons';
+import { Reducer, useCallback, useContext, useEffect, useReducer, useRef, useState } from "react";
+import {
+  Box, Button, CircularProgress, colors, Step, StepIconProps, StepLabel, Stepper, Typography
+} from "@material-ui/core";
 // component block
 import CheckIn from "./CheckIn";
 import LabOrders from "./LabOrders";
@@ -14,9 +14,7 @@ import PatientForm from "../patients/patientForm";
 import BillingComponent from "../billing/addBill/BillingComponent";
 import PatientProfileHero from "../../common/patient/profileHero";
 // constants, interfaces, utils block
-import {
-  CHART_TEXT, CHECK_IN_STEPS, PATIENT_INFO, TO_CHART, TO_LAB_ORDERS,
-} from "../../../constants";
+import { CHECK_IN_STEPS, PATIENT_INFO, TO_CHART, TO_LAB_ORDERS } from "../../../constants";
 import {
   AppointmentPayload, AppointmentStatus, AttachmentsPayload, OrderOfBenefitType, PatientPayload,
   useFetchPatientInsurancesLazyQuery, useGetAppointmentLazyQuery, useUpdateAppointmentMutation
@@ -36,6 +34,8 @@ import { convertDateFromUnix, getFormattedDate, isBiller, isFrontDesk } from "..
 import { ChevronRightIcon } from "../../../assets/svgs";
 import ChartCards from "../patientChart/chartCards";
 import { AuthContext } from "../../../context";
+import ChartSelectionModal from "../patientChart/chartCards/ChartModal/ChartSelectionModal";
+import ChartPrintModal from "../patientChart/chartCards/ChartModal/ChartPrintModal";
 
 const CheckInStepIcon = (props: StepIconProps) => {
   const classes = useCheckInStepIconStyles();
@@ -58,6 +58,9 @@ const CheckInComponent = (): JSX.Element => {
   const isBillerUser = isBiller(roles);
   const isFrontDeskUser = isFrontDesk(roles);
   const checkInClasses = useCheckInProfileStyles();
+  const [modulesToPrint, setModulesToPrint] = useState<string[]>([])
+  const [isChartingModalOpen, setIsChartingModalOpen] = useState(false)
+  const [isChartPdfModalOpen, setIsChartPdfModalOpen] = useState<boolean>(false)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState);
   const [, patientDispatcher] =
     useReducer<Reducer<PatientState, PatientAction>>(patientReducer, patientInitialState)
@@ -242,18 +245,13 @@ const CheckInComponent = (): JSX.Element => {
   // 3- CHART
   const Chart = () =>
     <>
-      <Card>
-        <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
-          <Typography variant="h4">{CHART_TEXT}</Typography>
-
-          <Button variant="contained" color="primary" onClick={() => handleStep(3)}>
-            {TO_LAB_ORDERS}
-            <ChevronRight />
-          </Button>
-        </Box>
-
-        <ChartCards shouldDisableEdit={shouldDisableEdit} status={status} fetchAppointment={fetchAppointment} appointmentInfo={appointmentInfo} />
-      </Card>
+      <ChartCards
+        status={status}
+        labOrderHandler={() => handleStep(3)}
+        appointmentInfo={appointmentInfo}
+        fetchAppointment={fetchAppointment}
+        shouldDisableEdit={shouldDisableEdit}
+      />
     </>
 
   const handleStepChange = (index: number) => {
@@ -313,6 +311,20 @@ const CheckInComponent = (): JSX.Element => {
       <Box mt={1}>
         <Typography>{getStepContent(activeStep)}</Typography>
       </Box>
+
+      {isChartingModalOpen && <ChartSelectionModal
+        isOpen={isChartingModalOpen}
+        handleClose={() => setIsChartingModalOpen(false)}
+        setIsChartPdfModalOpen={setIsChartPdfModalOpen}
+        modulesToPrint={modulesToPrint}
+        setModulesToPrint={setModulesToPrint}
+      />}
+
+      {isChartPdfModalOpen && <ChartPrintModal
+        modulesToPrint={modulesToPrint}
+        isOpen={isChartPdfModalOpen}
+        handleClose={() => setIsChartPdfModalOpen(false)}
+      />}
     </>
   )
 };
