@@ -29,7 +29,7 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(
     const { id: patientId } = useParams<ParamsType>()
     const dropZoneRef = useRef<FormForwardRef>(null);
 
-    const [{ documentTypeId, openDelete, policyAttachmentId, attachments, cameraOpen }, insuranceDispatch] =
+    const [{ documentTypeId, openDelete, policyAttachmentId, attachments, cameraOpen, isPolicyAttachmentFetch }, insuranceDispatch] =
       useReducer<Reducer<State, Action>>(insuranceReducer, initialState)
 
     const [fetchDocumentType] = useFetchDocumentTypeByNameLazyQuery({
@@ -77,11 +77,13 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(
           if (getAttachmentsByPolicyId) {
             const { attachmentsWithPreSignedUrl } = getAttachmentsByPolicyId
 
-            attachmentsWithPreSignedUrl && dispatch({
-              type: ActionType.SET_NUMBER_OF_FILES,
-              numberOfFiles: attachmentsWithPreSignedUrl?.length
-            })
-
+            if (attachmentsWithPreSignedUrl) {
+              insuranceDispatch({ type: ActionType.SET_IS_POLICY_ATTACHMENT_FETCH, isPolicyAttachmentFetch: true })
+              dispatch({
+                type: ActionType.SET_NUMBER_OF_FILES,
+                numberOfFiles: attachmentsWithPreSignedUrl?.length
+              })
+            }
             attachmentsWithPreSignedUrl &&
               insuranceDispatch({
                 type: ActionType.SET_ATTACHMENTS,
@@ -136,6 +138,24 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(
       }
     }));
 
+    const filesHandler = (files: File[]) => {
+      if (isPolicyAttachmentFetch) {
+        insuranceDispatch({ type: ActionType.SET_IS_POLICY_ATTACHMENT_FETCH, isPolicyAttachmentFetch: false })
+        dispatch({
+          type: ActionType.SET_NUMBER_OF_FILES,
+          numberOfFiles: numberOfFiles
+        })
+      }
+      else {
+        dispatch({
+          type: ActionType.SET_NUMBER_OF_FILES,
+          numberOfFiles: files?.length
+        })
+      }
+    }
+
+
+
     return (
       <Box minWidth="100%">
         <Grid container spacing={3}>
@@ -189,15 +209,7 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(
                 reload={() => { }}
                 handleClose={() => { }}
                 setAttachments={() => { }}
-                setFiles={(files: File[]) => numberOfFiles ?
-                  dispatch({
-                    type: ActionType.SET_NUMBER_OF_FILES,
-                    numberOfFiles: numberOfFiles
-                  })
-                  : dispatch({
-                    type: ActionType.SET_NUMBER_OF_FILES,
-                    numberOfFiles: files?.length
-                  })}
+                setFiles={filesHandler}
                 numberOfFiles={numberOfFiles}
                 acceptableFilesType={mediaType(ATTACHMENT_TITLES.InsuranceCard1)}
                 cameraOpen={cameraOpen}

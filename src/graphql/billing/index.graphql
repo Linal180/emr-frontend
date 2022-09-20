@@ -190,6 +190,7 @@ query GetSuperBillInfo($superBillInput: SuperBillInput!) {
       }
 
       contacts {
+        primaryContact
         phone
         address
         email
@@ -237,8 +238,12 @@ query GetSuperBillInfo($superBillInput: SuperBillInput!) {
       lastName
 
       contacts {
+        primaryContact
         address
         phone
+        city
+        state
+        zipCode
       }
 
       dob

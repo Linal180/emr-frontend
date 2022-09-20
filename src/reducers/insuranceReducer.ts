@@ -14,6 +14,7 @@ export interface State {
   numberOfFiles: number
   attachments: AttachmentWithPreSignedUrlPayload['attachmentsWithPreSignedUrl']
   cameraOpen: boolean;
+  isPolicyAttachmentFetch: boolean
 }
 
 export const initialState: State = {
@@ -27,7 +28,8 @@ export const initialState: State = {
   documentTypeId: '',
   policyAttachmentId: '',
   attachments: [],
-  cameraOpen: false
+  cameraOpen: false,
+  isPolicyAttachmentFetch: false
 }
 
 export enum ActionType {
@@ -42,6 +44,7 @@ export enum ActionType {
   SET_POLICY_ATTACHMENT_ID = 'setPolicyAttachmentId',
   SET_ATTACHMENTS = 'setAttachments',
   SET_CAMERA_OPEN = 'setCameraOpen',
+  SET_IS_POLICY_ATTACHMENT_FETCH = 'SET_IS_POLICY_ATTACHMENT_FETCH'
 }
 
 export type Action =
@@ -56,6 +59,7 @@ export type Action =
   | { type: ActionType.SET_DOCUMENT_TYPE_ID, documentTypeId: string }
   | { type: ActionType.SET_POLICY_ATTACHMENT_ID, policyAttachmentId: string }
   | { type: ActionType.SET_ATTACHMENTS, attachments: AttachmentWithPreSignedUrlPayload['attachmentsWithPreSignedUrl'] }
+  | { type: ActionType.SET_IS_POLICY_ATTACHMENT_FETCH, isPolicyAttachmentFetch: boolean }
 
 
 export const insuranceReducer = (state: State, action: Action): State => {
@@ -124,6 +128,12 @@ export const insuranceReducer = (state: State, action: Action): State => {
       return {
         ...state,
         cameraOpen: action.cameraOpen
+      }
+
+    case ActionType.SET_IS_POLICY_ATTACHMENT_FETCH:
+      return {
+        ...state,
+        isPolicyAttachmentFetch: action.isPolicyAttachmentFetch
       }
   }
 };

@@ -187,7 +187,12 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisabl
               </Box>
 
               {!shouldDisableEdit && <Box mb={2}>
-                <Button variant="outlined" color="inherit" className='blue-button-new' startIcon={<Box width={20}><Add /></Box>} onClick={toggleSideDrawer}>
+                <Button variant="outlined"
+                  color="inherit" className='blue-button-new'
+                  startIcon={<Box width={20}><Add /></Box>}
+                  onClick={toggleSideDrawer}
+                  disabled={loading}
+                >
                   {MANUAL_ENTRY}
                 </Button>
               </Box>}
@@ -239,7 +244,7 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisabl
                             </Link> */}
                         </TableCell>
                         <TableCell scope="row">
-                          {appointmentType?.name ? `${appointmentType?.name ?? ''}  ${convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm:ss')}` : '- -'}
+                          {appointmentType?.name ? `${appointmentType?.name ?? ''}  ${convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm:ss A')}` : '- -'}
                         </TableCell>
                         <TableCell scope="row">
                           <ul>

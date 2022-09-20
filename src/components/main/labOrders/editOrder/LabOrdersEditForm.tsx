@@ -298,8 +298,8 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
     })
   }
 
-  if(isLoading){
-    return <Loader loading loaderText='Fetching Order...'/>
+  if (isLoading) {
+    return <Loader loading loaderText='Fetching Order...' />
   }
 
   return (

@@ -2363,3 +2363,10 @@ export const emailRegex = (value: string) => {
   // eslint-disable-next-line no-useless-escape
   return /^[a-z0-9!@#\$%\^\&*\)\(+=._-]+@[a-z0-9-]+\.[a-z0-9-.]+$/g.test(value || '')
 }
+
+export const dateFormateForEmail = (dateTime: string) => {
+  const appointmentDateStr = dateTime ? parseInt(dateTime) : '';
+  const date = moment(appointmentDateStr).format("DD-MM-YYYY")
+  const time = moment(appointmentDateStr).format("hh:mm A")
+  return { date: date, time: time }
+}
