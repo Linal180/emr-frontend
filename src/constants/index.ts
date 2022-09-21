@@ -1872,6 +1872,7 @@ export const PATIENT_PROBLEM_UPDATED = "Patient problem updated successfully!";
 export const RESET_PASSWORD_MESSAGE = "Please enter your new secure password.";
 export const PATIENT_ALLERGY_DELETED = "Patient allergy deleted successfully!";
 export const PATIENT_PROBLEM_DELETED = "Patient problem deleted successfully!";
+export const MEDICATION_PROBLEM_DELETED = "Medication deleted successfully";
 export const SCHEDULE_CREATED_SUCCESSFULLY = "Schedule is booked successfully";
 export const SET_PASSWORD_SUCCESS = "Your password has been set successfully.";
 export const SCHEDULE_UPDATED_SUCCESSFULLY = "Schedule is updated successfully";
