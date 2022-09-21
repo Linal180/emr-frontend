@@ -1,9 +1,11 @@
 import moment from "moment";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
+
 import { DESC } from "../constants";
 import { Order } from "../interfacesTypes";
 import {
-  AppointmentPayload, AppointmentsPayload, SlotsPayload, FacilityPayload, DoctorPayload, AgreementsPayload
+  AppointmentPayload, AppointmentsPayload, SlotsPayload, FacilityPayload, DoctorPayload, AgreementsPayload,
+  AppointmentStatus
 } from "../generated/graphql"
 
 export interface State {
@@ -81,7 +83,8 @@ export interface State {
   searchPastQuery: string
   tabValue: string
   isReminderModalOpen: boolean
-  reminderId: string
+  reminderId: string;
+  prevStatus: AppointmentStatus | null
 }
 
 export const initialState: State = {
@@ -159,7 +162,8 @@ export const initialState: State = {
   searchPastQuery: '',
   tabValue: '1',
   isReminderModalOpen: false,
-  reminderId: ''
+  reminderId: '',
+  prevStatus: null
 }
 
 
@@ -232,6 +236,7 @@ export enum ActionType {
   SET_TAB_VALUE = 'setTabValue',
   SET_REMINDER_MODAL_OPEN = 'setReminderModalOpen',
   SET_REMINDER_ID = 'setReminderId',
+  SET_PREV_STATUS = 'setPrevStatus',
 }
 
 export type Action =
@@ -311,6 +316,7 @@ export type Action =
       providerId: string,
     }
   }
+  | { type: ActionType.SET_PREV_STATUS; prevStatus: AppointmentStatus | null }
 
 export const appointmentReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -688,7 +694,7 @@ export const appointmentReducer = (state: State, action: Action): State => {
         ...state,
         tabValue: action.tabValue
       }
-      
+
     case ActionType.SET_REMINDER_MODAL_OPEN:
       return {
         ...state,
@@ -699,6 +705,12 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         reminderId: action.reminderId
+      }
+
+    case ActionType.SET_PREV_STATUS:
+      return {
+        ...state,
+        prevStatus: action.prevStatus
       }
   }
 };
