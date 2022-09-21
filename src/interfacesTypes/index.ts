@@ -2109,6 +2109,14 @@ export type SocialHistoryProps = {
 }
 
 
-export type LatestVitalCardProps  = {
+export type LatestVitalCardProps = {
   patientId: string
+}
+
+export type VaccinesProps = {
+  shouldDisableEdit?: boolean
+}
+
+export type VaccinesTableProps = {
+  shouldDisableEdit?: boolean
 }

@@ -1,23 +1,24 @@
 // packages block
-import { Box, Button, Card, colors, Grid, Tab, Typography } from "@material-ui/core";
+import { useParams } from "react-router";
 import { ChevronRight, PrintOutlined } from "@material-ui/icons";
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
+import { Box, Button, Card, colors, Grid, Tab, Typography } from "@material-ui/core";
 import { ChangeEvent, FC, ReactElement, Reducer, useContext, useReducer, useState } from 'react';
-import { useParams } from "react-router";
 // components block
+import Vaccines from '../vaccines';
 import Alert from "../../../common/Alert";
-import ConfirmationModal from "../../../common/ConfirmationModal";
-import Loader from "../../../common/Loader";
-import LabOrdersTable from "../../../common/patient/labOrders";
-import LatestVitalCard from "../latestVitalCard";
-import ChartPrintModal from "./ChartModal/ChartPrintModal";
-import ChartSelectionModal from './ChartModal/ChartSelectionModal';
-import AllergyTab from './tabs/AllergyListing';
 import HistoryTab from './tabs/HistoryTab';
-import MedicationTab from './tabs/MedicationsListing';
-import ProblemTab from './tabs/ProblemListing';
-import TriageNoteTab from './tabs/TriageNotesListing';
 import VitalTab from './tabs/VitalListing';
+import Loader from "../../../common/Loader";
+import AllergyTab from './tabs/AllergyListing';
+import ProblemTab from './tabs/ProblemListing';
+import LatestVitalCard from "../latestVitalCard";
+import MedicationTab from './tabs/MedicationsListing';
+import TriageNoteTab from './tabs/TriageNotesListing';
+import ChartPrintModal from "./ChartModal/ChartPrintModal";
+import LabOrdersTable from "../../../common/patient/labOrders";
+import ConfirmationModal from "../../../common/ConfirmationModal";
+import ChartSelectionModal from './ChartModal/ChartSelectionModal';
 // interfaces, graphql, constants block /styles
 import { DischargeIcon } from "../../../../assets/svgs";
 import {
@@ -219,6 +220,14 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
                     <TabPanel value="7">
                       <ChartContextProvider>
                         <LabOrdersTable appointmentInfo={appointmentInfo} shouldDisableEdit={shouldDisableEdit} />
+                      </ChartContextProvider>
+                    </TabPanel>
+                  </Box>
+
+                  <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                    <TabPanel value="8">
+                      <ChartContextProvider>
+                        <Vaccines shouldDisableEdit={shouldDisableEdit} />
                       </ChartContextProvider>
                     </TabPanel>
                   </Box>
