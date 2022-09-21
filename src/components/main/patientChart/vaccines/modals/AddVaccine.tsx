@@ -10,10 +10,8 @@ import { GREY_SEVEN } from "../../../../../theme";
 import { NoDataIcon, SearchIcon } from "../../../../../assets/svgs";
 import { AddAllergyModalProps } from "../../../../../interfacesTypes";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
-import {
-  Action, ActionType, chartReducer, initialState, State
-} from "../../../../../reducers/chartReducer";
-import { ADD_VACCINE_TEXT, ICD_10, INITIAL_PAGE_LIMIT, NO_RECORDS, SEARCH_FOR_PROBLEMS, SNOMED } from "../../../../../constants";
+import { Action, ActionType, chartReducer, initialState, State } from "../../../../../reducers/chartReducer";
+import { ADD_VACCINE_TEXT, ICD_10, INITIAL_PAGE_LIMIT, NO_RECORDS, SEARCH_FOR_VACCINES, SNOMED } from "../../../../../constants";
 import {
   IcdCodesPayload, IcdCodesWithSnowMedCode, useSearchIcdCodesLazyQuery
 } from "../../../../../generated/graphql";
@@ -143,7 +141,7 @@ const AddVaccine: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
           <InputBase
             value={searchQuery}
             inputProps={{ 'aria-label': 'search' }}
-            placeholder={SEARCH_FOR_PROBLEMS}
+            placeholder={SEARCH_FOR_VACCINES}
             onChange={({ target: { value } }) => handleSearch(value)}
           />
         </Box>

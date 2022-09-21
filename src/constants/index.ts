@@ -1479,6 +1479,7 @@ export const REMOVE_COPAY_AMOUNT = "Remove Copay Amount";
 export const NOT_FOUND_EXCEPTION = "Not Found Exception";
 export const FORBIDDEN_EXCEPTION = "Forbidden Exception";
 export const SEARCH_FOR_PROBLEMS = "Search for Problems";
+export const SEARCH_FOR_VACCINES = "Search for vaccines";
 export const SEARCH_FOR_DISEASE = "Search for Disease";
 export const CONTACT_INFORMATION = "Contact Information";
 export const PREVIOUS_FIRST_NAME = "Previous First Name";
@@ -3918,9 +3919,9 @@ export enum CONFIRMATION_MODAL_TYPE {
 }
 
 export const VACCINE_UNITS_MAPPED = [
-  { id: "mL", name: "mL" },
-  { id: "mcg", name: "mcg" },
-  { id: "mg", name: "mg" },
+  { id: "mL", name: "ML" },
+  { id: "mcg", name: "MCG" },
+  { id: "mg", name: "MG" },
 ]
 
 export const VACCINE_ROUTES_MAPPED = [
