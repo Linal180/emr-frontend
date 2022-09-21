@@ -3888,6 +3888,7 @@ export const FAMILY_RELATIVE_MAPPED = [
 
 
 export const familyRelativeFormDefaultValue = {
+  id: '',
   relative: { id: '', name: '' },
   onsetAge: '',
   died: '',
