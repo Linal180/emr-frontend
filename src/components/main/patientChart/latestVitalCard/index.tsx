@@ -11,7 +11,7 @@ const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId }): JSX.Element =
 
   const classes = useProfileDetailsStyles();
   const [vital, setVital] = useState<PatientVitalPayload['patientVital']>();
-  const [openMoreInfo, setOpenMoreInfo] = useState<boolean>(false);
+  const [openMoreInfo, setOpenMoreInfo] = useState<boolean>(true);
 
   const {
     systolicBloodPressure, diastolicBloodPressure, oxygenSaturation, patientTemperature, pulseRate, respiratoryRate,
