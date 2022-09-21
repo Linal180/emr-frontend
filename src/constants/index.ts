@@ -805,6 +805,7 @@ export const ROLE = "Role";
 export const UNIT = "Unit";
 export const INFO = "Info";
 export const PAGE_LIMIT = 9;
+export const LAB_ORDERS_LIMIT = 50;
 export const PAGE_LIMIT_EIGHT = 8;
 export const INS_1 = "Ins 1";
 export const INS = "Ins";
