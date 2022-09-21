@@ -10,7 +10,7 @@ import TableLoader from "../../../../../common/TableLoader";
 import ConfirmationModal from "../../../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../../../common/NoDataFoundComponent";
 //svgs
-import { renderTh } from "../../../../../../utils";
+import { formatValue, renderTh } from "../../../../../../utils";
 import { useTableStyles } from "../../../../../../styles/tableStyles";
 import { AddWhiteIcon, TrashNewIcon } from "../../../../../../assets/svgs";
 import { FamilyHistoryProps, ParamsType } from "../../../../../../interfacesTypes"
@@ -85,7 +85,10 @@ const FamilyHistoryTable: FC<FamilyHistoryProps> = ({ shouldDisableEdit = false 
     patientId && fetchFamilyHistory()
   }, [patientId, fetchFamilyHistory])
 
-  const handleClose = (open: boolean) => dispatch({ type: ActionType.SET_OPEN_ADD, openAdd: open })
+  const handleClose = (open: boolean) => {
+    dispatch({ type: ActionType.SET_EDIT_FAMILY_ID, editFamilyId: '' })
+    dispatch({ type: ActionType.SET_OPEN_ADD, openAdd: open })
+  }
 
   const onPageChange = (_: ChangeEvent<unknown>, value: number) => dispatch({
     type: ActionType.SET_PAGE, page: value
@@ -107,13 +110,13 @@ const FamilyHistoryTable: FC<FamilyHistoryProps> = ({ shouldDisableEdit = false 
     <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
       <Typography variant='h3'>{FAMILY_HISTORY_TEXT}</Typography>
       {!shouldDisableEdit &&
-      <Button
-        variant='contained' color='primary'
-        startIcon={<Box width={20}><AddWhiteIcon /></Box>}
-        onClick={() => dispatch({ type: ActionType.SET_OPEN_ADD, openAdd: !openAdd })}
-      >
-        {ADD_NEW_TEXT}
-      </Button>}
+        <Button
+          variant='contained' color='primary'
+          startIcon={<Box width={20}><AddWhiteIcon /></Box>}
+          onClick={() => dispatch({ type: ActionType.SET_OPEN_ADD, openAdd: !openAdd })}
+        >
+          {ADD_NEW_TEXT}
+        </Button>}
     </Box>
     <Table aria-label="customized table">
       <TableHead>
@@ -135,20 +138,20 @@ const FamilyHistoryTable: FC<FamilyHistoryProps> = ({ shouldDisableEdit = false 
             </TableCell>
           </TableRow>
         ) : (
-          familyHistories?.map((history) => {
+          familyHistories?.map((history, i) => {
             const { id, name, familyHistoryRelatives } = history || {};
 
             return (
-              <Fragment>
+              <Fragment key={`${id}-${i}`}>
                 {familyHistoryRelatives?.map((family, index) => {
                   const { died, notes, onsetAge, relativeName } = family || {}
                   return (
-                    <TableRow>
+                    <TableRow key={`${id}-${index}`}>
                       {index === 0 &&
                         <TableCell rowSpan={familyHistoryRelatives?.length}>
                           {name}
                         </TableCell>}
-                      <TableCell style={{ paddingLeft: index === 0 ? 'inherited' : 10 }}>{relativeName}</TableCell>
+                      <TableCell style={{ paddingLeft: index === 0 ? 'inherited' : 10 }}>{formatValue(relativeName || '')}</TableCell>
                       <TableCell>{onsetAge}</TableCell>
                       <TableCell>{died}</TableCell>
                       <TableCell>{notes}</TableCell>
@@ -202,13 +205,13 @@ const FamilyHistoryTable: FC<FamilyHistoryProps> = ({ shouldDisableEdit = false 
       })}
     />
 
-    <FamilyHistoryForm
+    {openAdd && <FamilyHistoryForm
       isOpen={openAdd}
       id={editFamilyId}
       isEdit={!!editFamilyId}
       handleClose={handleClose}
       fetchFamilyHistory={fetchFamilyHistory}
-    />
+    />}
 
   </Fragment>
   )

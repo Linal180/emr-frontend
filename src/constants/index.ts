@@ -681,8 +681,10 @@ export const DECEASED_DATE = "Deceased Date";
 export const DEA_TERM_DATE = "DEA Term Date";
 export const PATIENT_RECEIPT = "Patient Receipt";
 export const DATE_OF_SERVICE = "Date of Service";
+export const DOS = "DOS";
 export const DEA_ACTIVE_DATE = "DEA Active Date";
 export const PROVIDER_INFORMATION = "Provider Information";
+export const CLINIC = "Clinic";
 export const LANGUAGE_SPOKEN = "Language Spoken";
 export const DEGREE_CREDENTIALS = "Degree/ Credentials";
 export const SOCIAL_SECURITY_TYPE = "Social Security Type";
@@ -1604,7 +1606,6 @@ export const SIGN_RECORD_LEARN_MORE_TEXT = "You are about to sign this document 
 export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure you want to delete this record?";
 export const CANCEL_RECORD_LEARN_MORE_TEXT = "You are about to cancel this record permanently. Are you sure you want to cancel this record?";
 export const DISCHARGE_MODAL_PATIENT_DESCRIPTION = "You are about to discharge the patient permanently. Are you sure you want to discharge the patient?";
-// export const appointmentCancellationDescription = `Are you sure you want to cancel Devone Lane’s Appointment on 16 Feb, 2022 at time 11:00am?`;
 export const appointmentCancellationDescription = `Are you sure you want to cancel`;
 export const APPOINTMENT_ON = `Appointment on`
 export const AT = `at`
@@ -3086,7 +3087,7 @@ export const CHECK_IN_STEPS = [
   CHECK_IN,
   PATIENT_INFO,
   CHART_TEXT,
-  LAB_ORDERS,
+  // LAB_ORDERS,
   BILLING_AND_INSURANCE,
 ];
 
@@ -3888,6 +3889,7 @@ export const FAMILY_RELATIVE_MAPPED = [
 
 
 export const familyRelativeFormDefaultValue = {
+  id: '',
   relative: { id: '', name: '' },
   onsetAge: '',
   died: '',

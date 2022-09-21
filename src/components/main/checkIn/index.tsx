@@ -1,22 +1,21 @@
 // packages block
-import { useParams } from "react-router";
-import { Reducer, useCallback, useContext, useEffect, useReducer, useRef } from "react";
-import clsx from 'clsx';
 import {
-  Box, Button, Card, CircularProgress, colors, Step, StepIconProps, StepLabel, Stepper, Typography
+  Box, Button, CircularProgress, colors, Step, StepIconProps, StepLabel, Stepper, Typography
 } from "@material-ui/core";
 import { Check, ChevronRight } from '@material-ui/icons';
+import clsx from 'clsx';
+import { Reducer, useCallback, useContext, useEffect, useReducer, useRef, useState } from "react";
+import { useParams } from "react-router";
 // component block
-import CheckIn from "./CheckIn";
-import LabOrders from "./LabOrders";
 import Alert from "../../common/Alert";
-import PatientForm from "../patients/patientForm";
-import BillingComponent from "../billing/addBill/BillingComponent";
 import PatientProfileHero from "../../common/patient/profileHero";
+import BillingComponent from "../billing/addBill/BillingComponent";
+import PatientForm from "../patients/patientForm";
+import CheckIn from "./CheckIn";
 // constants, interfaces, utils block
-import {
-  CHART_TEXT, CHECK_IN_STEPS, PATIENT_INFO, TO_CHART, TO_LAB_ORDERS,
-} from "../../../constants";
+import { ChevronRightIcon } from "../../../assets/svgs";
+import { CHECK_IN_STEPS, PATIENT_INFO, TO_CHART, TO_LAB_ORDERS } from "../../../constants";
+import { AuthContext } from "../../../context";
 import {
   AppointmentPayload, AppointmentStatus, AttachmentsPayload, OrderOfBenefitType, PatientPayload,
   useFetchPatientInsurancesLazyQuery, useGetAppointmentLazyQuery, useUpdateAppointmentMutation
@@ -31,11 +30,11 @@ import {
   Action as PatientAction, ActionType as PatientActionType, initialState as patientInitialState,
   patientReducer, State as PatientState
 } from "../../../reducers/patientReducer";
-import { CheckInConnector, useCheckInStepIconStyles, useCheckInProfileStyles } from '../../../styles/checkInStyles';
+import { CheckInConnector, useCheckInProfileStyles, useCheckInStepIconStyles } from '../../../styles/checkInStyles';
 import { convertDateFromUnix, getFormattedDate, isBiller, isFrontDesk } from "../../../utils";
-import { ChevronRightIcon } from "../../../assets/svgs";
 import ChartCards from "../patientChart/chartCards";
-import { AuthContext } from "../../../context";
+import ChartPrintModal from "../patientChart/chartCards/ChartModal/ChartPrintModal";
+import ChartSelectionModal from "../patientChart/chartCards/ChartModal/ChartSelectionModal";
 
 const CheckInStepIcon = (props: StepIconProps) => {
   const classes = useCheckInStepIconStyles();
@@ -58,6 +57,9 @@ const CheckInComponent = (): JSX.Element => {
   const isBillerUser = isBiller(roles);
   const isFrontDeskUser = isFrontDesk(roles);
   const checkInClasses = useCheckInProfileStyles();
+  const [modulesToPrint, setModulesToPrint] = useState<string[]>([])
+  const [isChartingModalOpen, setIsChartingModalOpen] = useState(false)
+  const [isChartPdfModalOpen, setIsChartPdfModalOpen] = useState<boolean>(false)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState);
   const [, patientDispatcher] =
     useReducer<Reducer<PatientState, PatientAction>>(patientReducer, patientInitialState)
@@ -201,10 +203,10 @@ const CheckInComponent = (): JSX.Element => {
       //   return <Insurance />
       case 2:
         return <Chart />
+      // case 3:
+      //   return <LabOrders appointmentInfo={appointmentInfo} handleStep={() => handleStep(4)} shouldDisableEdit={shouldDisableEdit} />
       case 3:
-        return <LabOrders appointmentInfo={appointmentInfo} handleStep={() => handleStep(4)} shouldDisableEdit={shouldDisableEdit} />
       case 4:
-      case 5:
         return <BillingComponent shouldDisableEdit={shouldDisableEdit} />
       default:
         return <CircularProgress />;
@@ -242,18 +244,13 @@ const CheckInComponent = (): JSX.Element => {
   // 3- CHART
   const Chart = () =>
     <>
-      <Card>
-        <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
-          <Typography variant="h4">{CHART_TEXT}</Typography>
-
-          <Button variant="contained" color="primary" onClick={() => handleStep(3)}>
-            {TO_LAB_ORDERS}
-            <ChevronRight />
-          </Button>
-        </Box>
-
-        <ChartCards shouldDisableEdit={shouldDisableEdit} status={status} fetchAppointment={fetchAppointment} appointmentInfo={appointmentInfo} />
-      </Card>
+      <ChartCards
+        status={status}
+        labOrderHandler={() => handleStep(3)}
+        appointmentInfo={appointmentInfo}
+        fetchAppointment={fetchAppointment}
+        shouldDisableEdit={shouldDisableEdit}
+      />
     </>
 
   const handleStepChange = (index: number) => {
@@ -313,6 +310,20 @@ const CheckInComponent = (): JSX.Element => {
       <Box mt={1}>
         <Typography>{getStepContent(activeStep)}</Typography>
       </Box>
+
+      {isChartingModalOpen && <ChartSelectionModal
+        isOpen={isChartingModalOpen}
+        handleClose={() => setIsChartingModalOpen(false)}
+        setIsChartPdfModalOpen={setIsChartPdfModalOpen}
+        modulesToPrint={modulesToPrint}
+        setModulesToPrint={setModulesToPrint}
+      />}
+
+      {isChartPdfModalOpen && <ChartPrintModal
+        modulesToPrint={modulesToPrint}
+        isOpen={isChartPdfModalOpen}
+        handleClose={() => setIsChartPdfModalOpen(false)}
+      />}
     </>
   )
 };

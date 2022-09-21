@@ -1883,6 +1883,7 @@ export interface ChartComponentProps {
   status?: string;
   fetchAppointment?: Function
   appointmentInfo?: SelectorOption
+  labOrderHandler?: Function
 }
 
 export interface BillingComponentProps extends GeneralFormProps {
@@ -2052,7 +2053,7 @@ export type SelfPayComponentProps = {
 }
 
 export type CameraComponentProps = {
-  sendFile: (blob: File) => void;
+  sendFile: (blob: File | null | undefined) => void;
   invisibleHandler: (open: boolean) => void;
   open: boolean
 }
@@ -2091,6 +2092,7 @@ export type FamilyHistoryFormProps = {
 }
 
 type FamilyRelativeArrayFields = {
+  id: string
   relative: SelectorOption
   onsetAge: string;
   died: string;
@@ -2104,4 +2106,9 @@ export type FamilyHistoryFormType = {
 
 export type SocialHistoryProps = {
   shouldDisableEdit?: boolean
+}
+
+
+export type LatestVitalCardProps  = {
+  patientId: string
 }
