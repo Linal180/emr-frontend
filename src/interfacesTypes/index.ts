@@ -2092,6 +2092,7 @@ export type FamilyHistoryFormProps = {
 }
 
 type FamilyRelativeArrayFields = {
+  id: string
   relative: SelectorOption
   onsetAge: string;
   died: string;

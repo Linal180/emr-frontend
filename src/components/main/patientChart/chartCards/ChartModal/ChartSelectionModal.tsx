@@ -81,7 +81,7 @@ const ChartSelectionModal: FC<ChartSelectionViewerProps> = ({
       </DialogContent>
 
       <DialogActions>
-        <Button variant="contained" color="primary" onClick={() => {
+        <Button variant="contained" color="primary" disabled={modulesToPrint.length ? false : true} onClick={() => {
           setIsChartPdfModalOpen(true);
           handleClose()
         }}>

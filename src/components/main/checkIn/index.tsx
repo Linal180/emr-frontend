@@ -1,20 +1,21 @@
 // packages block
-import clsx from 'clsx';
-import { useParams } from "react-router";
-import { Check, ChevronRight } from '@material-ui/icons';
-import { Reducer, useCallback, useContext, useEffect, useReducer, useRef, useState } from "react";
 import {
   Box, Button, CircularProgress, colors, Step, StepIconProps, StepLabel, Stepper, Typography
 } from "@material-ui/core";
+import { Check, ChevronRight } from '@material-ui/icons';
+import clsx from 'clsx';
+import { Reducer, useCallback, useContext, useEffect, useReducer, useRef, useState } from "react";
+import { useParams } from "react-router";
 // component block
-import CheckIn from "./CheckIn";
-import LabOrders from "./LabOrders";
 import Alert from "../../common/Alert";
-import PatientForm from "../patients/patientForm";
-import BillingComponent from "../billing/addBill/BillingComponent";
 import PatientProfileHero from "../../common/patient/profileHero";
+import BillingComponent from "../billing/addBill/BillingComponent";
+import PatientForm from "../patients/patientForm";
+import CheckIn from "./CheckIn";
 // constants, interfaces, utils block
+import { ChevronRightIcon } from "../../../assets/svgs";
 import { CHECK_IN_STEPS, PATIENT_INFO, TO_CHART, TO_LAB_ORDERS } from "../../../constants";
+import { AuthContext } from "../../../context";
 import {
   AppointmentPayload, AppointmentStatus, AttachmentsPayload, OrderOfBenefitType, PatientPayload,
   useFetchPatientInsurancesLazyQuery, useGetAppointmentLazyQuery, useUpdateAppointmentMutation
@@ -29,13 +30,11 @@ import {
   Action as PatientAction, ActionType as PatientActionType, initialState as patientInitialState,
   patientReducer, State as PatientState
 } from "../../../reducers/patientReducer";
-import { CheckInConnector, useCheckInStepIconStyles, useCheckInProfileStyles } from '../../../styles/checkInStyles';
+import { CheckInConnector, useCheckInProfileStyles, useCheckInStepIconStyles } from '../../../styles/checkInStyles';
 import { convertDateFromUnix, getFormattedDate, isBiller, isFrontDesk } from "../../../utils";
-import { ChevronRightIcon } from "../../../assets/svgs";
 import ChartCards from "../patientChart/chartCards";
-import { AuthContext } from "../../../context";
-import ChartSelectionModal from "../patientChart/chartCards/ChartModal/ChartSelectionModal";
 import ChartPrintModal from "../patientChart/chartCards/ChartModal/ChartPrintModal";
+import ChartSelectionModal from "../patientChart/chartCards/ChartModal/ChartSelectionModal";
 
 const CheckInStepIcon = (props: StepIconProps) => {
   const classes = useCheckInStepIconStyles();
@@ -204,10 +203,10 @@ const CheckInComponent = (): JSX.Element => {
       //   return <Insurance />
       case 2:
         return <Chart />
+      // case 3:
+      //   return <LabOrders appointmentInfo={appointmentInfo} handleStep={() => handleStep(4)} shouldDisableEdit={shouldDisableEdit} />
       case 3:
-        return <LabOrders appointmentInfo={appointmentInfo} handleStep={() => handleStep(4)} shouldDisableEdit={shouldDisableEdit} />
       case 4:
-      case 5:
         return <BillingComponent shouldDisableEdit={shouldDisableEdit} />
       default:
         return <CircularProgress />;

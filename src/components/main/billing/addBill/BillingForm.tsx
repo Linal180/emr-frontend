@@ -132,6 +132,7 @@ const BillingForm: FC<BillingFormProps> = ({
                   variant="contained"
                   color="secondary"
                   component={Link}
+                  target="_blank"
                   to={`${SUPER_BILL_ROUTE}/${appointmentId}`}
                 >
                   {SUPER_BILL}

@@ -15,7 +15,7 @@ import MedicationModal from "../../medications/modals/MedicationModal";
 // constants, utils, interfaces ang graphql block
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from "../../../../../assets/svgs";
 import {
-  ACTIONS, ADD_NEW_TEXT, COMMENTS, DASHES, DELETE_MEDICATION_DESCRIPTION, EIGHT_PAGE_LIMIT, MEDICATIONS_TEXT, MEDICATION_TEXT, PATIENT_PROBLEM_DELETED, SIG, START_DATE, STATUS
+  ACTIONS, ADD_NEW_TEXT, COMMENTS, DASHES, DELETE_MEDICATION_DESCRIPTION, EIGHT_PAGE_LIMIT, MEDICATIONS_TEXT, MEDICATION_PROBLEM_DELETED, MEDICATION_TEXT, SIG, START_DATE, STATUS
 } from "../../../../../constants";
 import { Medications, PatientMedicationsPayload, useFindAllPatientMedicationsLazyQuery, useRemovePatientMedicationMutation } from "../../../../../generated/graphql";
 import { ChartComponentProps, ParamsType } from "../../../../../interfacesTypes";
@@ -109,7 +109,7 @@ const MedicationTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
         const { status } = response
 
         if (status && status === 200) {
-          Alert.success(PATIENT_PROBLEM_DELETED);
+          Alert.success(MEDICATION_PROBLEM_DELETED);
           dispatch({ type: ActionType.SET_MEDICATION_DELETE_ID, medicationDeleteId: '' })
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 

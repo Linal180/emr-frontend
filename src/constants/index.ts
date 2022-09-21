@@ -805,6 +805,7 @@ export const ROLE = "Role";
 export const UNIT = "Unit";
 export const INFO = "Info";
 export const PAGE_LIMIT = 9;
+export const LAB_ORDERS_LIMIT = 50;
 export const PAGE_LIMIT_EIGHT = 8;
 export const INS_1 = "Ins 1";
 export const INS = "Ins";
@@ -1872,6 +1873,7 @@ export const PATIENT_PROBLEM_UPDATED = "Patient problem updated successfully!";
 export const RESET_PASSWORD_MESSAGE = "Please enter your new secure password.";
 export const PATIENT_ALLERGY_DELETED = "Patient allergy deleted successfully!";
 export const PATIENT_PROBLEM_DELETED = "Patient problem deleted successfully!";
+export const MEDICATION_PROBLEM_DELETED = "Medication deleted successfully";
 export const SCHEDULE_CREATED_SUCCESSFULLY = "Schedule is booked successfully";
 export const SET_PASSWORD_SUCCESS = "Your password has been set successfully.";
 export const SCHEDULE_UPDATED_SUCCESSFULLY = "Schedule is updated successfully";
@@ -3086,7 +3088,7 @@ export const CHECK_IN_STEPS = [
   CHECK_IN,
   PATIENT_INFO,
   CHART_TEXT,
-  LAB_ORDERS,
+  // LAB_ORDERS,
   BILLING_AND_INSURANCE,
 ];
 
@@ -3888,6 +3890,7 @@ export const FAMILY_RELATIVE_MAPPED = [
 
 
 export const familyRelativeFormDefaultValue = {
+  id: '',
   relative: { id: '', name: '' },
   onsetAge: '',
   died: '',

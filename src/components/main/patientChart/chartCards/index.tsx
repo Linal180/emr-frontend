@@ -1,36 +1,37 @@
 // packages block
-import { useParams } from "react-router";
+import { Box, Button, Card, colors, Grid, Tab, Typography } from "@material-ui/core";
 import { ChevronRight, PrintOutlined } from "@material-ui/icons";
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
-import { Box, Button, Card, colors, Grid, Tab, Typography, } from "@material-ui/core";
 import { ChangeEvent, FC, ReactElement, Reducer, useContext, useReducer, useState } from 'react';
+import { useParams } from "react-router";
 // components block
 import Alert from "../../../common/Alert";
-import HistoryTab from './tabs/HistoryTab';
-import VitalTab from './tabs/VitalListing';
-import Loader from "../../../common/Loader";
-import AllergyTab from './tabs/AllergyListing';
-import ProblemTab from './tabs/ProblemListing';
-import LatestVitalCard from "../latestVitalCard";
-import MedicationTab from './tabs/MedicationsListing';
-import TriageNoteTab from './tabs/TriageNotesListing';
-import ChartPrintModal from "./ChartModal/ChartPrintModal";
-import LabOrdersTable from "../../../common/patient/labOrders";
 import ConfirmationModal from "../../../common/ConfirmationModal";
+import Loader from "../../../common/Loader";
+import LabOrdersTable from "../../../common/patient/labOrders";
+import LatestVitalCard from "../latestVitalCard";
+import ChartPrintModal from "./ChartModal/ChartPrintModal";
 import ChartSelectionModal from './ChartModal/ChartSelectionModal';
+import AllergyTab from './tabs/AllergyListing';
+import HistoryTab from './tabs/HistoryTab';
+import MedicationTab from './tabs/MedicationsListing';
+import ProblemTab from './tabs/ProblemListing';
+import TriageNoteTab from './tabs/TriageNotesListing';
+import VitalTab from './tabs/VitalListing';
 // interfaces, graphql, constants block /styles
 import { DischargeIcon } from "../../../../assets/svgs";
-import { isAdmin, isOnlyDoctor } from "../../../../utils";
-import { BLUE, GRAY_SIMPLE, WHITE } from '../../../../theme';
-import { useChartingStyles } from "../../../../styles/chartingStyles";
-import { AuthContext, ChartContextProvider } from '../../../../context';
-import { ChartComponentProps, ParamsType } from "../../../../interfacesTypes";
-import { AppointmentStatus, useUpdateAppointmentStatusMutation } from "../../../../generated/graphql";
-import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
 import {
-  DISCHARGE_PATIENT_DESCRIPTION, DISCHARGE, PATIENT_CHARTING_TABS, PATIENT_DISCHARGED, PATIENT_DISCHARGED_SUCCESS,
-  PRINT_CHART, CONFIRMATION_MODAL_TYPE, CHART_TEXT, TO_LAB_ORDERS
+  CHART_TEXT, CONFIRMATION_MODAL_TYPE, DISCHARGE, DISCHARGE_PATIENT_DESCRIPTION, PATIENT_CHARTING_TABS, PATIENT_DISCHARGED, PATIENT_DISCHARGED_SUCCESS,
+  PRINT_CHART,
+  TO_BILLING
 } from "../../../../constants";
+import { AuthContext, ChartContextProvider } from '../../../../context';
+import { AppointmentStatus, useUpdateAppointmentStatusMutation } from "../../../../generated/graphql";
+import { ChartComponentProps, ParamsType } from "../../../../interfacesTypes";
+import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
+import { useChartingStyles } from "../../../../styles/chartingStyles";
+import { BLUE, GRAY_SIMPLE, WHITE } from '../../../../theme';
+import { isAdmin, isOnlyDoctor } from "../../../../utils";
 
 const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appointmentInfo, fetchAppointment, labOrderHandler }): JSX.Element => {
   const classes = useChartingStyles()
@@ -119,7 +120,7 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
               <Button variant="contained" color="primary" onClick={() => {
                 labOrderHandler && labOrderHandler()
               }}>
-                {TO_LAB_ORDERS}
+                {TO_BILLING}
                 <ChevronRight />
               </Button>
             </Box>}
