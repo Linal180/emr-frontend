@@ -190,12 +190,13 @@ const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({
     const { id: icdCodeId, name: problemName } = problem;
 
     try {
-      const familyHistoryRelatives = familyRelative?.map((item) => {
-        const { relative, ...rest } = item;
-        const { id: relativeName } = relative || {}
-        return { relativeName, ...rest }
-      })
+
       if (isEdit && familyHistoryId) {
+        const familyHistoryRelatives = familyRelative?.map((item) => {
+          const { relative, ...rest } = item;
+          const { id: relativeName } = relative || {}
+          return { relativeName, ...rest }
+        })
         await updateFamilyHistory({
           variables: {
             updateFamilyHistoryInput: {
