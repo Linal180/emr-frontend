@@ -1,0 +1,66 @@
+query FindAllCvx($findAllCvxInput: FindAllCvxInput!) {
+  findAllCvx(findAllCvxInput: $findAllCvxInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+
+    cvxs {
+      id
+      name
+      cvxCode
+      shortDescription
+    }
+  }
+}
+
+query FindAllMvx($findAllMvxInput: FindAllMvxInput!) {
+  findAllMvx(findAllMvxInput: $findAllMvxInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+
+    mvxs {
+      id
+      mvxCode
+      cvxCode
+      mvxStatus
+      manufacturerName
+    }
+  }
+}
+
+query FindAllNdc($findAllNdcInput: FindAllNdcInput!) {
+  findAllNdc(findAllNdcInput: $findAllNdcInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+
+    ndcs {
+      id
+      ndcCode
+      mvxName
+      cvxDescription
+    }
+  }
+}

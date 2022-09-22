@@ -581,6 +581,18 @@ export type CptFeeSchedulePayload = {
   response?: Maybe<ResponsePayloadResponse>;
 };
 
+export type Cvx = {
+  __typename?: 'CVX';
+  createdAt?: Maybe<Scalars['String']>;
+  cvxCode?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  mvx?: Maybe<Array<Mvx>>;
+  name?: Maybe<Scalars['String']>;
+  productStatus?: Maybe<Scalars['String']>;
+  shortDescription?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
 export type CancelAppointment = {
   reason: Scalars['String'];
   token: Scalars['String'];
@@ -2059,6 +2071,18 @@ export type FindAllCptFeeScheduleInput = {
   searchString?: Maybe<Scalars['String']>;
 };
 
+export type FindAllCvxInput = {
+  paginationOptions: PaginationInput;
+  searchQuery?: Maybe<Scalars['String']>;
+};
+
+export type FindAllCvxPayload = {
+  __typename?: 'FindAllCvxPayload';
+  cvxs?: Maybe<Array<Cvx>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
 export type FindAllFamilyHistoryInput = {
   paginationOptions: PaginationInput;
   patientId?: Maybe<Scalars['String']>;
@@ -2073,6 +2097,32 @@ export type FindAllFeeScheduleInput = {
 export type FindAllModifierInput = {
   paginationOptions: PaginationInput;
   searchQuery?: Maybe<Scalars['String']>;
+};
+
+export type FindAllMvxInput = {
+  cvxId?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+  searchQuery?: Maybe<Scalars['String']>;
+};
+
+export type FindAllMvxPayload = {
+  __typename?: 'FindAllMvxPayload';
+  mvxs?: Maybe<Array<Mvx>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
+export type FindAllNdcInput = {
+  mvxId?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+  searchQuery?: Maybe<Scalars['String']>;
+};
+
+export type FindAllNdcPayload = {
+  __typename?: 'FindAllNdcPayload';
+  ndcs?: Maybe<Array<Ndc>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayloadResponse>;
 };
 
 export type ForgotPasswordInput = {
@@ -2765,6 +2815,20 @@ export enum Maritialstatus {
   Single = 'SINGLE',
   Widowed = 'WIDOWED'
 }
+
+export type Mvx = {
+  __typename?: 'MVX';
+  createdAt?: Maybe<Scalars['String']>;
+  cvx?: Maybe<Cvx>;
+  cvxCode?: Maybe<Scalars['String']>;
+  cvxId?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  manufacturerName?: Maybe<Scalars['String']>;
+  mvxCode?: Maybe<Scalars['String']>;
+  mvxStatus?: Maybe<Scalars['String']>;
+  ndc?: Maybe<Array<Ndc>>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
 
 export type MedicationInput = {
   paginationOptions: PaginationInput;
@@ -3650,6 +3714,26 @@ export type MutationVerifyOtpArgs = {
   verifyCodeInput: VerifyCodeInput;
 };
 
+export type Ndc = {
+  __typename?: 'NDC';
+  createdAt?: Maybe<Scalars['String']>;
+  cvxCode?: Maybe<Scalars['String']>;
+  cvxDescription?: Maybe<Scalars['String']>;
+  endDate?: Maybe<Scalars['String']>;
+  gtin?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  lastUpdate?: Maybe<Scalars['String']>;
+  mvx?: Maybe<Mvx>;
+  mvxCode?: Maybe<Scalars['String']>;
+  mvxId?: Maybe<Scalars['String']>;
+  mvxName?: Maybe<Scalars['String']>;
+  ndcCode?: Maybe<Scalars['String']>;
+  ndcType?: Maybe<Scalars['String']>;
+  noUseNDC?: Maybe<Scalars['String']>;
+  startDate?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
 export type Observations = {
   __typename?: 'Observations';
   abnormalFlag: AbnormalFlag;
@@ -3811,6 +3895,7 @@ export type Patient = {
   triageNotes?: Maybe<Array<TriageNotes>>;
   updatedAt: Scalars['String'];
   user?: Maybe<User>;
+  vaccines?: Maybe<Array<Vaccine>>;
 };
 
 export type PatientAllergies = {
@@ -4613,6 +4698,7 @@ export type Query = {
   findAllContacts: ContactsPayload;
   findAllCptCodes: AllCptCodePayload;
   findAllCptFeeSchedule: AllCptFeeSchedulesPayload;
+  findAllCvx: FindAllCvxPayload;
   findAllDoctor: AllDoctorPayload;
   findAllDoctorPatients: DoctorPatientsPayload;
   findAllFacility: FacilitiesPayload;
@@ -4624,6 +4710,8 @@ export type Query = {
   findAllLoincCodes: LoincCodesPayload;
   findAllMedications: MedicationsPayload;
   findAllModifiers: AllModifiersPayload;
+  findAllMvx: FindAllMvxPayload;
+  findAllNdc: FindAllNdcPayload;
   findAllPatient: PatientsPayload;
   findAllPatientAllergies: PatientAllergiesPayload;
   findAllPatientMedications: PatientMedicationsPayload;
@@ -4845,6 +4933,11 @@ export type QueryFindAllCptFeeScheduleArgs = {
 };
 
 
+export type QueryFindAllCvxArgs = {
+  findAllCvxInput: FindAllCvxInput;
+};
+
+
 export type QueryFindAllDoctorArgs = {
   doctorInput: DoctorInput;
 };
@@ -4897,6 +4990,16 @@ export type QueryFindAllMedicationsArgs = {
 
 export type QueryFindAllModifiersArgs = {
   findAllModifierInput: FindAllModifierInput;
+};
+
+
+export type QueryFindAllMvxArgs = {
+  findAllMvxInput: FindAllMvxInput;
+};
+
+
+export type QueryFindAllNdcArgs = {
+  findAllNdcInput: FindAllNdcInput;
 };
 
 
@@ -7092,6 +7195,31 @@ export type UsersWithRolesInputs = {
   practiceId?: Maybe<Scalars['String']>;
 };
 
+export type Vaccine = {
+  __typename?: 'Vaccine';
+  administerBy?: Maybe<Scalars['String']>;
+  administrationDate?: Maybe<Scalars['String']>;
+  amount?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  cvx?: Maybe<Cvx>;
+  cvxId?: Maybe<Scalars['String']>;
+  expiryDate?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  lotNo?: Maybe<Scalars['String']>;
+  mdc?: Maybe<Ndc>;
+  mvx?: Maybe<Mvx>;
+  mvxId?: Maybe<Scalars['String']>;
+  ndcId?: Maybe<Scalars['String']>;
+  patient?: Maybe<Patient>;
+  patientId?: Maybe<Scalars['String']>;
+  route?: Maybe<Scalars['String']>;
+  site?: Maybe<Scalars['String']>;
+  units?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+  visDate?: Maybe<Scalars['String']>;
+  visGiven?: Maybe<Scalars['String']>;
+};
+
 export type VerifyCodeInput = {
   id?: Maybe<Scalars['String']>;
   otpCode: Scalars['String'];
@@ -8736,6 +8864,27 @@ export type FindAllUserLogsQueryVariables = Exact<{
 
 
 export type FindAllUserLogsQuery = { __typename?: 'Query', findAllUserLogs: { __typename?: 'UserLogsPayload', response: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null }, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, userLogs?: Array<{ __typename?: 'UserLogs', id: string, createdAt: string, ipAddress?: string | null, refererUrl?: string | null, moduleType?: string | null, responseCode?: string | null, operationType?: string | null, activityPayload?: string | null, user?: { __typename?: 'User', email: string } | null, patient?: { __typename?: 'Patient', id: string, lastName?: string | null, firstName?: string | null, patientRecord?: string | null } | null } | null> | null } };
+
+export type FindAllCvxQueryVariables = Exact<{
+  findAllCvxInput: FindAllCvxInput;
+}>;
+
+
+export type FindAllCvxQuery = { __typename?: 'Query', findAllCvx: { __typename?: 'FindAllCvxPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, cvxs?: Array<{ __typename?: 'CVX', id: string, name?: string | null, cvxCode?: string | null, shortDescription?: string | null }> | null } };
+
+export type FindAllMvxQueryVariables = Exact<{
+  findAllMvxInput: FindAllMvxInput;
+}>;
+
+
+export type FindAllMvxQuery = { __typename?: 'Query', findAllMvx: { __typename?: 'FindAllMvxPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, mvxs?: Array<{ __typename?: 'MVX', id: string, mvxCode?: string | null, cvxCode?: string | null, mvxStatus?: string | null, manufacturerName?: string | null }> | null } };
+
+export type FindAllNdcQueryVariables = Exact<{
+  findAllNdcInput: FindAllNdcInput;
+}>;
+
+
+export type FindAllNdcQuery = { __typename?: 'Query', findAllNdc: { __typename?: 'FindAllNdcPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, ndcs?: Array<{ __typename?: 'NDC', id: string, ndcCode?: string | null, mvxName?: string | null, cvxDescription?: string | null }> | null } };
 
 
 export const FetchAllAgreementsDocument = gql`
@@ -20571,3 +20720,151 @@ export function useFindAllUserLogsLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type FindAllUserLogsQueryHookResult = ReturnType<typeof useFindAllUserLogsQuery>;
 export type FindAllUserLogsLazyQueryHookResult = ReturnType<typeof useFindAllUserLogsLazyQuery>;
 export type FindAllUserLogsQueryResult = Apollo.QueryResult<FindAllUserLogsQuery, FindAllUserLogsQueryVariables>;
+export const FindAllCvxDocument = gql`
+    query FindAllCvx($findAllCvxInput: FindAllCvxInput!) {
+  findAllCvx(findAllCvxInput: $findAllCvxInput) {
+    response {
+      status
+      error
+      message
+    }
+    pagination {
+      page
+      totalPages
+    }
+    cvxs {
+      id
+      name
+      cvxCode
+      shortDescription
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllCvxQuery__
+ *
+ * To run a query within a React component, call `useFindAllCvxQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllCvxQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllCvxQuery({
+ *   variables: {
+ *      findAllCvxInput: // value for 'findAllCvxInput'
+ *   },
+ * });
+ */
+export function useFindAllCvxQuery(baseOptions: Apollo.QueryHookOptions<FindAllCvxQuery, FindAllCvxQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllCvxQuery, FindAllCvxQueryVariables>(FindAllCvxDocument, options);
+      }
+export function useFindAllCvxLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllCvxQuery, FindAllCvxQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllCvxQuery, FindAllCvxQueryVariables>(FindAllCvxDocument, options);
+        }
+export type FindAllCvxQueryHookResult = ReturnType<typeof useFindAllCvxQuery>;
+export type FindAllCvxLazyQueryHookResult = ReturnType<typeof useFindAllCvxLazyQuery>;
+export type FindAllCvxQueryResult = Apollo.QueryResult<FindAllCvxQuery, FindAllCvxQueryVariables>;
+export const FindAllMvxDocument = gql`
+    query FindAllMvx($findAllMvxInput: FindAllMvxInput!) {
+  findAllMvx(findAllMvxInput: $findAllMvxInput) {
+    response {
+      status
+      error
+      message
+    }
+    pagination {
+      page
+      totalPages
+    }
+    mvxs {
+      id
+      mvxCode
+      cvxCode
+      mvxStatus
+      manufacturerName
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllMvxQuery__
+ *
+ * To run a query within a React component, call `useFindAllMvxQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllMvxQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllMvxQuery({
+ *   variables: {
+ *      findAllMvxInput: // value for 'findAllMvxInput'
+ *   },
+ * });
+ */
+export function useFindAllMvxQuery(baseOptions: Apollo.QueryHookOptions<FindAllMvxQuery, FindAllMvxQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllMvxQuery, FindAllMvxQueryVariables>(FindAllMvxDocument, options);
+      }
+export function useFindAllMvxLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllMvxQuery, FindAllMvxQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllMvxQuery, FindAllMvxQueryVariables>(FindAllMvxDocument, options);
+        }
+export type FindAllMvxQueryHookResult = ReturnType<typeof useFindAllMvxQuery>;
+export type FindAllMvxLazyQueryHookResult = ReturnType<typeof useFindAllMvxLazyQuery>;
+export type FindAllMvxQueryResult = Apollo.QueryResult<FindAllMvxQuery, FindAllMvxQueryVariables>;
+export const FindAllNdcDocument = gql`
+    query FindAllNdc($findAllNdcInput: FindAllNdcInput!) {
+  findAllNdc(findAllNdcInput: $findAllNdcInput) {
+    response {
+      status
+      error
+      message
+    }
+    pagination {
+      page
+      totalPages
+    }
+    ndcs {
+      id
+      ndcCode
+      mvxName
+      cvxDescription
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllNdcQuery__
+ *
+ * To run a query within a React component, call `useFindAllNdcQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllNdcQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllNdcQuery({
+ *   variables: {
+ *      findAllNdcInput: // value for 'findAllNdcInput'
+ *   },
+ * });
+ */
+export function useFindAllNdcQuery(baseOptions: Apollo.QueryHookOptions<FindAllNdcQuery, FindAllNdcQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllNdcQuery, FindAllNdcQueryVariables>(FindAllNdcDocument, options);
+      }
+export function useFindAllNdcLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllNdcQuery, FindAllNdcQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllNdcQuery, FindAllNdcQueryVariables>(FindAllNdcDocument, options);
+        }
+export type FindAllNdcQueryHookResult = ReturnType<typeof useFindAllNdcQuery>;
+export type FindAllNdcLazyQueryHookResult = ReturnType<typeof useFindAllNdcLazyQuery>;
+export type FindAllNdcQueryResult = Apollo.QueryResult<FindAllNdcQuery, FindAllNdcQueryVariables>;
