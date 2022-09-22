@@ -85,7 +85,10 @@ const FamilyHistoryTable: FC<FamilyHistoryProps> = ({ shouldDisableEdit = false 
     patientId && fetchFamilyHistory()
   }, [patientId, fetchFamilyHistory])
 
-  const handleClose = (open: boolean) => dispatch({ type: ActionType.SET_OPEN_ADD, openAdd: open })
+  const handleClose = (open: boolean) => {
+    dispatch({ type: ActionType.SET_EDIT_FAMILY_ID, editFamilyId: '' })
+    dispatch({ type: ActionType.SET_OPEN_ADD, openAdd: open })
+  }
 
   const onPageChange = (_: ChangeEvent<unknown>, value: number) => dispatch({
     type: ActionType.SET_PAGE, page: value
@@ -135,15 +138,15 @@ const FamilyHistoryTable: FC<FamilyHistoryProps> = ({ shouldDisableEdit = false 
             </TableCell>
           </TableRow>
         ) : (
-          familyHistories?.map((history) => {
+          familyHistories?.map((history, i) => {
             const { id, name, familyHistoryRelatives } = history || {};
 
             return (
-              <Fragment>
+              <Fragment key={`${id}-${i}`}>
                 {familyHistoryRelatives?.map((family, index) => {
                   const { died, notes, onsetAge, relativeName } = family || {}
                   return (
-                    <TableRow>
+                    <TableRow key={`${id}-${index}`}>
                       {index === 0 &&
                         <TableCell rowSpan={familyHistoryRelatives?.length}>
                           {name}
@@ -202,13 +205,13 @@ const FamilyHistoryTable: FC<FamilyHistoryProps> = ({ shouldDisableEdit = false 
       })}
     />
 
-    <FamilyHistoryForm
+    {openAdd && <FamilyHistoryForm
       isOpen={openAdd}
       id={editFamilyId}
       isEdit={!!editFamilyId}
       handleClose={handleClose}
       fetchFamilyHistory={fetchFamilyHistory}
-    />
+    />}
 
   </Fragment>
   )

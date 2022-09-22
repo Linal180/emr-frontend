@@ -75,7 +75,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   const { setValue, watch } = methods
   const {
     page, totalPages, deleteAppointmentId, isEdit, appointmentId, openDelete, searchQuery,
-    appointments, sortBy, filterFacilityId, isReminderModalOpen, reminderId
+    appointments, sortBy, filterFacilityId, isReminderModalOpen, reminderId, prevStatus
   } = state;
   const { status, serviceId, appointmentDate } = watch()
   const { value: appointmentTypeId } = serviceId ?? {}
@@ -191,7 +191,6 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     } catch (error) { }
   }
 
-
   const [removeAppointment, { loading: deleteAppointmentLoading }] = useRemoveAppointmentMutation({
     onError() {
       Alert.error(CANT_CANCELLED_APPOINTMENT)
@@ -288,11 +287,12 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     dispatch({ type: ActionType.SET_PAGE, page: 1 })
   }
 
-  const handleStatusUpdate = (id: string, status: string) => {
+  const handleStatusUpdate = (id: string, status: string, aptStatus: AppointmentStatus | undefined) => {
     if (id && status) {
       setValue('status', setRecord(id, status))
       dispatch({ type: ActionType.SET_IS_EDIT, isEdit: !!id })
       dispatch({ type: ActionType.SET_APPOINTMENT_ID, appointmentId: id })
+      aptStatus && dispatch({ type: ActionType.SET_PREV_STATUS, prevStatus: aptStatus })
     }
   }
 
@@ -308,12 +308,22 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
         history.push(`${APPOINTMENTS_ROUTE}/${id}`)
       } else {
         const isCheckedInStatus = getAppointmentStatus(name || '') === AppointmentStatus.Arrived
+        if (id && name && name !== '--' && prevStatus) {
 
-        if (id && name && name !== '--') {
+          let reason = undefined
+
+          if (prevStatus === AppointmentStatus.Cancelled) {
+            const currentStatus = getAppointmentStatus(name || '');
+            if (currentStatus !== AppointmentStatus.Cancelled) {
+              reason = 'N/A'
+            }
+          }
+
           await updateAppointment({
             variables: {
               updateAppointmentInput: {
                 id, status: getAppointmentStatus(name) as AppointmentStatus,
+                ...(reason && { reason: reason }),
                 ...(isCheckedInStatus && {
                   checkedInAt: convertDateFromUnix(Date.now().toString(), 'MM-DD-YYYY hh:mm a')
                 })
@@ -572,7 +582,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                                 />
                               </FormProvider>
                               : <Box p={0} onClick={() => id && status !== AppointmentStatus.Discharged && status !== AppointmentStatus.Checkout &&
-                                handleStatusUpdate(id, text)}
+                                handleStatusUpdate(id, text, status)}
                                 className={`${classes.status} pointer-cursor`}
                                 component='span' color={textColor}
                                 display="flex"
