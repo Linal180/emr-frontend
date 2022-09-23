@@ -322,7 +322,7 @@ const PublicFormPreview = () => {
         <AIMEDLOGO />
       </Box>
 
-      <Box mt={2} className={classes.externalMain}>
+      <Box className={classes.externalMain}>
         {!loader ?
           <Fragment>
             <Box mb={3} />
@@ -337,7 +337,7 @@ const PublicFormPreview = () => {
                         </Typography>
                       </Box>
 
-                      <Box display={'flex'} justifyContent={'flex-end'} marginY={2}>
+                      <Box display={'flex'} justifyContent={'flex-end'} mb={2} mt={1}>
                         <Box marginX={2}>
                           <Button variant={'contained'} disabled={activeStep === 0} onClick={backStepHandler}>
                             {BACK_TEXT}
@@ -360,7 +360,7 @@ const PublicFormPreview = () => {
                     <Box>
                       {formValues?.length > 1 ?
                         <Grid container spacing={2}>
-                          <Grid item xs={12} sm={12} md={3} lg={2}>
+                          <Grid item xs={12} sm={12} md={12} lg={2}>
                             <Box className={classes.stepperVertical}>
                               <Stepper activeStep={activeStep} orientation="vertical">
                                 {formValues?.map((tab, index) => {
@@ -375,8 +375,8 @@ const PublicFormPreview = () => {
                             </Box>
                           </Grid>
 
-                          <Grid item xs={12} sm={12} md={9} lg={10}>
-                            <Box height="100%" maxHeight="calc(100vh - 180px)" className="overflowY-auto">
+                          <Grid item xs={12} sm={12} md={12} lg={10}>
+                            <Box height="100%" maxHeight="calc(100vh - 200px)" className="overflowY-auto">
                               {formValues?.map((tab, index) => {
                                 const { sections, name, id } = tab || {}
 
