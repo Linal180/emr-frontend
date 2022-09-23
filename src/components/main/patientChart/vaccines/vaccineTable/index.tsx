@@ -1,36 +1,122 @@
-import { FC, Reducer, useReducer } from 'react'
-import { Box, Button, Card, Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core'
+import { useParams } from 'react-router';
+import { Pagination } from '@material-ui/lab';
+import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer } from 'react'
+import { Box, Button, Card, Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core'
 //components
-import TableLoader from '../../../../common/TableLoader'
-import AddVaccine from '../modals/AddVaccine'
-import NoDataFoundComponent from '../../../../common/NoDataFoundComponent'
+import AddVaccine from '../modals/AddVaccine';
+import VaccineModal from '../modals/VaccineModal';
+import TableLoader from '../../../../common/TableLoader';
+import ConfirmationModal from '../../../../common/ConfirmationModal';
+import NoDataFoundComponent from '../../../../common/NoDataFoundComponent';
 //styles, constants, 
-import { renderTh } from '../../../../../utils';
-import { AddWhiteIcon } from '../../../../../assets/svgs';
+import { formatValue, getPageNumber, isLast, renderTh } from '../../../../../utils';
+import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from '../../../../../assets/svgs';
 import { useTableStyles } from '../../../../../styles/tableStyles';
-import { VaccinesTableProps } from '../../../../../interfacesTypes';
 import { useChartingStyles } from '../../../../../styles/chartingStyles';
+import { ParamsType, VaccinesTableProps } from '../../../../../interfacesTypes';
+import { Cvx, FindAllVaccinesPayload, useFindAllVaccinesLazyQuery, useRemoveVaccineMutation } from '../../../../../generated/graphql';
 import { vaccinesReducer, Action, ActionType, State, initialState } from '../../../../../reducers/vaccinesReducer';
 import {
-  ACTIONS, ADD_NEW_TEXT, ADMINISTRATION_DATE, AMOUNT_UNIT_TEXT, DATE_ON_VIS, EIGHT_PAGE_LIMIT, EXPIRY_DATE,
-  LOT_NO_TEXT, MANUFACTURER_TEXT, NAME, NDC_TEXT, ROUTE, SITE_TEXT, VACCINE_TEXT, VIS_GIVEN_TEXT
+  ACTIONS, ADD_NEW_TEXT, ADMINISTER_BY, ADMINISTRATION_DATE, AMOUNT_UNIT_TEXT, DASHES, DATE_ON_VIS, DELETE_VACCINE_DESCRIPTION,
+  EIGHT_PAGE_LIMIT, EXPIRY_DATE, LOT_NO_TEXT, MANUFACTURER_TEXT, NAME, NDC_TEXT, PAGE_LIMIT, ROUTE, SITE_TEXT,
+  VACCINE_TEXT, VIS_GIVEN_TEXT
 } from '../../../../../constants'
+import Alert from '../../../../common/Alert';
 
 const VaccinesTable: FC<VaccinesTableProps> = (props): JSX.Element => {
   const { shouldDisableEdit } = props || {}
 
   const classes = useChartingStyles();
   const classesTable = useTableStyles()
+  const { id: patientId } = useParams<ParamsType>()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(vaccinesReducer, initialState);
-  const { isOpen } = state;
+  const { isOpen, page, data, totalPages, openDelete, delId, isSubModalOpen, itemId, selectedItem } = state;
+
+  const [findAllVaccines, { loading, error }] = useFindAllVaccinesLazyQuery({
+    onCompleted: (data) => {
+      const { findAllVaccines } = data || {}
+      const { pagination, vaccines, response } = findAllVaccines || {}
+      const { status } = response || {}
+      if (status === 200) {
+        const { totalPages } = pagination || {}
+        if (!!vaccines?.length) {
+          dispatch({ type: ActionType.SET_DATA, data: vaccines as FindAllVaccinesPayload['vaccines'] })
+          totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
+        } else {
+          dispatch({ type: ActionType.SET_DATA, data: [] });
+          dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 });
+        }
+      }
+    },
+    onError: () => {
+      dispatch({ type: ActionType.SET_DATA, data: [] });
+      dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 });
+    }
+  })
+
+  const [removeVaccine, { loading: delLoading }] = useRemoveVaccineMutation({
+    onCompleted: async (resData) => {
+      const { removeVaccine: { response } } = resData;
+
+      if (response) {
+        const { status, message } = response
+
+        if (status && status === 200) {
+          message && Alert.success(message);
+          dispatch({ type: ActionType.SET_DEL_ID, delId: '' })
+          dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
+
+          if (!!data && (data.length > 1 || isLast(data?.length, page))) {
+            await fetchVaccines()
+          } else {
+            dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, isLast?.length || 0) })
+          }
+        }
+      }
+    },
+    onError({ message }) {
+      Alert.error(message)
+    },
+  })
 
   const handleModalClose = () => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: !isOpen });
 
-  const fetchVaccines = () => {
+  const onPageChange = (_: ChangeEvent<unknown>, value: number) => dispatch({
+    type: ActionType.SET_PAGE, page: value
+  });
 
+  const fetchVaccines = useCallback(async () => {
+    try {
+      await findAllVaccines({ variables: { findAllVaccinesInput: { paginationOptions: { limit: PAGE_LIMIT, page: page }, patientId } } })
+    } catch (error) { }
+  }, [findAllVaccines, patientId, page])
+
+  useEffect(() => {
+    patientId && fetchVaccines()
+  }, [fetchVaccines, patientId, page]);
+
+  const onDeleteClick = (id: string) => {
+    if (id) {
+      dispatch({ type: ActionType.SET_DEL_ID, delId: id })
+      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
+    }
+  };
+
+  const handleDelete = async () => {
+    delId && await removeVaccine({
+      variables: { removeVaccineInput: { id: delId } }
+    })
   }
 
-  const loading = false;
+  const handleEditModalClose = () => {
+    dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: false })
+  }
+
+  const handleEdit = (id: string, mvxCode?: Cvx) => {
+    mvxCode && dispatch({ type: ActionType.SET_SELECTED_ITEM, selectedItem: mvxCode })
+    dispatch({ type: ActionType.SET_ITEM_ID, itemId: id })
+    dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: true })
+  };
 
   return (
     <>
@@ -56,6 +142,7 @@ const VaccinesTable: FC<VaccinesTableProps> = (props): JSX.Element => {
                     <TableRow>
                       {renderTh(NAME)}
                       {renderTh(ADMINISTRATION_DATE)}
+                      {renderTh(ADMINISTER_BY)}
                       {renderTh(AMOUNT_UNIT_TEXT)}
                       {renderTh(ROUTE)}
                       {renderTh(SITE_TEXT)}
@@ -76,45 +163,68 @@ const VaccinesTable: FC<VaccinesTableProps> = (props): JSX.Element => {
                       </TableCell>
                     </TableRow>
                   ) : <TableBody>
-                    {/* {patientProblems?.map((patientProblem) => {
-                      const { problemSeverity, ICDCode, problemType, note, problemStartDate, id } = patientProblem ?? {}
+                    {data?.map((vaccine) => {
+                      const { id, cvxId, administrationDate, amount, units, route, site, ndcId, mvxId,
+                        expiryDate, visGiven, visDate, lotNo, cvx, ndc, mvx, administerBy } = vaccine ?? {}
+                      const { name } = cvx || {}
+                      const { ndcCode } = ndc || {}
+                      const { mvxCode } = mvx || {}
                       return (
                         <TableRow>
                           <TableCell scope="row">
-                            <Typography>{ICDCode?.code ?? DASHES}</Typography>
+                            <Typography>{cvxId ? name ?? DASHES : DASHES}</Typography>
                           </TableCell>
 
                           <TableCell scope="row">
-                            <Typography>{ICDCode?.description ?? DASHES}</Typography>
+                            <Typography>{administrationDate ?? DASHES}</Typography>
+                          </TableCell>
+
+                          <TableCell scope="row">
+                            <Typography>{administerBy ?? DASHES}</Typography>
                           </TableCell>
 
                           <TableCell scope="row">
                             <Typography>
-                              {problemStartDate ? getFormatDateString(problemStartDate, 'MM-DD-YYYY') : ''}
+                              {amount ? units ? `${amount} (${formatValue(units)})` : amount : DASHES}
                             </Typography>
                           </TableCell>
 
                           <TableCell scope="row">
-                            <Box className={classes.activeBox} bgcolor={getProblemTypeColor(problemType || '')}>
-                              {problemType}
-                            </Box>
+                            <Typography>{route ? formatValue(route) : DASHES}</Typography>
                           </TableCell>
 
                           <TableCell scope="row">
-                            <Typography className={classes.textOverflow}>{note}</Typography>
+                            <Typography>{site ? formatValue(site) : DASHES}</Typography>
                           </TableCell>
 
                           <TableCell scope="row">
-                            <Box className={classes.activeBox}
-                              bgcolor={problemSeverity && getProblemSeverityColor(problemSeverity)}
-                            >
-                              {problemSeverity}
-                            </Box>
+                            <Typography>{ndcId ? ndcCode ?? DASHES : DASHES}</Typography>
                           </TableCell>
+
+                          <TableCell scope="row">
+                            <Typography>{mvxId ? mvxCode ?? DASHES : DASHES}</Typography>
+                          </TableCell>
+
+                          <TableCell scope="row">
+                            <Typography>{expiryDate ?? DASHES}</Typography>
+                          </TableCell>
+
+                          <TableCell scope="row">
+                            <Typography>{visGiven ?? DASHES}</Typography>
+                          </TableCell>
+
+                          <TableCell scope="row">
+                            <Typography>{visDate ?? DASHES}</Typography>
+                          </TableCell>
+
+                          <TableCell scope="row">
+                            <Typography>{lotNo ?? DASHES}</Typography>
+                          </TableCell>
+
                           {
                             !shouldDisableEdit && <TableCell scope="row">
                               <Box display='flex' alignItems='center'>
-                                <IconButton size='small' onClick={() => id && ICDCode && handleEdit(id, ICDCode)}>
+                                <IconButton size='small' onClick={() => id && handleEdit(id, cvx || undefined)}>
                                   <EditOutlinedIcon />
                                 </IconButton>
 
@@ -126,43 +236,41 @@ const VaccinesTable: FC<VaccinesTableProps> = (props): JSX.Element => {
                           }
                         </TableRow>
                       )
-                    })} */}
+                    })}
                   </TableBody>
                   }
                 </Table>
 
-                {/* {((!loading && patientProblems?.length === 0) || error) && (
+                {((!loading && data?.length === 0) || error) && (
                   <Box display="flex" justifyContent="center" pb={12} pt={5}>
                     <NoDataFoundComponent />
                   </Box>
-                )} */}
+                )}
               </Box>
             </Box>
           </Card>
         </Grid>
       </Grid>
 
-      {/* <ConfirmationModal
-          title={PROBLEM_TEXT}
-          isOpen={openDelete}
-          isLoading={removeProblemLoading}
-          description={DELETE_PROBLEM_DESCRIPTION}
-          handleDelete={handleDelete}
-          setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
-        />
+      <ConfirmationModal
+        title={VACCINE_TEXT}
+        isOpen={openDelete}
+        isLoading={delLoading}
+        description={DELETE_VACCINE_DESCRIPTION}
+        handleDelete={handleDelete}
+        setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
+      />
 
-        {isSubModalOpen && <ProblemModal
-          item={selectedItem}
-          dispatcher={dispatch}
-          isEdit
-          recordId={itemId}
-          fetch={async () => fetchProblems()}
-          handleClose={handleEditModalClose}
-          isOpen={isSubModalOpen}
-        />
-        }
-
-     
+      {isSubModalOpen && <VaccineModal
+        item={selectedItem}
+        dispatcher={dispatch}
+        isEdit
+        recordId={itemId}
+        fetch={async () => fetchVaccines()}
+        handleClose={handleEditModalClose}
+        isOpen={isSubModalOpen}
+      />
+      }
 
       {totalPages > 1 && !loading && (
         <Box display="flex" justifyContent="flex-end" p={3}>
@@ -171,10 +279,10 @@ const VaccinesTable: FC<VaccinesTableProps> = (props): JSX.Element => {
             shape="rounded"
             variant="outlined"
             page={page}
-            onChange={handleChange}
+            onChange={onPageChange}
           />
         </Box>
-      )} */}
+      )}
       {isOpen &&
         <AddVaccine isOpen={isOpen} handleModalClose={handleModalClose} fetch={() => fetchVaccines()} />}
     </>

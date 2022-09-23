@@ -69,6 +69,23 @@ export type ActiveInactivePracticesPayload = {
   response?: Maybe<ResponsePayloadResponse>;
 };
 
+export type AddVaccineInput = {
+  administerBy?: Maybe<Scalars['String']>;
+  administrationDate?: Maybe<Scalars['String']>;
+  amount?: Maybe<Scalars['String']>;
+  cvxId?: Maybe<Scalars['String']>;
+  expiryDate?: Maybe<Scalars['String']>;
+  lotNo?: Maybe<Scalars['String']>;
+  mvxId?: Maybe<Scalars['String']>;
+  ndcId?: Maybe<Scalars['String']>;
+  patientId?: Maybe<Scalars['String']>;
+  route?: Maybe<Scalars['String']>;
+  site?: Maybe<Scalars['String']>;
+  units?: Maybe<Scalars['String']>;
+  visDate?: Maybe<Scalars['String']>;
+  visGiven?: Maybe<Scalars['String']>;
+};
+
 export type Agreement = {
   __typename?: 'Agreement';
   body?: Maybe<Scalars['String']>;
@@ -2125,6 +2142,18 @@ export type FindAllNdcPayload = {
   response?: Maybe<ResponsePayloadResponse>;
 };
 
+export type FindAllVaccinesInput = {
+  paginationOptions: PaginationInput;
+  patientId?: Maybe<Scalars['String']>;
+};
+
+export type FindAllVaccinesPayload = {
+  __typename?: 'FindAllVaccinesPayload';
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayloadResponse>;
+  vaccines?: Maybe<Array<Vaccine>>;
+};
+
 export type ForgotPasswordInput = {
   email: Scalars['String'];
 };
@@ -2436,6 +2465,10 @@ export type GetSurgicalHistory = {
 };
 
 export type GetUser = {
+  id: Scalars['String'];
+};
+
+export type GetVaccineInput = {
   id: Scalars['String'];
 };
 
@@ -2878,6 +2911,7 @@ export type Mutation = {
   addPatientTriageNote: TriageNotePayload;
   addPatientVital: PatientVitalPayload;
   addSurgicalHistory: SurgicalHistoryPayload;
+  addVaccine: VaccinePayload;
   assignPermissionToRole: PermissionPayload;
   cancelAppointment: AppointmentPayload;
   chargeAfterAppointment: AppointmentPayload;
@@ -2958,6 +2992,7 @@ export type Mutation = {
   removeStaff: StaffPayload;
   removeSurgicalHistory: SurgicalHistoryPayload;
   removeUser: UserPayload;
+  removeVaccine: VaccinePayload;
   resendVerificationEmail: UserPayload;
   resentOTP: UserPayload;
   resetPassword: UserPayload;
@@ -3010,6 +3045,7 @@ export type Mutation = {
   updateSurgicalHistory: SurgicalHistoryPayload;
   updateUser: UserPayload;
   updateUserRole: UserPayload;
+  updateVaccine: VaccinePayload;
   verifyEmail: UserPayload;
   verifyOTP: UserPayload;
 };
@@ -3052,6 +3088,11 @@ export type MutationAddPatientVitalArgs = {
 
 export type MutationAddSurgicalHistoryArgs = {
   createSurgicalHistoryInput: CreateSurgicalHistoryInput;
+};
+
+
+export type MutationAddVaccineArgs = {
+  addVaccineInput: AddVaccineInput;
 };
 
 
@@ -3450,6 +3491,11 @@ export type MutationRemoveUserArgs = {
 };
 
 
+export type MutationRemoveVaccineArgs = {
+  removeVaccineInput: RemoveVaccineInput;
+};
+
+
 export type MutationResendVerificationEmailArgs = {
   resendVerificationEmail: ResendVerificationEmail;
 };
@@ -3702,6 +3748,11 @@ export type MutationUpdateUserArgs = {
 
 export type MutationUpdateUserRoleArgs = {
   user: UpdateRoleInput;
+};
+
+
+export type MutationUpdateVaccineArgs = {
+  updateVaccineInput: UpdateVaccineInput;
 };
 
 
@@ -4731,6 +4782,7 @@ export type Query = {
   findAllUpcomingAppointments: AppointmentsPayload;
   findAllUserLogs: UserLogsPayload;
   findAllUsersForms: UserFormsPayload;
+  findAllVaccines: FindAllVaccinesPayload;
   findAppointmentInsuranceStatus: AppointmentInsuranceStatus;
   findClaimStatus: ClaimStatusPayload;
   findLabResultInfo: LabResultPayload;
@@ -4801,6 +4853,7 @@ export type Query = {
   getTriageNotes: TriageNotePayload;
   getUser: UserPayload;
   getUsersWithRoles: PracticeUserRolesPayload;
+  getVaccine: VaccinePayload;
   me: UserPayload;
   searchIcdCodes: IcdCodesPayload;
   searchSnoMedCodeByIcdCodes: SnoMedCodesPayload;
@@ -5095,6 +5148,11 @@ export type QueryFindAllUserLogsArgs = {
 
 export type QueryFindAllUsersFormsArgs = {
   userFormInput: UserFormInput;
+};
+
+
+export type QueryFindAllVaccinesArgs = {
+  findAllVaccinesInput: FindAllVaccinesInput;
 };
 
 
@@ -5423,6 +5481,11 @@ export type QueryGetUsersWithRolesArgs = {
 };
 
 
+export type QueryGetVaccineArgs = {
+  getVaccineInput: GetVaccineInput;
+};
+
+
 export type QuerySearchIcdCodesArgs = {
   searchIcdCodesInput: SearchIcdCodesInput;
 };
@@ -5615,6 +5678,10 @@ export type RemoveSurgicalHistory = {
 };
 
 export type RemoveTriageNote = {
+  id: Scalars['String'];
+};
+
+export type RemoveVaccineInput = {
   id: Scalars['String'];
 };
 
@@ -7011,6 +7078,24 @@ export type UpdateUserInput = {
   zipCode?: Maybe<Scalars['String']>;
 };
 
+export type UpdateVaccineInput = {
+  administerBy?: Maybe<Scalars['String']>;
+  administrationDate?: Maybe<Scalars['String']>;
+  amount?: Maybe<Scalars['String']>;
+  cvxId?: Maybe<Scalars['String']>;
+  expiryDate?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  lotNo?: Maybe<Scalars['String']>;
+  mvxId?: Maybe<Scalars['String']>;
+  ndcId?: Maybe<Scalars['String']>;
+  patientId?: Maybe<Scalars['String']>;
+  route?: Maybe<Scalars['String']>;
+  site?: Maybe<Scalars['String']>;
+  units?: Maybe<Scalars['String']>;
+  visDate?: Maybe<Scalars['String']>;
+  visGiven?: Maybe<Scalars['String']>;
+};
+
 export type UpdateVitalInput = {
   PainRange?: Maybe<Scalars['String']>;
   PatientBMI?: Maybe<Scalars['String']>;
@@ -7206,9 +7291,9 @@ export type Vaccine = {
   expiryDate?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   lotNo?: Maybe<Scalars['String']>;
-  mdc?: Maybe<Ndc>;
   mvx?: Maybe<Mvx>;
   mvxId?: Maybe<Scalars['String']>;
+  ndc?: Maybe<Ndc>;
   ndcId?: Maybe<Scalars['String']>;
   patient?: Maybe<Patient>;
   patientId?: Maybe<Scalars['String']>;
@@ -7218,6 +7303,12 @@ export type Vaccine = {
   updatedAt?: Maybe<Scalars['String']>;
   visDate?: Maybe<Scalars['String']>;
   visGiven?: Maybe<Scalars['String']>;
+};
+
+export type VaccinePayload = {
+  __typename?: 'VaccinePayload';
+  response?: Maybe<ResponsePayloadResponse>;
+  vaccine?: Maybe<Vaccine>;
 };
 
 export type VerifyCodeInput = {
@@ -8885,6 +8976,41 @@ export type FindAllNdcQueryVariables = Exact<{
 
 
 export type FindAllNdcQuery = { __typename?: 'Query', findAllNdc: { __typename?: 'FindAllNdcPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, ndcs?: Array<{ __typename?: 'NDC', id: string, ndcCode?: string | null, mvxName?: string | null, cvxDescription?: string | null }> | null } };
+
+export type GetVaccineQueryVariables = Exact<{
+  getVaccineInput: GetVaccineInput;
+}>;
+
+
+export type GetVaccineQuery = { __typename?: 'Query', getVaccine: { __typename?: 'VaccinePayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, vaccine?: { __typename?: 'Vaccine', id: string, cvxId?: string | null, administrationDate?: string | null, amount?: string | null, units?: string | null, route?: string | null, site?: string | null, ndcId?: string | null, mvxId?: string | null, expiryDate?: string | null, visGiven?: string | null, visDate?: string | null, lotNo?: string | null, administerBy?: string | null, mvx?: { __typename?: 'MVX', id: string, mvxCode?: string | null, manufacturerName?: string | null } | null, ndc?: { __typename?: 'NDC', id: string, ndcCode?: string | null, cvxDescription?: string | null } | null } | null } };
+
+export type FindAllVaccinesQueryVariables = Exact<{
+  findAllVaccinesInput: FindAllVaccinesInput;
+}>;
+
+
+export type FindAllVaccinesQuery = { __typename?: 'Query', findAllVaccines: { __typename?: 'FindAllVaccinesPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, vaccines?: Array<{ __typename?: 'Vaccine', id: string, cvxId?: string | null, administrationDate?: string | null, amount?: string | null, units?: string | null, route?: string | null, site?: string | null, ndcId?: string | null, mvxId?: string | null, expiryDate?: string | null, visGiven?: string | null, visDate?: string | null, lotNo?: string | null, administerBy?: string | null, cvx?: { __typename?: 'CVX', id: string, name?: string | null, cvxCode?: string | null, shortDescription?: string | null } | null, ndc?: { __typename?: 'NDC', id: string, ndcCode?: string | null } | null, mvx?: { __typename?: 'MVX', id: string, manufacturerName?: string | null, mvxCode?: string | null } | null }> | null, pagination?: { __typename?: 'PaginationPayload', limit?: number | null, totalPages?: number | null } | null } };
+
+export type UpdateVaccineMutationVariables = Exact<{
+  updateVaccineInput: UpdateVaccineInput;
+}>;
+
+
+export type UpdateVaccineMutation = { __typename?: 'Mutation', updateVaccine: { __typename?: 'VaccinePayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, vaccine?: { __typename?: 'Vaccine', id: string } | null } };
+
+export type AddVaccineMutationVariables = Exact<{
+  addVaccineInput: AddVaccineInput;
+}>;
+
+
+export type AddVaccineMutation = { __typename?: 'Mutation', addVaccine: { __typename?: 'VaccinePayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, vaccine?: { __typename?: 'Vaccine', id: string } | null } };
+
+export type RemoveVaccineMutationVariables = Exact<{
+  removeVaccineInput: RemoveVaccineInput;
+}>;
+
+
+export type RemoveVaccineMutation = { __typename?: 'Mutation', removeVaccine: { __typename?: 'VaccinePayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, vaccine?: { __typename?: 'Vaccine', id: string } | null } };
 
 
 export const FetchAllAgreementsDocument = gql`
@@ -20868,3 +20994,262 @@ export function useFindAllNdcLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type FindAllNdcQueryHookResult = ReturnType<typeof useFindAllNdcQuery>;
 export type FindAllNdcLazyQueryHookResult = ReturnType<typeof useFindAllNdcLazyQuery>;
 export type FindAllNdcQueryResult = Apollo.QueryResult<FindAllNdcQuery, FindAllNdcQueryVariables>;
+export const GetVaccineDocument = gql`
+    query GetVaccine($getVaccineInput: GetVaccineInput!) {
+  getVaccine(getVaccineInput: $getVaccineInput) {
+    response {
+      status
+      error
+      message
+    }
+    vaccine {
+      id
+      cvxId
+      administrationDate
+      amount
+      units
+      route
+      site
+      ndcId
+      mvxId
+      expiryDate
+      visGiven
+      visDate
+      lotNo
+      administerBy
+      mvx {
+        id
+        mvxCode
+        manufacturerName
+      }
+      ndc {
+        id
+        ndcCode
+        cvxDescription
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetVaccineQuery__
+ *
+ * To run a query within a React component, call `useGetVaccineQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetVaccineQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetVaccineQuery({
+ *   variables: {
+ *      getVaccineInput: // value for 'getVaccineInput'
+ *   },
+ * });
+ */
+export function useGetVaccineQuery(baseOptions: Apollo.QueryHookOptions<GetVaccineQuery, GetVaccineQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetVaccineQuery, GetVaccineQueryVariables>(GetVaccineDocument, options);
+      }
+export function useGetVaccineLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetVaccineQuery, GetVaccineQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetVaccineQuery, GetVaccineQueryVariables>(GetVaccineDocument, options);
+        }
+export type GetVaccineQueryHookResult = ReturnType<typeof useGetVaccineQuery>;
+export type GetVaccineLazyQueryHookResult = ReturnType<typeof useGetVaccineLazyQuery>;
+export type GetVaccineQueryResult = Apollo.QueryResult<GetVaccineQuery, GetVaccineQueryVariables>;
+export const FindAllVaccinesDocument = gql`
+    query FindAllVaccines($findAllVaccinesInput: FindAllVaccinesInput!) {
+  findAllVaccines(findAllVaccinesInput: $findAllVaccinesInput) {
+    response {
+      status
+      error
+      message
+    }
+    vaccines {
+      id
+      cvxId
+      administrationDate
+      amount
+      units
+      route
+      site
+      ndcId
+      mvxId
+      expiryDate
+      visGiven
+      visDate
+      lotNo
+      administerBy
+      cvx {
+        id
+        name
+        cvxCode
+        shortDescription
+      }
+      ndc {
+        id
+        ndcCode
+      }
+      mvx {
+        id
+        manufacturerName
+        mvxCode
+      }
+    }
+    pagination {
+      limit
+      totalPages
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllVaccinesQuery__
+ *
+ * To run a query within a React component, call `useFindAllVaccinesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllVaccinesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllVaccinesQuery({
+ *   variables: {
+ *      findAllVaccinesInput: // value for 'findAllVaccinesInput'
+ *   },
+ * });
+ */
+export function useFindAllVaccinesQuery(baseOptions: Apollo.QueryHookOptions<FindAllVaccinesQuery, FindAllVaccinesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllVaccinesQuery, FindAllVaccinesQueryVariables>(FindAllVaccinesDocument, options);
+      }
+export function useFindAllVaccinesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllVaccinesQuery, FindAllVaccinesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllVaccinesQuery, FindAllVaccinesQueryVariables>(FindAllVaccinesDocument, options);
+        }
+export type FindAllVaccinesQueryHookResult = ReturnType<typeof useFindAllVaccinesQuery>;
+export type FindAllVaccinesLazyQueryHookResult = ReturnType<typeof useFindAllVaccinesLazyQuery>;
+export type FindAllVaccinesQueryResult = Apollo.QueryResult<FindAllVaccinesQuery, FindAllVaccinesQueryVariables>;
+export const UpdateVaccineDocument = gql`
+    mutation UpdateVaccine($updateVaccineInput: UpdateVaccineInput!) {
+  updateVaccine(updateVaccineInput: $updateVaccineInput) {
+    response {
+      status
+      error
+      message
+    }
+    vaccine {
+      id
+    }
+  }
+}
+    `;
+export type UpdateVaccineMutationFn = Apollo.MutationFunction<UpdateVaccineMutation, UpdateVaccineMutationVariables>;
+
+/**
+ * __useUpdateVaccineMutation__
+ *
+ * To run a mutation, you first call `useUpdateVaccineMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateVaccineMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateVaccineMutation, { data, loading, error }] = useUpdateVaccineMutation({
+ *   variables: {
+ *      updateVaccineInput: // value for 'updateVaccineInput'
+ *   },
+ * });
+ */
+export function useUpdateVaccineMutation(baseOptions?: Apollo.MutationHookOptions<UpdateVaccineMutation, UpdateVaccineMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateVaccineMutation, UpdateVaccineMutationVariables>(UpdateVaccineDocument, options);
+      }
+export type UpdateVaccineMutationHookResult = ReturnType<typeof useUpdateVaccineMutation>;
+export type UpdateVaccineMutationResult = Apollo.MutationResult<UpdateVaccineMutation>;
+export type UpdateVaccineMutationOptions = Apollo.BaseMutationOptions<UpdateVaccineMutation, UpdateVaccineMutationVariables>;
+export const AddVaccineDocument = gql`
+    mutation AddVaccine($addVaccineInput: AddVaccineInput!) {
+  addVaccine(addVaccineInput: $addVaccineInput) {
+    response {
+      status
+      error
+      message
+    }
+    vaccine {
+      id
+    }
+  }
+}
+    `;
+export type AddVaccineMutationFn = Apollo.MutationFunction<AddVaccineMutation, AddVaccineMutationVariables>;
+
+/**
+ * __useAddVaccineMutation__
+ *
+ * To run a mutation, you first call `useAddVaccineMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddVaccineMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addVaccineMutation, { data, loading, error }] = useAddVaccineMutation({
+ *   variables: {
+ *      addVaccineInput: // value for 'addVaccineInput'
+ *   },
+ * });
+ */
+export function useAddVaccineMutation(baseOptions?: Apollo.MutationHookOptions<AddVaccineMutation, AddVaccineMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddVaccineMutation, AddVaccineMutationVariables>(AddVaccineDocument, options);
+      }
+export type AddVaccineMutationHookResult = ReturnType<typeof useAddVaccineMutation>;
+export type AddVaccineMutationResult = Apollo.MutationResult<AddVaccineMutation>;
+export type AddVaccineMutationOptions = Apollo.BaseMutationOptions<AddVaccineMutation, AddVaccineMutationVariables>;
+export const RemoveVaccineDocument = gql`
+    mutation RemoveVaccine($removeVaccineInput: RemoveVaccineInput!) {
+  removeVaccine(removeVaccineInput: $removeVaccineInput) {
+    response {
+      status
+      error
+      message
+    }
+    vaccine {
+      id
+    }
+  }
+}
+    `;
+export type RemoveVaccineMutationFn = Apollo.MutationFunction<RemoveVaccineMutation, RemoveVaccineMutationVariables>;
+
+/**
+ * __useRemoveVaccineMutation__
+ *
+ * To run a mutation, you first call `useRemoveVaccineMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveVaccineMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeVaccineMutation, { data, loading, error }] = useRemoveVaccineMutation({
+ *   variables: {
+ *      removeVaccineInput: // value for 'removeVaccineInput'
+ *   },
+ * });
+ */
+export function useRemoveVaccineMutation(baseOptions?: Apollo.MutationHookOptions<RemoveVaccineMutation, RemoveVaccineMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveVaccineMutation, RemoveVaccineMutationVariables>(RemoveVaccineDocument, options);
+      }
+export type RemoveVaccineMutationHookResult = ReturnType<typeof useRemoveVaccineMutation>;
+export type RemoveVaccineMutationResult = Apollo.MutationResult<RemoveVaccineMutation>;
+export type RemoveVaccineMutationOptions = Apollo.BaseMutationOptions<RemoveVaccineMutation, RemoveVaccineMutationVariables>;

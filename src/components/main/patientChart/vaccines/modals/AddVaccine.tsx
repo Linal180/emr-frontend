@@ -4,31 +4,29 @@ import {
   Box, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton, InputBase, Typography
 } from "@material-ui/core";
 // components block
-import ProblemModal from "./VaccineModal";
+import VaccineModal from "./VaccineModal";
 // constants, interfaces, utils block 
 import { GREY_SEVEN } from "../../../../../theme";
 import { NoDataIcon, SearchIcon } from "../../../../../assets/svgs";
-import { AddAllergyModalProps } from "../../../../../interfacesTypes";
+import { AddVaccineProps } from "../../../../../interfacesTypes";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
-import { Action, ActionType, chartReducer, initialState, State } from "../../../../../reducers/chartReducer";
-import { ADD_VACCINE_TEXT, ICD_10, INITIAL_PAGE_LIMIT, NO_RECORDS, SEARCH_FOR_VACCINES, SNOMED } from "../../../../../constants";
-import {
-  IcdCodesPayload, IcdCodesWithSnowMedCode, useSearchIcdCodesLazyQuery
-} from "../../../../../generated/graphql";
+import { Cvx, FindAllCvxPayload, useFindAllCvxLazyQuery } from "../../../../../generated/graphql";
+import { Action, ActionType, vaccinesReducer, initialState, State } from "../../../../../reducers/vaccinesReducer";
+import { ADD_VACCINE_TEXT, INITIAL_PAGE_LIMIT, NO_RECORDS, SEARCH_FOR_VACCINES } from "../../../../../constants";
 
-const AddVaccine: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose, fetch }) => {
+const AddVaccine: FC<AddVaccineProps> = ({ isOpen = false, handleModalClose, fetch }) => {
 
   const chartingClasses = useChartingStyles()
 
   const [{ isSubModalOpen, selectedItem, searchQuery, searchedData }, dispatch] =
-    useReducer<Reducer<State, Action>>(chartReducer, initialState)
+    useReducer<Reducer<State, Action>>(vaccinesReducer, initialState)
 
   const closeSearchMenu = () => {
     dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: false })
     handleModalClose()
   }
 
-  const [searchIcdCodes, { loading: searchIcdCodesLoading }] = useSearchIcdCodesLazyQuery({
+  const [searchCvxCode, { loading: searchIcdCodesLoading }] = useFindAllCvxLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -38,34 +36,32 @@ const AddVaccine: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
 
     onCompleted(data) {
       if (data) {
-        const { searchIcdCodes } = data;
+        const { findAllCvx } = data;
 
-        if (searchIcdCodes) {
-          const { icdCodes } = searchIcdCodes
+        if (findAllCvx) {
+          const { cvxs } = findAllCvx
 
-          icdCodes && dispatch({
+          cvxs && dispatch({
             type: ActionType.SET_SEARCHED_DATA,
-            searchedData: icdCodes as IcdCodesPayload['icdCodes']
+            searchedData: cvxs as FindAllCvxPayload['cvxs']
           })
         }
       }
     }
   });
 
-  const handleICDSearch = useCallback(async (query: string) => {
+  const handleCvxSearch = useCallback(async (searchQuery: string) => {
     try {
-      const queryString = query
-
-      await searchIcdCodes({
+      await searchCvxCode({
         variables: {
-          searchIcdCodesInput: {
-            searchTerm: queryString,
+          findAllCvxInput: {
+            searchQuery,
             paginationOptions: { page: 1, limit: INITIAL_PAGE_LIMIT }
           }
         }
       })
     } catch (error) { }
-  }, [searchIcdCodes])
+  }, [searchCvxCode])
 
 
   const handleSearch = useCallback(async (query: string) => {
@@ -76,11 +72,11 @@ const AddVaccine: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
     })
 
     if (query.length > 2 || query.length === 0) {
-      handleICDSearch(query)
+      handleCvxSearch(query)
     }
-  }, [handleICDSearch])
+  }, [handleCvxSearch])
 
-  const handleOpenForm = (item: IcdCodesWithSnowMedCode) => {
+  const handleOpenForm = (item: Cvx) => {
     dispatch({ type: ActionType.SET_SELECTED_ITEM, selectedItem: item })
     dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: true })
   };
@@ -97,19 +93,14 @@ const AddVaccine: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
           :
           (searchedData && searchedData.length > 0 ?
             searchedData?.map(item => {
-              const { code, description, snoMedCode } = item as IcdCodesWithSnowMedCode || {}
-              const { referencedComponentId } = snoMedCode || {}
+              const { cvxCode, shortDescription } = item as Cvx || {}
 
               return (
-                <Box key={`${code} | ${description} | ${snoMedCode?.id}`} my={0.2} className={chartingClasses.hoverClass}
-                  onClick={() => item && handleOpenForm(item as IcdCodesWithSnowMedCode)}
+                <Box key={`${cvxCode} | ${shortDescription}`} my={0.2} className={chartingClasses.hoverClass}
+                  onClick={() => item && handleOpenForm(item as Cvx)}
                 >
                   <Box display="flex" flexDirection="column" px={2}>
-                    <Typography variant='body1'>{description}</Typography>
-
-                    <Typography variant='caption'>
-                      {referencedComponentId ? `${SNOMED}: ${referencedComponentId} | ${ICD_10}: ${code}` : `ICD-10: ${code}`}
-                    </Typography>
+                    <Typography variant='body1'>{shortDescription}</Typography>
                   </Box>
 
                 </Box>
@@ -149,7 +140,7 @@ const AddVaccine: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
         {renderSearchData()}
       </DialogContent>
 
-      {isSubModalOpen && <ProblemModal
+      {isSubModalOpen && <VaccineModal
         dispatcher={dispatch}
         item={selectedItem}
         fetch={fetch ? () => fetch() : () => { }}

@@ -64,3 +64,136 @@ query FindAllNdc($findAllNdcInput: FindAllNdcInput!) {
     }
   }
 }
+
+query GetVaccine($getVaccineInput: GetVaccineInput!) {
+  getVaccine(getVaccineInput: $getVaccineInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    vaccine {
+      id
+      cvxId
+      administrationDate
+      amount
+      units
+      route
+      site
+      ndcId
+      mvxId
+      expiryDate
+      visGiven
+      visDate
+      lotNo
+      administerBy
+
+      mvx {
+        id
+        mvxCode
+        manufacturerName
+      }
+
+      ndc {
+        id
+        ndcCode
+        cvxDescription
+      }
+    }
+  }
+}
+
+query FindAllVaccines($findAllVaccinesInput: FindAllVaccinesInput!) {
+  findAllVaccines(findAllVaccinesInput: $findAllVaccinesInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    vaccines {
+      id
+      cvxId
+      administrationDate
+      amount
+      units
+      route
+      site
+      ndcId
+      mvxId
+      expiryDate
+      visGiven
+      visDate
+      lotNo
+      administerBy
+
+      cvx {
+        id
+        name
+        cvxCode
+        shortDescription
+      }
+
+      ndc {
+        id
+        ndcCode
+      }
+
+      mvx {
+        id
+        manufacturerName
+        mvxCode
+      }
+    }
+
+    pagination {
+      limit
+      totalPages
+    }
+  }
+}
+
+# mutations
+
+mutation UpdateVaccine($updateVaccineInput: UpdateVaccineInput!) {
+  updateVaccine(updateVaccineInput: $updateVaccineInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    vaccine {
+      id
+    }
+  }
+}
+
+mutation AddVaccine($addVaccineInput: AddVaccineInput!) {
+  addVaccine(addVaccineInput: $addVaccineInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    vaccine {
+      id
+    }
+  }
+}
+
+mutation RemoveVaccine($removeVaccineInput: RemoveVaccineInput!) {
+  removeVaccine(removeVaccineInput: $removeVaccineInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    vaccine {
+      id
+    }
+  }
+}

@@ -1,7 +1,8 @@
 // packages block
+import moment from 'moment';
 import { useParams } from 'react-router-dom';
+import { FC, useCallback, useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { FC, useCallback, useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import {
   Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography
@@ -12,46 +13,38 @@ import Selector from '../../../../common/Selector';
 import DatePicker from '../../../../common/DatePicker';
 import TextLoader from '../../../../common/TextLoader';
 import InputController from '../../../../../controller';
+import MvxSelector from '../../../../common/Selector/MvxSelector';
+import NdcSelector from '../../../../common/Selector/NdcSelector';
 // constants block
 import { GREY_THREE } from '../../../../../theme';
 import { PageBackIcon } from '../../../../../assets/svgs';
-import { formatValue, setRecord } from '../../../../../utils';
-import { ActionType } from '../../../../../reducers/chartReducer';
-import { patientProblemSchema } from '../../../../../validationSchemas';
+import { ActionType } from '../../../../../reducers/vaccinesReducer';
+import { patientVaccineSchema } from '../../../../../validationSchemas';
 import { useChartingStyles } from '../../../../../styles/chartingStyles';
+import { VaccineModalProps, ParamsType, PatientVaccineFormType } from '../../../../../interfacesTypes';
 import {
-  AddModalProps, ParamsType, PatientProblemInputs, SelectorOption
-} from '../../../../../interfacesTypes';
-import {
-  ADD, CANCEL, DASHES, EMPTY_OPTION, ADMINISTER_BY, PATIENT_PROBLEM_ADDED, PATIENT_PROBLEM_UPDATED, UPDATE,
-  ICD_TEN_CODE, ADMINISTRATION_DATE, ADD_VACCINE_TEXT, UPDATE_VACCINE_TEXT, AMOUNT, UNITS, VACCINE_UNITS_MAPPED,
-  NDC_TEXT, ROUTE, VACCINE_ROUTES_MAPPED, SITE_TEXT, VACCINE_SITES_MAPPED, LOT_NO_TEXT, MANUFACTURER_TEXT,
-  EXPIRY_DATE, VIS_GIVEN_TEXT, DATE_ON_VIS
+  ADD, CANCEL, ADMINISTER_BY, UPDATE, ADMINISTRATION_DATE, ADD_VACCINE_TEXT, UPDATE_VACCINE_TEXT, AMOUNT, UNITS,
+  VACCINE_UNITS_MAPPED, NDC_TEXT, ROUTE, VACCINE_ROUTES_MAPPED, SITE_TEXT, VACCINE_SITES_MAPPED, LOT_NO_TEXT,
+  MANUFACTURER_TEXT, EXPIRY_DATE, VIS_GIVEN_TEXT, DATE_ON_VIS
 } from '../../../../../constants';
 import {
-  IcdCodes, IcdCodesWithSnowMedCode, ProblemSeverity, ProblemType, useAddPatientProblemMutation,
-  useGetPatientProblemLazyQuery, useUpdatePatientProblemMutation
+  Cvx, useAddVaccineMutation, useGetVaccineLazyQuery, useUpdateVaccineMutation
 } from '../../../../../generated/graphql';
 
-const ProblemModal: FC<AddModalProps> = ({
+const VaccineModal: FC<VaccineModalProps> = ({
   dispatcher, fetch, isEdit, item, recordId, isOpen = false, handleClose
 }): JSX.Element => {
+
   const chartingClasses = useChartingStyles()
-  const { id: icdCodeId, code, description, } = item as IcdCodes || {}
   const { id: patientId } = useParams<ParamsType>()
-  const statuses = Object.keys(ProblemType)
+  const methods = useForm<PatientVaccineFormType>({ mode: "all", resolver: yupResolver(patientVaccineSchema) });
 
-  const [typeStatus, setTypeStatus] = useState<string>(statuses[0])
-  const severities = Object.keys(ProblemSeverity)
-  const [severity, setSeverity] = useState<string>(severities[0])
+  const { handleSubmit, reset, setValue, watch } = methods;
+  const { id: cvxCodeId, cvxCode: code, shortDescription: description, name } = item as Cvx || {}
 
-  const [snoMedCode, setSnoMedCode] = useState<SelectorOption>(EMPTY_OPTION)
-  const { name: snowMedCodeName } = snoMedCode || {}
-  const methods = useForm<PatientProblemInputs>({
-    mode: "all",
-    resolver: yupResolver(patientProblemSchema)
-  });
-  const { handleSubmit, reset, setValue } = methods;
+  const { mvx } = watch();
+  const { id: mvxSelectorId } = mvx || {}
+
 
   const closeAddModal = () => {
     reset()
@@ -61,7 +54,7 @@ const ProblemModal: FC<AddModalProps> = ({
     handleClose && handleClose()
   }
 
-  const [getPatientProblem, { loading: getProblemLoading }] = useGetPatientProblemLazyQuery({
+  const [getPatientVaccine, { loading: getVaccineLoading }] = useGetVaccineLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -71,134 +64,153 @@ const ProblemModal: FC<AddModalProps> = ({
     },
 
     onCompleted(data) {
-      const { getPatientProblem } = data || {};
+      const { getVaccine } = data || {};
 
-      if (getPatientProblem) {
-        const { patientProblem, response } = getPatientProblem
+      if (getVaccine) {
+        const { vaccine, response } = getVaccine
         const { status } = response || {}
 
-        if (patientProblem && status && status === 200) {
-          const { problemSeverity, problemType, problemStartDate, note, appointment, snowMedCode } = patientProblem
+        if (vaccine && status && status === 200) {
+          const {
+            administrationDate, amount, lotNo, expiryDate, route, site, units, visDate, visGiven, mvxId, mvx,
+            ndcId, ndc, administerBy
+          } = vaccine
 
-          if (snowMedCode) {
-            const { id, referencedComponentId } = snowMedCode || {}
-            setSnoMedCode({ id, name: referencedComponentId })
-            id && referencedComponentId && setValue('snowMedCodeId', setRecord(id, referencedComponentId))
+
+          amount && setValue('amount', amount)
+          lotNo && setValue('lotNo', lotNo)
+          administerBy && setValue('administerBy', administerBy)
+          administrationDate && setValue('administrationDate', moment(administrationDate, 'DD-MM-YYYY').format())
+          expiryDate && setValue('expiryDate', moment(expiryDate, 'DD-MM-YYYY').format())
+          visDate && setValue('visDate', moment(visDate, 'DD-MM-YYYY').format())
+          visGiven && setValue('visGiven', moment(visGiven, 'DD-MM-YYYY').format())
+          visGiven && setValue('visGiven', moment(visGiven, 'DD-MM-YYYY').format())
+
+          if (route) {
+            const routeValue = VACCINE_ROUTES_MAPPED?.find(({ id }) => id === route);
+            routeValue && setValue('route', routeValue)
           }
 
-          if (appointment) {
-            const { appointmentType } = appointment;
-
-            if (appointmentType) {
-              const { id, serviceType } = appointmentType;
-
-              id && serviceType && setValue('appointmentId', setRecord(id, serviceType))
-            }
+          if (units) {
+            const unitsValue = VACCINE_UNITS_MAPPED?.find(({ id }) => id === units);
+            unitsValue && setValue('units', unitsValue)
           }
 
-          note && setValue('note', note)
-          problemStartDate && setValue('problemStartDate', problemStartDate)
-          problemSeverity && setSeverity(formatValue(problemSeverity).trim())
-          problemType && setTypeStatus(formatValue(problemType).trim())
+          if (site) {
+            const siteValue = VACCINE_SITES_MAPPED?.find(({ id }) => id === site);
+            siteValue && setValue('units', siteValue)
+          }
+
+          if (mvxId) {
+            const { id, manufacturerName, mvxCode } = mvx || {}
+            id && manufacturerName && setValue('mvx', { id, name: mvxCode ? `${mvxCode} | ${manufacturerName}` : manufacturerName })
+          }
+
+          if (ndcId) {
+            const { id, ndcCode, cvxDescription } = ndc || {}
+            id && cvxDescription && setValue('ndc', { id, name: ndcCode ? `${ndcCode} | ${cvxDescription}` : cvxDescription })
+          }
         }
       }
     }
   });
 
-  const [addPatientProblem, { loading: addProblemLoading }] = useAddPatientProblemMutation({
+  const [addPatientVaccine, { loading: addVaccineLoading }] = useAddVaccineMutation({
     onError({ message }) {
       Alert.error(message)
     },
 
     onCompleted(data) {
-      const { addPatientProblem: { response } } = data;
+      const { addVaccine: { response } } = data;
 
       if (response) {
-        const { status } = response
+        const { status, message } = response
 
         if (status && status === 200) {
           fetch()
           closeAddModal()
-          Alert.success(PATIENT_PROBLEM_ADDED);
+          Alert.success(message || '');
         }
       }
     }
   });
 
-  const [updatePatientProblem, { loading: updateProblemLoading }] = useUpdatePatientProblemMutation({
+  const [updatePatientVaccine, { loading: updateVaccineLoading }] = useUpdateVaccineMutation({
     onError({ message }) {
       Alert.error(message)
     },
 
     onCompleted(data) {
-      const { updatePatientProblem: { response } } = data;
+      const { updateVaccine: { response } } = data;
 
       if (response) {
-        const { status } = response
+        const { status, message } = response
 
         if (status && status === 200) {
           fetch()
           closeAddModal()
-          Alert.success(PATIENT_PROBLEM_UPDATED);
+          Alert.success(message || '');
         }
       }
     }
   });
 
-  const fetchPatientProblem = useCallback(async () => {
+  const fetchPatientVaccine = useCallback(async () => {
     try {
-      recordId && await getPatientProblem({
-        variables: { getPatientProblem: { id: recordId } }
+      recordId && await getPatientVaccine({
+        variables: { getVaccineInput: { id: recordId } }
       })
     } catch (error) { }
-  }, [getPatientProblem, recordId])
+  }, [getPatientVaccine, recordId])
 
   useEffect(() => {
-    isOpen && isEdit && fetchPatientProblem();
-  }, [fetchPatientProblem, isEdit, recordId, isOpen])
+    isOpen && isEdit && fetchPatientVaccine();
+  }, [fetchPatientVaccine, isEdit, recordId, isOpen])
 
 
-  const onSubmit: SubmitHandler<PatientProblemInputs> = async ({
-    note, appointmentId, problemStartDate
-  }) => {
-    const { id: selectedAppointment } = appointmentId || {};
+  const onSubmit: SubmitHandler<PatientVaccineFormType> = async (data) => {
+    const {
+      mvx, ndc, route, site, units, administerBy, administrationDate, amount, lotNo, expiryDate, visDate,
+      visGiven
+    } = data || {};
 
-    const commonInput = {
-      note,
-      ...(severity && { problemSeverity: severity.toUpperCase() as ProblemSeverity, }),
-      problemStartDate,
-      ...(typeStatus && { problemType: typeStatus.toUpperCase() as ProblemType })
+    const { id: mvxId } = mvx || {}
+    const { id: ndcId } = ndc || {}
+    const { id: routeId } = route || {}
+    const { id: siteId } = site || {}
+    const { id: unit } = units || {}
+    const vis = moment(visDate).format('DD-MM-YYYY');
+    const visGivenDate = moment(visGiven).format('DD-MM-YYYY');
+    const exp = moment(expiryDate).format('DD-MM-YYYY');
+    const administrativeDate = moment(administrationDate).format('DD-MM-YYYY');
+
+    const inputs = {
+      administerBy, administrationDate: administrativeDate,
+      amount, lotNo, visGiven: visGivenDate, cvxId: cvxCodeId, mvxId,
+      ndcId, route: routeId, site: siteId, units: unit,
+      visDate: vis, expiryDate: exp
     }
 
-    const extendedInput = selectedAppointment ?
-      { appointmentId: selectedAppointment, ...commonInput } : { ...commonInput }
-
     if (isEdit) {
-      recordId && await updatePatientProblem({
+      recordId && await updatePatientVaccine({
         variables: {
-          updateProblemInput: {
-            id: recordId, ...extendedInput,
+          updateVaccineInput: {
+            id: recordId, ...inputs,
           }
         }
       })
     } else {
-      const { snoMedCode } = item as IcdCodesWithSnowMedCode
-      const { id: selectedSnoMedCode } = snoMedCode || {};
-
-      await addPatientProblem({
+      await addPatientVaccine({
         variables: {
-          createProblemInput: {
-            patientId, icdCodeId, ...extendedInput,
-            ...(selectedSnoMedCode && { snowMedCodeId: selectedSnoMedCode })
+          addVaccineInput: {
+            patientId, ...inputs,
           }
         }
       })
     }
   }
 
-  const loading = addProblemLoading || updateProblemLoading || getProblemLoading
-  const { snoMedCode: snoMedCodeInfo } = item as IcdCodesWithSnowMedCode || {}
-  const { referencedComponentId } = snoMedCodeInfo || {}
+  const loading = addVaccineLoading || updateVaccineLoading || getVaccineLoading
 
   return (
     <Dialog fullWidth maxWidth="sm" open={isOpen} onClose={handleClose}>
@@ -222,16 +234,10 @@ const ProblemModal: FC<AddModalProps> = ({
                 }
 
                 <Box mt={1} color={GREY_THREE}>
-                  {isEdit ? loading ? <TextLoader width='300px' rows={[{ column: 1, size: 12 }]} /> :
+                  {loading ?
+                    <TextLoader width='300px' rows={[{ column: 1, size: 12 }]} /> :
                     <Typography variant='h6'>
-                      <strong>{ICD_TEN_CODE}:</strong> {code} {snowMedCodeName && snowMedCodeName !== DASHES
-                        ? `| SnoMedCode: ${snowMedCodeName}` : ''
-                      }
-
-                    </Typography> :
-                    <Typography variant='h6'>
-                      <strong>{ICD_TEN_CODE}:</strong>
-                      {code} {referencedComponentId && `| SnoMedCode: ${referencedComponentId}`}
+                      {name}: {code}
                     </Typography>}
                 </Box>
               </Box>
@@ -262,10 +268,9 @@ const ProblemModal: FC<AddModalProps> = ({
 
               <Grid item md={6} sm={6} xs={12}>
                 <InputController
-                  isRequired
+                  notStep
                   loading={loading}
                   fieldType="number"
-                  notStep
                   controllerLabel={AMOUNT}
                   controllerName='amount'
                 />
@@ -273,71 +278,71 @@ const ProblemModal: FC<AddModalProps> = ({
 
               <Grid item md={6} sm={6} xs={12}>
                 <Selector
-                  isRequired
-                  loading={loading}
-                  label={UNITS}
-                  options={VACCINE_UNITS_MAPPED}
+                  addEmpty
                   name='units'
-                />
-              </Grid>
-
-              <Grid item md={6} sm={6} xs={12}>
-                <Selector
-                  isRequired
+                  label={UNITS}
                   loading={loading}
-                  label={NDC_TEXT}
                   options={VACCINE_UNITS_MAPPED}
-                  name='ndc'
                 />
               </Grid>
 
               <Grid item md={6} sm={6} xs={12}>
-                <Selector
-                  isRequired
+                <MvxSelector
+                  addEmpty
+                  name='mvx'
                   loading={loading}
-                  label={ROUTE}
-                  options={VACCINE_ROUTES_MAPPED}
-                  name='route'
+                  cvxCodeId={cvxCodeId}
+                  label={MANUFACTURER_TEXT}
+                  options={VACCINE_SITES_MAPPED}
+                />
+              </Grid>
+
+              <Grid item md={6} sm={6} xs={12}>
+                <NdcSelector
+                  addEmpty
+                  name='ndc'
+                  label={NDC_TEXT}
+                  loading={loading}
+                  mvxCodeId={mvxSelectorId}
                 />
               </Grid>
 
               <Grid item md={6} sm={6} xs={12}>
                 <Selector
-                  isRequired
+                  addEmpty
+                  name='route'
+                  label={ROUTE}
+                  loading={loading}
+                  options={VACCINE_ROUTES_MAPPED}
+                />
+              </Grid>
+
+              <Grid item md={6} sm={6} xs={12}>
+                <Selector
+                  addEmpty
+                  name='site'
                   loading={loading}
                   label={SITE_TEXT}
                   options={VACCINE_SITES_MAPPED}
-                  name='site'
                 />
               </Grid>
 
               <Grid item md={6} sm={6} xs={12}>
                 <InputController
-                  isRequired
+                  notStep
                   loading={loading}
                   fieldType="number"
-                  notStep
-                  controllerLabel={LOT_NO_TEXT}
                   controllerName='lotNo'
-                />
-              </Grid>
-
-              <Grid item md={6} sm={6} xs={12}>
-                <Selector
-                  isRequired
-                  loading={loading}
-                  label={MANUFACTURER_TEXT}
-                  options={VACCINE_SITES_MAPPED}
-                  name='manufacturer'
+                  controllerLabel={LOT_NO_TEXT}
                 />
               </Grid>
 
               <Grid item md={6} sm={6} xs={12}>
                 <DatePicker
                   isRequired
+                  name='expiryDate'
                   loading={loading}
                   label={EXPIRY_DATE}
-                  name='expiryDate'
                   defaultValue={new Date()}
                 />
               </Grid>
@@ -345,9 +350,9 @@ const ProblemModal: FC<AddModalProps> = ({
               <Grid item md={6} sm={6} xs={12}>
                 <DatePicker
                   isRequired
+                  name='visGiven'
                   loading={loading}
                   label={VIS_GIVEN_TEXT}
-                  name='visGiven'
                   defaultValue={new Date()}
                 />
               </Grid>
@@ -355,9 +360,9 @@ const ProblemModal: FC<AddModalProps> = ({
               <Grid item md={6} sm={6} xs={12}>
                 <DatePicker
                   isRequired
+                  name='visDate'
                   loading={loading}
                   label={DATE_ON_VIS}
-                  name='visDate'
                   defaultValue={new Date()}
                 />
               </Grid>
@@ -388,4 +393,4 @@ const ProblemModal: FC<AddModalProps> = ({
   )
 };
 
-export default ProblemModal;
+export default VaccineModal;
