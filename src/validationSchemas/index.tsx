@@ -995,12 +995,12 @@ export const createInsuranceSchema = yup.object({
   policyHolderId: yup.string().required(requiredMessage(POLICY_HOLDER_ID_CERTIFICATION_NUMBER)),
   employer: yup.string().required(requiredMessage(EMPLOYER)),
   suffix: yup.string().required(requiredMessage(SUFFIX)),
-  firstName: yup.string().required(requiredMessage(FIRST_NAME)),
-  middleName: yup.string(),
-  lastName: yup.string().required(requiredMessage(LAST_NAME)),
+  firstName: requiredStringOnly(FIRST_NAME, 3, 50),
+  middleName: notRequiredStringOnly(MIDDLE_NAME),
+  lastName: requiredStringOnly(LAST_NAME, 3, 50),
   address: yup.string().required(requiredMessage(ADDRESS)),
   addressCTD: yup.string(),
-  city: yup.string().required(requiredMessage(CITY)),
+  city: requiredStringOnly(CITY, 2, 50),
   state: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
@@ -1158,7 +1158,7 @@ export const cptFeeScheduleSchema = yup.object({
   description: yup.string(),
   shortDescription: yup.string(),
   code: selectorSchema(CPT_CODE_PROCEDURE_CODE),
-  serviceFee: yup.string().required(requiredMessage(SERVICE_FEE_CHARGE)).test('', invalidMessage(SERVICE_FEE_CHARGE), (value)=> !!value ? parseInt(value) >= 0 : true),
+  serviceFee: yup.string().required(requiredMessage(SERVICE_FEE_CHARGE)).test('', invalidMessage(SERVICE_FEE_CHARGE), (value) => !!value ? parseInt(value) >= 0 : true),
 })
 
 export const sendSmsSchema = yup.object({
