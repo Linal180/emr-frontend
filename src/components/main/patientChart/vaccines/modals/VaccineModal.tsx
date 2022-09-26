@@ -36,7 +36,7 @@ const VaccineModal: FC<VaccineModalProps> = ({
 }): JSX.Element => {
 
   const chartingClasses = useChartingStyles()
-  const { id: patientId } = useParams<ParamsType>()
+  const { id: patientId, appointmentId } = useParams<ParamsType>()
   const methods = useForm<PatientVaccineFormType>({ mode: "all", resolver: yupResolver(patientVaccineSchema) });
 
   const { handleSubmit, reset, setValue, watch } = methods;
@@ -188,7 +188,7 @@ const VaccineModal: FC<VaccineModalProps> = ({
       administerBy, administrationDate: administrativeDate,
       amount, lotNo, visGiven: visGivenDate, cvxId: cvxCodeId, mvxId,
       ndcId, route: routeId, site: siteId, units: unit,
-      visDate: vis, expiryDate: exp
+      visDate: vis, expiryDate: exp, ...(appointmentId && { appointmentId })
     }
 
     if (isEdit) {
