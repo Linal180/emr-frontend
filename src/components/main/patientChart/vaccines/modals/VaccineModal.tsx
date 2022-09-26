@@ -84,7 +84,6 @@ const VaccineModal: FC<VaccineModalProps> = ({
           expiryDate && setValue('expiryDate', moment(expiryDate, 'DD-MM-YYYY').format())
           visDate && setValue('visDate', moment(visDate, 'DD-MM-YYYY').format())
           visGiven && setValue('visGiven', moment(visGiven, 'DD-MM-YYYY').format())
-          visGiven && setValue('visGiven', moment(visGiven, 'DD-MM-YYYY').format())
 
           if (route) {
             const routeValue = VACCINE_ROUTES_MAPPED?.find(({ id }) => id === route);
@@ -98,7 +97,7 @@ const VaccineModal: FC<VaccineModalProps> = ({
 
           if (site) {
             const siteValue = VACCINE_SITES_MAPPED?.find(({ id }) => id === site);
-            siteValue && setValue('units', siteValue)
+            siteValue && setValue('site', siteValue)
           }
 
           if (mvxId) {
