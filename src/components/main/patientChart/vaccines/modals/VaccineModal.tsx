@@ -259,7 +259,6 @@ const VaccineModal: FC<VaccineModalProps> = ({
 
               <Grid item md={6} sm={6} xs={12}>
                 <InputController
-                  isRequired
                   loading={loading}
                   controllerLabel={ADMINISTER_BY}
                   controllerName='administerBy'
