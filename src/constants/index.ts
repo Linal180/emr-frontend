@@ -6,7 +6,7 @@ import { v4 as uuid } from "uuid";
 // graphql and interfaces block
 import {
   AllergiesIcon, CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, HistoryIcon, LabOrderIcon, MedicationIcon,
-  NumberIcon, ProblemsIcon, RadioGroupIcon, SelectIcon, TextAreaIcon, TextIcon, TriageIcon, VitalsIcon
+  NumberIcon, ProblemsIcon, RadioGroupIcon, SelectIcon, TextAreaIcon, TextIcon, TriageIcon, VaccineIcon, VitalsIcon
 } from "../assets/svgs";
 import {
   AbnormalFlag, AllergySeverity, AppointmentStatus, Communicationtype, CopayType, DoctorPatientRelationType, ElementType,
@@ -526,6 +526,17 @@ export const SAVE_DRAFT = "Save as Draft";
 export const UPLOAD_PICTURE = "Upload Picture";
 export const ALLOW_CANCELLATION = "Allow Cancellations";
 export const VACCINE_TEXT = "Vaccine";
+export const ADD_VACCINE_TEXT = "Add Vaccine";
+export const UPDATE_VACCINE_TEXT = "Update Vaccine";
+export const MANUFACTURER_TEXT = "Manufacturer";
+export const ADMINISTRATION_DATE = "Administration Date";
+export const ADMINISTER_BY = "Administer By";
+export const SITE_TEXT = "Site";
+export const NDC_TEXT = "NDC";
+export const VIS_GIVEN_TEXT = "VIS Given";
+export const DATE_ON_VIS = "Date on VIS";
+export const LOT_NO_TEXT = "Lot #";
+export const AMOUNT_UNIT_TEXT = "Amount/unit";
 export const PROBLEMS_TEXT = "Problems";
 export const PROBLEM_TEXT = "Problem";
 export const MEDICATION_TEXT = "Medication";
@@ -1469,6 +1480,7 @@ export const REMOVE_COPAY_AMOUNT = "Remove Copay Amount";
 export const NOT_FOUND_EXCEPTION = "Not Found Exception";
 export const FORBIDDEN_EXCEPTION = "Forbidden Exception";
 export const SEARCH_FOR_PROBLEMS = "Search for Problems";
+export const SEARCH_FOR_VACCINES = "Search for vaccines";
 export const SEARCH_FOR_DISEASE = "Search for Disease";
 export const CONTACT_INFORMATION = "Contact Information";
 export const PREVIOUS_FIRST_NAME = "Previous First Name";
@@ -1538,6 +1550,7 @@ export const DELETE_SERVICE_DESCRIPTION = "Confirm to delete Service";
 export const PUBLIC_FORM_FAIL_MESSAGE = 'Your record is not created.';
 export const VERIFICATION_MESSAGE = "You are verified. Please login.";
 export const DELETE_PROBLEM_DESCRIPTION = "Confirm to delete problem";
+export const DELETE_VACCINE_DESCRIPTION = "Confirm to delete vaccine";
 export const DELETE_ALLERGY_DESCRIPTION = "Confirm to delete allergy";
 export const CHOOSE_YOUR_PAYMENT_METHOD = "Choose your Payment Method";
 export const NEXT_SCHEDULED_APPOINTMENT = "Next Scheduled Appointment";
@@ -3737,6 +3750,11 @@ export const PATIENT_CHARTING_TABS = [
     icon: LabOrderIcon,
     title: "Lab Orders",
     value: "7",
+  },
+  {
+    icon: VaccineIcon,
+    title: "Vaccines",
+    value: "8",
   }
 ]
 
@@ -3902,3 +3920,139 @@ export enum CONFIRMATION_MODAL_TYPE {
   CANCEL = 'cancel',
   DISCHARGE = 'discharge'
 }
+
+export const VACCINE_UNITS_MAPPED = [
+  { id: "mL", name: "ML" },
+  { id: "mcg", name: "MCG" },
+  { id: "mg", name: "MG" },
+]
+
+export const VACCINE_ROUTES_MAPPED = [
+  { id: "buccal", name: "Buccal" },
+  { id: "dental", name: "Dental" },
+  { id: "epidural", name: "Epidural" },
+  { id: "hemodialysis", name: "Hemodialysis" },
+  { id: "implant", name: "Implant" },
+  { id: "in_vitro", name: "In Vitro" },
+  { id: "inhalation", name: "Inhalation" },
+  { id: "injection", name: "Injection" },
+  { id: "intra_arterial", name: "Intra Arterial" },
+  { id: "intra_articular", name: "Intra Articular" },
+  { id: "intra_cavernosal", name: "Intra Cavernosal" },
+  { id: "intra_urethral", name: "Intra Urethral" },
+  { id: "intra_dermal", name: "Intra Dermal" },
+  { id: "intra_muscular", name: "Intra Muscular" },
+  { id: "intra_nasal", name: "Intra Nasal" },
+  { id: "intra_ocular", name: "Intra Ocular" },
+  { id: "intra_peritoneal", name: "Intra Peritoneal" },
+  { id: "intra_pleural", name: "Intra Pleural" },
+  { id: "intra_thecal", name: "Intra Thecal" },
+  { id: "intra Uterine", name: "Intra Uterine" },
+  { id: "intra_venous", name: "Intra Venous" },
+  { id: "intra_vesical", name: "Intra Vesical" },
+  { id: "irrigation", name: "Irrigation" },
+  { id: "miscellaneous", name: "Miscellaneous" },
+  { id: "mucous_membrane", name: "Mucous Membrane" },
+  { id: "ophthalmic", name: "Ophthalmic" },
+  { id: "oral", name: "Oral" },
+  { id: "otic", name: "Otic" },
+  { id: "perfusion", name: "Perfusion" },
+  { id: "rectal", name: "Rectal" },
+  { id: "subcutaneous", name: "Subcutaneous" },
+  { id: "sublingual", name: "Sublingual" },
+  { id: "Topical", name: "Topical" },
+  { id: "transdermal", name: "Transdermal" },
+  { id: "trans_lingual", name: "Trans Lingual" },
+  { id: "vaginal", name: "Vaginal" },
+]
+
+
+export const VACCINE_SITES_MAPPED = [
+  { id: "bladder", name: "Bladder" },
+  { id: "ear_left", name: "Ear, Left" },
+  { id: "chest_left", name: "Chest, Left" },
+  { id: "buttock_left", name: "Buttock, Left" },
+  { id: "ankle_left", name: "Ankle, Left" },
+  { id: "abdomen_llq", name: "Abdomen, LLQ" },
+  { id: "abdomen_luq", name: "Abdomen, LUQ" },
+  { id: "abdomen_rlq", name: "Abdomen, RLQ" },
+  { id: "abdomen_ruq", name: "Abdomen, RUQ" },
+  { id: "ankle_right", name: "Ankle, Right" },
+  { id: "chest_right", name: "Chest, Right" },
+  { id: "buttock_right", name: "Buttock, Right" },
+  { id: "deltoid_left", name: "Deltoid, Left" },
+  { id: "deltoid_right", name: "Deltoid, Right" },
+  { id: "arm_left_upper", name: "Arm, Left Upper" },
+  { id: "arm_right_upper", name: "Arm, Right Upper" },
+  { id: "chest_port_left", name: "Chest Port, Left" },
+  { id: "chest_port_right", name: "Chest Port, Right" },
+  { id: "dorsogluteal_left", name: "Dorsogluteal, Left" },
+  { id: "dorsogluteal_right", name: "Dorsogluteal, Right" },
+  { id: "antecubital_fossa_left", name: "Antecubital Fossa, Left" },
+  { id: "antecubital_fossa_right", name: "Antecubital Fossa, Right" },
+  { id: "oral", name: "Oral" },
+  { id: "nasal", name: "Nasal" },
+  { id: "foot_left", name: "Foot, Left" },
+  { id: "eye_right", name: "Eye, Right" },
+  { id: "eye_left", name: "Eye, Left" },
+  { id: "hand_right", name: "Hand, Right" },
+  { id: "hand_left", name: "Hand, Left" },
+  { id: "hip_right", name: "Hip, Right" },
+  { id: "hip_left", name: "Hip, Left" },
+  { id: "knee_left", name: "Knee, Left" },
+  { id: "knee_right", name: "Knee, Right" },
+  { id: "foot_right", name: "Foot, Right" },
+  { id: "ear_right", name: "Ear, Right" },
+  { id: "elbow_right", name: "Elbow, Left" },
+  { id: "elbow_left", name: "Elbow, Right" },
+  { id: "forearm_left", name: "Forearm, Left" },
+  { id: "forearm_right", name: "Forearm, Right" },
+  { id: "other", name: "Other" },
+  { id: "penis", name: "Penis" },
+  { id: "rectal", name: "Rectal" },
+  { id: "rectus_femoris_left", name: "Rectus femoris, Left" },
+  { id: "rectus_femoris_right", name: "Rectus femoris, Right" },
+  { id: "scrotum", name: "Scrotum" },
+  { id: "shoulder_left", name: "Shoulder, Left" },
+  { id: "shoulder_right", name: "Shoulder, Right" },
+  { id: "thigh_left", name: "Thigh, Left" },
+  { id: "thigh_right", name: "Thigh, Right" },
+  { id: "thumb_left", name: "Thumb, Left" },
+  { id: "thumb_right", name: "Thumb, Right" },
+  { id: "vaginal", name: "Vaginal" },
+  { id: "uterus", name: "Uterus" },
+  { id: "vastus_lateralis_left", name: "Vastus Lateralis, Left" },
+  { id: "vastus_lateralis_right", name: "Vastus Lateralis, Right" },
+  { id: "ventrogluteal_left", name: "Ventrogluteal, Left" },
+  { id: "ventrogluteal_right", name: "Ventrogluteal, Right" },
+  { id: "wrist_left", name: "Wrist, Left" },
+  { id: "wrist_right", name: "Wrist, Right" },
+  { id: "left_arm", name: "Left Arm" },
+  { id: "right_arm", name: "Right Arm" },
+  { id: "right_upper_arm", name: "Right Upper Arm" },
+  { id: "left_upper_arm", name: "Left Upper Arm" },
+  { id: "left_leg", name: "Left Leg" },
+  { id: "right_leg", name: "Right Leg" },
+  { id: "left_acf", name: "Left ACF" },
+  { id: "right_acf", name: "Right ACF" },
+  { id: "abdomen", name: "Abdomen" },
+  { id: "left_lower_thigh", name: "Left Lower Thigh" },
+  { id: "right_lower_thigh", name: "Right Lower Thigh" },
+  { id: "left_upper_thigh", name: "Left Upper Thigh" },
+  { id: "right_upper_thigh", name: "Right Upper Thigh" },
+  { id: "right_upper_extremity", name: "Right Upper Extremity" },
+  { id: "left_lower_extremity", name: "Left Lower Extremity" },
+  { id: "left_upper_extremity", name: "Left Upper Extremity" },
+  { id: "right_lower_extremity", name: "Right Lower Extremity" },
+  { id: "intra_articular_joint", name: "INTRA ARTICULAR JOINT" },
+  { id: "left_abdomen", name: "Left Abdomen" },
+  { id: "right_abdomen", name: "Right Abdomen" },
+  { id: "bilateral_knee", name: "Bilateral Knee" },
+  { id: "bilateral_thigh", name: "Bilateral Thigh" },
+  { id: "left_upper_eyelid", name: "Left Upper Eyelid" },
+  { id: "right_lower_eyelid", name: "Right Lower Eyelid" },
+  { id: "right_upper_eyelid", name: "Right Upper Eyelid" },
+  { id: "left_lower_eyelid", name: "Left Lower Eyelid" },
+  { id: "left_flank", name: "Left Flank" },
+  { id: "right_flank", name: "Right Flank" },
+]
