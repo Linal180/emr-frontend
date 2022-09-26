@@ -28,7 +28,7 @@ const VaccinesTable: FC<VaccinesTableProps> = (props): JSX.Element => {
 
   const classes = useChartingStyles();
   const classesTable = useTableStyles()
-  const { id: patientId } = useParams<ParamsType>()
+  const { id: patientId, appointmentId } = useParams<ParamsType>()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(vaccinesReducer, initialState);
   const { isOpen, page, data, totalPages, openDelete, delId, isSubModalOpen, itemId, selectedItem } = state;
 
@@ -87,9 +87,16 @@ const VaccinesTable: FC<VaccinesTableProps> = (props): JSX.Element => {
 
   const fetchVaccines = useCallback(async () => {
     try {
-      await findAllVaccines({ variables: { findAllVaccinesInput: { paginationOptions: { limit: PAGE_LIMIT, page: page }, patientId } } })
+      await findAllVaccines({
+        variables: {
+          findAllVaccinesInput: {
+            paginationOptions: { limit: PAGE_LIMIT, page: page },
+            patientId, ...(appointmentId && { appointmentId })
+          }
+        }
+      })
     } catch (error) { }
-  }, [findAllVaccines, patientId, page])
+  }, [findAllVaccines, patientId, page, appointmentId])
 
   useEffect(() => {
     patientId && fetchVaccines()

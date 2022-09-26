@@ -73,6 +73,7 @@ export type AddVaccineInput = {
   administerBy?: Maybe<Scalars['String']>;
   administrationDate?: Maybe<Scalars['String']>;
   amount?: Maybe<Scalars['String']>;
+  appointmentId?: Maybe<Scalars['String']>;
   cvxId?: Maybe<Scalars['String']>;
   expiryDate?: Maybe<Scalars['String']>;
   lotNo?: Maybe<Scalars['String']>;
@@ -274,6 +275,7 @@ export type Appointment = {
   transaction?: Maybe<Transactions>;
   triageNote?: Maybe<TriageNotes>;
   updatedAt?: Maybe<Scalars['String']>;
+  vaccines?: Maybe<Array<Vaccine>>;
 };
 
 /** The appointment create type assigned */
@@ -2143,6 +2145,7 @@ export type FindAllNdcPayload = {
 };
 
 export type FindAllVaccinesInput = {
+  appointmentId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
   patientId?: Maybe<Scalars['String']>;
 };
@@ -7082,6 +7085,7 @@ export type UpdateVaccineInput = {
   administerBy?: Maybe<Scalars['String']>;
   administrationDate?: Maybe<Scalars['String']>;
   amount?: Maybe<Scalars['String']>;
+  appointmentId?: Maybe<Scalars['String']>;
   cvxId?: Maybe<Scalars['String']>;
   expiryDate?: Maybe<Scalars['String']>;
   id: Scalars['String'];
@@ -7285,6 +7289,8 @@ export type Vaccine = {
   administerBy?: Maybe<Scalars['String']>;
   administrationDate?: Maybe<Scalars['String']>;
   amount?: Maybe<Scalars['String']>;
+  appointment?: Maybe<Appointment>;
+  appointmentId?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
   cvx?: Maybe<Cvx>;
   cvxId?: Maybe<Scalars['String']>;
