@@ -288,7 +288,7 @@ const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({
                     <Typography variant='body1'>{description}</Typography>
 
                     <Typography variant='caption'>
-                      {description}
+                      {`${code} | ${description}`}
                     </Typography>
                   </Box>
 
