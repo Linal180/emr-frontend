@@ -136,7 +136,7 @@ const VaccinesTable: FC<VaccinesTableProps> = (props): JSX.Element => {
                   </Button>}
               </Box>
 
-              <Box className={classes.tableBox}>
+              <Box className={`${classes.tableBox} ${classes.vaccineTable}`}>
                 <Table aria-label="customized table" className={classesTable.table}>
                   <TableHead>
                     <TableRow>
