@@ -1158,7 +1158,7 @@ export const cptFeeScheduleSchema = yup.object({
   description: yup.string(),
   shortDescription: yup.string(),
   code: selectorSchema(CPT_CODE_PROCEDURE_CODE),
-  serviceFee: yup.string().required(requiredMessage(SERVICE_FEE_CHARGE)),
+  serviceFee: yup.string().required(requiredMessage(SERVICE_FEE_CHARGE)).test('', invalidMessage(SERVICE_FEE_CHARGE), (value)=> !!value ? parseInt(value) >= 0 : true),
 })
 
 export const sendSmsSchema = yup.object({
