@@ -36,7 +36,7 @@ import {
   NO_SPACE_AT_BOTH_ENDS_REGEX, NO_SPECIAL_CHAR_ERROR_MESSAGE, NO_SPECIAL_CHAR_REGEX, NO_NUMBER_ERROR_MESSAGE,
   INVALID_DEA_DATE_ERROR_MESSAGE, INVALID_EXPIRATION_DATE_ERROR_MESSAGE, SUFFIX_REGEX, MESSAGE, PATIENT_PAYMENT_TYPE,
   FEE_SCHEDULE, INVALID_BILL_FEE_MESSAGE, INVALID_UNIT_MESSAGE, BILLED_AMOUNT, UNIT, INVALID_AMOUNT_MESSAGE,
-  PAYMENT_TYPE, APPOINTMENT_PAYMENT_TYPE, LAST_FOUR_DIGIT, PROBLEM_TEXT, FAMILY_RELATIVE, RELATIVE,
+  PAYMENT_TYPE, APPOINTMENT_PAYMENT_TYPE, LAST_FOUR_DIGIT, PROBLEM_TEXT, FAMILY_RELATIVE, RELATIVE, MANUFACTURER_TEXT, NDC_TEXT, ROUTE, SITE_TEXT, UNITS, ADMINISTRATION_DATE,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -1195,4 +1195,19 @@ export const FamilyHistorySchema = yup.object({
   problem: selectorSchema(PROBLEM_TEXT),
   familyRelative: yup.array().of(familyRelativeSchema)
     .test('', requiredMessage(FAMILY_RELATIVE), (value: any) => !!value && value.length > 0)
+})
+
+export const patientVaccineSchema = yup.object({
+  mvx: selectorSchema(MANUFACTURER_TEXT, false),
+  ndc: selectorSchema(NDC_TEXT, false),
+  route: selectorSchema(ROUTE, false),
+  site: selectorSchema(SITE_TEXT, false),
+  units: selectorSchema(UNITS, false),
+  administrationDate: yup.string().required(requiredMessage(ADMINISTRATION_DATE)),
+  administerBy: yup.string(),
+  amount: yup.string(),
+  lotNo: yup.string(),
+  expiryDate: yup.string(),
+  visGiven: yup.string(),
+  visDate: yup.string(),
 })

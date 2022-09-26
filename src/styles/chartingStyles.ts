@@ -135,6 +135,12 @@ export const useChartingStyles = makeStyles((theme) => ({
     }
   },
 
+  vaccineTable: {
+    "& .MuiTableCell-head": {
+      minWidth: 140,
+    }
+  },
+
   chartModalBox: {
     paddingTop: 15,
     paddingBottom: 15,
@@ -144,7 +150,7 @@ export const useChartingStyles = makeStyles((theme) => ({
       paddingBottom: 0,
 
       "& .MuiOutlinedInput-input": {
-        height: 40,
+        height: 48,
       },
 
       "& .MuiAutocomplete-inputRoot": {
