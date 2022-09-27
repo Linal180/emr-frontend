@@ -2170,3 +2170,5 @@ export type VaccinesProps = {
 export type VaccinesTableProps = {
   shouldDisableEdit?: boolean
 }
+
+export type ICD10FormType  = {}

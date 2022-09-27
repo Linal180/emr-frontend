@@ -611,7 +611,7 @@ export const DEACTIVATE_EMERGENCY_ACCESS_MODE =
   "Deactivate Emergency Access Mode";
 export const TEMPORARY_EMERGENCY_ACCESS_DESCRIPTION =
   "Emergency access mode gives practice members temporary administrator permissions in the event of an emergency or crisis. Access is secure and only available to pre-selected practice members designated by a practice administrator.";
-export const ICT_TEN = "ICT-10 Codes";
+export const ICD_TEN = "ICD-10 Codes";
 export const ICD_TEN_CODES = "ICD-10 Codes";
 export const ICD_CODE = "ICD Code";
 export const SNOMED_CODE = "SnoMED Code:";
@@ -625,8 +625,8 @@ export const CUSTOM_CODES = "Custom Codes";
 export const MEDICINES = "Medicines";
 export const TESTS = "Tests";
 export const VACCINES = "Vaccines";
-export const ICT_TEN_DESCRIPTION =
-  "Create and edit ICT-10 codes inventory for your practice";
+export const ICD_TEN_DESCRIPTION =
+  "Create and edit ICD-10 codes inventory for your practice";
 export const ICT_NINE_DESCRIPTION =
   "Create and edit ICT-9 codes inventory for your practice";
 export const CPT_CODES_DESCRIPTION =
@@ -1704,7 +1704,9 @@ export const PROVIDER_PUBLIC_APPOINTMENT_ROUTE = "/provider-public-appointment";
 export const FACILITY_PUBLIC_APPOINTMENT_ROUTE = "/facility-public-appointment";
 export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION_ROUTE}/success`;
 export const PATIENT_APPOINTMENT_CANCEL = `${PUBLIC_APPOINTMENT_ROUTE}/appointment-cancel`;
-export const INSURANCE_ELIGIBILITY_ROUTE = `/insurance-eligibility`
+export const INSURANCE_ELIGIBILITY_ROUTE = `/insurance-eligibility`;
+export const ICD_10_ROUTE = `/icd-10`;
+
 // Facility Routes
 export const BILLING_PROFILE_ROUTE = "billing-profile";
 export const FACILITY_INFO_ROUTE = "facility-information";
@@ -2725,35 +2727,35 @@ export const MAPPED_STATUS = [
 
 export const INVENTORY_ITEMS = [
   {
-    name: ICT_TEN,
-    link: "/",
-    desc: ICT_TEN_DESCRIPTION,
+    name: ICD_TEN,
+    link: ICD_10_ROUTE,
+    desc: ICD_TEN_DESCRIPTION,
   },
-  {
-    name: ICT_NINE,
-    link: "/",
-    desc: ICT_NINE_DESCRIPTION,
-  },
-  {
-    name: CPT_CODES,
-    link: "/",
-    desc: CPT_CODES_DESCRIPTION,
-  },
-  {
-    name: MEDICINES,
-    link: "/",
-    desc: MEDICINES_DESCRIPTION,
-  },
-  {
-    name: TESTS,
-    link: "/",
-    desc: TESTS_DESCRIPTION,
-  },
-  {
-    name: VACCINES,
-    link: "/",
-    desc: VACCINES_DESCRIPTION,
-  },
+  // {
+  //   name: ICT_NINE,
+  //   link: "/",
+  //   desc: ICT_NINE_DESCRIPTION,
+  // },
+  // {
+  //   name: CPT_CODES,
+  //   link: "/",
+  //   desc: CPT_CODES_DESCRIPTION,
+  // },
+  // {
+  //   name: MEDICINES,
+  //   link: "/",
+  //   desc: MEDICINES_DESCRIPTION,
+  // },
+  // {
+  //   name: TESTS,
+  //   link: "/",
+  //   desc: TESTS_DESCRIPTION,
+  // },
+  // {
+  //   name: VACCINES,
+  //   link: "/",
+  //   desc: VACCINES_DESCRIPTION,
+  // },
 ];
 
 export const APPOINTMENT_SETTINGS_ITEMS = [
