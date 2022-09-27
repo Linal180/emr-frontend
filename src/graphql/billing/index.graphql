@@ -384,3 +384,44 @@ query FetchBillingClaimStatuses(
     }
   }
 }
+
+mutation CreateUpFrontPayment(
+  $createUpFrontPaymentInput: UpFrontPaymentInput!
+) {
+  createUpFrontPayment(createUpFrontPaymentInput: $createUpFrontPaymentInput) {
+    response {
+      status
+      message
+    }
+
+    upFrontPayment {
+      id
+    }
+  }
+}
+
+query FetchUpFrontPaymentDetailsByAppointmentId($appointmentId: String!) {
+  fetchUpFrontPaymentDetailsByAppointmentId(appointmentId: $appointmentId) {
+    response {
+      status
+      message
+    }
+
+    upFrontPayment {
+      id
+      totalCharges
+      paid
+      adjustments
+      balance
+      expected
+
+      UpFrontPaymentTypes {
+        id
+        paymentType
+        amount
+        type
+        notes
+      }
+    }
+  }
+}

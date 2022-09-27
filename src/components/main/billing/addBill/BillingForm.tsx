@@ -4,7 +4,7 @@ import {
 } from "@material-ui/core";
 import { AddCircleOutline, ChevronRight } from "@material-ui/icons";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
-import { ChangeEvent, FC } from "react";
+import { ChangeEvent, FC, useRef } from "react";
 import { FormProvider } from "react-hook-form";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
@@ -21,8 +21,8 @@ import DoctorSelector from "../../../common/Selector/DoctorSelector";
 import FacilitySelector from "../../../common/Selector/FacilitySelector";
 import TableSelector from "../../../common/Selector/TableSelector";
 import InsuranceComponent from "../../patients/patientDetail/insurance";
-import SelfPayComponent from "./PaymentModal";
 import UpFrontPayment from "../upfrontPayment";
+import SelfPayComponent from "./PaymentModal";
 //constants, utils, interfaces block
 import {
   ADD_ANOTHER_COPAY, APPOINTMENT_FACILITY, AUTO_ACCIDENT, BILLING, BILLING_TABS, CHECKOUT, CLAIM_STATUS,
@@ -30,7 +30,7 @@ import {
   INVOICE_DATE, INVOICE_NO, ITEM_MODULE, LAST_VISITED, MAPPED_ONSET_DATE_TYPE, MAPPED_PATIENT_PAYMENT_TYPE, MAPPED_SERVICE_CODES, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, PATIENT_PAYMENT_TYPE, POS, PRACTICE, RENDERING_PROVIDER, SAVE_TEXT, SELECT_ANOTHER_STATUS, SERVICE_DATE, SERVICING_PROVIDER, SUPER_BILL, SUPER_BILL_ROUTE, SystemBillingStatuses, TO, UNCOVERED_AMT
 } from "../../../../constants";
 import { BillingStatus, CodeType, OnsetDateType, PatientPaymentType } from "../../../../generated/graphql";
-import { BillingFormProps, ItemSelectorOption, ParamsType, SelectorOption } from "../../../../interfacesTypes";
+import { BillingFormProps, FormForwardRef, ItemSelectorOption, ParamsType, SelectorOption } from "../../../../interfacesTypes";
 import { ActionType } from "../../../../reducers/billingReducer";
 import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
 import { GREY_THREE } from "../../../../theme";
@@ -41,15 +41,17 @@ const BillingForm: FC<BillingFormProps> = ({
   createClaimLoading
 }) => {
   const classesToggle = usePublicAppointmentStyles();
+  const billingRef = useRef<FormForwardRef>();
   const { appointmentId } = useParams<ParamsType>()
   const { handleSubmit, trigger, watch, setValue } = methods
-  const { onsetDateType, practice, feeSchedule, claimStatus, paymentType } = watch()
+  const { onsetDateType, practice, feeSchedule, claimStatus, paymentType, cptFeeSchedule } = watch()
   const { id: onsetDateTypeId } = onsetDateType || {}
   const { statusName } = claimStatus || {}
   const {
     isModalOpen, tableCodesData, insuranceId, isCheckoutModalOpen, employment, autoAccident, otherAccident,
     claimNumber, practiceId, selectedTab, isClaimCreated, selfPayModal, billingStatus, insuranceStatus
   } = state
+
 
   const handleChange = (_: ChangeEvent<{}>, newValue: string) => {
     dispatch({ type: ActionType.SET_SELECTED_TAB, selectedTab: newValue })
@@ -169,7 +171,10 @@ const BillingForm: FC<BillingFormProps> = ({
                 <Button
                   variant="outlined"
                   color="default"
-                  onClick={() => handleCheckout(false)}
+                  onClick={async () => {
+                    await handleCheckout(false)
+                    billingRef.current?.submit()
+                  }}
                 >
                   {SAVE_TEXT}
                 </Button>
@@ -178,7 +183,11 @@ const BillingForm: FC<BillingFormProps> = ({
               <Box m={0.5}>
                 <Button
                   variant="contained" color="primary" disabled={createBillingLoading}
-                  onClick={() => handleCheckout(true)} endIcon={<Box width={20}><ChevronRight /></Box>}
+                  onClick={async () => {
+                    await handleCheckout(true)
+                    billingRef.current?.submit()
+                  }}
+                  endIcon={<Box width={20}><ChevronRight /></Box>}
                 >
                   {submitButtonText ?? CHECKOUT}
                   {createBillingLoading && <CircularProgress size={20} color="inherit" />}
@@ -494,7 +503,7 @@ const BillingForm: FC<BillingFormProps> = ({
               <TabPanel value="2">
                 <Box>
                   {/* <Card> */}
-                    <InsuranceComponent shouldDisableEdit={shouldDisableEdit} />
+                  <InsuranceComponent shouldDisableEdit={shouldDisableEdit} />
                   {/* </Card> */}
                 </Box>
               </TabPanel>
@@ -504,7 +513,11 @@ const BillingForm: FC<BillingFormProps> = ({
 
         <Box p={1} />
 
-        <UpFrontPayment />
+        <UpFrontPayment
+          cptCodes={cptFeeSchedule}
+          ref={billingRef}
+          shouldDisableEdit={shouldDisableEdit}
+        />
       </form>
 
       {isModalOpen &&

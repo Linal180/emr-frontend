@@ -18,7 +18,7 @@ import {
 import {
   ColumnTypes, FormBuilderFormInitial,
   FormInitialType, ItemsTypes, LabOrdersResultOption1, LabOrdersResultOption2, SelectOptions, SelectorOption,
-  SpecimenTypeOption, StepLabelType, TestOption
+  SpecimenTypeOption, StepLabelType, TestOption, UpFrontPaymentTypeProps
 } from "../interfacesTypes";
 import {
   formatValue, getFormattedDate, getStandardTime, mapEnum, mapEnumWithCode, setRecord, sortingValue
@@ -1937,6 +1937,8 @@ export const LOGGED_OUT_BEFORE_RESETTING_PASSWORD =
   "Please log out before resetting password";
 export const FORGET_PASSWORD_SUCCESS =
   "An email has been sent to your registered email address";
+export const UPFRONT_PAYMENT_SUCCESS =
+  "UpFront Payment Saved Successfully";
 export const APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY =
   "Appointment status is updated successfully";
 export const APPOINTMENT_REMINDER_SENT_SUCCESSFULLY =
@@ -2643,6 +2645,12 @@ export enum CARD_LAYOUT_MODAL {
   ICDCodes = 'ICDCodes',
 }
 
+export enum UPFRONT_PAYMENT_TYPES {
+  Copay = 'Copay',
+  Additional = 'Additional',
+  Previous = 'Previous'
+}
+
 export enum ATTACHMENT_TITLES {
   Signature = "Signature",
   Agreement = "Agreement",
@@ -3092,6 +3100,13 @@ export const TEST_FIELD_INITIAL_VALUES: TestOption = {
   diagnosesIds: [EMPTY_MULTISELECT_OPTION]
 };
 
+export const UPFRONT_INITIAL_VALUES: UpFrontPaymentTypeProps = {
+  amount: 0,
+  type: { id: '', name: '' },
+  notes: '',
+  paymentType: UPFRONT_PAYMENT_TYPES.Copay
+};
+
 export const ORDERS_RESULT_INITIAL_VALUES_1: LabOrdersResultOption1 = {
   normalRange: '',
   normalRangeUnits: '',
@@ -3103,6 +3118,16 @@ export const ORDERS_RESULT_INITIAL_VALUES_1: LabOrdersResultOption1 = {
 export const ORDERS_RESULT_INITIAL_VALUES_2: LabOrdersResultOption2 = {
   resultValue: { id: '', name: '' },
 };
+
+export const UPFRONT_TYPE_OPTIONS: SelectorOption[] = [
+  { id: 'Cash', name: 'Cash' },
+  { id: 'Check', name: 'Check' },
+  { id: 'American Express', name: 'American Express' },
+  { id: 'Mastercard', name: 'Mastercard' },
+  { id: 'Visa', name: 'Visa' },
+  { id: 'Discover', name: 'Discover' },
+  { id: 'Other', name: 'Other' },
+];
 
 export const CHECK_IN_STEPS = [
   CHECK_IN,

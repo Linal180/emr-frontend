@@ -62,7 +62,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         return
       }
       shouldCheckout && history.push(`${VIEW_APPOINTMENTS_ROUTE}`)
-      fetchBillingDetails()
+      // !shouldSubmitPayment && fetchBillingDetails()
     }
   });
 
@@ -269,7 +269,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
             code: code || '',
             description: description || '',
             codeType: CodeType.Icd_10Code,
-            price:  0,
+            price: 0,
             unit: '0'
           }
         })
@@ -370,7 +370,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         servicingProvider?.id && setValue('servicingProvider', setRecord(servicingProvider.id, `${servicingProvider.firstName} ${servicingProvider.lastName}`))
         renderingProvider?.id && setValue('renderingProvider', setRecord(renderingProvider.id, `${renderingProvider.firstName} ${renderingProvider.lastName}`))
         dispatch({ type: ActionType.SET_CLAIM_CREATED, isClaimCreated: !!claim?.id })
-        tableCodesData?.ICD_10_CODE?.length === 0 &&  await fetchIcdCode()
+        tableCodesData?.ICD_10_CODE?.length === 0 && await fetchIcdCode()
       }
     },
     onError: async () => {
@@ -514,7 +514,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
   }, [appointmentId, findAppointmentInsuranceStatus])
 
 
-  const onSubmit: SubmitHandler<CreateBillingProps> = (values) => {
+  const onSubmit: SubmitHandler<CreateBillingProps> = async (values) => {
     if (shouldDisableEdit) {
       history.push(VIEW_APPOINTMENTS_ROUTE)
     } else {
@@ -571,7 +571,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         uncoveredAmount: `${uncoveredAmount}`, from, to, shouldCheckout
       }
 
-      createBilling({
+      await createBilling({
         variables: {
           createBillingInput
         }
