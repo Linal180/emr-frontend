@@ -15,7 +15,7 @@ import {
   PRACTICE_SETTINGS_ITEMS, SERVICES, USERS_MANAGEMENT, USER_MENU_ITEMS, FACILITIES_ROUTE, SETTINGS_TEXT,
   FACILITY_DETAILS_TEXT, FACILITY_DETAILS_DESCRIPTION, PROVIDER_PROFILE_DESCRIPTION, CLINICAL_TEXT,
   DOCTORS_ROUTE, FACILITY_MANAGEMENT, FACILITY_SERVICES_ROUTE, FACILITY_SCHEDULE, FACILITY_SCHEDULE_DESCRIPTION,
-  DOCTOR_PROFILE_TEXT, CLINICAL_ITEMS, MISCELLANEOUS_SETTINGS, FFE_SCHEDULE, CLAIM_STATUSES,
+  DOCTOR_PROFILE_TEXT, CLINICAL_ITEMS, MISCELLANEOUS_SETTINGS, FFE_SCHEDULE, CLAIM_STATUSES, INVENTORY_ITEMS, INVENTORY,
 
 } from "../../../constants";
 import { useSettingStyles } from "../../../styles/settingStyles";
@@ -119,24 +119,6 @@ export const SettingsComponent = () => {
         </CardComponent>
 
         <Box p={2} />
-
-        {/* <CardComponent cardTitle={INVENTORY}>
-          <Box pb={3}>
-            {INVENTORY_ITEMS.map(({ name, link, desc }) => {
-              return (
-                <Box className={classes.settingContainer}>
-                  <Link key={`${link}-${name}`} to={link}>
-                    <MenuItem>{name}</MenuItem>
-                  </Link>
-
-                  <Box pr={2}>-</Box>
-
-                  <Typography variant="body1">{desc}</Typography>
-                </Box>
-              )
-            })}
-          </Box>
-        </CardComponent> */}
 
         {isFacility &&
           <Box pb={2}>
@@ -244,6 +226,26 @@ export const SettingsComponent = () => {
             })}
           </Box>
         </CardComponent>
+
+        <Box mt={2}>
+          <CardComponent cardTitle={INVENTORY}>
+            <Box pb={3}>
+              {INVENTORY_ITEMS.map(({ name, link, desc }) => {
+                return (
+                  <Box className={classes.settingContainer}>
+                    <Link key={`${link}-${name}`} to={link}>
+                      <MenuItem>{name}</MenuItem>
+                    </Link>
+
+                    <Box pr={2}>-</Box>
+
+                    <Typography variant="body1">{desc}</Typography>
+                  </Box>
+                )
+              })}
+            </Box>
+          </CardComponent>
+        </Box>
       </Grid>
     </Grid>
   )

@@ -24,12 +24,11 @@ import {
   PermissionsPayload, PolicyEligibilityWithPatientPayload, Practice, PracticePayload, ReactionsPayload,
   ResponsePayloadResponse, RolesPayload, Schedule, SectionsInputs, ServicesPayload, Staff, SurgicalHistory,
   TriageNotes, TwoFactorInput, UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput,
-  UpdateFacilityTimeZoneInput, User, UsersFormsElements, VerifyCodeInput, Patient, AddVaccineInput
+  UpdateFacilityTimeZoneInput, User, UsersFormsElements, VerifyCodeInput, Patient, AddVaccineInput,
+  CreateIcdCodeInput
 } from "../generated/graphql";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
-import {
-  Action as BillingAction, State as BillingState
-} from "../reducers/billingReducer";
+import { Action as BillingAction, State as BillingState } from "../reducers/billingReducer";
 import { Action as ChartAction } from "../reducers/chartReducer";
 import {
   Action as PublicFormBuilderAction, State as ExternalFormBuilderState
@@ -46,6 +45,7 @@ import { Action as PatientAction, State as PatientState } from "../reducers/pati
 import { Action as PracticeAction } from "../reducers/practiceReducer";
 import { Action as ScheduleAction, State as ScheduleState } from "../reducers/scheduleReducer";
 import { Action as VaccineAction, } from "../reducers/vaccinesReducer";
+import { Action as IcdCodeAction, } from "../reducers/icdTenReducer";
 
 export type Order = 'ASC' | 'DESC';
 type Key = string | number | undefined;
@@ -2200,4 +2200,19 @@ export type VaccinesProps = {
 
 export type VaccinesTableProps = {
   shouldDisableEdit?: boolean
+}
+
+export type IcdCodesTableProps = {
+  
+}
+
+export type ICD10FormType = CreateIcdCodeInput;
+
+export type ICD10FormProps = {
+  open: boolean;
+  isEdit: boolean;
+  fetch?: Function;
+  id?: string;
+  dispatcher?:  Dispatch<IcdCodeAction>
+  handleClose: (open: boolean) => void
 }
