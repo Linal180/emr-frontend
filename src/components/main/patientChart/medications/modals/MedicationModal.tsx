@@ -16,7 +16,7 @@ import Selector from '../../../../common/Selector';
 // constants block
 import { PageBackIcon } from '../../../../../assets/svgs';
 import {
-  ACTIVE, ADD, ADD_MEDICATION, CANCEL, NOTES, ORAL_ROUTE_OPTIONS, PATIENT_MEDICATION_ADD, PATIENT_PROBLEM_UPDATED, SIG, START_DATE, STATUS, STOP_DATE, STOP_REASON, STOP_REASON_OPTIONS, STRUCTURED, TABLET_UNIT_OPTIONS, TAKE, TIME_DURATION_OPTIONS, UPDATE, UPDATE_MEDICATION
+  ACTIVE, ADD, ADD_MEDICATION, CANCEL, NOTES, ORAL_ROUTE_OPTIONS, PATIENT_MEDICATION_ADD, PATIENT_MEDICATION_UPDATED, SIG, START_DATE, STATUS, STOP_DATE, STOP_REASON, STOP_REASON_OPTIONS, STRUCTURED, TABLET_UNIT_OPTIONS, TAKE, TIME_DURATION_OPTIONS, UPDATE, UPDATE_MEDICATION
 } from '../../../../../constants';
 import {
   Medications, ProblemType, useAddPatientMedicationMutation,
@@ -126,7 +126,7 @@ const MedicationModal: FC<AddModalProps> = ({
         if (status && status === 200) {
           fetch()
           closeAddModal()
-          Alert.success(PATIENT_PROBLEM_UPDATED);
+          Alert.success(PATIENT_MEDICATION_UPDATED);
         }
       }
     }
