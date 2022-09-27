@@ -254,11 +254,11 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
       handleTestCreation({ ...values, testFieldValues: newTests, orderNum, accessionNumber: accessionNum })
     }
 
-    let appointmentId = ''
+    let appointmentId: string | undefined = ''
     if (appointmentInfo) {
       appointmentId = appointmentInfo.id
     } else {
-      appointmentId = appointment?.id ?? ''
+      appointmentId = appointment?.id
     }
 
     const { id: testStatus } = labTestStatus ?? {}
@@ -268,7 +268,7 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
 
       const updateLabTestItemInput = {
         patientId: patientId ?? '',
-        ...(appointmentId && { appointmentId }),
+        appointmentId: appointmentId === "" ? null : appointmentId,
         status: testStatus as LabTestStatus,
         testNotes,
         testDate: getFormatDateString(testDate, 'MM-DD-YYYY'),

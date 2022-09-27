@@ -435,13 +435,25 @@ const LabResultsTable: FC = (): JSX.Element => {
                       {(test as any).test3 || N_A}
                     </TableCell>
                     <TableCell scope="row">
-                      {(testObservations as any).result1 || N_A}
+                      <Box maxWidth={120}>
+                        <Typography color="inherit" noWrap>
+                          {(testObservations as any).result1 || N_A}
+                        </Typography>
+                      </Box>
                     </TableCell>
                     <TableCell scope="row">
-                      {(testObservations as any).result2 || N_A}
+                      <Box maxWidth={120}>
+                        <Typography color="inherit" noWrap>
+                          {(testObservations as any).result2 || N_A}
+                        </Typography>
+                      </Box>
                     </TableCell>
                     <TableCell scope="row">
-                      {(testObservations as any).result3 || N_A}
+                      <Box maxWidth={120}>
+                        <Typography color="inherit" noWrap>
+                          {(testObservations as any).result3 || N_A}
+                        </Typography>
+                      </Box>
                     </TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center">

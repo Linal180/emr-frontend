@@ -36,7 +36,7 @@ import {
   NO_SPACE_AT_BOTH_ENDS_REGEX, NO_SPECIAL_CHAR_ERROR_MESSAGE, NO_SPECIAL_CHAR_REGEX, NO_NUMBER_ERROR_MESSAGE,
   INVALID_DEA_DATE_ERROR_MESSAGE, INVALID_EXPIRATION_DATE_ERROR_MESSAGE, SUFFIX_REGEX, MESSAGE, PATIENT_PAYMENT_TYPE,
   FEE_SCHEDULE, INVALID_BILL_FEE_MESSAGE, INVALID_UNIT_MESSAGE, BILLED_AMOUNT, UNIT, INVALID_AMOUNT_MESSAGE,
-  PAYMENT_TYPE, APPOINTMENT_PAYMENT_TYPE, LAST_FOUR_DIGIT, PROBLEM_TEXT, FAMILY_RELATIVE, RELATIVE, MANUFACTURER_TEXT, NDC_TEXT, ROUTE, SITE_TEXT, UNITS, ADMINISTRATION_DATE, CODE,
+  PAYMENT_TYPE, APPOINTMENT_PAYMENT_TYPE, LAST_FOUR_DIGIT, PROBLEM_TEXT, FAMILY_RELATIVE, RELATIVE, MANUFACTURER_TEXT, NDC_TEXT, ROUTE, SITE_TEXT, UNITS, ADMINISTRATION_DATE, CODE, UPFRONT_PAYMENT_TYPES,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -1103,6 +1103,27 @@ export const createBillingSchema = yup.object({
   [ITEM_MODULE.cptFeeSchedule]: yup.array().of(
     tableSelectorSchema(ITEM_MODULE.cptCode, true)
   ).test('', requiredMessage(ITEM_MODULE.cptCode), (value: any) => !!value && value.length > 0),
+})
+
+export const createUpFrontPaymentSchema = yup.object({
+  [UPFRONT_PAYMENT_TYPES.Additional]: yup.array().of(
+    yup.object().shape({
+      type: selectorSchema('Type', true),
+      amount: yup.number().positive(INVALID_BILL_FEE_MESSAGE).min(1, INVALID_BILL_FEE_MESSAGE).typeError(requiredMessage(BILLED_AMOUNT)).required(requiredMessage(BILLED_AMOUNT)),
+    })
+  ).test('', requiredMessage('Additional'), (value: any) => !!value && value.length > 0),
+  [UPFRONT_PAYMENT_TYPES.Copay]: yup.array().of(
+    yup.object().shape({
+      type: selectorSchema('Type', true),
+      amount: yup.number().positive(INVALID_BILL_FEE_MESSAGE).min(1, INVALID_BILL_FEE_MESSAGE).typeError(requiredMessage(BILLED_AMOUNT)).required(requiredMessage(BILLED_AMOUNT)),
+    })
+  ).test('', requiredMessage('Copay'), (value: any) => !!value && value.length > 0),
+  [UPFRONT_PAYMENT_TYPES.Previous]: yup.array().of(
+    yup.object().shape({
+      type: selectorSchema('Type', false),
+      amount: yup.number().positive(INVALID_BILL_FEE_MESSAGE).min(0, INVALID_BILL_FEE_MESSAGE).typeError(requiredMessage(BILLED_AMOUNT)).required(requiredMessage(BILLED_AMOUNT)),
+    })
+  ).test('', requiredMessage('.Previous'), (value: any) => !!value && value.length > 0),
 })
 
 export const addDocumentSchema = yup.object({

@@ -92,7 +92,7 @@ const LabOrdersResultAttachment: FC<GeneralFormProps> = (): JSX.Element => {
 
     onError({ message }) {
       message !== NOT_FOUND_EXCEPTION && Alert.error(message)
-      history.push(`/patients/${patientId}/details/10`)
+      history.push(`/patients/${patientId}/details/1`)
     },
 
     async onCompleted(data) {

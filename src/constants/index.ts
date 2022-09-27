@@ -18,7 +18,7 @@ import {
 import {
   ColumnTypes, FormBuilderFormInitial,
   FormInitialType, ItemsTypes, LabOrdersResultOption1, LabOrdersResultOption2, SelectOptions, SelectorOption,
-  SpecimenTypeOption, StepLabelType, TestOption
+  SpecimenTypeOption, StepLabelType, TestOption, UpFrontPaymentTypeProps
 } from "../interfacesTypes";
 import {
   formatValue, getFormattedDate, getStandardTime, mapEnum, mapEnumWithCode, setRecord, sortingValue
@@ -1221,9 +1221,13 @@ export const PRIVACY = "Privacy";
 export const RECEIVED = "Received";
 export const INSURANCE_SELECTION = "Insurance Selection";
 export const NO_INSURANCE_ADDED = "No Insurance Added";
+export const AMOUNT_TYPE = "Amount Type";
+export const CHARGE_ENTRY = "Charge Entry";
 export const PAYMENT = "Payment";
 export const GROUP_NO = "Group #";
 export const ROLES_TEXT = "Roles";
+export const ADDITIONAL = "Additional";
+export const PREVIOUS = "Previous";
 export const IS_ACTIVE = "Active";
 export const TOTAL_TEXT = "Total";
 export const TWO_FA_TEXT = "2-FA";
@@ -1262,7 +1266,10 @@ export const CASH_PAID = "Cash Paid";
 export const TIME_SLOT = "Time Slot";
 export const HOMEBOUND = "Home Bound";
 export const PROFILE_TEXT = "Profile";
-export const TOTAL_CHARGES = "Total Charges:";
+export const EXPECTED = "Expected";
+export const ADJUSTMENTS = "Adjustments";
+export const BALANCE = "Balance";
+export const TOTAL_CHARGES = "Total Charges :";
 export const TOTAL_DISCOUNTS = "Total Discounts:";
 export const PATIENT_PAID = "Patient Paid:";
 export const INSURANCE_PAID = "Insurance Paid:";
@@ -1888,6 +1895,8 @@ export const EMERGENCY_ACCESS_UPDATE = "Emergency Access updated successfully";
 export const PATIENT_ALLERGY_UPDATED = "Patient allergy updated successfully!";
 export const OTP_NOT_FOUND_EXCEPTION_MESSAGE = "Precondition Failed Exception";
 export const PATIENT_PROBLEM_UPDATED = "Patient problem updated successfully!";
+export const PATIENT_MEDICATION_UPDATED = "Patient medication updated successfully!";
+export const PATIENT_SURGICAL_HISTORY_UPDATED = "Patient surgical history updated successfully!";
 export const RESET_PASSWORD_MESSAGE = "Please enter your new secure password.";
 export const PATIENT_ALLERGY_DELETED = "Patient allergy deleted successfully!";
 export const PATIENT_PROBLEM_DELETED = "Patient problem deleted successfully!";
@@ -1937,6 +1946,8 @@ export const LOGGED_OUT_BEFORE_RESETTING_PASSWORD =
   "Please log out before resetting password";
 export const FORGET_PASSWORD_SUCCESS =
   "An email has been sent to your registered email address";
+export const UPFRONT_PAYMENT_SUCCESS =
+  "UpFront Payment Saved Successfully";
 export const APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY =
   "Appointment status is updated successfully";
 export const APPOINTMENT_REMINDER_SENT_SUCCESSFULLY =
@@ -2643,6 +2654,12 @@ export enum CARD_LAYOUT_MODAL {
   ICDCodes = 'ICDCodes',
 }
 
+export enum UPFRONT_PAYMENT_TYPES {
+  Copay = 'Copay',
+  Additional = 'Additional',
+  Previous = 'Previous'
+}
+
 export enum ATTACHMENT_TITLES {
   Signature = "Signature",
   Agreement = "Agreement",
@@ -3092,6 +3109,13 @@ export const TEST_FIELD_INITIAL_VALUES: TestOption = {
   diagnosesIds: [EMPTY_MULTISELECT_OPTION]
 };
 
+export const UPFRONT_INITIAL_VALUES: UpFrontPaymentTypeProps = {
+  amount: 0,
+  type: { id: '', name: '' },
+  notes: '',
+  paymentType: UPFRONT_PAYMENT_TYPES.Copay
+};
+
 export const ORDERS_RESULT_INITIAL_VALUES_1: LabOrdersResultOption1 = {
   normalRange: '',
   normalRangeUnits: '',
@@ -3103,6 +3127,16 @@ export const ORDERS_RESULT_INITIAL_VALUES_1: LabOrdersResultOption1 = {
 export const ORDERS_RESULT_INITIAL_VALUES_2: LabOrdersResultOption2 = {
   resultValue: { id: '', name: '' },
 };
+
+export const UPFRONT_TYPE_OPTIONS: SelectorOption[] = [
+  { id: 'Cash', name: 'Cash' },
+  { id: 'Check', name: 'Check' },
+  { id: 'American Express', name: 'American Express' },
+  { id: 'Mastercard', name: 'Mastercard' },
+  { id: 'Visa', name: 'Visa' },
+  { id: 'Discover', name: 'Discover' },
+  { id: 'Other', name: 'Other' },
+];
 
 export const CHECK_IN_STEPS = [
   CHECK_IN,
