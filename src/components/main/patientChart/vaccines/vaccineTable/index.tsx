@@ -9,17 +9,17 @@ import TableLoader from '../../../../common/TableLoader';
 import ConfirmationModal from '../../../../common/ConfirmationModal';
 import NoDataFoundComponent from '../../../../common/NoDataFoundComponent';
 //styles, constants, 
-import { formatValue, getPageNumber, isLast, renderTh } from '../../../../../utils';
-import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from '../../../../../assets/svgs';
 import { useTableStyles } from '../../../../../styles/tableStyles';
 import { useChartingStyles } from '../../../../../styles/chartingStyles';
 import { ParamsType, VaccinesTableProps } from '../../../../../interfacesTypes';
-import { Cvx, FindAllVaccinesPayload, useFindAllVaccinesLazyQuery, useRemoveVaccineMutation } from '../../../../../generated/graphql';
+import { formatValue, getPageNumber, isLast, renderTh } from '../../../../../utils';
+import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from '../../../../../assets/svgs';
 import { vaccinesReducer, Action, ActionType, State, initialState } from '../../../../../reducers/vaccinesReducer';
+import { Cvx, FindAllVaccinesPayload, useFindAllVaccinesLazyQuery, useRemoveVaccineMutation } from '../../../../../generated/graphql';
 import {
-  ACTIONS, ADD_NEW_TEXT, ADMINISTER_BY, ADMINISTRATION_DATE, AMOUNT_UNIT_TEXT, DASHES, DATE_ON_VIS, DELETE_VACCINE_DESCRIPTION,
-  EIGHT_PAGE_LIMIT, EXPIRY_DATE, LOT_NO_TEXT, MANUFACTURER_TEXT, NAME, NDC_TEXT, PAGE_LIMIT, ROUTE, SITE_TEXT,
-  VACCINE_TEXT, VIS_GIVEN_TEXT
+  ACTIONS, ADD_NEW_TEXT, ADMINISTER_BY, ADMINISTRATION_DATE, AMOUNT_UNIT_TEXT, DASHES,
+  DELETE_VACCINE_DESCRIPTION, EIGHT_PAGE_LIMIT, EXPIRY_DATE, NAME, PAGE_LIMIT, ROUTE,
+  SITE_TEXT, VACCINE_TEXT
 } from '../../../../../constants'
 import Alert from '../../../../common/Alert';
 
@@ -153,12 +153,12 @@ const VaccinesTable: FC<VaccinesTableProps> = (props): JSX.Element => {
                       {renderTh(AMOUNT_UNIT_TEXT)}
                       {renderTh(ROUTE)}
                       {renderTh(SITE_TEXT)}
-                      {renderTh(NDC_TEXT)}
-                      {renderTh(MANUFACTURER_TEXT)}
+                      {/* {renderTh(NDC_TEXT)} */}
                       {renderTh(EXPIRY_DATE)}
+                      {/* {renderTh(MANUFACTURER_TEXT)}
                       {renderTh(VIS_GIVEN_TEXT)}
                       {renderTh(DATE_ON_VIS)}
-                      {renderTh(LOT_NO_TEXT)}
+                      {renderTh(LOT_NO_TEXT)} */}
                       {!shouldDisableEdit && renderTh(ACTIONS)}
                     </TableRow>
                   </TableHead>
@@ -171,11 +171,10 @@ const VaccinesTable: FC<VaccinesTableProps> = (props): JSX.Element => {
                     </TableRow>
                   ) : <TableBody>
                     {data?.map((vaccine) => {
-                      const { id, cvxId, administrationDate, amount, units, route, site, ndcId, mvxId,
-                        expiryDate, visGiven, visDate, lotNo, cvx, ndc, mvx, administerBy } = vaccine ?? {}
+                      const { id, cvxId, administrationDate, amount, units, route, site,
+                        expiryDate, cvx, administerBy } = vaccine ?? {}
                       const { name } = cvx || {}
-                      const { ndcCode } = ndc || {}
-                      const { mvxCode } = mvx || {}
+                      // const { ndcCode } = ndc || {}
                       return (
                         <TableRow>
                           <TableCell scope="row">
@@ -204,19 +203,19 @@ const VaccinesTable: FC<VaccinesTableProps> = (props): JSX.Element => {
                             <Typography>{site ? formatValue(site) : DASHES}</Typography>
                           </TableCell>
 
-                          <TableCell scope="row">
+                          {/* <TableCell scope="row">
                             <Typography>{ndcId ? ndcCode ?? DASHES : DASHES}</Typography>
-                          </TableCell>
+                          </TableCell> */}
 
-                          <TableCell scope="row">
+                          {/* <TableCell scope="row">
                             <Typography>{mvxId ? mvxCode ?? DASHES : DASHES}</Typography>
-                          </TableCell>
+                          </TableCell> */}
 
                           <TableCell scope="row">
                             <Typography>{expiryDate ?? DASHES}</Typography>
                           </TableCell>
 
-                          <TableCell scope="row">
+                          {/* <TableCell scope="row">
                             <Typography>{visGiven ?? DASHES}</Typography>
                           </TableCell>
 
@@ -224,9 +223,9 @@ const VaccinesTable: FC<VaccinesTableProps> = (props): JSX.Element => {
                             <Typography>{visDate ?? DASHES}</Typography>
                           </TableCell>
 
-                          <TableCell scope="row">
+                           <TableCell scope="row">
                             <Typography>{lotNo ?? DASHES}</Typography>
-                          </TableCell>
+                          </TableCell> */}
 
                           {
                             !shouldDisableEdit && <TableCell scope="row">
