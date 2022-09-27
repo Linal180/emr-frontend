@@ -3,9 +3,9 @@ import { AddCircleOutline } from '@material-ui/icons';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FC, Fragment, Reducer, useCallback, useEffect, useReducer } from "react";
 import { FormProvider, useForm, useFieldArray, SubmitHandler } from "react-hook-form";
-import { 
-  Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid, 
-  IconButton, InputBase, Typography 
+import {
+  Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid,
+  IconButton, InputBase, Typography
 } from "@material-ui/core";
 //components
 import Alert from '../../../../../common/Alert';
@@ -19,9 +19,8 @@ import {
 import { FamilyHistorySchema } from '../../../../../../validationSchemas';
 import { NoDataIcon, PageBackIcon, SearchIcon, TrashOutlinedIcon } from "../../../../../../assets/svgs";
 import {
-  IcdCodesPayload,
-  IcdCodesWithSnowMedCode,
-  useCreateFamilyHistoryMutation, useGetFamilyHistoryLazyQuery, useSearchIcdCodesLazyQuery, useUpdateFamilyHistoryMutation
+  IcdCodesPayload, IcdCodesWithSnowMedCode, useCreateFamilyHistoryMutation, useGetFamilyHistoryLazyQuery,
+  useSearchIcdCodesLazyQuery, useUpdateFamilyHistoryMutation
 } from '../../../../../../generated/graphql';
 import {
   FamilyHistoryFormProps, FamilyHistoryFormType, ParamsType, SideDrawerCloseReason
@@ -30,8 +29,8 @@ import {
   familyHistoryFormReducer, Action, ActionType, State, initialState
 } from "../../../../../../reducers/familyHistoryFormReducer";
 import { setRecord } from '../../../../../../utils';
-import { useChartingStyles } from '../../../../../../styles/chartingStyles';
 import { BLUE, GREY_SEVEN } from '../../../../../../theme';
+import { useChartingStyles } from '../../../../../../styles/chartingStyles';
 
 const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({
   handleClose, isOpen, isEdit, id: familyHistoryId, fetchFamilyHistory: fetchFamilyHistories
@@ -50,9 +49,9 @@ const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({
 
   const { problem: stateProblem, searchQuery, searchedData } = state || {}
   const { watch, control, setValue, handleSubmit, reset } = methods;
-  const { problem } = watch();
+  const { problem, familyRelative: fields } = watch();
   const { id: problemId, name } = problem || {}
-  const { fields, append, remove } = useFieldArray({ control, name: "familyRelative" });
+  const { append, remove } = useFieldArray({ control, name: "familyRelative" });
 
   const [searchIcdCodes, { loading: searchIcdCodesLoading }] = useSearchIcdCodesLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -135,7 +134,6 @@ const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({
 
       if (status === 200) {
         const { familyHistoryRelatives, name, icdCodeId } = familyHistory || {}
-        name && icdCodeId && setValue('problem', setRecord(icdCodeId, name, false));
         icdCodeId && dispatch({ type: ActionType.SET_PROBLEM, problem: icdCodeId })
 
         if (familyHistoryRelatives?.length) {
@@ -153,7 +151,8 @@ const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({
             }
           })
 
-          newArray && setValue('familyRelative', newArray)
+          name && icdCodeId && setValue('problem', setRecord(icdCodeId, name, false));
+          newArray?.length && setValue('familyRelative', newArray)
         }
       }
     },
@@ -189,13 +188,15 @@ const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({
   const onSubmit: SubmitHandler<FamilyHistoryFormType> = async (values) => {
     const { familyRelative, problem } = values;
     const { id: icdCodeId, name: problemName } = problem;
-    const familyHistoryRelatives = familyRelative?.map((item) => {
-      const { relative, ...rest } = item;
-      const { id: relativeName } = relative || {}
-      return { relativeName, ...rest }
-    })
+
     try {
+
       if (isEdit && familyHistoryId) {
+        const familyHistoryRelatives = familyRelative?.map((item) => {
+          const { relative, ...rest } = item;
+          const { id: relativeName } = relative || {}
+          return { relativeName, ...rest }
+        })
         await updateFamilyHistory({
           variables: {
             updateFamilyHistoryInput: {
@@ -209,6 +210,11 @@ const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({
         })
       }
       else {
+        const familyHistoryRelatives = familyRelative?.map((item) => {
+          const { id, relative, ...rest } = item;
+          const { id: relativeName } = relative || {}
+          return { relativeName, ...rest }
+        })
         await createFamilyHistory({
           variables: {
             createFamilyHistoryInput: {
@@ -282,7 +288,7 @@ const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({
                     <Typography variant='body1'>{description}</Typography>
 
                     <Typography variant='caption'>
-                      {description}
+                      {`${code} | ${description}`}
                     </Typography>
                   </Box>
 
@@ -315,7 +321,7 @@ const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({
           <Box display="flex" alignItems="center" justifyContent="space-between">
             <Box display="flex" alignItems="center" >
               <Button size='small' onClick={backHandler}
-                disabled={loading}
+                disabled={loading || isEdit }
               >
                 <PageBackIcon />
               </Button>
@@ -360,7 +366,7 @@ const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({
                 </Grid>
                   : <Fragment>
                     <Grid item xs={12}>
-                      {fields?.map((option, index) => {
+                      {fields?.length > 0 && fields?.map((option, index) => {
                         const { id } = option || {}
                         return (
                           <Grid key={`${index}-${id}`} container>

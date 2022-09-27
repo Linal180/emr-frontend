@@ -1,7 +1,7 @@
 import { FC, useCallback, useEffect, useState } from 'react'
 import { Box, Button, Card, Collapse, colors, Typography } from '@material-ui/core'
 //interfaces, constants, utils, styles, graphql
-import { renderLoading } from '../../../../utils';
+import { getAppointmentDateWithDay, renderLoading } from '../../../../utils';
 import { LatestVitalCardProps } from '../../../../interfacesTypes'
 import { useProfileDetailsStyles } from '../../../../styles/profileDetails'
 import { LESS_INFO, MORE_INFO, PATIENT_VITAL_TEXT, VITAL_LABELS } from '../../../../constants'
@@ -11,11 +11,11 @@ const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId }): JSX.Element =
 
   const classes = useProfileDetailsStyles();
   const [vital, setVital] = useState<PatientVitalPayload['patientVital']>();
-  const [openMoreInfo, setOpenMoreInfo] = useState<boolean>(false);
+  const [openMoreInfo, setOpenMoreInfo] = useState<boolean>(true);
 
   const {
     systolicBloodPressure, diastolicBloodPressure, oxygenSaturation, patientTemperature, pulseRate, respiratoryRate,
-    PainRange
+    PainRange, vitalCreationDate
   } = vital || {}
 
   const [getLatestPatientVital, { loading }] = useGetPatientLatestVitalLazyQuery({
@@ -24,11 +24,18 @@ const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId }): JSX.Element =
       const { patientVital, response } = getPatientLatestVital || {}
       const { status } = response || {};
       if (status === 200) {
-        setVital(patientVital)
+        const { vitalCreationDate: updateDate, ...rest } = patientVital || {}
+        if (updateDate) {
+          const newDate = getAppointmentDateWithDay(updateDate, undefined, 'MM-DD-YYYY');
+          const vitals = { ...rest, vitalCreationDate: newDate }
+          setVital(vitals as PatientVitalPayload['patientVital'])
+        }
+        else {
+          setVital(patientVital)
+        }
       }
     },
-    onError: () => {
-    }
+    onError: () => { }
   })
 
   const fetchLatestVital = useCallback(async () => {
@@ -41,10 +48,14 @@ const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId }): JSX.Element =
     patientId && fetchLatestVital()
   }, [patientId, fetchLatestVital])
 
+
   return (
     <Card>
       <Box p={2} display='flex' justifyContent='space-between' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`}>
-        <Typography variant="h4">{PATIENT_VITAL_TEXT}</Typography>
+        <Box>
+          <Typography variant="h4">{PATIENT_VITAL_TEXT}</Typography>
+          <Typography>{vitalCreationDate || '---'}</Typography>
+        </Box>
 
         <Box p={1} />
 

@@ -15,7 +15,7 @@ const EditLabOrdersComponent: FC = (): JSX.Element => {
   return (
     <>
       <Box display="flex">
-        <BackButton to={`/patients/${patientId}/details/10`} />
+        <BackButton to={`/patients/${patientId}/details/1`} />
 
         <Box ml={2}>
           <PageHeader

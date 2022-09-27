@@ -15,7 +15,7 @@ import SurgicalHistoryModal from "../../surgicalHistory/modals/SurgicalHistoryMo
 // constants, utils, interfaces ang graphql block
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from "../../../../../assets/svgs";
 import {
-  ACTIONS, ADD_NEW_TEXT, DASHES, DELETE_SURGICAL_HISTORY_DESCRIPTION, EIGHT_PAGE_LIMIT, NOTES, PATIENT_PROBLEM_DELETED, PROCEDURE_TEXT, SURGERY_DATE, SURGICAL_HISTORY_TEXT
+  ACTIONS, ADD_NEW_TEXT, DASHES, DELETE_SURGICAL_HISTORY_DESCRIPTION, EIGHT_PAGE_LIMIT, NOTES, PATIENT_SURGICAL_HISTORY_DELETE, PROCEDURE_TEXT, SURGERY_DATE, SURGICAL_HISTORY_TEXT
 } from "../../../../../constants";
 import { SurgicalHistoriesPayload, useFindAllSurgicalHistoryLazyQuery, useRemoveSurgicalHistoryMutation } from "../../../../../generated/graphql";
 import { ChartComponentProps, ParamsType, SurgicalCode } from "../../../../../interfacesTypes";
@@ -109,7 +109,7 @@ const SurgicalHistoryTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
         const { status } = response
 
         if (status && status === 200) {
-          Alert.success(PATIENT_PROBLEM_DELETED);
+          Alert.success(PATIENT_SURGICAL_HISTORY_DELETE);
           dispatch({ type: ActionType.SET_SURGICAL_HISTORY_DELETE_ID, surgicalHistoryDeleteId: '' })
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 

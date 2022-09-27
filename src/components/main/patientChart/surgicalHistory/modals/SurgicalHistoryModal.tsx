@@ -13,7 +13,7 @@ import DatePicker from '../../../../common/DatePicker';
 import TextLoader from '../../../../common/TextLoader';
 // constants block
 import { PageBackIcon } from '../../../../../assets/svgs';
-import { ADD, ADD_SURGICAL_HISTORY, CANCEL, NOTES, PATIENT_PROBLEM_ADDED, PATIENT_PROBLEM_UPDATED, SURGERY_DATE, UPDATE, UPDATE_SURGICAL_HISTORY } from '../../../../../constants';
+import { ADD, ADD_SURGICAL_HISTORY, CANCEL, NOTES, PATIENT_SURGICAL_HISTORY_ADD, PATIENT_SURGICAL_HISTORY_UPDATED, SURGERY_DATE, UPDATE, UPDATE_SURGICAL_HISTORY } from '../../../../../constants';
 import {
   CreateSurgicalHistoryInput, useAddSurgicalHistoryMutation,
   useGetSurgicalHistoryLazyQuery, useUpdateSurgicalHistoryMutation
@@ -86,7 +86,7 @@ const SurgicalHistoryModal: FC<AddModalProps> = ({
         if (status && status === 200) {
           fetch()
           closeAddModal()
-          Alert.success(PATIENT_PROBLEM_ADDED);
+          Alert.success(PATIENT_SURGICAL_HISTORY_ADD);
         }
       }
     }
@@ -106,7 +106,7 @@ const SurgicalHistoryModal: FC<AddModalProps> = ({
         if (status && status === 200) {
           fetch()
           closeAddModal()
-          Alert.success(PATIENT_PROBLEM_UPDATED);
+          Alert.success(PATIENT_SURGICAL_HISTORY_UPDATED);
         }
       }
     }

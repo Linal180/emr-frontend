@@ -1,22 +1,30 @@
 // packages block
-import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
+import { RouteProps } from "react-router-dom";
+import { AutocompleteRenderInputParams } from "@material-ui/lab";
+import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
 import { GridSize, PropTypes as MuiPropsTypes } from "@material-ui/core";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
+import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
 import { ChangeEventHandler, ComponentType, Dispatch, ElementType, ReactNode } from "react";
 import {
   Control, ControllerFieldState, ControllerRenderProps, FieldValues, UseFormReturn,
   ValidationRule
 } from "react-hook-form";
-import { RouteProps } from "react-router-dom";
-import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
 // constants, reducers, graphql block
-import { AutocompleteRenderInputParams } from "@material-ui/lab";
 import { ATTACHMENT_TITLES, CONFIRMATION_MODAL_TYPE, ITEM_MODULE } from "../constants";
 import {
-  AllDoctorPayload, Allergies, AppointmentsPayload, AppointmentStatus, Attachment, AttachmentPayload, AttachmentType, BillingPayload, CodeType, CreateAppointmentInput,
-  CreateContactInput, CreateCptFeeScheduleInput, CreateDoctorItemInput, CreateExternalAppointmentItemInput, CreateFeeScheduleInput, CreatePatientAllergyInput, CreatePatientItemInput, CreatePatientMedicationInput, CreatePracticeItemInput, CreateProblemInput,
-  CreateScheduleInput, CreateServiceInput, CreateStaffItemInput, Doctor, DoctorPatient,
-  FacilitiesPayload, FamilyHistory, FetchBillingClaimStatusesInput, FieldsInputs, FormElement, FormTabsInputs, IcdCodes, IcdCodesWithSnowMedCode, LabTests, LabTestsPayload, LoginUserInput, Medications, Patient, PatientAllergies, PatientMedication, PatientPayload, PatientProblems, PatientProviderPayload, PatientsPayload, PatientVitals, PermissionsPayload, PolicyEligibilityWithPatientPayload, Practice, PracticePayload, ReactionsPayload, ResponsePayloadResponse, RolesPayload, Schedule, SectionsInputs, ServicesPayload, Staff, SurgicalHistory, TriageNotes, TwoFactorInput, UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, User, UsersFormsElements, VerifyCodeInput
+  AllDoctorPayload, Allergies, AppointmentsPayload, AppointmentStatus, Attachment, AttachmentPayload,
+  AttachmentType, BillingPayload, CodeType, CreateAppointmentInput, CreateContactInput,
+  CreateCptFeeScheduleInput, CreateDoctorItemInput, CreateExternalAppointmentItemInput, CreateFeeScheduleInput,
+  CreatePatientAllergyInput, CreatePatientItemInput, CreatePatientMedicationInput, CreatePracticeItemInput,
+  CreateProblemInput, CreateScheduleInput, CreateServiceInput, CreateStaffItemInput, Cvx, Doctor, DoctorPatient,
+  FacilitiesPayload, FamilyHistory, FetchBillingClaimStatusesInput, FieldsInputs, FormElement, FormTabsInputs,
+  IcdCodes, IcdCodesWithSnowMedCode, LabTests, LabTestsPayload, LoginUserInput, Medications, PatientAllergies,
+  PatientMedication, PatientPayload, PatientProblems, PatientProviderPayload, PatientsPayload, PatientVitals,
+  PermissionsPayload, PolicyEligibilityWithPatientPayload, Practice, PracticePayload, ReactionsPayload,
+  ResponsePayloadResponse, RolesPayload, Schedule, SectionsInputs, ServicesPayload, Staff, SurgicalHistory,
+  TriageNotes, TwoFactorInput, UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput,
+  UpdateFacilityTimeZoneInput, User, UsersFormsElements, VerifyCodeInput, Patient, AddVaccineInput
 } from "../generated/graphql";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
 import {
@@ -37,6 +45,7 @@ import { Action, State as MediaState } from "../reducers/mediaReducer";
 import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
 import { Action as PracticeAction } from "../reducers/practiceReducer";
 import { Action as ScheduleAction, State as ScheduleState } from "../reducers/scheduleReducer";
+import { Action as VaccineAction, } from "../reducers/vaccinesReducer";
 
 export type Order = 'ASC' | 'DESC';
 type Key = string | number | undefined;
@@ -389,6 +398,19 @@ export interface FacilitySelectorProps extends SelectorProps {
   patientId?: string;
   filteredOptions?: SelectorOption[]
   placeHolder?: string
+}
+
+
+export interface NdcSelectorProps extends SelectorProps {
+  filteredOptions?: SelectorOption[]
+  placeHolder?: string;
+  mvxCodeId: string
+}
+
+export interface MvxSelectorProps extends SelectorProps {
+  filteredOptions?: SelectorOption[]
+  placeHolder?: string;
+  cvxCodeId: string
 }
 
 export interface PracticeSelectorProps extends SelectorProps {
@@ -842,6 +864,12 @@ export interface InsuranceCardsProps {
 }
 
 export interface AddAllergyModalProps extends GeneralFormProps {
+  isOpen?: boolean
+  handleModalClose: () => void
+  fetch?: () => void
+}
+
+export type AddVaccineProps = GeneralFormProps & {
   isOpen?: boolean
   handleModalClose: () => void
   fetch?: () => void
@@ -1526,11 +1554,24 @@ export interface AddModalProps {
   isOpen?: boolean;
   isEdit?: boolean;
   recordId?: string;
-  item?: Allergies | Medications | IcdCodesWithSnowMedCode | IcdCodes | SurgicalCode;
+  item?: Allergies | Medications | IcdCodesWithSnowMedCode | IcdCodes | SurgicalCode | Cvx;
   dispatcher: Dispatch<ChartAction>;
   fetch: () => void;
   handleClose?: () => void
 }
+
+export type VaccineModalProps = {
+  newAllergy?: string;
+  allergyType?: string;
+  isOpen?: boolean;
+  isEdit?: boolean;
+  recordId?: string;
+  item?: Cvx;
+  dispatcher: Dispatch<VaccineAction>;
+  fetch: () => void;
+  handleClose?: () => void
+}
+
 
 export type CreatePatientAllergyProps = Pick<CreatePatientAllergyInput, | 'comments' | 'allergyStartDate' | 'isActive'>
 
@@ -1540,6 +1581,14 @@ export type PatientProblemInputs = Pick<CreateProblemInput, | 'note' | 'problemS
 export type PatientMedicationInputs = Pick<CreatePatientMedicationInput, "status" | "sig" | "note" | "startDate" | "stopDate" | "takeAmount" | "noOfDays">
   & { stopReason: SelectorOption } & { tabletUnit: SelectorOption } & { timeDuration: SelectorOption }
   & { structured: boolean } & { oralRoute: SelectorOption };
+
+export type PatientVaccineFormType = Pick<
+  AddVaccineInput,
+  'administerBy' | 'administrationDate' | 'amount' | 'expiryDate' | 'lotNo' | "visDate" | 'visGiven'>
+  & {
+    mvx: SelectorOption, ndc: SelectorOption, route: SelectorOption, site: SelectorOption,
+    units: SelectorOption
+  }
 
 export interface CreateTemplateTypes extends DialogTypes {
   title?: string;
@@ -2012,6 +2061,7 @@ export type AuditLogsInputs = {
 };
 
 export type CreateFeeSchedule = Omit<CreateFeeScheduleInput, 'practiceId'> & { practiceId: SelectorOption }
+
 export type CreateCptFeeSchedule = Omit<CreateCptFeeScheduleInput, 'code' | 'modifier'>
   & { code: CptCodeSelectorOption, modifier: SelectorOption }
 
@@ -2092,6 +2142,7 @@ export type FamilyHistoryFormProps = {
 }
 
 type FamilyRelativeArrayFields = {
+  id: string
   relative: SelectorOption
   onsetAge: string;
   died: string;
@@ -2108,6 +2159,14 @@ export type SocialHistoryProps = {
 }
 
 
-export type LatestVitalCardProps  = {
+export type LatestVitalCardProps = {
   patientId: string
+}
+
+export type VaccinesProps = {
+  shouldDisableEdit?: boolean
+}
+
+export type VaccinesTableProps = {
+  shouldDisableEdit?: boolean
 }

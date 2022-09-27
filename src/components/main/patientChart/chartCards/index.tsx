@@ -2,9 +2,10 @@
 import { useParams } from "react-router";
 import { ChevronRight, PrintOutlined } from "@material-ui/icons";
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
-import { Box, Button, Card, colors, Grid, Tab, Typography, } from "@material-ui/core";
+import { Box, Button, Card, colors, Grid, Tab, Typography } from "@material-ui/core";
 import { ChangeEvent, FC, ReactElement, Reducer, useContext, useReducer, useState } from 'react';
 // components block
+import Vaccines from '../vaccines';
 import Alert from "../../../common/Alert";
 import HistoryTab from './tabs/HistoryTab';
 import VitalTab from './tabs/VitalListing';
@@ -20,17 +21,18 @@ import ConfirmationModal from "../../../common/ConfirmationModal";
 import ChartSelectionModal from './ChartModal/ChartSelectionModal';
 // interfaces, graphql, constants block /styles
 import { DischargeIcon } from "../../../../assets/svgs";
-import { isAdmin, isOnlyDoctor } from "../../../../utils";
-import { BLUE, GRAY_SIMPLE, WHITE } from '../../../../theme';
-import { useChartingStyles } from "../../../../styles/chartingStyles";
-import { AuthContext, ChartContextProvider } from '../../../../context';
-import { ChartComponentProps, ParamsType } from "../../../../interfacesTypes";
-import { AppointmentStatus, useUpdateAppointmentStatusMutation } from "../../../../generated/graphql";
-import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
 import {
-  DISCHARGE_PATIENT_DESCRIPTION, DISCHARGE, PATIENT_CHARTING_TABS, PATIENT_DISCHARGED, PATIENT_DISCHARGED_SUCCESS,
-  PRINT_CHART, CONFIRMATION_MODAL_TYPE, CHART_TEXT, TO_LAB_ORDERS
+  CHART_TEXT, CONFIRMATION_MODAL_TYPE, DISCHARGE, DISCHARGE_PATIENT_DESCRIPTION, PATIENT_CHARTING_TABS, PATIENT_DISCHARGED, PATIENT_DISCHARGED_SUCCESS,
+  PRINT_CHART,
+  TO_BILLING
 } from "../../../../constants";
+import { AuthContext, ChartContextProvider } from '../../../../context';
+import { AppointmentStatus, useUpdateAppointmentStatusMutation } from "../../../../generated/graphql";
+import { ChartComponentProps, ParamsType } from "../../../../interfacesTypes";
+import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
+import { useChartingStyles } from "../../../../styles/chartingStyles";
+import { BLUE, GRAY_SIMPLE, WHITE } from '../../../../theme';
+import { isAdmin, isOnlyDoctor } from "../../../../utils";
 
 const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appointmentInfo, fetchAppointment, labOrderHandler }): JSX.Element => {
   const classes = useChartingStyles()
@@ -119,7 +121,7 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
               <Button variant="contained" color="primary" onClick={() => {
                 labOrderHandler && labOrderHandler()
               }}>
-                {TO_LAB_ORDERS}
+                {TO_BILLING}
                 <ChevronRight />
               </Button>
             </Box>}
@@ -129,7 +131,7 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
         <Box mt={3}>
           <TabContext value={tabValue}>
             <Grid container spacing={2}>
-              <Grid item lg={2} md={3} sm={12} xs={12}>
+              <Grid item lg={2} md={12} sm={12} xs={12}>
                 <Card>
                   <Box px={3} py={1} className={classes.cardBox}>
                     <TabList className={classes.tabList}
@@ -170,7 +172,7 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
                 </Card>
               </Grid>
 
-              <Grid item lg={10} md={9} sm={12} xs={12}>
+              <Grid item lg={10} md={12} sm={12} xs={12}>
                 <Box className={classes.tabPanelPadding}>
                   <Box pt={0} borderRadius={8}>
                     <TabPanel value="1">
@@ -218,6 +220,14 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
                     <TabPanel value="7">
                       <ChartContextProvider>
                         <LabOrdersTable appointmentInfo={appointmentInfo} shouldDisableEdit={shouldDisableEdit} />
+                      </ChartContextProvider>
+                    </TabPanel>
+                  </Box>
+
+                  <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                    <TabPanel value="8">
+                      <ChartContextProvider>
+                        <Vaccines shouldDisableEdit={shouldDisableEdit} />
                       </ChartContextProvider>
                     </TabPanel>
                   </Box>
