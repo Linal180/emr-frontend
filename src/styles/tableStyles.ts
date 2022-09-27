@@ -18,7 +18,7 @@ export const DetailTooltip = withStyles((theme: Theme) => ({
 
 export const useTableStyles = makeStyles(() => ({
   table: {
-    minWidth: 1200
+    minWidth: 1200,
   },
 
   searchBox: {
