@@ -131,7 +131,7 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
         <Box mt={3}>
           <TabContext value={tabValue}>
             <Grid container spacing={2}>
-              <Grid item lg={2} md={3} sm={12} xs={12}>
+              <Grid item lg={2} md={12} sm={12} xs={12}>
                 <Card>
                   <Box px={3} py={1} className={classes.cardBox}>
                     <TabList className={classes.tabList}
@@ -172,7 +172,7 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
                 </Card>
               </Grid>
 
-              <Grid item lg={10} md={9} sm={12} xs={12}>
+              <Grid item lg={10} md={12} sm={12} xs={12}>
                 <Box className={classes.tabPanelPadding}>
                   <Box pt={0} borderRadius={8}>
                     <TabPanel value="1">
