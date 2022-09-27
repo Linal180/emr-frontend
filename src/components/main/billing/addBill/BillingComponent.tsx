@@ -58,7 +58,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
     },
     onCompleted() {
       if (labOrderNumber) {
-        history.push(`/patients/${id}/details/10`)
+        history.push(`/patients/${id}/details/1`)
         return
       }
       shouldCheckout && history.push(`${VIEW_APPOINTMENTS_ROUTE}`)
@@ -269,7 +269,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
             code: code || '',
             description: description || '',
             codeType: CodeType.Icd_10Code,
-            price:  0,
+            price: 0,
             unit: '0'
           }
         })
@@ -370,7 +370,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         servicingProvider?.id && setValue('servicingProvider', setRecord(servicingProvider.id, `${servicingProvider.firstName} ${servicingProvider.lastName}`))
         renderingProvider?.id && setValue('renderingProvider', setRecord(renderingProvider.id, `${renderingProvider.firstName} ${renderingProvider.lastName}`))
         dispatch({ type: ActionType.SET_CLAIM_CREATED, isClaimCreated: !!claim?.id })
-        tableCodesData?.ICD_10_CODE?.length === 0 &&  await fetchIcdCode()
+        tableCodesData?.ICD_10_CODE?.length === 0 && await fetchIcdCode()
       }
     },
     onError: async () => {
