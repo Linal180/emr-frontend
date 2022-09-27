@@ -101,6 +101,9 @@ const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep, shou
           </Grid>
         </Box>
       </Card>
+
+      <Box p={2} />
+      
       <UpFrontPayment handleStep={handleStep} shouldDisableEdit={shouldDisableEdit} />
     </>
   )

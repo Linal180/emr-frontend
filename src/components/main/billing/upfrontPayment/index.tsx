@@ -227,9 +227,11 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
             </Box>
           </Card>
 
+          <Box p={2} />
+
           <Card>
-            <Box px={3} py={2} bgcolor={GREEN} borderRadius={8}>
-              <Grid container spacing={2} direction="row">
+            <Box px={3} pt={1} bgcolor={GREEN} borderRadius={8}>
+              <Grid container>
                 <Grid item md={8} sm={12} xs={12}>
                   <Grid container spacing={2} direction="row">
                     <Grid item md={4} sm={6} xs={12}>

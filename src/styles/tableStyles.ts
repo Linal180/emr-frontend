@@ -24,9 +24,6 @@ export const useTableStyles = makeStyles(() => ({
   paymentTable: { },
 
   boxBg: {
-    backgroundColor: GREY,
-    borderRadius: 4,
-    border: `1px solid ${GREY_FOUR}`,
     minHeight: 54,
     display: 'flex',
     alignItems: 'center',
