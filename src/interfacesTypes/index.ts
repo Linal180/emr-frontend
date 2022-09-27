@@ -45,6 +45,7 @@ import { Action as PatientAction, State as PatientState } from "../reducers/pati
 import { Action as PracticeAction } from "../reducers/practiceReducer";
 import { Action as ScheduleAction, State as ScheduleState } from "../reducers/scheduleReducer";
 import { Action as VaccineAction, } from "../reducers/vaccinesReducer";
+import { Action as IcdCodeAction, } from "../reducers/icdTenReducer";
 
 export type Order = 'ASC' | 'DESC';
 type Key = string | number | undefined;
@@ -2181,5 +2182,6 @@ export type ICD10FormProps = {
   isEdit: boolean;
   fetch?: Function;
   id?: string;
+  dispatcher?:  Dispatch<IcdCodeAction>
   handleClose: (open: boolean) => void
 }

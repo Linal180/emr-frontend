@@ -2121,6 +2121,7 @@ export type FindAllFeeScheduleInput = {
 
 export type FindAllIcdCodesInput = {
   paginationOptions: PaginationInput;
+  searchQuery?: Maybe<Scalars['String']>;
 };
 
 export type FindAllIcdCodesPayload = {
@@ -2527,6 +2528,7 @@ export type IcdCodes = {
   createdAt?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  systematic?: Maybe<Scalars['Boolean']>;
   updatedAt?: Maybe<Scalars['String']>;
   version?: Maybe<Scalars['String']>;
 };
@@ -2538,6 +2540,7 @@ export type IcdCodesWithSnowMedCode = {
   description?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   snoMedCode?: Maybe<SnoMedCodes>;
+  systematic?: Maybe<Scalars['Boolean']>;
   updatedAt?: Maybe<Scalars['String']>;
   version?: Maybe<Scalars['String']>;
 };
@@ -8435,7 +8438,7 @@ export type FindAllIcdCodesQueryVariables = Exact<{
 }>;
 
 
-export type FindAllIcdCodesQuery = { __typename?: 'Query', findAllIcdCodes: { __typename?: 'FindAllIcdCodesPayload', icdCodes?: Array<{ __typename?: 'ICDCodes', id: string, code: string, description?: string | null } | null> | null, response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
+export type FindAllIcdCodesQuery = { __typename?: 'Query', findAllIcdCodes: { __typename?: 'FindAllIcdCodesPayload', icdCodes?: Array<{ __typename?: 'ICDCodes', id: string, code: string, description?: string | null, systematic?: boolean | null } | null> | null, response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
 
 export type GetIcdCodeQueryVariables = Exact<{
   getIcdCodeInput: GetIcdCodeInput;
@@ -16430,6 +16433,7 @@ export const FindAllIcdCodesDocument = gql`
       id
       code
       description
+      systematic
     }
     response {
       status

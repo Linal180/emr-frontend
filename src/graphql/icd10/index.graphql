@@ -5,6 +5,7 @@ query FindAllIcdCodes($findAllIcdCodesInput: FindAllIcdCodesInput!){
       id
       code
       description
+      systematic
     }
     
     response {

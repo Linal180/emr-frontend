@@ -1,9 +1,10 @@
 import { Pagination } from '@material-ui/lab';
 import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer } from 'react'
-import { Box, Button, Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core'
+import { Box, Button, Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core'
 //components
 import ICD10Form from '../icd10Form';
 import Alert from '../../../common/Alert';
+import Search from "../../../common/Search";
 import TableLoader from '../../../common/TableLoader';
 import ConfirmationModal from '../../../common/ConfirmationModal';
 import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
@@ -17,14 +18,14 @@ import { FindAllIcdCodesPayload, useFindAllIcdCodesLazyQuery, useRemoveIcdCodeMu
 import {
   ACTIONS, ADD_NEW_TEXT, CODE, DASHES, DELETE_ICD_10_DESCRIPTION, DESCRIPTION, EIGHT_PAGE_LIMIT, ICD_TEN,
   ICD_TEN_CODE, PAGE_LIMIT
-} from '../../../../constants'
+} from '../../../../constants';
 
 const IcdCodesTable: FC<IcdCodesTableProps> = (): JSX.Element => {
 
   const classes = useTableStyles()
 
   const [state, dispatch] = useReducer<Reducer<State, Action>>(icd10Reducer, initialState);
-  const { isOpen, page, data, totalPages, openDelete, delId, itemId } = state;
+  const { isOpen, page, data, totalPages, openDelete, delId, itemId, searchQuery } = state;
 
   const [fetchAllIcdCodes, { loading, error }] = useFindAllIcdCodesLazyQuery({
     onCompleted: (data) => {
@@ -84,12 +85,13 @@ const IcdCodesTable: FC<IcdCodesTableProps> = (): JSX.Element => {
       await fetchAllIcdCodes({
         variables: {
           findAllIcdCodesInput: {
-            paginationOptions: { limit: PAGE_LIMIT, page: page }
+            paginationOptions: { limit: PAGE_LIMIT, page: page },
+            searchQuery
           }
         }
       })
     } catch (error) { }
-  }, [fetchAllIcdCodes, page])
+  }, [fetchAllIcdCodes, page, searchQuery])
 
   useEffect(() => {
     fetchIcdCodes()
@@ -113,25 +115,36 @@ const IcdCodesTable: FC<IcdCodesTableProps> = (): JSX.Element => {
     dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })
   };
 
+  const search = (query: string) => {
+    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
+    dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
+    dispatch({ type: ActionType.SET_PAGE, page: 1 })
+  }
+
   return (
     <>
       <Grid container spacing={3}>
         <Grid item md={12} sm={12} xs={12}>
-          <Box >
-            <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
-              <Typography variant='h3'>{ICD_TEN}</Typography>
+          <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
+            <Typography variant='h3'>{ICD_TEN}</Typography>
 
-              {
-                <Button
-                  variant='contained' color='primary'
-                  startIcon={<Box width={20}><AddWhiteIcon /></Box>}
-                  onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
-                  {ADD_NEW_TEXT}
-                </Button>}
-            </Box>
+            {
+              <Button
+                variant='contained' color='primary'
+                startIcon={<Box width={20}><AddWhiteIcon /></Box>}
+                onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
+                {ADD_NEW_TEXT}
+              </Button>}
+          </Box>
+          <Box className={classes.mainTableContainer}>
+            <Grid container spacing={3}>
+              <Grid item md={4} sm={12} xs={12}>
+                <Search search={search} text={searchQuery} />
+              </Grid>
+            </Grid>
 
-            <Box className={classes.table}>
-              <Table aria-label="customized table">
+            <Box className="table-overflow" mt={4}>
+              <Table aria-label="customized table" className={classes.table}>
                 <TableHead>
                   <TableRow>
                     {renderTh(CODE)}
@@ -148,7 +161,7 @@ const IcdCodesTable: FC<IcdCodesTableProps> = (): JSX.Element => {
                   </TableRow>
                 ) : <TableBody>
                   {data?.map((icdCode) => {
-                    const { id, code, description } = icdCode ?? {}
+                    const { id, code, description, systematic } = icdCode ?? {}
 
                     return (
                       <TableRow>
@@ -162,13 +175,18 @@ const IcdCodesTable: FC<IcdCodesTableProps> = (): JSX.Element => {
 
                         {<TableCell scope="row">
                           <Box display='flex' alignItems='center'>
-                            <IconButton size='small' onClick={() => id && handleEdit(id)}>
-                              <EditOutlinedIcon />
-                            </IconButton>
 
-                            <IconButton size='small' onClick={() => id && onDeleteClick(id)}>
-                              <TrashOutlinedSmallIcon />
-                            </IconButton>
+                            <Box className={`${classes.iconsBackground} ${systematic ? 'disable-icon' : ''}`}>
+                              <Button onClick={() => id && handleEdit(id)}>
+                                <EditOutlinedIcon />
+                              </Button>
+                            </Box>
+
+                            <Box className={`${classes.iconsBackground} ${systematic ? 'disable-icon' : ''}`}>
+                              <Button onClick={() => id && onDeleteClick(id)}>
+                                <TrashOutlinedSmallIcon />
+                              </Button>
+                            </Box>
                           </Box>
                         </TableCell>
                         }
