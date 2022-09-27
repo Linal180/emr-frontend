@@ -239,12 +239,16 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisabl
                               {orderNumber}
                             </Typography>
                           </Box>
-                          {/* <Link to={`${EDIT_LAB_ORDERS_ROUTE}/${id}/${orderNumber}`}>
-                              {orderNumber}
-                            </Link> */}
                         </TableCell>
                         <TableCell scope="row">
-                          {appointmentType?.name ? `${appointmentType?.name ?? ''}  ${convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm:ss A')}` : '- -'}
+                          <Typography>
+                            <b>
+                              {appointmentType?.name ? `${appointmentType?.name ?? ''}` : '--'}
+                            </b>
+                            <br />
+                            {appointmentType?.name ? convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm A') : ''}
+                          </Typography>
+
                         </TableCell>
                         <TableCell scope="row">
                           <ul>
@@ -253,7 +257,7 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisabl
                             ))}
                           </ul>
                         </TableCell>
-                        <TableCell scope="row">{convertDateFromUnix(createdAt, 'MM-DD-YYYY hh:mm:ss a')}</TableCell>
+                        <TableCell scope="row">{convertDateFromUnix(createdAt, 'MM-DD-YYYY')}</TableCell>
                         <TableCell scope="row">
                           {isEdit && orderNum === orderNumber ? <>
                             <Selector
@@ -274,7 +278,7 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisabl
                           }
                         </TableCell>
                         <TableCell scope="row">
-                          {testObservations?.length ? convertDateFromUnix(testObservations?.[0]?.createdAt, 'MM-DD-YYYY hh:mm:ss a') : '- -'}
+                          {testObservations?.length ? convertDateFromUnix(testObservations?.[0]?.createdAt, 'MM-DD-YYYY') : '- -'}
                         </TableCell>
                         <TableCell scope="row">
                           <Box display="flex" alignItems="center">
