@@ -62,6 +62,10 @@ body {
   overflow-x: auto;
 }
 
+.table-overflow .MuiTableCell-head {
+  vertical-align: baseline;
+}
+
 .pointer-cursor {
   cursor: pointer !important;
 }

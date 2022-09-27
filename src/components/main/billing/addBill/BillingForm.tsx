@@ -270,7 +270,7 @@ const BillingForm: FC<BillingFormProps> = ({
                             <Grid item lg={6} md={12} sm={12} xs={12}>
                               <InputController
                                 key='amount'
-                                fieldType="text"
+                                fieldType="number"
                                 controllerName="amount"
                                 controllerLabel={COPAY_AMOUNT}
                                 disabled={shouldDisableEdit}

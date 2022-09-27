@@ -93,14 +93,14 @@ const AddVaccine: FC<AddVaccineProps> = ({ isOpen = false, handleModalClose, fet
           :
           (searchedData && searchedData.length > 0 ?
             searchedData?.map(item => {
-              const { cvxCode, shortDescription } = item as Cvx || {}
+              const { cvxCode, shortDescription, name } = item as Cvx || {}
 
               return (
                 <Box key={`${cvxCode} | ${shortDescription}`} my={0.2} className={chartingClasses.hoverClass}
                   onClick={() => item && handleOpenForm(item as Cvx)}
                 >
                   <Box display="flex" flexDirection="column" px={2}>
-                    <Typography variant='body1'>{shortDescription}</Typography>
+                    <Typography variant='body1'>{`${cvxCode} | ${name} | ${shortDescription}  `}</Typography>
                   </Box>
 
                 </Box>

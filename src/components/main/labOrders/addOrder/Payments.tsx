@@ -53,7 +53,7 @@ const Payments: FC<BillingComponentProps> = ({ shouldDisableEdit, submitButtonTe
     },
     onCompleted() {
       if (labOrderNumber) {
-        history.push(`/patients/${id}/details/10`)
+        history.push(`/patients/${id}/details/1`)
         return
       }
 

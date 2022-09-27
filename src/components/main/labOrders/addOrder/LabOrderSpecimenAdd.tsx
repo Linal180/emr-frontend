@@ -44,7 +44,7 @@ const LabOrderSpecimenAdd: FC<GeneralFormProps> = (): JSX.Element => {
 
     onError({ message }) {
       message !== NOT_FOUND_EXCEPTION && Alert.error(message)
-      history.push(`/patients/${patientId}/details/10`)
+      history.push(`/patients/${patientId}/details/1`)
     },
 
     onCompleted(data) {
@@ -130,7 +130,7 @@ const LabOrderSpecimenAdd: FC<GeneralFormProps> = (): JSX.Element => {
     },
 
     onCompleted() {
-      history.push(`/patients/${patientId}/details/10`)
+      history.push(`/patients/${patientId}/details/1`)
     }
   });
 
@@ -195,7 +195,7 @@ const LabOrderSpecimenAdd: FC<GeneralFormProps> = (): JSX.Element => {
   return (
     <>
       <Box display="flex">
-        <BackButton to={`/patients/${patientId}/details/10`} />
+        <BackButton to={`/patients/${patientId}/details/1`} />
 
         <Box ml={2}>
           <PageHeader

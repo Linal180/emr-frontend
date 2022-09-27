@@ -58,7 +58,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
     },
     onCompleted() {
       if (labOrderNumber) {
-        history.push(`/patients/${id}/details/10`)
+        history.push(`/patients/${id}/details/1`)
         return
       }
       shouldCheckout && history.push(`${VIEW_APPOINTMENTS_ROUTE}`)
