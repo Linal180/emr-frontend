@@ -2061,6 +2061,7 @@ export type AuditLogsInputs = {
 };
 
 export type CreateFeeSchedule = Omit<CreateFeeScheduleInput, 'practiceId'> & { practiceId: SelectorOption }
+
 export type CreateCptFeeSchedule = Omit<CreateCptFeeScheduleInput, 'code' | 'modifier'>
   & { code: CptCodeSelectorOption, modifier: SelectorOption }
 

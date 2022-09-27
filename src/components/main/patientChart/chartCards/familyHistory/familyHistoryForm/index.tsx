@@ -288,7 +288,7 @@ const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({
                     <Typography variant='body1'>{description}</Typography>
 
                     <Typography variant='caption'>
-                      {description}
+                      {`${code} | ${description}`}
                     </Typography>
                   </Box>
 
@@ -321,7 +321,7 @@ const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({
           <Box display="flex" alignItems="center" justifyContent="space-between">
             <Box display="flex" alignItems="center" >
               <Button size='small' onClick={backHandler}
-                disabled={loading}
+                disabled={loading || isEdit }
               >
                 <PageBackIcon />
               </Button>

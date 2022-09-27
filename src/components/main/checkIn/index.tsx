@@ -93,7 +93,7 @@ const CheckInComponent = (): JSX.Element => {
       Alert.error(message);
     },
 
-    async onCompleted(data) {
+    onCompleted(data) {
       const { getAppointment } = data;
       const { appointment, response } = getAppointment ?? {}
 
@@ -151,10 +151,26 @@ const CheckInComponent = (): JSX.Element => {
     onError({ message }) {
       Alert.error(message)
     },
+
+    onCompleted: async (data) => {
+      const { updateAppointment: updateAppointmentResponse } = data ?? {}
+      const { response, appointment } = updateAppointmentResponse ?? {}
+      if (response) {
+        const { status } = response
+        const { status: aptStatus } = appointment || {}
+        if (aptStatus === AppointmentStatus.Arrived) {
+          await fetchPatientInsurances()
+        }
+
+        if (patientId && status && status === 200) {
+          await fetchAppointment()
+        }
+      }
+    }
   });
 
-  const handleCheckIn = useCallback(async (id: string, patientId: string) => {
-    const { data } = await updateAppointment({
+  const handleCheckIn = useCallback(async (id: string) => {
+    await updateAppointment({
       variables: {
         updateAppointmentInput: {
           id, status: AppointmentStatus.Arrived,
@@ -162,21 +178,11 @@ const CheckInComponent = (): JSX.Element => {
         }
       }
     })
-
-    const { updateAppointment: updateAppointmentResponse } = data ?? {}
-    const { response } = updateAppointmentResponse ?? {}
-    if (response) {
-      const { status } = response
-
-      if (patientId && status && status === 200) {
-        fetchAppointment()
-      }
-    }
-  }, [fetchAppointment, updateAppointment])
+  }, [updateAppointment])
 
   useEffect(() => {
     if (status === AppointmentStatus.Scheduled) {
-      handleCheckIn(appointmentId || '', patientId || '')
+      handleCheckIn(appointmentId || '')
     }
   }, [appointmentId, handleCheckIn, patientId, status])
 
