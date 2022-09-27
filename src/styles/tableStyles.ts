@@ -21,6 +21,26 @@ export const useTableStyles = makeStyles(() => ({
     minWidth: 1200
   },
 
+  paymentTable: { },
+
+  boxBg: {
+    backgroundColor: GREY,
+    borderRadius: 4,
+    border: `1px solid ${GREY_FOUR}`,
+    minHeight: 54,
+    display: 'flex',
+    alignItems: 'center',
+
+    "& .MuiFormControl-marginNormal": {
+      margin: 0,
+      padding: 0,
+    },
+    
+    "& .MuiAutocomplete-root": {
+      width: '100%',
+    },
+  },
+
   searchBox: {
     backgroundColor: GREY,
     borderRadius: 4,

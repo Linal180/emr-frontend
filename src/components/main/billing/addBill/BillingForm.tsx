@@ -22,6 +22,7 @@ import FacilitySelector from "../../../common/Selector/FacilitySelector";
 import TableSelector from "../../../common/Selector/TableSelector";
 import InsuranceComponent from "../../patients/patientDetail/insurance";
 import SelfPayComponent from "./PaymentModal";
+import UpFrontPayment from "../upfrontPayment";
 //constants, utils, interfaces block
 import {
   ADD_ANOTHER_COPAY, APPOINTMENT_FACILITY, AUTO_ACCIDENT, BILLING, BILLING_TABS, CHECKOUT, CLAIM_STATUS,
@@ -497,11 +498,14 @@ const BillingForm: FC<BillingFormProps> = ({
                   {/* </Card> */}
                 </Box>
               </TabPanel>
-
             </Box>
           </TabContext>
         </Box>
-      </form >
+
+        <Box p={1} />
+
+        <UpFrontPayment />
+      </form>
 
       {isModalOpen &&
         <CopayModal
