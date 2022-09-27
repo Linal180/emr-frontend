@@ -90,6 +90,7 @@ export enum Heart_RATE_RANGES {
 
 // constants
 export const DIED_TEXT = 'Died'
+export const ICD_TEXT = 'International Classification of Diseases'
 export const DISEASE_TEXT = 'Disease'
 export const ONSET_AGE_TEXT = 'Onset Age'
 export const RELATIVE = 'Relative'
@@ -1551,6 +1552,7 @@ export const PUBLIC_FORM_FAIL_MESSAGE = 'Your record is not created.';
 export const VERIFICATION_MESSAGE = "You are verified. Please login.";
 export const DELETE_PROBLEM_DESCRIPTION = "Confirm to delete problem";
 export const DELETE_VACCINE_DESCRIPTION = "Confirm to delete vaccine";
+export const DELETE_ICD_10_DESCRIPTION = "Confirm to delete icd-10";
 export const DELETE_ALLERGY_DESCRIPTION = "Confirm to delete allergy";
 export const CHOOSE_YOUR_PAYMENT_METHOD = "Choose your Payment Method";
 export const NEXT_SCHEDULED_APPOINTMENT = "Next Scheduled Appointment";

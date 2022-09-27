@@ -1,0 +1,77 @@
+query FindAllIcdCodes($findAllIcdCodesInput: FindAllIcdCodesInput!){
+  findAllIcdCodes(findAllIcdCodesInput: $findAllIcdCodesInput){
+
+    icdCodes {
+      id
+      code
+      description
+    }
+    
+    response {
+      status
+      message
+    }
+    
+    pagination {
+      page
+      totalPages
+    }
+  }
+}
+
+query GetIcdCode($getIcdCodeInput: GetIcdCodeInput!){
+  getIcdCode(getIcdCodeInput: $getIcdCodeInput){
+    icdCode {
+      id
+      code
+      description
+    }
+    
+    response {
+      status
+      message
+    }
+  }
+}
+
+mutation CreateIcdCode($createIcdCodeInput: CreateIcdCodeInput!) {
+  createIcdCode(createIcdCodeInput: $createIcdCodeInput){
+
+    response {
+      status
+      message
+    }
+
+    icdCode {
+      id
+    }
+  }
+}
+
+mutation UpdateIcdCode($updateIcdCodeInput: UpdateIcdCodeInput!) {
+  updateIcdCode(updateIcdCodeInput: $updateIcdCodeInput){
+    
+    response {
+      status
+      message
+    }
+
+    icdCode {
+      id
+    }
+  }
+}
+
+mutation RemoveIcdCode($removeIcdCodeInput: RemoveIcdCodeInput!) {
+  removeIcdCode(removeIcdCodeInput: $removeIcdCodeInput){
+    
+    response {
+      status
+      message
+    }
+
+    icdCode {
+      id
+    }
+  }
+}

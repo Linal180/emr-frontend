@@ -1,44 +1,40 @@
-import { useParams } from 'react-router';
 import { Pagination } from '@material-ui/lab';
 import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer } from 'react'
-import { Box, Button, Card, Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core'
+import { Box, Button, Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core'
 //components
+import ICD10Form from '../icd10Form';
 import Alert from '../../../common/Alert';
 import TableLoader from '../../../common/TableLoader';
 import ConfirmationModal from '../../../common/ConfirmationModal';
 import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
 //styles, constants, 
-import { formatValue, getPageNumber, isLast, renderTh } from '../../../../utils';
-import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from '../../../../assets/svgs';
 import { useTableStyles } from '../../../../styles/tableStyles';
-import { useChartingStyles } from '../../../../styles/chartingStyles';
-import { ParamsType, VaccinesTableProps } from '../../../../interfacesTypes';
-import { Cvx, FindAllVaccinesPayload, useFindAllVaccinesLazyQuery, useRemoveVaccineMutation } from '../../../../generated/graphql';
-import { vaccinesReducer, Action, ActionType, State, initialState } from '../../../../reducers/vaccinesReducer';
+import { IcdCodesTableProps } from '../../../../interfacesTypes';
+import { getPageNumber, isLast, renderTh } from '../../../../utils';
+import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from '../../../../assets/svgs';
+import { icd10Reducer, Action, ActionType, State, initialState } from '../../../../reducers/icdTenReducer';
+import { FindAllIcdCodesPayload, useFindAllIcdCodesLazyQuery, useRemoveIcdCodeMutation } from '../../../../generated/graphql';
 import {
-  ACTIONS, ADD_NEW_TEXT, ADMINISTER_BY, ADMINISTRATION_DATE, AMOUNT_UNIT_TEXT, DASHES, DATE_ON_VIS, DELETE_VACCINE_DESCRIPTION,
-  EIGHT_PAGE_LIMIT, EXPIRY_DATE, LOT_NO_TEXT, MANUFACTURER_TEXT, NAME, NDC_TEXT, PAGE_LIMIT, ROUTE, SITE_TEXT,
-  VACCINE_TEXT, VIS_GIVEN_TEXT
+  ACTIONS, ADD_NEW_TEXT, CODE, DASHES, DELETE_ICD_10_DESCRIPTION, DESCRIPTION, EIGHT_PAGE_LIMIT, ICD_TEN,
+  ICD_TEN_CODE, PAGE_LIMIT
 } from '../../../../constants'
 
-const VaccinesTable: FC<VaccinesTableProps> = (props): JSX.Element => {
-  const { shouldDisableEdit } = props || {}
+const IcdCodesTable: FC<IcdCodesTableProps> = (): JSX.Element => {
 
-  const classes = useChartingStyles();
-  const classesTable = useTableStyles()
-  const { id: patientId, appointmentId } = useParams<ParamsType>()
-  const [state, dispatch] = useReducer<Reducer<State, Action>>(vaccinesReducer, initialState);
-  const { isOpen, page, data, totalPages, openDelete, delId, isSubModalOpen, itemId, selectedItem } = state;
+  const classes = useTableStyles()
 
-  const [findAllVaccines, { loading, error }] = useFindAllVaccinesLazyQuery({
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(icd10Reducer, initialState);
+  const { isOpen, page, data, totalPages, openDelete, delId, itemId } = state;
+
+  const [fetchAllIcdCodes, { loading, error }] = useFindAllIcdCodesLazyQuery({
     onCompleted: (data) => {
-      const { findAllVaccines } = data || {}
-      const { pagination, vaccines, response } = findAllVaccines || {}
+      const { findAllIcdCodes } = data || {}
+      const { pagination, icdCodes, response } = findAllIcdCodes || {}
       const { status } = response || {}
       if (status === 200) {
         const { totalPages } = pagination || {}
-        if (!!vaccines?.length) {
-          dispatch({ type: ActionType.SET_DATA, data: vaccines as FindAllVaccinesPayload['vaccines'] })
+        if (!!icdCodes?.length) {
+          dispatch({ type: ActionType.SET_DATA, data: icdCodes as FindAllIcdCodesPayload['icdCodes'] })
           totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
         } else {
           dispatch({ type: ActionType.SET_DATA, data: [] });
@@ -52,9 +48,9 @@ const VaccinesTable: FC<VaccinesTableProps> = (props): JSX.Element => {
     }
   })
 
-  const [removeVaccine, { loading: delLoading }] = useRemoveVaccineMutation({
+  const [removeIcdCode, { loading: delLoading }] = useRemoveIcdCodeMutation({
     onCompleted: async (resData) => {
-      const { removeVaccine: { response } } = resData;
+      const { removeIcdCode: { response } } = resData;
 
       if (response) {
         const { status, message } = response
@@ -65,7 +61,7 @@ const VaccinesTable: FC<VaccinesTableProps> = (props): JSX.Element => {
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
           if (!!data && (data.length > 1 || isLast(data?.length, page))) {
-            await fetchVaccines()
+            await fetchIcdCodes()
           } else {
             dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, isLast?.length || 0) })
           }
@@ -83,22 +79,21 @@ const VaccinesTable: FC<VaccinesTableProps> = (props): JSX.Element => {
     type: ActionType.SET_PAGE, page: value
   });
 
-  const fetchVaccines = useCallback(async () => {
+  const fetchIcdCodes = useCallback(async () => {
     try {
-      await findAllVaccines({
+      await fetchAllIcdCodes({
         variables: {
-          findAllVaccinesInput: {
-            paginationOptions: { limit: PAGE_LIMIT, page: page },
-            patientId, ...(appointmentId && { appointmentId })
+          findAllIcdCodesInput: {
+            paginationOptions: { limit: PAGE_LIMIT, page: page }
           }
         }
       })
     } catch (error) { }
-  }, [findAllVaccines, patientId, page, appointmentId])
+  }, [fetchAllIcdCodes, page])
 
   useEffect(() => {
-    patientId && fetchVaccines()
-  }, [fetchVaccines, patientId, page]);
+    fetchIcdCodes()
+  }, [fetchIcdCodes, page]);
 
   const onDeleteClick = (id: string) => {
     if (id) {
@@ -108,165 +103,108 @@ const VaccinesTable: FC<VaccinesTableProps> = (props): JSX.Element => {
   };
 
   const handleDelete = async () => {
-    delId && await removeVaccine({
-      variables: { removeVaccineInput: { id: delId } }
+    delId && await removeIcdCode({
+      variables: { removeIcdCodeInput: { id: delId } }
     })
   }
 
-  const handleEditModalClose = () => {
-    dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: false })
-  }
-
-  const handleEdit = (id: string, mvxCode?: Cvx) => {
-    mvxCode && dispatch({ type: ActionType.SET_SELECTED_ITEM, selectedItem: mvxCode })
+  const handleEdit = (id: string) => {
     dispatch({ type: ActionType.SET_ITEM_ID, itemId: id })
-    dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: true })
+    dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })
   };
 
   return (
     <>
       <Grid container spacing={3}>
         <Grid item md={12} sm={12} xs={12}>
-          <Card>
-            <Box className={classes.cardBox}>
-              <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
-                <Typography variant='h3'>{VACCINE_TEXT}</Typography>
+          <Box >
+            <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
+              <Typography variant='h3'>{ICD_TEN}</Typography>
 
-                {!shouldDisableEdit &&
-                  <Button
-                    variant='contained' color='primary'
-                    startIcon={<Box width={20}><AddWhiteIcon /></Box>}
-                    onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
-                    {ADD_NEW_TEXT}
-                  </Button>}
-              </Box>
-
-              <Box className={`${classes.tableBox} ${classes.vaccineTable}`}>
-                <Table aria-label="customized table" className={classesTable.table}>
-                  <TableHead>
-                    <TableRow>
-                      {renderTh(NAME)}
-                      {renderTh(ADMINISTRATION_DATE)}
-                      {renderTh(ADMINISTER_BY)}
-                      {renderTh(AMOUNT_UNIT_TEXT)}
-                      {renderTh(ROUTE)}
-                      {renderTh(SITE_TEXT)}
-                      {renderTh(NDC_TEXT)}
-                      {renderTh(MANUFACTURER_TEXT)}
-                      {renderTh(EXPIRY_DATE)}
-                      {renderTh(VIS_GIVEN_TEXT)}
-                      {renderTh(DATE_ON_VIS)}
-                      {renderTh(LOT_NO_TEXT)}
-                      {!shouldDisableEdit && renderTh(ACTIONS)}
-                    </TableRow>
-                  </TableHead>
-
-                  {loading ? (
-                    <TableRow>
-                      <TableCell colSpan={8}>
-                        <TableLoader numberOfRows={EIGHT_PAGE_LIMIT} numberOfColumns={5} />
-                      </TableCell>
-                    </TableRow>
-                  ) : <TableBody>
-                    {data?.map((vaccine) => {
-                      const { id, cvxId, administrationDate, amount, units, route, site, ndcId, mvxId,
-                        expiryDate, visGiven, visDate, lotNo, cvx, ndc, mvx, administerBy } = vaccine ?? {}
-                      const { name } = cvx || {}
-                      const { ndcCode } = ndc || {}
-                      const { mvxCode } = mvx || {}
-                      return (
-                        <TableRow>
-                          <TableCell scope="row">
-                            <Typography>{cvxId ? name ?? DASHES : DASHES}</Typography>
-                          </TableCell>
-
-                          <TableCell scope="row">
-                            <Typography>{administrationDate ?? DASHES}</Typography>
-                          </TableCell>
-
-                          <TableCell scope="row">
-                            <Typography>{administerBy ?? DASHES}</Typography>
-                          </TableCell>
-
-                          <TableCell scope="row">
-                            <Typography>
-                              {amount ? units ? `${amount} (${formatValue(units)})` : amount : DASHES}
-                            </Typography>
-                          </TableCell>
-
-                          <TableCell scope="row">
-                            <Typography>{route ? formatValue(route) : DASHES}</Typography>
-                          </TableCell>
-
-                          <TableCell scope="row">
-                            <Typography>{site ? formatValue(site) : DASHES}</Typography>
-                          </TableCell>
-
-                          <TableCell scope="row">
-                            <Typography>{ndcId ? ndcCode ?? DASHES : DASHES}</Typography>
-                          </TableCell>
-
-                          <TableCell scope="row">
-                            <Typography>{mvxId ? mvxCode ?? DASHES : DASHES}</Typography>
-                          </TableCell>
-
-                          <TableCell scope="row">
-                            <Typography>{expiryDate ?? DASHES}</Typography>
-                          </TableCell>
-
-                          <TableCell scope="row">
-                            <Typography>{visGiven ?? DASHES}</Typography>
-                          </TableCell>
-
-                          <TableCell scope="row">
-                            <Typography>{visDate ?? DASHES}</Typography>
-                          </TableCell>
-
-                          <TableCell scope="row">
-                            <Typography>{lotNo ?? DASHES}</Typography>
-                          </TableCell>
-
-                          {
-                            !shouldDisableEdit && <TableCell scope="row">
-                              <Box display='flex' alignItems='center'>
-                                <IconButton size='small' onClick={() => id && handleEdit(id, cvx || undefined)}>
-                                  <EditOutlinedIcon />
-                                </IconButton>
-
-                                <IconButton size='small' onClick={() => id && onDeleteClick(id)}>
-                                  <TrashOutlinedSmallIcon />
-                                </IconButton>
-                              </Box>
-                            </TableCell>
-                          }
-                        </TableRow>
-                      )
-                    })}
-                  </TableBody>
-                  }
-                </Table>
-
-                {((!loading && data?.length === 0) || error) && (
-                  <Box display="flex" justifyContent="center" pb={12} pt={5}>
-                    <NoDataFoundComponent />
-                  </Box>
-                )}
-              </Box>
+              {
+                <Button
+                  variant='contained' color='primary'
+                  startIcon={<Box width={20}><AddWhiteIcon /></Box>}
+                  onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
+                  {ADD_NEW_TEXT}
+                </Button>}
             </Box>
-          </Card>
+
+            <Box className={classes.table}>
+              <Table aria-label="customized table">
+                <TableHead>
+                  <TableRow>
+                    {renderTh(CODE)}
+                    {renderTh(DESCRIPTION)}
+                    {renderTh(ACTIONS)}
+                  </TableRow>
+                </TableHead>
+
+                {loading ? (
+                  <TableRow>
+                    <TableCell colSpan={8}>
+                      <TableLoader numberOfRows={EIGHT_PAGE_LIMIT} numberOfColumns={5} />
+                    </TableCell>
+                  </TableRow>
+                ) : <TableBody>
+                  {data?.map((icdCode) => {
+                    const { id, code, description } = icdCode ?? {}
+
+                    return (
+                      <TableRow>
+                        <TableCell scope="row">
+                          <Typography>{code || DASHES}</Typography>
+                        </TableCell>
+
+                        <TableCell scope="row">
+                          <Typography>{description || DASHES}</Typography>
+                        </TableCell>
+
+                        {<TableCell scope="row">
+                          <Box display='flex' alignItems='center'>
+                            <IconButton size='small' onClick={() => id && handleEdit(id)}>
+                              <EditOutlinedIcon />
+                            </IconButton>
+
+                            <IconButton size='small' onClick={() => id && onDeleteClick(id)}>
+                              <TrashOutlinedSmallIcon />
+                            </IconButton>
+                          </Box>
+                        </TableCell>
+                        }
+                      </TableRow>
+                    )
+                  })}
+                </TableBody>
+                }
+              </Table>
+
+              {((!loading && data?.length === 0) || error) && (
+                <Box display="flex" justifyContent="center" pb={12} pt={5}>
+                  <NoDataFoundComponent />
+                </Box>
+              )}
+            </Box>
+          </Box>
         </Grid>
       </Grid>
 
       <ConfirmationModal
-        title={VACCINE_TEXT}
+        title={ICD_TEN_CODE}
         isOpen={openDelete}
         isLoading={delLoading}
-        description={DELETE_VACCINE_DESCRIPTION}
+        description={DELETE_ICD_10_DESCRIPTION}
         handleDelete={handleDelete}
         setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
       />
 
-      
+      <ICD10Form
+        id={itemId}
+        open={isOpen}
+        isEdit={!!itemId}
+        handleClose={handleModalClose}
+        fetch={() => fetchIcdCodes()}
+      />
 
       {totalPages > 1 && !loading && (
         <Box display="flex" justifyContent="flex-end" p={3}>
@@ -283,4 +221,4 @@ const VaccinesTable: FC<VaccinesTableProps> = (props): JSX.Element => {
   )
 }
 
-export default VaccinesTable
+export default IcdCodesTable

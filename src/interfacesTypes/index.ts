@@ -24,12 +24,11 @@ import {
   PermissionsPayload, PolicyEligibilityWithPatientPayload, Practice, PracticePayload, ReactionsPayload,
   ResponsePayloadResponse, RolesPayload, Schedule, SectionsInputs, ServicesPayload, Staff, SurgicalHistory,
   TriageNotes, TwoFactorInput, UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput,
-  UpdateFacilityTimeZoneInput, User, UsersFormsElements, VerifyCodeInput, Patient, AddVaccineInput
+  UpdateFacilityTimeZoneInput, User, UsersFormsElements, VerifyCodeInput, Patient, AddVaccineInput,
+  CreateIcdCodeInput
 } from "../generated/graphql";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
-import {
-  Action as BillingAction, State as BillingState
-} from "../reducers/billingReducer";
+import { Action as BillingAction, State as BillingState } from "../reducers/billingReducer";
 import { Action as ChartAction } from "../reducers/chartReducer";
 import {
   Action as PublicFormBuilderAction, State as ExternalFormBuilderState
@@ -2171,4 +2170,16 @@ export type VaccinesTableProps = {
   shouldDisableEdit?: boolean
 }
 
-export type ICD10FormType  = {}
+export type IcdCodesTableProps = {
+  
+}
+
+export type ICD10FormType = CreateIcdCodeInput;
+
+export type ICD10FormProps = {
+  open: boolean;
+  isEdit: boolean;
+  fetch?: Function;
+  id?: string;
+  handleClose: (open: boolean) => void
+}
