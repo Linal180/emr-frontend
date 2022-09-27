@@ -144,7 +144,7 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
     })
   };
 
-  const [getAttachments] = useGetAttachmentsByAgreementIdLazyQuery({
+  const [getAttachments, { loading: agreementAttachmentLoading }] = useGetAttachmentsByAgreementIdLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -224,7 +224,7 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                           <Box className={`${classes.iconsBackground} ${!body ? '' : 'disable-icon'}`}>
-                            <Button onClick={() => id && handleTitleClick(id)}>
+                            <Button onClick={() => id && handleTitleClick(id)} disabled={agreementAttachmentLoading}>
                               <EyeIcon />
                             </Button>
                           </Box>
@@ -276,7 +276,7 @@ const AgreementsTable: FC<GeneralFormProps> = (): JSX.Element => {
         />
       </Box>}
 
-      {isFileModalOpen && <DocumentViewer
+      {isFileModalOpen && !agreementAttachmentLoading && <DocumentViewer
         title="Agreement"
         url={agreementUrl}
         isOpen={isFileModalOpen}
