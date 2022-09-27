@@ -202,7 +202,7 @@ const CheckInComponent = (): JSX.Element => {
   const getStepContent = (step: number) => {
     switch (step) {
       case 0:
-        return <CheckIn appointmentState={state} appointmentDispatcher={dispatch} handleStep={handleStep} />
+        return <CheckIn appointmentState={state} appointmentDispatcher={dispatch} handleStep={handleStep} shouldDisableEdit={shouldDisableEdit}/>
       case 1:
         return <PatientInfo />
       // case 2:

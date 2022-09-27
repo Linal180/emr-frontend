@@ -11,7 +11,7 @@ import {
   ValidationRule
 } from "react-hook-form";
 // constants, reducers, graphql block
-import { ATTACHMENT_TITLES, CONFIRMATION_MODAL_TYPE, ITEM_MODULE } from "../constants";
+import { ATTACHMENT_TITLES, CONFIRMATION_MODAL_TYPE, ITEM_MODULE, UPFRONT_PAYMENT_TYPES } from "../constants";
 import {
   AllDoctorPayload, Allergies, AppointmentsPayload, AppointmentStatus, Attachment, AttachmentPayload,
   AttachmentType, BillingPayload, CodeType, CreateAppointmentInput, CreateContactInput,
@@ -345,6 +345,14 @@ export interface TableCodesProps {
   diag4?: string;
   unit?: string
   diagPointer?: string
+}
+
+export type UpFrontPaymentTypeProps = {
+  id?: string
+  paymentType: UPFRONT_PAYMENT_TYPES,
+  amount: number
+  type: SelectorOption
+  notes: string
 }
 
 export interface CodeTablesData {
@@ -882,6 +890,11 @@ export interface TableSelectorProps {
   feeScheduleId?: string
 }
 
+export type UpFrontPaymentTypeCompProps = {
+  moduleName: UPFRONT_PAYMENT_TYPES
+  shouldDisableEdit?: boolean
+}
+
 export interface PolicyCardProps extends GeneralFormProps {
   handleReload?: Function
   filteredOrderOfBenefitOptions?: SelectorOption[]
@@ -892,6 +905,7 @@ export interface CheckInComponentProps {
   appointmentState: AppointmentState,
   appointmentDispatcher: Dispatch<AppointmentAction>
   handleStep: Function
+  shouldDisableEdit?: boolean
 }
 
 export interface PolicyAttachmentProps {
@@ -955,6 +969,17 @@ export interface CreateBillingProps {
   from?: string
   practice: string
   feeSchedule: SelectorOption
+}
+
+export type CreateUpFrontPayment = {
+  [UPFRONT_PAYMENT_TYPES.Copay]: UpFrontPaymentTypeProps[]
+  [UPFRONT_PAYMENT_TYPES.Additional]: UpFrontPaymentTypeProps[]
+  [UPFRONT_PAYMENT_TYPES.Previous]: UpFrontPaymentTypeProps[],
+  totalCharges: string
+  expected: string
+  balance: string
+  paid: string
+  adjustments: string
 }
 
 export interface CreateLabTestProviderProps {
@@ -1261,6 +1286,12 @@ export interface FacilityCardsProps extends GeneralFormProps {
 
 export interface PatientFormProps extends GeneralFormProps {
   shouldShowBread?: boolean
+  shouldDisableEdit?: boolean
+}
+
+export type UpFrontPaymentProps = {
+  cptCodes?: TableCodesProps[],
+  handleStep?: Function
   shouldDisableEdit?: boolean
 }
 
