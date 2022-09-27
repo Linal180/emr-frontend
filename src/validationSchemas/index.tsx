@@ -1092,8 +1092,9 @@ export const createCopaySchema = yup.object({
 
 export const createBillingSchema = yup.object({
   // billingStatus: selectorSchema(BILLING_STATUS),
-  amount: yup.number().transform(value => (isNaN(value) ? 0 : value)).positive(INVALID_AMOUNT_MESSAGE).min(0, INVALID_AMOUNT_MESSAGE),
-  uncoveredAmount: yup.number().transform(value => (isNaN(value) ? 0 : value)).positive(INVALID_AMOUNT_MESSAGE).min(0, INVALID_AMOUNT_MESSAGE),
+  // amount: yup.number().transform(value => (isNaN(value) ? 0 : value)).positive(INVALID_AMOUNT_MESSAGE).min(0, INVALID_AMOUNT_MESSAGE),
+  amount: yup.string().test('', INVALID_AMOUNT_MESSAGE, (value) => !!value ? !!(parseInt(value) > 0) : true),
+  uncoveredAmount: yup.string().test('', INVALID_AMOUNT_MESSAGE, (value) => !!value ? !!(parseInt(value) > 0) : true),
   paymentType: selectorSchema(PATIENT_PAYMENT_TYPE),
   feeSchedule: selectorSchema(FEE_SCHEDULE),
   [ITEM_MODULE.icdCodes]: yup.array().of(

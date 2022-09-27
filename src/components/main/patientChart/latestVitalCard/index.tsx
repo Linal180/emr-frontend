@@ -1,7 +1,7 @@
 import { FC, useCallback, useEffect, useState } from 'react'
 import { Box, Button, Card, Collapse, colors, Typography } from '@material-ui/core'
 //interfaces, constants, utils, styles, graphql
-import { getDocumentDateFromTimestamps, renderLoading } from '../../../../utils';
+import { getAppointmentDateWithDay, renderLoading } from '../../../../utils';
 import { LatestVitalCardProps } from '../../../../interfacesTypes'
 import { useProfileDetailsStyles } from '../../../../styles/profileDetails'
 import { LESS_INFO, MORE_INFO, PATIENT_VITAL_TEXT, VITAL_LABELS } from '../../../../constants'
@@ -15,7 +15,7 @@ const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId }): JSX.Element =
 
   const {
     systolicBloodPressure, diastolicBloodPressure, oxygenSaturation, patientTemperature, pulseRate, respiratoryRate,
-    PainRange, updatedAt
+    PainRange, vitalCreationDate
   } = vital || {}
 
   const [getLatestPatientVital, { loading }] = useGetPatientLatestVitalLazyQuery({
@@ -24,10 +24,10 @@ const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId }): JSX.Element =
       const { patientVital, response } = getPatientLatestVital || {}
       const { status } = response || {};
       if (status === 200) {
-        const { updatedAt: updateDate, ...rest } = patientVital || {}
+        const { vitalCreationDate: updateDate, ...rest } = patientVital || {}
         if (updateDate) {
-          const newDate = getDocumentDateFromTimestamps(updateDate);
-          const vitals = { ...rest, updatedAt: newDate }
+          const newDate = getAppointmentDateWithDay(updateDate, undefined, 'MM-DD-YYYY');
+          const vitals = { ...rest, vitalCreationDate: newDate }
           setVital(vitals as PatientVitalPayload['patientVital'])
         }
         else {
@@ -54,7 +54,7 @@ const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId }): JSX.Element =
       <Box p={2} display='flex' justifyContent='space-between' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`}>
         <Box>
           <Typography variant="h4">{PATIENT_VITAL_TEXT}</Typography>
-          <Typography>{updatedAt || '---'}</Typography>
+          <Typography>{vitalCreationDate || '---'}</Typography>
         </Box>
 
         <Box p={1} />
