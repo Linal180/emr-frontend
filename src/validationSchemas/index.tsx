@@ -1238,3 +1238,8 @@ export const ICDCodeSchema = yup.object({
   code: yup.string().required(requiredMessage(CODE)),
   description: yup.string().required(requiredMessage(DESCRIPTION)),
 })
+
+export const CptCodeSchema = yup.object({
+  code: yup.string().required(requiredMessage(CODE)),
+  shortDescription: yup.string().required(requiredMessage(DESCRIPTION)),
+})

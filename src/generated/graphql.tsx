@@ -592,6 +592,7 @@ export type CptCodes = {
   id: Scalars['String'];
   longDescription?: Maybe<Scalars['String']>;
   shortDescription?: Maybe<Scalars['String']>;
+  systematic?: Maybe<Scalars['Boolean']>;
   updatedAt?: Maybe<Scalars['String']>;
 };
 
@@ -8231,7 +8232,35 @@ export type FindAllCptCodesQueryVariables = Exact<{
 }>;
 
 
-export type FindAllCptCodesQuery = { __typename?: 'Query', findAllCptCodes: { __typename?: 'AllCPTCodePayload', cptCodes?: Array<{ __typename?: 'CPTCodes', id: string, code?: string | null, description?: string | null, longDescription?: string | null, shortDescription?: string | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
+export type FindAllCptCodesQuery = { __typename?: 'Query', findAllCptCodes: { __typename?: 'AllCPTCodePayload', cptCodes?: Array<{ __typename?: 'CPTCodes', id: string, code?: string | null, description?: string | null, longDescription?: string | null, shortDescription?: string | null, systematic?: boolean | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type GetCptCodeQueryVariables = Exact<{
+  getCPTCodeInput: GetCptCodeInput;
+}>;
+
+
+export type GetCptCodeQuery = { __typename?: 'Query', getCPTCode: { __typename?: 'CPTCodePayload', cptCode?: { __typename?: 'CPTCodes', id: string, code?: string | null, description?: string | null, longDescription?: string | null, shortDescription?: string | null } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type CreateCptCodeMutationVariables = Exact<{
+  createCPTCodeInput: CreateCptCodeInput;
+}>;
+
+
+export type CreateCptCodeMutation = { __typename?: 'Mutation', createCPTCode: { __typename?: 'CPTCodePayload', cptCode?: { __typename?: 'CPTCodes', id: string } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type UpdateCptCodeMutationVariables = Exact<{
+  updateCPTCodeInput: UpdateCptCodeInput;
+}>;
+
+
+export type UpdateCptCodeMutation = { __typename?: 'Mutation', updateCPTCode: { __typename?: 'CPTCodePayload', cptCode?: { __typename?: 'CPTCodes', id: string } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type RemoveCptCodeMutationVariables = Exact<{
+  removeCPTCodeInput: RemoveCptCodeInput;
+}>;
+
+
+export type RemoveCptCodeMutation = { __typename?: 'Mutation', removeCPTCode: { __typename?: 'CPTCodePayload', cptCode?: { __typename?: 'CPTCodes', id: string } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
 
 export type FindAllCptFeeScheduleQueryVariables = Exact<{
   findAllCptFeeScheduleInput: FindAllCptFeeScheduleInput;
@@ -14449,6 +14478,7 @@ export const FindAllCptCodesDocument = gql`
       description
       longDescription
       shortDescription
+      systematic
     }
     pagination {
       page
@@ -14490,6 +14520,172 @@ export function useFindAllCptCodesLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type FindAllCptCodesQueryHookResult = ReturnType<typeof useFindAllCptCodesQuery>;
 export type FindAllCptCodesLazyQueryHookResult = ReturnType<typeof useFindAllCptCodesLazyQuery>;
 export type FindAllCptCodesQueryResult = Apollo.QueryResult<FindAllCptCodesQuery, FindAllCptCodesQueryVariables>;
+export const GetCptCodeDocument = gql`
+    query getCPTCode($getCPTCodeInput: GetCPTCodeInput!) {
+  getCPTCode(getCPTCodeInput: $getCPTCodeInput) {
+    cptCode {
+      id
+      code
+      description
+      longDescription
+      shortDescription
+    }
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCptCodeQuery__
+ *
+ * To run a query within a React component, call `useGetCptCodeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCptCodeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCptCodeQuery({
+ *   variables: {
+ *      getCPTCodeInput: // value for 'getCPTCodeInput'
+ *   },
+ * });
+ */
+export function useGetCptCodeQuery(baseOptions: Apollo.QueryHookOptions<GetCptCodeQuery, GetCptCodeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCptCodeQuery, GetCptCodeQueryVariables>(GetCptCodeDocument, options);
+      }
+export function useGetCptCodeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCptCodeQuery, GetCptCodeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCptCodeQuery, GetCptCodeQueryVariables>(GetCptCodeDocument, options);
+        }
+export type GetCptCodeQueryHookResult = ReturnType<typeof useGetCptCodeQuery>;
+export type GetCptCodeLazyQueryHookResult = ReturnType<typeof useGetCptCodeLazyQuery>;
+export type GetCptCodeQueryResult = Apollo.QueryResult<GetCptCodeQuery, GetCptCodeQueryVariables>;
+export const CreateCptCodeDocument = gql`
+    mutation CreateCPTCode($createCPTCodeInput: CreateCPTCodeInput!) {
+  createCPTCode(createCPTCodeInput: $createCPTCodeInput) {
+    cptCode {
+      id
+    }
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type CreateCptCodeMutationFn = Apollo.MutationFunction<CreateCptCodeMutation, CreateCptCodeMutationVariables>;
+
+/**
+ * __useCreateCptCodeMutation__
+ *
+ * To run a mutation, you first call `useCreateCptCodeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCptCodeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCptCodeMutation, { data, loading, error }] = useCreateCptCodeMutation({
+ *   variables: {
+ *      createCPTCodeInput: // value for 'createCPTCodeInput'
+ *   },
+ * });
+ */
+export function useCreateCptCodeMutation(baseOptions?: Apollo.MutationHookOptions<CreateCptCodeMutation, CreateCptCodeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateCptCodeMutation, CreateCptCodeMutationVariables>(CreateCptCodeDocument, options);
+      }
+export type CreateCptCodeMutationHookResult = ReturnType<typeof useCreateCptCodeMutation>;
+export type CreateCptCodeMutationResult = Apollo.MutationResult<CreateCptCodeMutation>;
+export type CreateCptCodeMutationOptions = Apollo.BaseMutationOptions<CreateCptCodeMutation, CreateCptCodeMutationVariables>;
+export const UpdateCptCodeDocument = gql`
+    mutation UpdateCPTCode($updateCPTCodeInput: UpdateCPTCodeInput!) {
+  updateCPTCode(updateCPTCodeInput: $updateCPTCodeInput) {
+    cptCode {
+      id
+    }
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type UpdateCptCodeMutationFn = Apollo.MutationFunction<UpdateCptCodeMutation, UpdateCptCodeMutationVariables>;
+
+/**
+ * __useUpdateCptCodeMutation__
+ *
+ * To run a mutation, you first call `useUpdateCptCodeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCptCodeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCptCodeMutation, { data, loading, error }] = useUpdateCptCodeMutation({
+ *   variables: {
+ *      updateCPTCodeInput: // value for 'updateCPTCodeInput'
+ *   },
+ * });
+ */
+export function useUpdateCptCodeMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCptCodeMutation, UpdateCptCodeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateCptCodeMutation, UpdateCptCodeMutationVariables>(UpdateCptCodeDocument, options);
+      }
+export type UpdateCptCodeMutationHookResult = ReturnType<typeof useUpdateCptCodeMutation>;
+export type UpdateCptCodeMutationResult = Apollo.MutationResult<UpdateCptCodeMutation>;
+export type UpdateCptCodeMutationOptions = Apollo.BaseMutationOptions<UpdateCptCodeMutation, UpdateCptCodeMutationVariables>;
+export const RemoveCptCodeDocument = gql`
+    mutation RemoveCPTCode($removeCPTCodeInput: RemoveCPTCodeInput!) {
+  removeCPTCode(removeCPTCodeInput: $removeCPTCodeInput) {
+    cptCode {
+      id
+    }
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type RemoveCptCodeMutationFn = Apollo.MutationFunction<RemoveCptCodeMutation, RemoveCptCodeMutationVariables>;
+
+/**
+ * __useRemoveCptCodeMutation__
+ *
+ * To run a mutation, you first call `useRemoveCptCodeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveCptCodeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeCptCodeMutation, { data, loading, error }] = useRemoveCptCodeMutation({
+ *   variables: {
+ *      removeCPTCodeInput: // value for 'removeCPTCodeInput'
+ *   },
+ * });
+ */
+export function useRemoveCptCodeMutation(baseOptions?: Apollo.MutationHookOptions<RemoveCptCodeMutation, RemoveCptCodeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveCptCodeMutation, RemoveCptCodeMutationVariables>(RemoveCptCodeDocument, options);
+      }
+export type RemoveCptCodeMutationHookResult = ReturnType<typeof useRemoveCptCodeMutation>;
+export type RemoveCptCodeMutationResult = Apollo.MutationResult<RemoveCptCodeMutation>;
+export type RemoveCptCodeMutationOptions = Apollo.BaseMutationOptions<RemoveCptCodeMutation, RemoveCptCodeMutationVariables>;
 export const FindAllCptFeeScheduleDocument = gql`
     query FindAllCptFeeSchedule($findAllCptFeeScheduleInput: FindAllCptFeeScheduleInput!) {
   findAllCptFeeSchedule(findAllCptFeeScheduleInput: $findAllCptFeeScheduleInput) {
