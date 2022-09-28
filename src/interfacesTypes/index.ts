@@ -11,7 +11,7 @@ import {
   ValidationRule
 } from "react-hook-form";
 // constants, reducers, graphql block
-import { ATTACHMENT_TITLES, CONFIRMATION_MODAL_TYPE, ITEM_MODULE } from "../constants";
+import { ATTACHMENT_TITLES, CONFIRMATION_MODAL_TYPE, ITEM_MODULE, UPFRONT_PAYMENT_TYPES } from "../constants";
 import {
   AllDoctorPayload, Allergies, AppointmentsPayload, AppointmentStatus, Attachment, AttachmentPayload,
   AttachmentType, BillingPayload, CodeType, CreateAppointmentInput, CreateContactInput,
@@ -24,12 +24,11 @@ import {
   PermissionsPayload, PolicyEligibilityWithPatientPayload, Practice, PracticePayload, ReactionsPayload,
   ResponsePayloadResponse, RolesPayload, Schedule, SectionsInputs, ServicesPayload, Staff, SurgicalHistory,
   TriageNotes, TwoFactorInput, UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput,
-  UpdateFacilityTimeZoneInput, User, UsersFormsElements, VerifyCodeInput, Patient, AddVaccineInput
+  UpdateFacilityTimeZoneInput, User, UsersFormsElements, VerifyCodeInput, Patient, AddVaccineInput,
+  CreateIcdCodeInput, CreateCptCodeInput
 } from "../generated/graphql";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
-import {
-  Action as BillingAction, State as BillingState
-} from "../reducers/billingReducer";
+import { Action as BillingAction, State as BillingState } from "../reducers/billingReducer";
 import { Action as ChartAction } from "../reducers/chartReducer";
 import {
   Action as PublicFormBuilderAction, State as ExternalFormBuilderState
@@ -46,6 +45,8 @@ import { Action as PatientAction, State as PatientState } from "../reducers/pati
 import { Action as PracticeAction } from "../reducers/practiceReducer";
 import { Action as ScheduleAction, State as ScheduleState } from "../reducers/scheduleReducer";
 import { Action as VaccineAction, } from "../reducers/vaccinesReducer";
+import { Action as IcdCodeAction, } from "../reducers/icdTenReducer";
+import { Action as cptCodeAction, } from "../reducers/cptCodeReducer";
 
 export type Order = 'ASC' | 'DESC';
 type Key = string | number | undefined;
@@ -345,6 +346,14 @@ export interface TableCodesProps {
   diag4?: string;
   unit?: string
   diagPointer?: string
+}
+
+export type UpFrontPaymentTypeProps = {
+  id?: string
+  paymentType: UPFRONT_PAYMENT_TYPES,
+  amount: number
+  type: SelectorOption
+  notes: string
 }
 
 export interface CodeTablesData {
@@ -882,6 +891,11 @@ export interface TableSelectorProps {
   feeScheduleId?: string
 }
 
+export type UpFrontPaymentTypeCompProps = {
+  moduleName: UPFRONT_PAYMENT_TYPES
+  shouldDisableEdit?: boolean
+}
+
 export interface PolicyCardProps extends GeneralFormProps {
   handleReload?: Function
   filteredOrderOfBenefitOptions?: SelectorOption[]
@@ -892,6 +906,7 @@ export interface CheckInComponentProps {
   appointmentState: AppointmentState,
   appointmentDispatcher: Dispatch<AppointmentAction>
   handleStep: Function
+  shouldDisableEdit?: boolean
 }
 
 export interface PolicyAttachmentProps {
@@ -955,6 +970,17 @@ export interface CreateBillingProps {
   from?: string
   practice: string
   feeSchedule: SelectorOption
+}
+
+export type CreateUpFrontPayment = {
+  [UPFRONT_PAYMENT_TYPES.Copay]: UpFrontPaymentTypeProps[]
+  [UPFRONT_PAYMENT_TYPES.Additional]: UpFrontPaymentTypeProps[]
+  [UPFRONT_PAYMENT_TYPES.Previous]: UpFrontPaymentTypeProps[],
+  totalCharges: string
+  expected: string
+  balance: string
+  paid: string
+  adjustments: string
 }
 
 export interface CreateLabTestProviderProps {
@@ -1261,6 +1287,12 @@ export interface FacilityCardsProps extends GeneralFormProps {
 
 export interface PatientFormProps extends GeneralFormProps {
   shouldShowBread?: boolean
+  shouldDisableEdit?: boolean
+}
+
+export type UpFrontPaymentProps = {
+  cptCodes?: TableCodesProps[],
+  handleStep?: Function
   shouldDisableEdit?: boolean
 }
 
@@ -2169,4 +2201,29 @@ export type VaccinesProps = {
 
 export type VaccinesTableProps = {
   shouldDisableEdit?: boolean
+}
+
+export type IcdCodesTableProps = {
+
+}
+
+export type ICD10FormType = CreateIcdCodeInput;
+export type CptCodeFormType = Pick<CreateCptCodeInput, 'code' | 'shortDescription'>;
+
+export type ICD10FormProps = {
+  open: boolean;
+  isEdit: boolean;
+  fetch?: Function;
+  id?: string;
+  dispatcher?: Dispatch<IcdCodeAction>
+  handleClose: (open: boolean) => void
+}
+
+export type cptCodeFormProps = {
+  open: boolean;
+  isEdit: boolean;
+  fetch?: Function;
+  id?: string;
+  dispatcher?: Dispatch<cptCodeAction>
+  handleClose: (open: boolean) => void
 }
