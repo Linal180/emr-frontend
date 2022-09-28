@@ -25,7 +25,7 @@ import {
   ResponsePayloadResponse, RolesPayload, Schedule, SectionsInputs, ServicesPayload, Staff, SurgicalHistory,
   TriageNotes, TwoFactorInput, UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput,
   UpdateFacilityTimeZoneInput, User, UsersFormsElements, VerifyCodeInput, Patient, AddVaccineInput,
-  CreateIcdCodeInput
+  CreateIcdCodeInput, CreateCptCodeInput
 } from "../generated/graphql";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
 import { Action as BillingAction, State as BillingState } from "../reducers/billingReducer";
@@ -46,6 +46,7 @@ import { Action as PracticeAction } from "../reducers/practiceReducer";
 import { Action as ScheduleAction, State as ScheduleState } from "../reducers/scheduleReducer";
 import { Action as VaccineAction, } from "../reducers/vaccinesReducer";
 import { Action as IcdCodeAction, } from "../reducers/icdTenReducer";
+import { Action as cptCodeAction, } from "../reducers/cptCodeReducer";
 
 export type Order = 'ASC' | 'DESC';
 type Key = string | number | undefined;
@@ -2203,16 +2204,26 @@ export type VaccinesTableProps = {
 }
 
 export type IcdCodesTableProps = {
-  
+
 }
 
 export type ICD10FormType = CreateIcdCodeInput;
+export type CptCodeFormType = Pick<CreateCptCodeInput, 'code' | 'shortDescription'>;
 
 export type ICD10FormProps = {
   open: boolean;
   isEdit: boolean;
   fetch?: Function;
   id?: string;
-  dispatcher?:  Dispatch<IcdCodeAction>
+  dispatcher?: Dispatch<IcdCodeAction>
+  handleClose: (open: boolean) => void
+}
+
+export type cptCodeFormProps = {
+  open: boolean;
+  isEdit: boolean;
+  fetch?: Function;
+  id?: string;
+  dispatcher?: Dispatch<cptCodeAction>
   handleClose: (open: boolean) => void
 }

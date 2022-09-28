@@ -1560,6 +1560,7 @@ export const VERIFICATION_MESSAGE = "You are verified. Please login.";
 export const DELETE_PROBLEM_DESCRIPTION = "Confirm to delete problem";
 export const DELETE_VACCINE_DESCRIPTION = "Confirm to delete vaccine";
 export const DELETE_ICD_10_DESCRIPTION = "Confirm to delete icd-10";
+export const DELETE_CPT_CODE_DESCRIPTION = "Confirm to delete CPT code";
 export const DELETE_ALLERGY_DESCRIPTION = "Confirm to delete allergy";
 export const CHOOSE_YOUR_PAYMENT_METHOD = "Choose your Payment Method";
 export const NEXT_SCHEDULED_APPOINTMENT = "Next Scheduled Appointment";
@@ -1715,6 +1716,7 @@ export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION_ROUTE}/success
 export const PATIENT_APPOINTMENT_CANCEL = `${PUBLIC_APPOINTMENT_ROUTE}/appointment-cancel`;
 export const INSURANCE_ELIGIBILITY_ROUTE = `/insurance-eligibility`;
 export const ICD_10_ROUTE = `/icd-10`;
+export const CPT_CODE_ROUTE = `/cpt-code`;
 
 // Facility Routes
 export const BILLING_PROFILE_ROUTE = "billing-profile";
@@ -2755,11 +2757,11 @@ export const INVENTORY_ITEMS = [
   //   link: "/",
   //   desc: ICT_NINE_DESCRIPTION,
   // },
-  // {
-  //   name: CPT_CODES,
-  //   link: "/",
-  //   desc: CPT_CODES_DESCRIPTION,
-  // },
+  {
+    name: CPT_CODES,
+    link: CPT_CODE_ROUTE,
+    desc: CPT_CODES_DESCRIPTION,
+  },
   // {
   //   name: MEDICINES,
   //   link: "/",
