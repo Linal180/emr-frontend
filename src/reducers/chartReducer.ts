@@ -1,6 +1,6 @@
 import {
   AllCptCodePayload,
-  Allergies, AllergiesPayload, IcdCodes, IcdCodesPayload, IcdCodesWithSnowMedCode, Medications, MedicationsPayload, PatientAllergiesPayload, PatientMedicationsPayload, PatientProblemsPayload, PatientVitalPayload, ReactionsPayload, SurgicalHistoriesPayload
+  Allergies, AllergiesPayload, Cvx, FindAllCvxPayload, IcdCodes, IcdCodesPayload, IcdCodesWithSnowMedCode, Medications, MedicationsPayload, PatientAllergiesPayload, PatientMedicationsPayload, PatientProblemsPayload, PatientVitalPayload, ReactionsPayload, SurgicalHistoriesPayload
 } from "../generated/graphql";
 import { multiOptionType, PatientChartingInfo, SurgicalCode } from "../interfacesTypes";
 
@@ -26,8 +26,8 @@ export interface State {
   patientVitals: PatientVitalPayload['patientVital'];
   patientProblems: PatientProblemsPayload['patientProblems'],
   patientAllergies: PatientAllergiesPayload['patientAllergies'],
-  selectedItem: Allergies | Medications | IcdCodesWithSnowMedCode | IcdCodes | SurgicalCode | undefined;
-  searchedData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'] | MedicationsPayload['medications'] | AllCptCodePayload['cptCodes'];
+  selectedItem: Allergies | Medications | IcdCodesWithSnowMedCode | IcdCodes | SurgicalCode | undefined | Cvx;
+  searchedData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'] | MedicationsPayload['medications'] | AllCptCodePayload['cptCodes'] | FindAllCvxPayload['cvxs'];
   medicationDeleteId: string;
   patientMedications: PatientMedicationsPayload['patientMedications']
   patientSurgicalHistory: SurgicalHistoriesPayload['surgicalHistories']
@@ -113,11 +113,11 @@ export type Action =
   | { type: ActionType.SET_IS_SEARCH_OPEN, isSearchOpen: HTMLElement | null }
   | { type: ActionType.SET_SELECTED_REACTIONS, selectedReactions: multiOptionType[] }
   | { type: ActionType.SET_REACTION_LIST, reactionList: ReactionsPayload['reactions'] }
-  | { type: ActionType.SET_SELECTED_ITEM, selectedItem: Allergies | Medications | IcdCodesWithSnowMedCode | IcdCodes | SurgicalCode | undefined }
+  | { type: ActionType.SET_SELECTED_ITEM, selectedItem: Allergies | Medications | IcdCodesWithSnowMedCode | IcdCodes | SurgicalCode | undefined | Cvx}
   | { type: ActionType.SET_PATIENT_VITALS, patientVitals: PatientVitalPayload['patientVital'] }
   | { type: ActionType.SET_PATIENT_PROBLEMS, patientProblems: PatientProblemsPayload['patientProblems'] }
   | { type: ActionType.SET_PATIENT_ALLERGIES, patientAllergies: PatientAllergiesPayload['patientAllergies'] }
-  | { type: ActionType.SET_SEARCHED_DATA, searchedData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'] | MedicationsPayload['medications'] | AllCptCodePayload['cptCodes'] }
+  | { type: ActionType.SET_SEARCHED_DATA, searchedData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'] | MedicationsPayload['medications'] | AllCptCodePayload['cptCodes'] | FindAllCvxPayload['cvxs'] }
   | { type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: boolean }
   | { type: ActionType.SET_ALLERGY_DELETE_ID, allergyDeleteId: string }
   | { type: ActionType.SET_PROBLEM_DELETE_ID, problemDeleteId: string }

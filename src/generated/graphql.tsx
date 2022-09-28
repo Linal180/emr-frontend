@@ -69,6 +69,24 @@ export type ActiveInactivePracticesPayload = {
   response?: Maybe<ResponsePayloadResponse>;
 };
 
+export type AddVaccineInput = {
+  administerBy?: Maybe<Scalars['String']>;
+  administrationDate?: Maybe<Scalars['String']>;
+  amount?: Maybe<Scalars['String']>;
+  appointmentId?: Maybe<Scalars['String']>;
+  cvxId?: Maybe<Scalars['String']>;
+  expiryDate?: Maybe<Scalars['String']>;
+  lotNo?: Maybe<Scalars['String']>;
+  mvxId?: Maybe<Scalars['String']>;
+  ndcId?: Maybe<Scalars['String']>;
+  patientId?: Maybe<Scalars['String']>;
+  route?: Maybe<Scalars['String']>;
+  site?: Maybe<Scalars['String']>;
+  units?: Maybe<Scalars['String']>;
+  visDate?: Maybe<Scalars['String']>;
+  visGiven?: Maybe<Scalars['String']>;
+};
+
 export type Agreement = {
   __typename?: 'Agreement';
   body?: Maybe<Scalars['String']>;
@@ -256,7 +274,9 @@ export type Appointment = {
   token?: Maybe<Scalars['String']>;
   transaction?: Maybe<Transactions>;
   triageNote?: Maybe<TriageNotes>;
+  upFrontPayment?: Maybe<UpFrontPayment>;
   updatedAt?: Maybe<Scalars['String']>;
+  vaccines?: Maybe<Array<Vaccine>>;
 };
 
 /** The appointment create type assigned */
@@ -572,6 +592,7 @@ export type CptCodes = {
   id: Scalars['String'];
   longDescription?: Maybe<Scalars['String']>;
   shortDescription?: Maybe<Scalars['String']>;
+  systematic?: Maybe<Scalars['Boolean']>;
   updatedAt?: Maybe<Scalars['String']>;
 };
 
@@ -579,6 +600,18 @@ export type CptFeeSchedulePayload = {
   __typename?: 'CPTFeeSchedulePayload';
   cptFeeSchedule?: Maybe<CptFeeSchedule>;
   response?: Maybe<ResponsePayloadResponse>;
+};
+
+export type Cvx = {
+  __typename?: 'CVX';
+  createdAt?: Maybe<Scalars['String']>;
+  cvxCode?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  mvx?: Maybe<Array<Mvx>>;
+  name?: Maybe<Scalars['String']>;
+  productStatus?: Maybe<Scalars['String']>;
+  shortDescription?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
 };
 
 export type CancelAppointment = {
@@ -1306,6 +1339,12 @@ export type CreateFormInput = {
   name: Scalars['String'];
   practiceId?: Maybe<Scalars['String']>;
   type?: Maybe<FormType>;
+};
+
+export type CreateIcdCodeInput = {
+  code: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  version?: Maybe<Scalars['String']>;
 };
 
 export type CreateInvoiceInputs = {
@@ -2059,6 +2098,18 @@ export type FindAllCptFeeScheduleInput = {
   searchString?: Maybe<Scalars['String']>;
 };
 
+export type FindAllCvxInput = {
+  paginationOptions: PaginationInput;
+  searchQuery?: Maybe<Scalars['String']>;
+};
+
+export type FindAllCvxPayload = {
+  __typename?: 'FindAllCvxPayload';
+  cvxs?: Maybe<Array<Cvx>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
 export type FindAllFamilyHistoryInput = {
   paginationOptions: PaginationInput;
   patientId?: Maybe<Scalars['String']>;
@@ -2070,9 +2121,60 @@ export type FindAllFeeScheduleInput = {
   searchString?: Maybe<Scalars['String']>;
 };
 
+export type FindAllIcdCodesInput = {
+  paginationOptions: PaginationInput;
+  searchQuery?: Maybe<Scalars['String']>;
+};
+
+export type FindAllIcdCodesPayload = {
+  __typename?: 'FindAllIcdCodesPayload';
+  icdCodes?: Maybe<Array<Maybe<IcdCodes>>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
 export type FindAllModifierInput = {
   paginationOptions: PaginationInput;
   searchQuery?: Maybe<Scalars['String']>;
+};
+
+export type FindAllMvxInput = {
+  cvxId?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+  searchQuery?: Maybe<Scalars['String']>;
+};
+
+export type FindAllMvxPayload = {
+  __typename?: 'FindAllMvxPayload';
+  mvxs?: Maybe<Array<Mvx>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
+export type FindAllNdcInput = {
+  mvxId?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+  searchQuery?: Maybe<Scalars['String']>;
+};
+
+export type FindAllNdcPayload = {
+  __typename?: 'FindAllNdcPayload';
+  ndcs?: Maybe<Array<Ndc>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
+export type FindAllVaccinesInput = {
+  appointmentId?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+  patientId?: Maybe<Scalars['String']>;
+};
+
+export type FindAllVaccinesPayload = {
+  __typename?: 'FindAllVaccinesPayload';
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayloadResponse>;
+  vaccines?: Maybe<Array<Vaccine>>;
 };
 
 export type ForgotPasswordInput = {
@@ -2199,6 +2301,10 @@ export type GetAppointment = {
   id: Scalars['String'];
 };
 
+export type GetAppointmentWithToken = {
+  token: Scalars['String'];
+};
+
 export type GetAppointments = {
   doctorId?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
@@ -2287,6 +2393,10 @@ export type GetFeeScheduleInput = {
 };
 
 export type GetForm = {
+  id: Scalars['String'];
+};
+
+export type GetIcdCodeInput = {
   id: Scalars['String'];
 };
 
@@ -2385,6 +2495,10 @@ export type GetUser = {
   id: Scalars['String'];
 };
 
+export type GetVaccineInput = {
+  id: Scalars['String'];
+};
+
 /** The patient's hold statement type assigned */
 export enum Holdstatement {
   AccountTooLong = 'ACCOUNT_TOO_LONG',
@@ -2416,7 +2530,7 @@ export type IcdCodes = {
   createdAt?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   id: Scalars['String'];
-  labTests?: Maybe<LabTests>;
+  systematic?: Maybe<Scalars['Boolean']>;
   updatedAt?: Maybe<Scalars['String']>;
   version?: Maybe<Scalars['String']>;
 };
@@ -2427,10 +2541,16 @@ export type IcdCodesWithSnowMedCode = {
   createdAt?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   id: Scalars['String'];
-  labTests?: Maybe<LabTests>;
   snoMedCode?: Maybe<SnoMedCodes>;
+  systematic?: Maybe<Scalars['Boolean']>;
   updatedAt?: Maybe<Scalars['String']>;
   version?: Maybe<Scalars['String']>;
+};
+
+export type IcdCodePayload = {
+  __typename?: 'IcdCodePayload';
+  icdCode?: Maybe<IcdCodes>;
+  response?: Maybe<ResponsePayloadResponse>;
 };
 
 export type IcdCodesPayload = {
@@ -2762,6 +2882,20 @@ export enum Maritialstatus {
   Widowed = 'WIDOWED'
 }
 
+export type Mvx = {
+  __typename?: 'MVX';
+  createdAt?: Maybe<Scalars['String']>;
+  cvx?: Maybe<Cvx>;
+  cvxCode?: Maybe<Scalars['String']>;
+  cvxId?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  manufacturerName?: Maybe<Scalars['String']>;
+  mvxCode?: Maybe<Scalars['String']>;
+  mvxStatus?: Maybe<Scalars['String']>;
+  ndc?: Maybe<Array<Ndc>>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
 export type MedicationInput = {
   paginationOptions: PaginationInput;
   searchString?: Maybe<Scalars['String']>;
@@ -2810,6 +2944,7 @@ export type Mutation = {
   addPatientTriageNote: TriageNotePayload;
   addPatientVital: PatientVitalPayload;
   addSurgicalHistory: SurgicalHistoryPayload;
+  addVaccine: VaccinePayload;
   assignPermissionToRole: PermissionPayload;
   cancelAppointment: AppointmentPayload;
   chargeAfterAppointment: AppointmentPayload;
@@ -2833,6 +2968,7 @@ export type Mutation = {
   createFeeSchedule: FeeSchedulePayload;
   createForm: FormPayload;
   createFormTemplate: FormPayload;
+  createIcdCode: IcdCodePayload;
   createInvoice: InvoicePayload;
   createLabTest: LabTestPayload;
   createLabTestObservation: LabTestObservationPayload;
@@ -2850,6 +2986,7 @@ export type Mutation = {
   createService: ServicePayload;
   createShortUrl: ShortUrlResponse;
   createStaff: StaffPayload;
+  createUpFrontPayment: UpFrontPaymentPayload;
   deactivateUser: UserPayload;
   disableDoctor: DoctorPayload;
   disableStaff: StaffPayload;
@@ -2873,6 +3010,7 @@ export type Mutation = {
   removeFamilyHistory: FamilyHistoryPayload;
   removeFeeSchedule: FeeSchedulePayload;
   removeForm: FormPayload;
+  removeIcdCode: IcdCodePayload;
   removeLabTest: LabTestPayload;
   removeLabTestObservation: LabTestObservationPayload;
   removeModifier: ModifierPayload;
@@ -2890,6 +3028,7 @@ export type Mutation = {
   removeStaff: StaffPayload;
   removeSurgicalHistory: SurgicalHistoryPayload;
   removeUser: UserPayload;
+  removeVaccine: VaccinePayload;
   resendVerificationEmail: UserPayload;
   resentOTP: UserPayload;
   resetPassword: UserPayload;
@@ -2915,6 +3054,7 @@ export type Mutation = {
   updateFamilyHistory: FamilyHistoryPayload;
   updateFeeSchedule: FeeSchedulePayload;
   updateForm: FormPayload;
+  updateIcdCode: IcdCodePayload;
   updateInvoiceStatus: InvoicePayload;
   updateLabTest: LabTestPayload;
   updateLabTestObservation: LabTestObservationPayload;
@@ -2942,6 +3082,7 @@ export type Mutation = {
   updateSurgicalHistory: SurgicalHistoryPayload;
   updateUser: UserPayload;
   updateUserRole: UserPayload;
+  updateVaccine: VaccinePayload;
   verifyEmail: UserPayload;
   verifyOTP: UserPayload;
 };
@@ -2984,6 +3125,11 @@ export type MutationAddPatientVitalArgs = {
 
 export type MutationAddSurgicalHistoryArgs = {
   createSurgicalHistoryInput: CreateSurgicalHistoryInput;
+};
+
+
+export type MutationAddVaccineArgs = {
+  addVaccineInput: AddVaccineInput;
 };
 
 
@@ -3102,6 +3248,11 @@ export type MutationCreateFormTemplateArgs = {
 };
 
 
+export type MutationCreateIcdCodeArgs = {
+  createIcdCodeInput: CreateIcdCodeInput;
+};
+
+
 export type MutationCreateInvoiceArgs = {
   createInvoiceInputs: CreateInvoiceInputs;
 };
@@ -3179,6 +3330,11 @@ export type MutationCreateShortUrlArgs = {
 
 export type MutationCreateStaffArgs = {
   createStaffInput: CreateStaffInput;
+};
+
+
+export type MutationCreateUpFrontPaymentArgs = {
+  createUpFrontPaymentInput: UpFrontPaymentInput;
 };
 
 
@@ -3297,6 +3453,11 @@ export type MutationRemoveFormArgs = {
 };
 
 
+export type MutationRemoveIcdCodeArgs = {
+  removeIcdCodeInput: RemoveIcdCodeInput;
+};
+
+
 export type MutationRemoveLabTestArgs = {
   removeLabTest: RemoveLabTest;
 };
@@ -3379,6 +3540,11 @@ export type MutationRemoveSurgicalHistoryArgs = {
 
 export type MutationRemoveUserArgs = {
   userIdInput: UserIdInput;
+};
+
+
+export type MutationRemoveVaccineArgs = {
+  removeVaccineInput: RemoveVaccineInput;
 };
 
 
@@ -3499,6 +3665,11 @@ export type MutationUpdateFeeScheduleArgs = {
 
 export type MutationUpdateFormArgs = {
   updateFormInput: UpdateFormInput;
+};
+
+
+export type MutationUpdateIcdCodeArgs = {
+  updateIcdCodeInput: UpdateIcdCodeInput;
 };
 
 
@@ -3637,6 +3808,11 @@ export type MutationUpdateUserRoleArgs = {
 };
 
 
+export type MutationUpdateVaccineArgs = {
+  updateVaccineInput: UpdateVaccineInput;
+};
+
+
 export type MutationVerifyEmailArgs = {
   verifyEmail: VerifyEmailInput;
 };
@@ -3644,6 +3820,26 @@ export type MutationVerifyEmailArgs = {
 
 export type MutationVerifyOtpArgs = {
   verifyCodeInput: VerifyCodeInput;
+};
+
+export type Ndc = {
+  __typename?: 'NDC';
+  createdAt?: Maybe<Scalars['String']>;
+  cvxCode?: Maybe<Scalars['String']>;
+  cvxDescription?: Maybe<Scalars['String']>;
+  endDate?: Maybe<Scalars['String']>;
+  gtin?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  lastUpdate?: Maybe<Scalars['String']>;
+  mvx?: Maybe<Mvx>;
+  mvxCode?: Maybe<Scalars['String']>;
+  mvxId?: Maybe<Scalars['String']>;
+  mvxName?: Maybe<Scalars['String']>;
+  ndcCode?: Maybe<Scalars['String']>;
+  ndcType?: Maybe<Scalars['String']>;
+  noUseNDC?: Maybe<Scalars['String']>;
+  startDate?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
 };
 
 export type Observations = {
@@ -3805,8 +4001,10 @@ export type Patient = {
   surgicalHistories?: Maybe<Array<SurgicalHistory>>;
   transaction?: Maybe<Array<Transactions>>;
   triageNotes?: Maybe<Array<TriageNotes>>;
+  upFrontPayments?: Maybe<Array<UpFrontPayment>>;
   updatedAt: Scalars['String'];
   user?: Maybe<User>;
+  vaccines?: Maybe<Array<Vaccine>>;
 };
 
 export type PatientAllergies = {
@@ -4603,23 +4801,28 @@ export type Query = {
   fetchPatientInsurances: PoliciesPayload;
   fetchPolicy: PolicyPayload;
   fetchPolicyHolder: PolicyHolder;
+  fetchUpFrontPaymentDetailsByAppointmentId: UpFrontPaymentPayload;
   fetchUser: UserPayload;
   findAllAllergies: AllergiesPayload;
   findAllAppointments: AppointmentsPayload;
   findAllContacts: ContactsPayload;
   findAllCptCodes: AllCptCodePayload;
   findAllCptFeeSchedule: AllCptFeeSchedulesPayload;
+  findAllCvx: FindAllCvxPayload;
   findAllDoctor: AllDoctorPayload;
   findAllDoctorPatients: DoctorPatientsPayload;
   findAllFacility: FacilitiesPayload;
   findAllFamilyHistory: FamilyHistoriesPayload;
   findAllFeeSchedules: AllFeeSchedulesPayload;
   findAllForms: FormsPayload;
+  findAllIcdCodes: FindAllIcdCodesPayload;
   findAllLabTest: LabTestsPayload;
   findAllLiveClaimFeeds: LiveClaimFeedPayload;
   findAllLoincCodes: LoincCodesPayload;
   findAllMedications: MedicationsPayload;
   findAllModifiers: AllModifiersPayload;
+  findAllMvx: FindAllMvxPayload;
+  findAllNdc: FindAllNdcPayload;
   findAllPatient: PatientsPayload;
   findAllPatientAllergies: PatientAllergiesPayload;
   findAllPatientMedications: PatientMedicationsPayload;
@@ -4639,6 +4842,7 @@ export type Query = {
   findAllUpcomingAppointments: AppointmentsPayload;
   findAllUserLogs: UserLogsPayload;
   findAllUsersForms: UserFormsPayload;
+  findAllVaccines: FindAllVaccinesPayload;
   findAppointmentInsuranceStatus: AppointmentInsuranceStatus;
   findClaimStatus: ClaimStatusPayload;
   findLabResultInfo: LabResultPayload;
@@ -4652,6 +4856,7 @@ export type Query = {
   getAllInvoices: InvoicesPayload;
   getAllRoles: RolesPayload;
   getAppointment: AppointmentPayload;
+  getAppointmentWithToken: AppointmentPayload;
   getAppointments: AppointmentsPayload;
   getAttachment: AttachmentMediaPayload;
   getAttachments: AttachmentsPayload;
@@ -4671,6 +4876,7 @@ export type Query = {
   getFamilyHistory: FamilyHistoryPayload;
   getFeeSchedule: FeeSchedulePayload;
   getForm: FormPayload;
+  getIcdCode: IcdCodePayload;
   getInsurance: InsurancePayload;
   getLabTest: LabTestPayload;
   getModifier: ModifierPayload;
@@ -4708,6 +4914,7 @@ export type Query = {
   getTriageNotes: TriageNotePayload;
   getUser: UserPayload;
   getUsersWithRoles: PracticeUserRolesPayload;
+  getVaccine: VaccinePayload;
   me: UserPayload;
   searchIcdCodes: IcdCodesPayload;
   searchSnoMedCodeByIcdCodes: SnoMedCodesPayload;
@@ -4815,6 +5022,11 @@ export type QueryFetchPolicyHolderArgs = {
 };
 
 
+export type QueryFetchUpFrontPaymentDetailsByAppointmentIdArgs = {
+  appointmentId: Scalars['String'];
+};
+
+
 export type QueryFindAllAllergiesArgs = {
   allergyInput: AllergyInput;
 };
@@ -4837,6 +5049,11 @@ export type QueryFindAllCptCodesArgs = {
 
 export type QueryFindAllCptFeeScheduleArgs = {
   findAllCptFeeScheduleInput: FindAllCptFeeScheduleInput;
+};
+
+
+export type QueryFindAllCvxArgs = {
+  findAllCvxInput: FindAllCvxInput;
 };
 
 
@@ -4870,6 +5087,11 @@ export type QueryFindAllFormsArgs = {
 };
 
 
+export type QueryFindAllIcdCodesArgs = {
+  findAllIcdCodesInput: FindAllIcdCodesInput;
+};
+
+
 export type QueryFindAllLabTestArgs = {
   labTestInput: LabTestInput;
 };
@@ -4892,6 +5114,16 @@ export type QueryFindAllMedicationsArgs = {
 
 export type QueryFindAllModifiersArgs = {
   findAllModifierInput: FindAllModifierInput;
+};
+
+
+export type QueryFindAllMvxArgs = {
+  findAllMvxInput: FindAllMvxInput;
+};
+
+
+export type QueryFindAllNdcArgs = {
+  findAllNdcInput: FindAllNdcInput;
 };
 
 
@@ -4990,6 +5222,11 @@ export type QueryFindAllUsersFormsArgs = {
 };
 
 
+export type QueryFindAllVaccinesArgs = {
+  findAllVaccinesInput: FindAllVaccinesInput;
+};
+
+
 export type QueryFindAppointmentInsuranceStatusArgs = {
   appointmentId: Scalars['String'];
 };
@@ -5042,6 +5279,11 @@ export type QueryGetAllRolesArgs = {
 
 export type QueryGetAppointmentArgs = {
   getAppointment: GetAppointment;
+};
+
+
+export type QueryGetAppointmentWithTokenArgs = {
+  getAppointmentWithToken: GetAppointmentWithToken;
 };
 
 
@@ -5137,6 +5379,11 @@ export type QueryGetFeeScheduleArgs = {
 
 export type QueryGetFormArgs = {
   getForm: GetForm;
+};
+
+
+export type QueryGetIcdCodeArgs = {
+  getIcdCodeInput: GetIcdCodeInput;
 };
 
 
@@ -5310,6 +5557,11 @@ export type QueryGetUsersWithRolesArgs = {
 };
 
 
+export type QueryGetVaccineArgs = {
+  getVaccineInput: GetVaccineInput;
+};
+
+
 export type QuerySearchIcdCodesArgs = {
   searchIcdCodesInput: SearchIcdCodesInput;
 };
@@ -5445,6 +5697,10 @@ export type RemoveForm = {
   id: Scalars['String'];
 };
 
+export type RemoveIcdCodeInput = {
+  id: Scalars['String'];
+};
+
 export type RemoveLabTest = {
   id?: Maybe<Scalars['String']>;
 };
@@ -5502,6 +5758,10 @@ export type RemoveSurgicalHistory = {
 };
 
 export type RemoveTriageNote = {
+  id: Scalars['String'];
+};
+
+export type RemoveVaccineInput = {
   id: Scalars['String'];
 };
 
@@ -6219,6 +6479,61 @@ export type UpComingAppointmentsInput = {
   sortBy?: Maybe<Scalars['String']>;
 };
 
+export type UpFrontPayment = {
+  __typename?: 'UpFrontPayment';
+  UpFrontPaymentTypes?: Maybe<Array<UpFrontPaymentType>>;
+  adjustments?: Maybe<Scalars['String']>;
+  appointment?: Maybe<Appointment>;
+  appointmentId?: Maybe<Scalars['String']>;
+  balance?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  expected?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  paid?: Maybe<Scalars['String']>;
+  patient?: Maybe<Patient>;
+  patientId?: Maybe<Scalars['String']>;
+  totalCharges?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type UpFrontPaymentInput = {
+  adjustments?: Maybe<Scalars['String']>;
+  appointmentId?: Maybe<Scalars['String']>;
+  balance?: Maybe<Scalars['String']>;
+  expected?: Maybe<Scalars['String']>;
+  paid?: Maybe<Scalars['String']>;
+  patientId?: Maybe<Scalars['String']>;
+  totalCharges?: Maybe<Scalars['String']>;
+  upFrontPaymentTypes?: Maybe<Array<UpFrontPaymentInputType>>;
+};
+
+export type UpFrontPaymentInputType = {
+  amount?: Maybe<Scalars['String']>;
+  notes?: Maybe<Scalars['String']>;
+  paymentType?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
+};
+
+export type UpFrontPaymentPayload = {
+  __typename?: 'UpFrontPaymentPayload';
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<Response>;
+  upFrontPayment: UpFrontPayment;
+};
+
+export type UpFrontPaymentType = {
+  __typename?: 'UpFrontPaymentType';
+  UpFrontPayment?: Maybe<UpFrontPayment>;
+  amount?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  notes?: Maybe<Scalars['String']>;
+  paymentType?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
+  upFrontPaymentId?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
 export type UpdateAgreementInput = {
   body?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
@@ -6536,6 +6851,13 @@ export type UpdateFormInput = {
   name?: Maybe<Scalars['String']>;
   practiceId?: Maybe<Scalars['String']>;
   type?: Maybe<FormType>;
+};
+
+export type UpdateIcdCodeInput = {
+  code?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  version?: Maybe<Scalars['String']>;
 };
 
 export type UpdateLabTestInput = {
@@ -6898,6 +7220,25 @@ export type UpdateUserInput = {
   zipCode?: Maybe<Scalars['String']>;
 };
 
+export type UpdateVaccineInput = {
+  administerBy?: Maybe<Scalars['String']>;
+  administrationDate?: Maybe<Scalars['String']>;
+  amount?: Maybe<Scalars['String']>;
+  appointmentId?: Maybe<Scalars['String']>;
+  cvxId?: Maybe<Scalars['String']>;
+  expiryDate?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  lotNo?: Maybe<Scalars['String']>;
+  mvxId?: Maybe<Scalars['String']>;
+  ndcId?: Maybe<Scalars['String']>;
+  patientId?: Maybe<Scalars['String']>;
+  route?: Maybe<Scalars['String']>;
+  site?: Maybe<Scalars['String']>;
+  units?: Maybe<Scalars['String']>;
+  visDate?: Maybe<Scalars['String']>;
+  visGiven?: Maybe<Scalars['String']>;
+};
+
 export type UpdateVitalInput = {
   PainRange?: Maybe<Scalars['String']>;
   PatientBMI?: Maybe<Scalars['String']>;
@@ -7082,6 +7423,39 @@ export type UsersWithRolesInputs = {
   practiceId?: Maybe<Scalars['String']>;
 };
 
+export type Vaccine = {
+  __typename?: 'Vaccine';
+  administerBy?: Maybe<Scalars['String']>;
+  administrationDate?: Maybe<Scalars['String']>;
+  amount?: Maybe<Scalars['String']>;
+  appointment?: Maybe<Appointment>;
+  appointmentId?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  cvx?: Maybe<Cvx>;
+  cvxId?: Maybe<Scalars['String']>;
+  expiryDate?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  lotNo?: Maybe<Scalars['String']>;
+  mvx?: Maybe<Mvx>;
+  mvxId?: Maybe<Scalars['String']>;
+  ndc?: Maybe<Ndc>;
+  ndcId?: Maybe<Scalars['String']>;
+  patient?: Maybe<Patient>;
+  patientId?: Maybe<Scalars['String']>;
+  route?: Maybe<Scalars['String']>;
+  site?: Maybe<Scalars['String']>;
+  units?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+  visDate?: Maybe<Scalars['String']>;
+  visGiven?: Maybe<Scalars['String']>;
+};
+
+export type VaccinePayload = {
+  __typename?: 'VaccinePayload';
+  response?: Maybe<ResponsePayloadResponse>;
+  vaccine?: Maybe<Vaccine>;
+};
+
 export type VerifyCodeInput = {
   id?: Maybe<Scalars['String']>;
   otpCode: Scalars['String'];
@@ -7244,6 +7618,13 @@ export type UpdateAppointmentBillingStatusMutationVariables = Exact<{
 
 
 export type UpdateAppointmentBillingStatusMutation = { __typename?: 'Mutation', updateAppointmentBillingStatus: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null } };
+
+export type GetPublicAppointmentQueryVariables = Exact<{
+  getAppointmentWithToken: GetAppointmentWithToken;
+}>;
+
+
+export type GetPublicAppointmentQuery = { __typename?: 'Query', getAppointmentWithToken: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, appointment?: { __typename?: 'Appointment', id: string, scheduleEndDateTime?: string | null, scheduleStartDateTime?: string | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null } | null } | null } };
 
 export type GetAttachmentsQueryVariables = Exact<{
   getAttachment: GetAttachment;
@@ -7454,7 +7835,7 @@ export type GetSuperBillInfoQueryVariables = Exact<{
 }>;
 
 
-export type GetSuperBillInfoQuery = { __typename?: 'Query', getSuperBillInfo: { __typename?: 'SuperBillPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, appointmentInfo?: { __typename?: 'Appointment', scheduleStartDateTime?: string | null } | null, providerInfo?: { __typename?: 'Doctor', firstName?: string | null, lastName?: string | null, npi?: string | null, facility?: { __typename?: 'Facility', serviceCode?: ServiceCode | null, practice?: { __typename?: 'Practice', name: string } | null } | null, contacts?: Array<{ __typename?: 'Contact', phone?: string | null, address?: string | null, email?: string | null }> | null } | null, insuranceDetail?: { __typename?: 'Policy', memberId?: string | null, groupNumber?: string | null, insurance?: { __typename?: 'Insurance', payerId: string, payerName: string } | null } | null, policyHolderInfo?: { __typename?: 'PolicyHolder', firstName?: string | null, lastName?: string | null } | null, billingInfo?: { __typename?: 'Billing', claimDate?: string | null, codes?: Array<{ __typename?: 'Code', code?: string | null, codeType: CodeType, description?: string | null, price?: string | null, diagPointer?: string | null, m1?: string | null, m2?: string | null, m3?: string | null, m4?: string | null, unit?: string | null }> | null } | null, patientInfo?: { __typename?: 'Patient', firstName?: string | null, lastName?: string | null, dob?: string | null, contacts?: Array<{ __typename?: 'Contact', address?: string | null, phone?: string | null }> | null } | null } };
+export type GetSuperBillInfoQuery = { __typename?: 'Query', getSuperBillInfo: { __typename?: 'SuperBillPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, appointmentInfo?: { __typename?: 'Appointment', scheduleStartDateTime?: string | null } | null, providerInfo?: { __typename?: 'Doctor', firstName?: string | null, lastName?: string | null, npi?: string | null, facility?: { __typename?: 'Facility', serviceCode?: ServiceCode | null, practice?: { __typename?: 'Practice', name: string } | null } | null, contacts?: Array<{ __typename?: 'Contact', primaryContact?: boolean | null, phone?: string | null, address?: string | null, email?: string | null }> | null } | null, insuranceDetail?: { __typename?: 'Policy', memberId?: string | null, groupNumber?: string | null, insurance?: { __typename?: 'Insurance', payerId: string, payerName: string } | null } | null, policyHolderInfo?: { __typename?: 'PolicyHolder', firstName?: string | null, lastName?: string | null } | null, billingInfo?: { __typename?: 'Billing', claimDate?: string | null, codes?: Array<{ __typename?: 'Code', code?: string | null, codeType: CodeType, description?: string | null, price?: string | null, diagPointer?: string | null, m1?: string | null, m2?: string | null, m3?: string | null, m4?: string | null, unit?: string | null }> | null } | null, patientInfo?: { __typename?: 'Patient', firstName?: string | null, lastName?: string | null, dob?: string | null, contacts?: Array<{ __typename?: 'Contact', primaryContact?: boolean | null, address?: string | null, phone?: string | null, city?: string | null, state?: string | null, zipCode?: string | null }> | null } | null } };
 
 export type FindAllLiveClaimFeedsQueryVariables = Exact<{
   liveClaimFeedInput: LiveClaimFeedInput;
@@ -7495,6 +7876,20 @@ export type FetchBillingClaimStatusesQueryVariables = Exact<{
 
 
 export type FetchBillingClaimStatusesQuery = { __typename?: 'Query', fetchBillingClaimStatuses: { __typename?: 'BillingsPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, billings: Array<{ __typename?: 'Billing', id: string, claimNo?: string | null, serviceDate?: string | null, claimStatus?: { __typename?: 'ClaimStatus', statusName?: string | null } | null, patient?: { __typename?: 'Patient', firstName?: string | null, lastName?: string | null } | null, claim?: { __typename?: 'Claim', payer_name?: string | null, total_charge?: number | null, errorMessages?: Array<string> | null } | null }>, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
+
+export type CreateUpFrontPaymentMutationVariables = Exact<{
+  createUpFrontPaymentInput: UpFrontPaymentInput;
+}>;
+
+
+export type CreateUpFrontPaymentMutation = { __typename?: 'Mutation', createUpFrontPayment: { __typename?: 'UpFrontPaymentPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, upFrontPayment: { __typename?: 'UpFrontPayment', id: string } } };
+
+export type FetchUpFrontPaymentDetailsByAppointmentIdQueryVariables = Exact<{
+  appointmentId: Scalars['String'];
+}>;
+
+
+export type FetchUpFrontPaymentDetailsByAppointmentIdQuery = { __typename?: 'Query', fetchUpFrontPaymentDetailsByAppointmentId: { __typename?: 'UpFrontPaymentPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, upFrontPayment: { __typename?: 'UpFrontPayment', id: string, totalCharges?: string | null, paid?: string | null, adjustments?: string | null, balance?: string | null, expected?: string | null, UpFrontPaymentTypes?: Array<{ __typename?: 'UpFrontPaymentType', id: string, paymentType?: string | null, amount?: string | null, type?: string | null, notes?: string | null }> | null } } };
 
 export type FindAllPatientAllergiesQueryVariables = Exact<{
   patientAllergyInput: PatientAllergyInput;
@@ -7837,7 +8232,35 @@ export type FindAllCptCodesQueryVariables = Exact<{
 }>;
 
 
-export type FindAllCptCodesQuery = { __typename?: 'Query', findAllCptCodes: { __typename?: 'AllCPTCodePayload', cptCodes?: Array<{ __typename?: 'CPTCodes', id: string, code?: string | null, description?: string | null, longDescription?: string | null, shortDescription?: string | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
+export type FindAllCptCodesQuery = { __typename?: 'Query', findAllCptCodes: { __typename?: 'AllCPTCodePayload', cptCodes?: Array<{ __typename?: 'CPTCodes', id: string, code?: string | null, description?: string | null, longDescription?: string | null, shortDescription?: string | null, systematic?: boolean | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type GetCptCodeQueryVariables = Exact<{
+  getCPTCodeInput: GetCptCodeInput;
+}>;
+
+
+export type GetCptCodeQuery = { __typename?: 'Query', getCPTCode: { __typename?: 'CPTCodePayload', cptCode?: { __typename?: 'CPTCodes', id: string, code?: string | null, description?: string | null, longDescription?: string | null, shortDescription?: string | null } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type CreateCptCodeMutationVariables = Exact<{
+  createCPTCodeInput: CreateCptCodeInput;
+}>;
+
+
+export type CreateCptCodeMutation = { __typename?: 'Mutation', createCPTCode: { __typename?: 'CPTCodePayload', cptCode?: { __typename?: 'CPTCodes', id: string } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type UpdateCptCodeMutationVariables = Exact<{
+  updateCPTCodeInput: UpdateCptCodeInput;
+}>;
+
+
+export type UpdateCptCodeMutation = { __typename?: 'Mutation', updateCPTCode: { __typename?: 'CPTCodePayload', cptCode?: { __typename?: 'CPTCodes', id: string } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type RemoveCptCodeMutationVariables = Exact<{
+  removeCPTCodeInput: RemoveCptCodeInput;
+}>;
+
+
+export type RemoveCptCodeMutation = { __typename?: 'Mutation', removeCPTCode: { __typename?: 'CPTCodePayload', cptCode?: { __typename?: 'CPTCodes', id: string } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
 
 export type FindAllCptFeeScheduleQueryVariables = Exact<{
   findAllCptFeeScheduleInput: FindAllCptFeeScheduleInput;
@@ -8121,6 +8544,41 @@ export type FindAllPublicFacilityQueryVariables = Exact<{
 
 
 export type FindAllPublicFacilityQuery = { __typename?: 'Query', findAllPublicFacility: { __typename?: 'FacilitiesPayload', facilities?: Array<{ __typename?: 'Facility', id: string, name: string } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type FindAllIcdCodesQueryVariables = Exact<{
+  findAllIcdCodesInput: FindAllIcdCodesInput;
+}>;
+
+
+export type FindAllIcdCodesQuery = { __typename?: 'Query', findAllIcdCodes: { __typename?: 'FindAllIcdCodesPayload', icdCodes?: Array<{ __typename?: 'ICDCodes', id: string, code: string, description?: string | null, systematic?: boolean | null } | null> | null, response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
+
+export type GetIcdCodeQueryVariables = Exact<{
+  getIcdCodeInput: GetIcdCodeInput;
+}>;
+
+
+export type GetIcdCodeQuery = { __typename?: 'Query', getIcdCode: { __typename?: 'IcdCodePayload', icdCode?: { __typename?: 'ICDCodes', id: string, code: string, description?: string | null } | null, response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null } };
+
+export type CreateIcdCodeMutationVariables = Exact<{
+  createIcdCodeInput: CreateIcdCodeInput;
+}>;
+
+
+export type CreateIcdCodeMutation = { __typename?: 'Mutation', createIcdCode: { __typename?: 'IcdCodePayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, icdCode?: { __typename?: 'ICDCodes', id: string } | null } };
+
+export type UpdateIcdCodeMutationVariables = Exact<{
+  updateIcdCodeInput: UpdateIcdCodeInput;
+}>;
+
+
+export type UpdateIcdCodeMutation = { __typename?: 'Mutation', updateIcdCode: { __typename?: 'IcdCodePayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, icdCode?: { __typename?: 'ICDCodes', id: string } | null } };
+
+export type RemoveIcdCodeMutationVariables = Exact<{
+  removeIcdCodeInput: RemoveIcdCodeInput;
+}>;
+
+
+export type RemoveIcdCodeMutation = { __typename?: 'Mutation', removeIcdCode: { __typename?: 'IcdCodePayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, icdCode?: { __typename?: 'ICDCodes', id: string } | null } };
 
 export type FetchAllInsurancesQueryVariables = Exact<{
   insuranceInput: InsurancePaginationInput;
@@ -8719,6 +9177,62 @@ export type FindAllUserLogsQueryVariables = Exact<{
 
 
 export type FindAllUserLogsQuery = { __typename?: 'Query', findAllUserLogs: { __typename?: 'UserLogsPayload', response: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null }, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, userLogs?: Array<{ __typename?: 'UserLogs', id: string, createdAt: string, ipAddress?: string | null, refererUrl?: string | null, moduleType?: string | null, responseCode?: string | null, operationType?: string | null, activityPayload?: string | null, user?: { __typename?: 'User', email: string } | null, patient?: { __typename?: 'Patient', id: string, lastName?: string | null, firstName?: string | null, patientRecord?: string | null } | null } | null> | null } };
+
+export type FindAllCvxQueryVariables = Exact<{
+  findAllCvxInput: FindAllCvxInput;
+}>;
+
+
+export type FindAllCvxQuery = { __typename?: 'Query', findAllCvx: { __typename?: 'FindAllCvxPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, cvxs?: Array<{ __typename?: 'CVX', id: string, name?: string | null, cvxCode?: string | null, shortDescription?: string | null }> | null } };
+
+export type FindAllMvxQueryVariables = Exact<{
+  findAllMvxInput: FindAllMvxInput;
+}>;
+
+
+export type FindAllMvxQuery = { __typename?: 'Query', findAllMvx: { __typename?: 'FindAllMvxPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, mvxs?: Array<{ __typename?: 'MVX', id: string, mvxCode?: string | null, cvxCode?: string | null, mvxStatus?: string | null, manufacturerName?: string | null }> | null } };
+
+export type FindAllNdcQueryVariables = Exact<{
+  findAllNdcInput: FindAllNdcInput;
+}>;
+
+
+export type FindAllNdcQuery = { __typename?: 'Query', findAllNdc: { __typename?: 'FindAllNdcPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, ndcs?: Array<{ __typename?: 'NDC', id: string, ndcCode?: string | null, mvxName?: string | null, cvxDescription?: string | null }> | null } };
+
+export type GetVaccineQueryVariables = Exact<{
+  getVaccineInput: GetVaccineInput;
+}>;
+
+
+export type GetVaccineQuery = { __typename?: 'Query', getVaccine: { __typename?: 'VaccinePayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, vaccine?: { __typename?: 'Vaccine', id: string, cvxId?: string | null, administrationDate?: string | null, amount?: string | null, units?: string | null, route?: string | null, site?: string | null, ndcId?: string | null, mvxId?: string | null, expiryDate?: string | null, visGiven?: string | null, visDate?: string | null, lotNo?: string | null, administerBy?: string | null, mvx?: { __typename?: 'MVX', id: string, mvxCode?: string | null, manufacturerName?: string | null } | null, ndc?: { __typename?: 'NDC', id: string, ndcCode?: string | null, cvxDescription?: string | null } | null } | null } };
+
+export type FindAllVaccinesQueryVariables = Exact<{
+  findAllVaccinesInput: FindAllVaccinesInput;
+}>;
+
+
+export type FindAllVaccinesQuery = { __typename?: 'Query', findAllVaccines: { __typename?: 'FindAllVaccinesPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, vaccines?: Array<{ __typename?: 'Vaccine', id: string, cvxId?: string | null, administrationDate?: string | null, amount?: string | null, units?: string | null, route?: string | null, site?: string | null, ndcId?: string | null, mvxId?: string | null, expiryDate?: string | null, visGiven?: string | null, visDate?: string | null, lotNo?: string | null, administerBy?: string | null, cvx?: { __typename?: 'CVX', id: string, name?: string | null, cvxCode?: string | null, shortDescription?: string | null } | null, ndc?: { __typename?: 'NDC', id: string, ndcCode?: string | null } | null, mvx?: { __typename?: 'MVX', id: string, manufacturerName?: string | null, mvxCode?: string | null } | null }> | null, pagination?: { __typename?: 'PaginationPayload', limit?: number | null, totalPages?: number | null } | null } };
+
+export type UpdateVaccineMutationVariables = Exact<{
+  updateVaccineInput: UpdateVaccineInput;
+}>;
+
+
+export type UpdateVaccineMutation = { __typename?: 'Mutation', updateVaccine: { __typename?: 'VaccinePayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, vaccine?: { __typename?: 'Vaccine', id: string } | null } };
+
+export type AddVaccineMutationVariables = Exact<{
+  addVaccineInput: AddVaccineInput;
+}>;
+
+
+export type AddVaccineMutation = { __typename?: 'Mutation', addVaccine: { __typename?: 'VaccinePayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, vaccine?: { __typename?: 'Vaccine', id: string } | null } };
+
+export type RemoveVaccineMutationVariables = Exact<{
+  removeVaccineInput: RemoveVaccineInput;
+}>;
+
+
+export type RemoveVaccineMutation = { __typename?: 'Mutation', removeVaccine: { __typename?: 'VaccinePayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, vaccine?: { __typename?: 'Vaccine', id: string } | null } };
 
 
 export const FetchAllAgreementsDocument = gql`
@@ -9727,6 +10241,55 @@ export function useUpdateAppointmentBillingStatusMutation(baseOptions?: Apollo.M
 export type UpdateAppointmentBillingStatusMutationHookResult = ReturnType<typeof useUpdateAppointmentBillingStatusMutation>;
 export type UpdateAppointmentBillingStatusMutationResult = Apollo.MutationResult<UpdateAppointmentBillingStatusMutation>;
 export type UpdateAppointmentBillingStatusMutationOptions = Apollo.BaseMutationOptions<UpdateAppointmentBillingStatusMutation, UpdateAppointmentBillingStatusMutationVariables>;
+export const GetPublicAppointmentDocument = gql`
+    query GetPublicAppointment($getAppointmentWithToken: GetAppointmentWithToken!) {
+  getAppointmentWithToken(getAppointmentWithToken: $getAppointmentWithToken) {
+    response {
+      error
+      status
+      message
+    }
+    appointment {
+      id
+      scheduleEndDateTime
+      scheduleStartDateTime
+      patient {
+        id
+        firstName
+        lastName
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPublicAppointmentQuery__
+ *
+ * To run a query within a React component, call `useGetPublicAppointmentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPublicAppointmentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPublicAppointmentQuery({
+ *   variables: {
+ *      getAppointmentWithToken: // value for 'getAppointmentWithToken'
+ *   },
+ * });
+ */
+export function useGetPublicAppointmentQuery(baseOptions: Apollo.QueryHookOptions<GetPublicAppointmentQuery, GetPublicAppointmentQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPublicAppointmentQuery, GetPublicAppointmentQueryVariables>(GetPublicAppointmentDocument, options);
+      }
+export function useGetPublicAppointmentLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPublicAppointmentQuery, GetPublicAppointmentQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPublicAppointmentQuery, GetPublicAppointmentQueryVariables>(GetPublicAppointmentDocument, options);
+        }
+export type GetPublicAppointmentQueryHookResult = ReturnType<typeof useGetPublicAppointmentQuery>;
+export type GetPublicAppointmentLazyQueryHookResult = ReturnType<typeof useGetPublicAppointmentLazyQuery>;
+export type GetPublicAppointmentQueryResult = Apollo.QueryResult<GetPublicAppointmentQuery, GetPublicAppointmentQueryVariables>;
 export const GetAttachmentsDocument = gql`
     query GetAttachments($getAttachment: GetAttachment!) {
   getAttachments(getAttachment: $getAttachment) {
@@ -11165,6 +11728,7 @@ export const GetSuperBillInfoDocument = gql`
         serviceCode
       }
       contacts {
+        primaryContact
         phone
         address
         email
@@ -11204,8 +11768,12 @@ export const GetSuperBillInfoDocument = gql`
       firstName
       lastName
       contacts {
+        primaryContact
         address
         phone
+        city
+        state
+        zipCode
       }
       dob
     }
@@ -11527,6 +12095,98 @@ export function useFetchBillingClaimStatusesLazyQuery(baseOptions?: Apollo.LazyQ
 export type FetchBillingClaimStatusesQueryHookResult = ReturnType<typeof useFetchBillingClaimStatusesQuery>;
 export type FetchBillingClaimStatusesLazyQueryHookResult = ReturnType<typeof useFetchBillingClaimStatusesLazyQuery>;
 export type FetchBillingClaimStatusesQueryResult = Apollo.QueryResult<FetchBillingClaimStatusesQuery, FetchBillingClaimStatusesQueryVariables>;
+export const CreateUpFrontPaymentDocument = gql`
+    mutation CreateUpFrontPayment($createUpFrontPaymentInput: UpFrontPaymentInput!) {
+  createUpFrontPayment(createUpFrontPaymentInput: $createUpFrontPaymentInput) {
+    response {
+      status
+      message
+    }
+    upFrontPayment {
+      id
+    }
+  }
+}
+    `;
+export type CreateUpFrontPaymentMutationFn = Apollo.MutationFunction<CreateUpFrontPaymentMutation, CreateUpFrontPaymentMutationVariables>;
+
+/**
+ * __useCreateUpFrontPaymentMutation__
+ *
+ * To run a mutation, you first call `useCreateUpFrontPaymentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateUpFrontPaymentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createUpFrontPaymentMutation, { data, loading, error }] = useCreateUpFrontPaymentMutation({
+ *   variables: {
+ *      createUpFrontPaymentInput: // value for 'createUpFrontPaymentInput'
+ *   },
+ * });
+ */
+export function useCreateUpFrontPaymentMutation(baseOptions?: Apollo.MutationHookOptions<CreateUpFrontPaymentMutation, CreateUpFrontPaymentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateUpFrontPaymentMutation, CreateUpFrontPaymentMutationVariables>(CreateUpFrontPaymentDocument, options);
+      }
+export type CreateUpFrontPaymentMutationHookResult = ReturnType<typeof useCreateUpFrontPaymentMutation>;
+export type CreateUpFrontPaymentMutationResult = Apollo.MutationResult<CreateUpFrontPaymentMutation>;
+export type CreateUpFrontPaymentMutationOptions = Apollo.BaseMutationOptions<CreateUpFrontPaymentMutation, CreateUpFrontPaymentMutationVariables>;
+export const FetchUpFrontPaymentDetailsByAppointmentIdDocument = gql`
+    query FetchUpFrontPaymentDetailsByAppointmentId($appointmentId: String!) {
+  fetchUpFrontPaymentDetailsByAppointmentId(appointmentId: $appointmentId) {
+    response {
+      status
+      message
+    }
+    upFrontPayment {
+      id
+      totalCharges
+      paid
+      adjustments
+      balance
+      expected
+      UpFrontPaymentTypes {
+        id
+        paymentType
+        amount
+        type
+        notes
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useFetchUpFrontPaymentDetailsByAppointmentIdQuery__
+ *
+ * To run a query within a React component, call `useFetchUpFrontPaymentDetailsByAppointmentIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFetchUpFrontPaymentDetailsByAppointmentIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFetchUpFrontPaymentDetailsByAppointmentIdQuery({
+ *   variables: {
+ *      appointmentId: // value for 'appointmentId'
+ *   },
+ * });
+ */
+export function useFetchUpFrontPaymentDetailsByAppointmentIdQuery(baseOptions: Apollo.QueryHookOptions<FetchUpFrontPaymentDetailsByAppointmentIdQuery, FetchUpFrontPaymentDetailsByAppointmentIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FetchUpFrontPaymentDetailsByAppointmentIdQuery, FetchUpFrontPaymentDetailsByAppointmentIdQueryVariables>(FetchUpFrontPaymentDetailsByAppointmentIdDocument, options);
+      }
+export function useFetchUpFrontPaymentDetailsByAppointmentIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FetchUpFrontPaymentDetailsByAppointmentIdQuery, FetchUpFrontPaymentDetailsByAppointmentIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FetchUpFrontPaymentDetailsByAppointmentIdQuery, FetchUpFrontPaymentDetailsByAppointmentIdQueryVariables>(FetchUpFrontPaymentDetailsByAppointmentIdDocument, options);
+        }
+export type FetchUpFrontPaymentDetailsByAppointmentIdQueryHookResult = ReturnType<typeof useFetchUpFrontPaymentDetailsByAppointmentIdQuery>;
+export type FetchUpFrontPaymentDetailsByAppointmentIdLazyQueryHookResult = ReturnType<typeof useFetchUpFrontPaymentDetailsByAppointmentIdLazyQuery>;
+export type FetchUpFrontPaymentDetailsByAppointmentIdQueryResult = Apollo.QueryResult<FetchUpFrontPaymentDetailsByAppointmentIdQuery, FetchUpFrontPaymentDetailsByAppointmentIdQueryVariables>;
 export const FindAllPatientAllergiesDocument = gql`
     query FindAllPatientAllergies($patientAllergyInput: PatientAllergyInput!) {
   findAllPatientAllergies(patientAllergyInput: $patientAllergyInput) {
@@ -13818,6 +14478,7 @@ export const FindAllCptCodesDocument = gql`
       description
       longDescription
       shortDescription
+      systematic
     }
     pagination {
       page
@@ -13859,6 +14520,172 @@ export function useFindAllCptCodesLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type FindAllCptCodesQueryHookResult = ReturnType<typeof useFindAllCptCodesQuery>;
 export type FindAllCptCodesLazyQueryHookResult = ReturnType<typeof useFindAllCptCodesLazyQuery>;
 export type FindAllCptCodesQueryResult = Apollo.QueryResult<FindAllCptCodesQuery, FindAllCptCodesQueryVariables>;
+export const GetCptCodeDocument = gql`
+    query getCPTCode($getCPTCodeInput: GetCPTCodeInput!) {
+  getCPTCode(getCPTCodeInput: $getCPTCodeInput) {
+    cptCode {
+      id
+      code
+      description
+      longDescription
+      shortDescription
+    }
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCptCodeQuery__
+ *
+ * To run a query within a React component, call `useGetCptCodeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCptCodeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCptCodeQuery({
+ *   variables: {
+ *      getCPTCodeInput: // value for 'getCPTCodeInput'
+ *   },
+ * });
+ */
+export function useGetCptCodeQuery(baseOptions: Apollo.QueryHookOptions<GetCptCodeQuery, GetCptCodeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCptCodeQuery, GetCptCodeQueryVariables>(GetCptCodeDocument, options);
+      }
+export function useGetCptCodeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCptCodeQuery, GetCptCodeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCptCodeQuery, GetCptCodeQueryVariables>(GetCptCodeDocument, options);
+        }
+export type GetCptCodeQueryHookResult = ReturnType<typeof useGetCptCodeQuery>;
+export type GetCptCodeLazyQueryHookResult = ReturnType<typeof useGetCptCodeLazyQuery>;
+export type GetCptCodeQueryResult = Apollo.QueryResult<GetCptCodeQuery, GetCptCodeQueryVariables>;
+export const CreateCptCodeDocument = gql`
+    mutation CreateCPTCode($createCPTCodeInput: CreateCPTCodeInput!) {
+  createCPTCode(createCPTCodeInput: $createCPTCodeInput) {
+    cptCode {
+      id
+    }
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type CreateCptCodeMutationFn = Apollo.MutationFunction<CreateCptCodeMutation, CreateCptCodeMutationVariables>;
+
+/**
+ * __useCreateCptCodeMutation__
+ *
+ * To run a mutation, you first call `useCreateCptCodeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCptCodeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCptCodeMutation, { data, loading, error }] = useCreateCptCodeMutation({
+ *   variables: {
+ *      createCPTCodeInput: // value for 'createCPTCodeInput'
+ *   },
+ * });
+ */
+export function useCreateCptCodeMutation(baseOptions?: Apollo.MutationHookOptions<CreateCptCodeMutation, CreateCptCodeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateCptCodeMutation, CreateCptCodeMutationVariables>(CreateCptCodeDocument, options);
+      }
+export type CreateCptCodeMutationHookResult = ReturnType<typeof useCreateCptCodeMutation>;
+export type CreateCptCodeMutationResult = Apollo.MutationResult<CreateCptCodeMutation>;
+export type CreateCptCodeMutationOptions = Apollo.BaseMutationOptions<CreateCptCodeMutation, CreateCptCodeMutationVariables>;
+export const UpdateCptCodeDocument = gql`
+    mutation UpdateCPTCode($updateCPTCodeInput: UpdateCPTCodeInput!) {
+  updateCPTCode(updateCPTCodeInput: $updateCPTCodeInput) {
+    cptCode {
+      id
+    }
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type UpdateCptCodeMutationFn = Apollo.MutationFunction<UpdateCptCodeMutation, UpdateCptCodeMutationVariables>;
+
+/**
+ * __useUpdateCptCodeMutation__
+ *
+ * To run a mutation, you first call `useUpdateCptCodeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCptCodeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCptCodeMutation, { data, loading, error }] = useUpdateCptCodeMutation({
+ *   variables: {
+ *      updateCPTCodeInput: // value for 'updateCPTCodeInput'
+ *   },
+ * });
+ */
+export function useUpdateCptCodeMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCptCodeMutation, UpdateCptCodeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateCptCodeMutation, UpdateCptCodeMutationVariables>(UpdateCptCodeDocument, options);
+      }
+export type UpdateCptCodeMutationHookResult = ReturnType<typeof useUpdateCptCodeMutation>;
+export type UpdateCptCodeMutationResult = Apollo.MutationResult<UpdateCptCodeMutation>;
+export type UpdateCptCodeMutationOptions = Apollo.BaseMutationOptions<UpdateCptCodeMutation, UpdateCptCodeMutationVariables>;
+export const RemoveCptCodeDocument = gql`
+    mutation RemoveCPTCode($removeCPTCodeInput: RemoveCPTCodeInput!) {
+  removeCPTCode(removeCPTCodeInput: $removeCPTCodeInput) {
+    cptCode {
+      id
+    }
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type RemoveCptCodeMutationFn = Apollo.MutationFunction<RemoveCptCodeMutation, RemoveCptCodeMutationVariables>;
+
+/**
+ * __useRemoveCptCodeMutation__
+ *
+ * To run a mutation, you first call `useRemoveCptCodeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveCptCodeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeCptCodeMutation, { data, loading, error }] = useRemoveCptCodeMutation({
+ *   variables: {
+ *      removeCPTCodeInput: // value for 'removeCPTCodeInput'
+ *   },
+ * });
+ */
+export function useRemoveCptCodeMutation(baseOptions?: Apollo.MutationHookOptions<RemoveCptCodeMutation, RemoveCptCodeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveCptCodeMutation, RemoveCptCodeMutationVariables>(RemoveCptCodeDocument, options);
+      }
+export type RemoveCptCodeMutationHookResult = ReturnType<typeof useRemoveCptCodeMutation>;
+export type RemoveCptCodeMutationResult = Apollo.MutationResult<RemoveCptCodeMutation>;
+export type RemoveCptCodeMutationOptions = Apollo.BaseMutationOptions<RemoveCptCodeMutation, RemoveCptCodeMutationVariables>;
 export const FindAllCptFeeScheduleDocument = gql`
     query FindAllCptFeeSchedule($findAllCptFeeScheduleInput: FindAllCptFeeScheduleInput!) {
   findAllCptFeeSchedule(findAllCptFeeScheduleInput: $findAllCptFeeScheduleInput) {
@@ -15970,6 +16797,214 @@ export function useFindAllPublicFacilityLazyQuery(baseOptions?: Apollo.LazyQuery
 export type FindAllPublicFacilityQueryHookResult = ReturnType<typeof useFindAllPublicFacilityQuery>;
 export type FindAllPublicFacilityLazyQueryHookResult = ReturnType<typeof useFindAllPublicFacilityLazyQuery>;
 export type FindAllPublicFacilityQueryResult = Apollo.QueryResult<FindAllPublicFacilityQuery, FindAllPublicFacilityQueryVariables>;
+export const FindAllIcdCodesDocument = gql`
+    query FindAllIcdCodes($findAllIcdCodesInput: FindAllIcdCodesInput!) {
+  findAllIcdCodes(findAllIcdCodesInput: $findAllIcdCodesInput) {
+    icdCodes {
+      id
+      code
+      description
+      systematic
+    }
+    response {
+      status
+      message
+    }
+    pagination {
+      page
+      totalPages
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllIcdCodesQuery__
+ *
+ * To run a query within a React component, call `useFindAllIcdCodesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllIcdCodesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllIcdCodesQuery({
+ *   variables: {
+ *      findAllIcdCodesInput: // value for 'findAllIcdCodesInput'
+ *   },
+ * });
+ */
+export function useFindAllIcdCodesQuery(baseOptions: Apollo.QueryHookOptions<FindAllIcdCodesQuery, FindAllIcdCodesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllIcdCodesQuery, FindAllIcdCodesQueryVariables>(FindAllIcdCodesDocument, options);
+      }
+export function useFindAllIcdCodesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllIcdCodesQuery, FindAllIcdCodesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllIcdCodesQuery, FindAllIcdCodesQueryVariables>(FindAllIcdCodesDocument, options);
+        }
+export type FindAllIcdCodesQueryHookResult = ReturnType<typeof useFindAllIcdCodesQuery>;
+export type FindAllIcdCodesLazyQueryHookResult = ReturnType<typeof useFindAllIcdCodesLazyQuery>;
+export type FindAllIcdCodesQueryResult = Apollo.QueryResult<FindAllIcdCodesQuery, FindAllIcdCodesQueryVariables>;
+export const GetIcdCodeDocument = gql`
+    query GetIcdCode($getIcdCodeInput: GetIcdCodeInput!) {
+  getIcdCode(getIcdCodeInput: $getIcdCodeInput) {
+    icdCode {
+      id
+      code
+      description
+    }
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetIcdCodeQuery__
+ *
+ * To run a query within a React component, call `useGetIcdCodeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetIcdCodeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetIcdCodeQuery({
+ *   variables: {
+ *      getIcdCodeInput: // value for 'getIcdCodeInput'
+ *   },
+ * });
+ */
+export function useGetIcdCodeQuery(baseOptions: Apollo.QueryHookOptions<GetIcdCodeQuery, GetIcdCodeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetIcdCodeQuery, GetIcdCodeQueryVariables>(GetIcdCodeDocument, options);
+      }
+export function useGetIcdCodeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetIcdCodeQuery, GetIcdCodeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetIcdCodeQuery, GetIcdCodeQueryVariables>(GetIcdCodeDocument, options);
+        }
+export type GetIcdCodeQueryHookResult = ReturnType<typeof useGetIcdCodeQuery>;
+export type GetIcdCodeLazyQueryHookResult = ReturnType<typeof useGetIcdCodeLazyQuery>;
+export type GetIcdCodeQueryResult = Apollo.QueryResult<GetIcdCodeQuery, GetIcdCodeQueryVariables>;
+export const CreateIcdCodeDocument = gql`
+    mutation CreateIcdCode($createIcdCodeInput: CreateIcdCodeInput!) {
+  createIcdCode(createIcdCodeInput: $createIcdCodeInput) {
+    response {
+      status
+      message
+    }
+    icdCode {
+      id
+    }
+  }
+}
+    `;
+export type CreateIcdCodeMutationFn = Apollo.MutationFunction<CreateIcdCodeMutation, CreateIcdCodeMutationVariables>;
+
+/**
+ * __useCreateIcdCodeMutation__
+ *
+ * To run a mutation, you first call `useCreateIcdCodeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateIcdCodeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createIcdCodeMutation, { data, loading, error }] = useCreateIcdCodeMutation({
+ *   variables: {
+ *      createIcdCodeInput: // value for 'createIcdCodeInput'
+ *   },
+ * });
+ */
+export function useCreateIcdCodeMutation(baseOptions?: Apollo.MutationHookOptions<CreateIcdCodeMutation, CreateIcdCodeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateIcdCodeMutation, CreateIcdCodeMutationVariables>(CreateIcdCodeDocument, options);
+      }
+export type CreateIcdCodeMutationHookResult = ReturnType<typeof useCreateIcdCodeMutation>;
+export type CreateIcdCodeMutationResult = Apollo.MutationResult<CreateIcdCodeMutation>;
+export type CreateIcdCodeMutationOptions = Apollo.BaseMutationOptions<CreateIcdCodeMutation, CreateIcdCodeMutationVariables>;
+export const UpdateIcdCodeDocument = gql`
+    mutation UpdateIcdCode($updateIcdCodeInput: UpdateIcdCodeInput!) {
+  updateIcdCode(updateIcdCodeInput: $updateIcdCodeInput) {
+    response {
+      status
+      message
+    }
+    icdCode {
+      id
+    }
+  }
+}
+    `;
+export type UpdateIcdCodeMutationFn = Apollo.MutationFunction<UpdateIcdCodeMutation, UpdateIcdCodeMutationVariables>;
+
+/**
+ * __useUpdateIcdCodeMutation__
+ *
+ * To run a mutation, you first call `useUpdateIcdCodeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateIcdCodeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateIcdCodeMutation, { data, loading, error }] = useUpdateIcdCodeMutation({
+ *   variables: {
+ *      updateIcdCodeInput: // value for 'updateIcdCodeInput'
+ *   },
+ * });
+ */
+export function useUpdateIcdCodeMutation(baseOptions?: Apollo.MutationHookOptions<UpdateIcdCodeMutation, UpdateIcdCodeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateIcdCodeMutation, UpdateIcdCodeMutationVariables>(UpdateIcdCodeDocument, options);
+      }
+export type UpdateIcdCodeMutationHookResult = ReturnType<typeof useUpdateIcdCodeMutation>;
+export type UpdateIcdCodeMutationResult = Apollo.MutationResult<UpdateIcdCodeMutation>;
+export type UpdateIcdCodeMutationOptions = Apollo.BaseMutationOptions<UpdateIcdCodeMutation, UpdateIcdCodeMutationVariables>;
+export const RemoveIcdCodeDocument = gql`
+    mutation RemoveIcdCode($removeIcdCodeInput: RemoveIcdCodeInput!) {
+  removeIcdCode(removeIcdCodeInput: $removeIcdCodeInput) {
+    response {
+      status
+      message
+    }
+    icdCode {
+      id
+    }
+  }
+}
+    `;
+export type RemoveIcdCodeMutationFn = Apollo.MutationFunction<RemoveIcdCodeMutation, RemoveIcdCodeMutationVariables>;
+
+/**
+ * __useRemoveIcdCodeMutation__
+ *
+ * To run a mutation, you first call `useRemoveIcdCodeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveIcdCodeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeIcdCodeMutation, { data, loading, error }] = useRemoveIcdCodeMutation({
+ *   variables: {
+ *      removeIcdCodeInput: // value for 'removeIcdCodeInput'
+ *   },
+ * });
+ */
+export function useRemoveIcdCodeMutation(baseOptions?: Apollo.MutationHookOptions<RemoveIcdCodeMutation, RemoveIcdCodeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveIcdCodeMutation, RemoveIcdCodeMutationVariables>(RemoveIcdCodeDocument, options);
+      }
+export type RemoveIcdCodeMutationHookResult = ReturnType<typeof useRemoveIcdCodeMutation>;
+export type RemoveIcdCodeMutationResult = Apollo.MutationResult<RemoveIcdCodeMutation>;
+export type RemoveIcdCodeMutationOptions = Apollo.BaseMutationOptions<RemoveIcdCodeMutation, RemoveIcdCodeMutationVariables>;
 export const FetchAllInsurancesDocument = gql`
     query FetchAllInsurances($insuranceInput: InsurancePaginationInput!) {
   fetchAllInsurances(insuranceInput: $insuranceInput) {
@@ -20500,3 +21535,410 @@ export function useFindAllUserLogsLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type FindAllUserLogsQueryHookResult = ReturnType<typeof useFindAllUserLogsQuery>;
 export type FindAllUserLogsLazyQueryHookResult = ReturnType<typeof useFindAllUserLogsLazyQuery>;
 export type FindAllUserLogsQueryResult = Apollo.QueryResult<FindAllUserLogsQuery, FindAllUserLogsQueryVariables>;
+export const FindAllCvxDocument = gql`
+    query FindAllCvx($findAllCvxInput: FindAllCvxInput!) {
+  findAllCvx(findAllCvxInput: $findAllCvxInput) {
+    response {
+      status
+      error
+      message
+    }
+    pagination {
+      page
+      totalPages
+    }
+    cvxs {
+      id
+      name
+      cvxCode
+      shortDescription
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllCvxQuery__
+ *
+ * To run a query within a React component, call `useFindAllCvxQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllCvxQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllCvxQuery({
+ *   variables: {
+ *      findAllCvxInput: // value for 'findAllCvxInput'
+ *   },
+ * });
+ */
+export function useFindAllCvxQuery(baseOptions: Apollo.QueryHookOptions<FindAllCvxQuery, FindAllCvxQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllCvxQuery, FindAllCvxQueryVariables>(FindAllCvxDocument, options);
+      }
+export function useFindAllCvxLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllCvxQuery, FindAllCvxQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllCvxQuery, FindAllCvxQueryVariables>(FindAllCvxDocument, options);
+        }
+export type FindAllCvxQueryHookResult = ReturnType<typeof useFindAllCvxQuery>;
+export type FindAllCvxLazyQueryHookResult = ReturnType<typeof useFindAllCvxLazyQuery>;
+export type FindAllCvxQueryResult = Apollo.QueryResult<FindAllCvxQuery, FindAllCvxQueryVariables>;
+export const FindAllMvxDocument = gql`
+    query FindAllMvx($findAllMvxInput: FindAllMvxInput!) {
+  findAllMvx(findAllMvxInput: $findAllMvxInput) {
+    response {
+      status
+      error
+      message
+    }
+    pagination {
+      page
+      totalPages
+    }
+    mvxs {
+      id
+      mvxCode
+      cvxCode
+      mvxStatus
+      manufacturerName
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllMvxQuery__
+ *
+ * To run a query within a React component, call `useFindAllMvxQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllMvxQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllMvxQuery({
+ *   variables: {
+ *      findAllMvxInput: // value for 'findAllMvxInput'
+ *   },
+ * });
+ */
+export function useFindAllMvxQuery(baseOptions: Apollo.QueryHookOptions<FindAllMvxQuery, FindAllMvxQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllMvxQuery, FindAllMvxQueryVariables>(FindAllMvxDocument, options);
+      }
+export function useFindAllMvxLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllMvxQuery, FindAllMvxQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllMvxQuery, FindAllMvxQueryVariables>(FindAllMvxDocument, options);
+        }
+export type FindAllMvxQueryHookResult = ReturnType<typeof useFindAllMvxQuery>;
+export type FindAllMvxLazyQueryHookResult = ReturnType<typeof useFindAllMvxLazyQuery>;
+export type FindAllMvxQueryResult = Apollo.QueryResult<FindAllMvxQuery, FindAllMvxQueryVariables>;
+export const FindAllNdcDocument = gql`
+    query FindAllNdc($findAllNdcInput: FindAllNdcInput!) {
+  findAllNdc(findAllNdcInput: $findAllNdcInput) {
+    response {
+      status
+      error
+      message
+    }
+    pagination {
+      page
+      totalPages
+    }
+    ndcs {
+      id
+      ndcCode
+      mvxName
+      cvxDescription
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllNdcQuery__
+ *
+ * To run a query within a React component, call `useFindAllNdcQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllNdcQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllNdcQuery({
+ *   variables: {
+ *      findAllNdcInput: // value for 'findAllNdcInput'
+ *   },
+ * });
+ */
+export function useFindAllNdcQuery(baseOptions: Apollo.QueryHookOptions<FindAllNdcQuery, FindAllNdcQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllNdcQuery, FindAllNdcQueryVariables>(FindAllNdcDocument, options);
+      }
+export function useFindAllNdcLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllNdcQuery, FindAllNdcQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllNdcQuery, FindAllNdcQueryVariables>(FindAllNdcDocument, options);
+        }
+export type FindAllNdcQueryHookResult = ReturnType<typeof useFindAllNdcQuery>;
+export type FindAllNdcLazyQueryHookResult = ReturnType<typeof useFindAllNdcLazyQuery>;
+export type FindAllNdcQueryResult = Apollo.QueryResult<FindAllNdcQuery, FindAllNdcQueryVariables>;
+export const GetVaccineDocument = gql`
+    query GetVaccine($getVaccineInput: GetVaccineInput!) {
+  getVaccine(getVaccineInput: $getVaccineInput) {
+    response {
+      status
+      error
+      message
+    }
+    vaccine {
+      id
+      cvxId
+      administrationDate
+      amount
+      units
+      route
+      site
+      ndcId
+      mvxId
+      expiryDate
+      visGiven
+      visDate
+      lotNo
+      administerBy
+      mvx {
+        id
+        mvxCode
+        manufacturerName
+      }
+      ndc {
+        id
+        ndcCode
+        cvxDescription
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetVaccineQuery__
+ *
+ * To run a query within a React component, call `useGetVaccineQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetVaccineQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetVaccineQuery({
+ *   variables: {
+ *      getVaccineInput: // value for 'getVaccineInput'
+ *   },
+ * });
+ */
+export function useGetVaccineQuery(baseOptions: Apollo.QueryHookOptions<GetVaccineQuery, GetVaccineQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetVaccineQuery, GetVaccineQueryVariables>(GetVaccineDocument, options);
+      }
+export function useGetVaccineLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetVaccineQuery, GetVaccineQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetVaccineQuery, GetVaccineQueryVariables>(GetVaccineDocument, options);
+        }
+export type GetVaccineQueryHookResult = ReturnType<typeof useGetVaccineQuery>;
+export type GetVaccineLazyQueryHookResult = ReturnType<typeof useGetVaccineLazyQuery>;
+export type GetVaccineQueryResult = Apollo.QueryResult<GetVaccineQuery, GetVaccineQueryVariables>;
+export const FindAllVaccinesDocument = gql`
+    query FindAllVaccines($findAllVaccinesInput: FindAllVaccinesInput!) {
+  findAllVaccines(findAllVaccinesInput: $findAllVaccinesInput) {
+    response {
+      status
+      error
+      message
+    }
+    vaccines {
+      id
+      cvxId
+      administrationDate
+      amount
+      units
+      route
+      site
+      ndcId
+      mvxId
+      expiryDate
+      visGiven
+      visDate
+      lotNo
+      administerBy
+      cvx {
+        id
+        name
+        cvxCode
+        shortDescription
+      }
+      ndc {
+        id
+        ndcCode
+      }
+      mvx {
+        id
+        manufacturerName
+        mvxCode
+      }
+    }
+    pagination {
+      limit
+      totalPages
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllVaccinesQuery__
+ *
+ * To run a query within a React component, call `useFindAllVaccinesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllVaccinesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllVaccinesQuery({
+ *   variables: {
+ *      findAllVaccinesInput: // value for 'findAllVaccinesInput'
+ *   },
+ * });
+ */
+export function useFindAllVaccinesQuery(baseOptions: Apollo.QueryHookOptions<FindAllVaccinesQuery, FindAllVaccinesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllVaccinesQuery, FindAllVaccinesQueryVariables>(FindAllVaccinesDocument, options);
+      }
+export function useFindAllVaccinesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllVaccinesQuery, FindAllVaccinesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllVaccinesQuery, FindAllVaccinesQueryVariables>(FindAllVaccinesDocument, options);
+        }
+export type FindAllVaccinesQueryHookResult = ReturnType<typeof useFindAllVaccinesQuery>;
+export type FindAllVaccinesLazyQueryHookResult = ReturnType<typeof useFindAllVaccinesLazyQuery>;
+export type FindAllVaccinesQueryResult = Apollo.QueryResult<FindAllVaccinesQuery, FindAllVaccinesQueryVariables>;
+export const UpdateVaccineDocument = gql`
+    mutation UpdateVaccine($updateVaccineInput: UpdateVaccineInput!) {
+  updateVaccine(updateVaccineInput: $updateVaccineInput) {
+    response {
+      status
+      error
+      message
+    }
+    vaccine {
+      id
+    }
+  }
+}
+    `;
+export type UpdateVaccineMutationFn = Apollo.MutationFunction<UpdateVaccineMutation, UpdateVaccineMutationVariables>;
+
+/**
+ * __useUpdateVaccineMutation__
+ *
+ * To run a mutation, you first call `useUpdateVaccineMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateVaccineMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateVaccineMutation, { data, loading, error }] = useUpdateVaccineMutation({
+ *   variables: {
+ *      updateVaccineInput: // value for 'updateVaccineInput'
+ *   },
+ * });
+ */
+export function useUpdateVaccineMutation(baseOptions?: Apollo.MutationHookOptions<UpdateVaccineMutation, UpdateVaccineMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateVaccineMutation, UpdateVaccineMutationVariables>(UpdateVaccineDocument, options);
+      }
+export type UpdateVaccineMutationHookResult = ReturnType<typeof useUpdateVaccineMutation>;
+export type UpdateVaccineMutationResult = Apollo.MutationResult<UpdateVaccineMutation>;
+export type UpdateVaccineMutationOptions = Apollo.BaseMutationOptions<UpdateVaccineMutation, UpdateVaccineMutationVariables>;
+export const AddVaccineDocument = gql`
+    mutation AddVaccine($addVaccineInput: AddVaccineInput!) {
+  addVaccine(addVaccineInput: $addVaccineInput) {
+    response {
+      status
+      error
+      message
+    }
+    vaccine {
+      id
+    }
+  }
+}
+    `;
+export type AddVaccineMutationFn = Apollo.MutationFunction<AddVaccineMutation, AddVaccineMutationVariables>;
+
+/**
+ * __useAddVaccineMutation__
+ *
+ * To run a mutation, you first call `useAddVaccineMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddVaccineMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addVaccineMutation, { data, loading, error }] = useAddVaccineMutation({
+ *   variables: {
+ *      addVaccineInput: // value for 'addVaccineInput'
+ *   },
+ * });
+ */
+export function useAddVaccineMutation(baseOptions?: Apollo.MutationHookOptions<AddVaccineMutation, AddVaccineMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddVaccineMutation, AddVaccineMutationVariables>(AddVaccineDocument, options);
+      }
+export type AddVaccineMutationHookResult = ReturnType<typeof useAddVaccineMutation>;
+export type AddVaccineMutationResult = Apollo.MutationResult<AddVaccineMutation>;
+export type AddVaccineMutationOptions = Apollo.BaseMutationOptions<AddVaccineMutation, AddVaccineMutationVariables>;
+export const RemoveVaccineDocument = gql`
+    mutation RemoveVaccine($removeVaccineInput: RemoveVaccineInput!) {
+  removeVaccine(removeVaccineInput: $removeVaccineInput) {
+    response {
+      status
+      error
+      message
+    }
+    vaccine {
+      id
+    }
+  }
+}
+    `;
+export type RemoveVaccineMutationFn = Apollo.MutationFunction<RemoveVaccineMutation, RemoveVaccineMutationVariables>;
+
+/**
+ * __useRemoveVaccineMutation__
+ *
+ * To run a mutation, you first call `useRemoveVaccineMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveVaccineMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeVaccineMutation, { data, loading, error }] = useRemoveVaccineMutation({
+ *   variables: {
+ *      removeVaccineInput: // value for 'removeVaccineInput'
+ *   },
+ * });
+ */
+export function useRemoveVaccineMutation(baseOptions?: Apollo.MutationHookOptions<RemoveVaccineMutation, RemoveVaccineMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveVaccineMutation, RemoveVaccineMutationVariables>(RemoveVaccineDocument, options);
+      }
+export type RemoveVaccineMutationHookResult = ReturnType<typeof useRemoveVaccineMutation>;
+export type RemoveVaccineMutationResult = Apollo.MutationResult<RemoveVaccineMutation>;
+export type RemoveVaccineMutationOptions = Apollo.BaseMutationOptions<RemoveVaccineMutation, RemoveVaccineMutationVariables>;

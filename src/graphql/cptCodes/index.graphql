@@ -6,11 +6,72 @@ query FindAllCptCodes($findAllCptCodesInput: FindAllCPTCodesInput!) {
       description
       longDescription
       shortDescription
+      systematic
     }
 
     pagination {
       page
       totalPages
+    }
+
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+query getCPTCode($getCPTCodeInput: GetCPTCodeInput!) {
+  getCPTCode(getCPTCodeInput: $getCPTCodeInput) {
+    cptCode {
+      id
+      code
+      description
+      longDescription
+      shortDescription
+    }
+
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation CreateCPTCode($createCPTCodeInput: CreateCPTCodeInput!) {
+  createCPTCode(createCPTCodeInput: $createCPTCodeInput) {
+    cptCode {
+      id
+    }
+
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation UpdateCPTCode($updateCPTCodeInput: UpdateCPTCodeInput!) {
+  updateCPTCode(updateCPTCodeInput: $updateCPTCodeInput) {
+    cptCode {
+      id
+    }
+
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation RemoveCPTCode($removeCPTCodeInput: RemoveCPTCodeInput!) {
+  removeCPTCode(removeCPTCodeInput: $removeCPTCodeInput) {
+    cptCode {
+      id
     }
 
     response {

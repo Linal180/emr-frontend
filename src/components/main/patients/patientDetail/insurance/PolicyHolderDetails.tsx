@@ -93,6 +93,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit, loading }) => {
       <Grid container spacing={3}>
         <Grid item md={6} sm={12} xs={12}>
           <InputController
+            isRequired
             fieldType="text"
             loading={loading}
             controllerName="firstName"
@@ -113,6 +114,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit, loading }) => {
       <Grid container spacing={3}>
         <Grid item md={6} sm={12} xs={12}>
           <InputController
+            isRequired
             fieldType="text"
             loading={loading}
             controllerName="lastName"
@@ -134,6 +136,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit, loading }) => {
       <Grid container spacing={3}>
         <Grid item md={12} sm={12} xs={12}>
           <InputController
+            isRequired
             fieldType="text"
             loading={loading}
             controllerName="address"
@@ -154,6 +157,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit, loading }) => {
       <Grid container spacing={3}>
         <Grid item md={6} sm={12} xs={12}>
           <InputController
+            isRequired
             fieldType="text"
             loading={loading}
             controllerName="city"
@@ -163,6 +167,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit, loading }) => {
 
         <Grid item md={6} sm={12} xs={12}>
           <Selector
+            isRequired
             addEmpty
             name="state"
             label={STATE}
@@ -185,6 +190,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit, loading }) => {
 
         <Grid item md={6} sm={12} xs={12}>
           <Selector
+            isRequired
             addEmpty
             name="sex"
             label={LEGAL_SEX}
@@ -195,7 +201,7 @@ const PolicyHolderDetails: FC<GeneralFormProps> = ({ isEdit, loading }) => {
         </Grid>
 
         <Grid item md={6} sm={12} xs={12}>
-          <DatePicker name="dob" label={DOB} loading={loading} />
+          <DatePicker name="dob" label={DOB} loading={loading} isRequired />
         </Grid>
       </Grid>
     </Box>

@@ -12,7 +12,6 @@ import { PageHeaderProps } from "../../../interfacesTypes";
 const ChartingPageHeader: FC<PageHeaderProps> = ({ title, path, id }): JSX.Element => {
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between" pb={2.25}>
-
       <Box display="flex">
         <Box mr={2}>
           <Link to={`${PATIENTS_ROUTE}/${id}/details`}>

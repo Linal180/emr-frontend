@@ -51,7 +51,7 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
 
     onError({ message }) {
       message !== NOT_FOUND_EXCEPTION && Alert.error(message)
-      history.push(`/patients/${patientId}/details/10`)
+      history.push(`/patients/${patientId}/details/1`)
     },
 
     onCompleted(data) {
@@ -166,7 +166,7 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
     },
 
     onCompleted() {
-      history.push(`/patients/${patientId}/details/10`)
+      history.push(`/patients/${patientId}/details/1`)
     }
   });
 
@@ -298,8 +298,8 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
     })
   }
 
-  if(isLoading){
-    return <Loader loading loaderText='Fetching Order...'/>
+  if (isLoading) {
+    return <Loader loading loaderText='Fetching Order...' />
   }
 
   return (

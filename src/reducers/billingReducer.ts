@@ -21,6 +21,7 @@ export interface State {
   billingStatus: BillingStatus | null
   claimModalOpen: boolean;
   claimErrorMessages: string[]
+  shouldSubmitPayment: boolean
 }
 
 export const initialState: State = {
@@ -42,7 +43,8 @@ export const initialState: State = {
   isClaimCreated: false,
   isCheckoutModalOpen: false,
   claimModalOpen: false,
-  claimErrorMessages: []
+  claimErrorMessages: [],
+  shouldSubmitPayment: false
 }
 
 export enum ActionType {
@@ -64,7 +66,8 @@ export enum ActionType {
   SET_IS_CHECKOUT_MODAL_OPEN = 'SET_IS_CHECKOUT_MODAL_OPEN',
   SET_INSURANCE_STATUS = 'SET_INSURANCE_STATUS',
   SET_CLAIM_MODAL_OPEN = 'SET_CLAIM_MODAL_OPEN',
-  SET_CLAIM_ERROR_MESSAGES = 'SET_CLAIM_ERROR_MESSAGES'
+  SET_CLAIM_ERROR_MESSAGES = 'SET_CLAIM_ERROR_MESSAGES',
+  SET_SHOULD_SUBMIT_PAYMENT = 'SET_SHOULD_SUBMIT_PAYMENT'
 }
 
 export type Action =
@@ -87,6 +90,7 @@ export type Action =
   | { type: ActionType.SET_IS_CHECKOUT_MODAL_OPEN, isCheckoutModalOpen: boolean }
   | { type: ActionType.SET_CLAIM_MODAL_OPEN, claimModalOpen: boolean }
   | { type: ActionType.SET_CLAIM_ERROR_MESSAGES, claimErrorMessages: string[] }
+  | { type: ActionType.SET_SHOULD_SUBMIT_PAYMENT, shouldSubmitPayment: boolean }
 
 
 export const billingReducer = (state: State, action: Action): State => {
@@ -203,6 +207,12 @@ export const billingReducer = (state: State, action: Action): State => {
       return {
         ...state,
         claimErrorMessages: action.claimErrorMessages
+      }
+
+    case ActionType.SET_SHOULD_SUBMIT_PAYMENT:
+      return {
+        ...state,
+        shouldSubmitPayment: action.shouldSubmitPayment
       }
   }
 };

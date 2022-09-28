@@ -2,7 +2,7 @@
 import moment from 'moment'
 import { useCallback, useEffect, useState, } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { Box, colors, Grid, Typography } from '@material-ui/core'
+import { Box, colors, Typography } from '@material-ui/core'
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date'
 //components
 import ViewDataLoader from '../ViewDataLoader'
@@ -95,14 +95,13 @@ const SlotsComponent = ({ facilityId, state }: SlotsComponentProps) => {
   }
 
   return (
-    <Grid container>
-      <Grid item xs={12} sm={12} md={6}>
-        <Box display="flex" justifyContent="center">
+    <>
+      <Box display='flex' justifyContent='space-between' flexWrap='wrap'>
+        <Box flex={1}>
           <AppointmentDatePicker date={date} setDate={dateHandler} />
         </Box>
-      </Grid>
-      <Grid item xs={12} sm={12} md={6}>
-        <Box>
+
+        <Box flex={1}>
           <Box pb={2} mx={3} mb={2} textAlign='center' borderBottom={`1px solid ${colors.grey[300]}`}>
             <Typography variant="h4">{AVAILABLE_SLOTS}</Typography>
           </Box>
@@ -127,8 +126,8 @@ const SlotsComponent = ({ facilityId, state }: SlotsComponentProps) => {
             </ul>
           )}
         </Box>
-      </Grid>
-    </Grid>
+      </Box>
+    </>
   )
 }
 

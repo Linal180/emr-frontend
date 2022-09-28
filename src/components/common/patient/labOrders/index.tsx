@@ -17,8 +17,8 @@ import SideDrawer from "../../SideDrawer";
 // constant, utils and styles block
 import { OutlinedAddIcon, PrintGrayIcon } from "../../../../assets/svgs";
 import {
-  ADD_LAB_ORDERS_RESULTS_ROUTE, APPOINTMENT, DATE, EMPTY_OPTION, LAB_TEST_STATUSES, MANUAL_ENTRY, NOT_FOUND_EXCEPTION,
-  ORDER_NUM, PAGE_LIMIT, RESULTS, RESULTS_ENTERED, STATUS, TESTS, USER_NOT_FOUND_EXCEPTION_MESSAGE
+  ADD_LAB_ORDERS_RESULTS_ROUTE, APPOINTMENT, DATE, EMPTY_OPTION, LAB_ORDERS_LIMIT, LAB_TEST_STATUSES, MANUAL_ENTRY, NOT_FOUND_EXCEPTION,
+  ORDER_NUM, RESULTS, RESULTS_ENTERED, STATUS, TESTS, USER_NOT_FOUND_EXCEPTION_MESSAGE
 } from "../../../../constants";
 import {
   LabTestPayload, LabTests, LabTestsPayload, LabTestStatus, useFindAllLabTestLazyQuery, useUpdateLabTestMutation
@@ -66,7 +66,7 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisabl
 
   const fetchLabTests = useCallback(async () => {
     try {
-      const pageInputs = { page, limit: PAGE_LIMIT, }
+      const pageInputs = { page, limit: LAB_ORDERS_LIMIT }
       await findAllLabTest({
         variables: {
           labTestInput: {
@@ -187,7 +187,12 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisabl
               </Box>
 
               {!shouldDisableEdit && <Box mb={2}>
-                <Button variant="outlined" color="inherit" className='blue-button-new' startIcon={<Box width={20}><Add /></Box>} onClick={toggleSideDrawer}>
+                <Button variant="outlined"
+                  color="inherit" className='blue-button-new'
+                  startIcon={<Box width={20}><Add /></Box>}
+                  onClick={toggleSideDrawer}
+                  disabled={loading}
+                >
                   {MANUAL_ENTRY}
                 </Button>
               </Box>}
@@ -234,12 +239,16 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisabl
                               {orderNumber}
                             </Typography>
                           </Box>
-                          {/* <Link to={`${EDIT_LAB_ORDERS_ROUTE}/${id}/${orderNumber}`}>
-                              {orderNumber}
-                            </Link> */}
                         </TableCell>
                         <TableCell scope="row">
-                          {appointmentType?.name ? `${appointmentType?.name ?? ''}  ${convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm:ss')}` : '- -'}
+                          <Typography>
+                            <b>
+                              {appointmentType?.name ? `${appointmentType?.name ?? ''}` : '--'}
+                            </b>
+                            <br />
+                            {appointmentType?.name ? convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm A') : ''}
+                          </Typography>
+
                         </TableCell>
                         <TableCell scope="row">
                           <ul>
@@ -248,7 +257,7 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisabl
                             ))}
                           </ul>
                         </TableCell>
-                        <TableCell scope="row">{convertDateFromUnix(createdAt, 'MM-DD-YYYY hh:mm:ss a')}</TableCell>
+                        <TableCell scope="row">{convertDateFromUnix(createdAt, 'MM-DD-YYYY')}</TableCell>
                         <TableCell scope="row">
                           {isEdit && orderNum === orderNumber ? <>
                             <Selector
@@ -269,7 +278,7 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisabl
                           }
                         </TableCell>
                         <TableCell scope="row">
-                          {testObservations?.length ? convertDateFromUnix(testObservations?.[0]?.createdAt, 'MM-DD-YYYY hh:mm:ss a') : '- -'}
+                          {testObservations?.length ? convertDateFromUnix(testObservations?.[0]?.createdAt, 'MM-DD-YYYY') : '- -'}
                         </TableCell>
                         <TableCell scope="row">
                           <Box display="flex" alignItems="center">

@@ -190,6 +190,7 @@ query GetSuperBillInfo($superBillInput: SuperBillInput!) {
       }
 
       contacts {
+        primaryContact
         phone
         address
         email
@@ -237,8 +238,12 @@ query GetSuperBillInfo($superBillInput: SuperBillInput!) {
       lastName
 
       contacts {
+        primaryContact
         address
         phone
+        city
+        state
+        zipCode
       }
 
       dob
@@ -376,6 +381,47 @@ query FetchBillingClaimStatuses(
     pagination {
       page
       totalPages
+    }
+  }
+}
+
+mutation CreateUpFrontPayment(
+  $createUpFrontPaymentInput: UpFrontPaymentInput!
+) {
+  createUpFrontPayment(createUpFrontPaymentInput: $createUpFrontPaymentInput) {
+    response {
+      status
+      message
+    }
+
+    upFrontPayment {
+      id
+    }
+  }
+}
+
+query FetchUpFrontPaymentDetailsByAppointmentId($appointmentId: String!) {
+  fetchUpFrontPaymentDetailsByAppointmentId(appointmentId: $appointmentId) {
+    response {
+      status
+      message
+    }
+
+    upFrontPayment {
+      id
+      totalCharges
+      paid
+      adjustments
+      balance
+      expected
+
+      UpFrontPaymentTypes {
+        id
+        paymentType
+        amount
+        type
+        notes
+      }
     }
   }
 }

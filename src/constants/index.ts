@@ -6,7 +6,7 @@ import { v4 as uuid } from "uuid";
 // graphql and interfaces block
 import {
   AllergiesIcon, CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, HistoryIcon, LabOrderIcon, MedicationIcon,
-  NumberIcon, ProblemsIcon, RadioGroupIcon, SelectIcon, TextAreaIcon, TextIcon, TriageIcon, VitalsIcon
+  NumberIcon, ProblemsIcon, RadioGroupIcon, SelectIcon, TextAreaIcon, TextIcon, TriageIcon, VaccineIcon, VitalsIcon
 } from "../assets/svgs";
 import {
   AbnormalFlag, AllergySeverity, AppointmentStatus, Communicationtype, CopayType, DoctorPatientRelationType, ElementType,
@@ -18,7 +18,7 @@ import {
 import {
   ColumnTypes, FormBuilderFormInitial,
   FormInitialType, ItemsTypes, LabOrdersResultOption1, LabOrdersResultOption2, SelectOptions, SelectorOption,
-  SpecimenTypeOption, StepLabelType, TestOption
+  SpecimenTypeOption, StepLabelType, TestOption, UpFrontPaymentTypeProps
 } from "../interfacesTypes";
 import {
   formatValue, getFormattedDate, getStandardTime, mapEnum, mapEnumWithCode, setRecord, sortingValue
@@ -90,6 +90,7 @@ export enum Heart_RATE_RANGES {
 
 // constants
 export const DIED_TEXT = 'Died'
+export const ICD_TEXT = 'International Classification of Diseases'
 export const DISEASE_TEXT = 'Disease'
 export const ONSET_AGE_TEXT = 'Onset Age'
 export const RELATIVE = 'Relative'
@@ -320,6 +321,7 @@ export const FOOD_ALLERGIES = "Food Allergies";
 export const ENVIRONMENTAL_ALLERGIES = "Environmental Allergies";
 export const NO_DRUG_ALLERGIES_RECORDED = "No Drug Allergies Recorded";
 export const NO_FOOD_ALLERGIES_RECORDED = "No Food Allergies Recorded";
+export const NO_SURGICAL_PROCEDURE_RECORDED = "No Surgical Procedure Recorded";
 export const NO_ENVIRONMENTAL_ALLERGIES_RECORDED = "No Environmental Allergies Recorded";
 export const CURRENT = "Current";
 export const ACUITY = "Acuity";
@@ -525,6 +527,17 @@ export const SAVE_DRAFT = "Save as Draft";
 export const UPLOAD_PICTURE = "Upload Picture";
 export const ALLOW_CANCELLATION = "Allow Cancellations";
 export const VACCINE_TEXT = "Vaccine";
+export const ADD_VACCINE_TEXT = "Add Vaccine";
+export const UPDATE_VACCINE_TEXT = "Update Vaccine";
+export const MANUFACTURER_TEXT = "Manufacturer";
+export const ADMINISTRATION_DATE = "Administration Date";
+export const ADMINISTER_BY = "Administer By";
+export const SITE_TEXT = "Site";
+export const NDC_TEXT = "NDC";
+export const VIS_GIVEN_TEXT = "VIS Given";
+export const DATE_ON_VIS = "Date on VIS";
+export const LOT_NO_TEXT = "Lot #";
+export const AMOUNT_UNIT_TEXT = "Amount/unit";
 export const PROBLEMS_TEXT = "Problems";
 export const PROBLEM_TEXT = "Problem";
 export const MEDICATION_TEXT = "Medication";
@@ -599,7 +612,7 @@ export const DEACTIVATE_EMERGENCY_ACCESS_MODE =
   "Deactivate Emergency Access Mode";
 export const TEMPORARY_EMERGENCY_ACCESS_DESCRIPTION =
   "Emergency access mode gives practice members temporary administrator permissions in the event of an emergency or crisis. Access is secure and only available to pre-selected practice members designated by a practice administrator.";
-export const ICT_TEN = "ICT-10 Codes";
+export const ICD_TEN = "ICD-10 Codes";
 export const ICD_TEN_CODES = "ICD-10 Codes";
 export const ICD_CODE = "ICD Code";
 export const SNOMED_CODE = "SnoMED Code:";
@@ -613,8 +626,8 @@ export const CUSTOM_CODES = "Custom Codes";
 export const MEDICINES = "Medicines";
 export const TESTS = "Tests";
 export const VACCINES = "Vaccines";
-export const ICT_TEN_DESCRIPTION =
-  "Create and edit ICT-10 codes inventory for your practice";
+export const ICD_TEN_DESCRIPTION =
+  "Create and edit ICD-10 codes inventory for your practice";
 export const ICT_NINE_DESCRIPTION =
   "Create and edit ICT-9 codes inventory for your practice";
 export const CPT_CODES_DESCRIPTION =
@@ -680,8 +693,10 @@ export const DECEASED_DATE = "Deceased Date";
 export const DEA_TERM_DATE = "DEA Term Date";
 export const PATIENT_RECEIPT = "Patient Receipt";
 export const DATE_OF_SERVICE = "Date of Service";
+export const DOS = "DOS";
 export const DEA_ACTIVE_DATE = "DEA Active Date";
 export const PROVIDER_INFORMATION = "Provider Information";
+export const CLINIC = "Clinic";
 export const LANGUAGE_SPOKEN = "Language Spoken";
 export const DEGREE_CREDENTIALS = "Degree/ Credentials";
 export const SOCIAL_SECURITY_TYPE = "Social Security Type";
@@ -802,6 +817,7 @@ export const ROLE = "Role";
 export const UNIT = "Unit";
 export const INFO = "Info";
 export const PAGE_LIMIT = 9;
+export const LAB_ORDERS_LIMIT = 50;
 export const PAGE_LIMIT_EIGHT = 8;
 export const INS_1 = "Ins 1";
 export const INS = "Ins";
@@ -1205,9 +1221,13 @@ export const PRIVACY = "Privacy";
 export const RECEIVED = "Received";
 export const INSURANCE_SELECTION = "Insurance Selection";
 export const NO_INSURANCE_ADDED = "No Insurance Added";
+export const AMOUNT_TYPE = "Amount Type";
+export const CHARGE_ENTRY = "Charge Entry";
 export const PAYMENT = "Payment";
 export const GROUP_NO = "Group #";
 export const ROLES_TEXT = "Roles";
+export const ADDITIONAL = "Additional";
+export const PREVIOUS = "Previous";
 export const IS_ACTIVE = "Active";
 export const TOTAL_TEXT = "Total";
 export const TWO_FA_TEXT = "2-FA";
@@ -1246,7 +1266,10 @@ export const CASH_PAID = "Cash Paid";
 export const TIME_SLOT = "Time Slot";
 export const HOMEBOUND = "Home Bound";
 export const PROFILE_TEXT = "Profile";
-export const TOTAL_CHARGES = "Total Charges:";
+export const EXPECTED = "Expected";
+export const ADJUSTMENTS = "Adjustments";
+export const BALANCE = "Balance";
+export const TOTAL_CHARGES = "Total Charges :";
 export const TOTAL_DISCOUNTS = "Total Discounts:";
 export const PATIENT_PAID = "Patient Paid:";
 export const INSURANCE_PAID = "Insurance Paid:";
@@ -1465,6 +1488,7 @@ export const REMOVE_COPAY_AMOUNT = "Remove Copay Amount";
 export const NOT_FOUND_EXCEPTION = "Not Found Exception";
 export const FORBIDDEN_EXCEPTION = "Forbidden Exception";
 export const SEARCH_FOR_PROBLEMS = "Search for Problems";
+export const SEARCH_FOR_VACCINES = "Search for vaccines";
 export const SEARCH_FOR_DISEASE = "Search for Disease";
 export const CONTACT_INFORMATION = "Contact Information";
 export const PREVIOUS_FIRST_NAME = "Previous First Name";
@@ -1534,6 +1558,9 @@ export const DELETE_SERVICE_DESCRIPTION = "Confirm to delete Service";
 export const PUBLIC_FORM_FAIL_MESSAGE = 'Your record is not created.';
 export const VERIFICATION_MESSAGE = "You are verified. Please login.";
 export const DELETE_PROBLEM_DESCRIPTION = "Confirm to delete problem";
+export const DELETE_VACCINE_DESCRIPTION = "Confirm to delete vaccine";
+export const DELETE_ICD_10_DESCRIPTION = "Confirm to delete icd-10";
+export const DELETE_CPT_CODE_DESCRIPTION = "Confirm to delete CPT code";
 export const DELETE_ALLERGY_DESCRIPTION = "Confirm to delete allergy";
 export const CHOOSE_YOUR_PAYMENT_METHOD = "Choose your Payment Method";
 export const NEXT_SCHEDULED_APPOINTMENT = "Next Scheduled Appointment";
@@ -1603,7 +1630,9 @@ export const SIGN_RECORD_LEARN_MORE_TEXT = "You are about to sign this document 
 export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure you want to delete this record?";
 export const CANCEL_RECORD_LEARN_MORE_TEXT = "You are about to cancel this record permanently. Are you sure you want to cancel this record?";
 export const DISCHARGE_MODAL_PATIENT_DESCRIPTION = "You are about to discharge the patient permanently. Are you sure you want to discharge the patient?";
-export const appointmentCancellationDescription = `Are you sure you want to cancel Devone Lane’s Appointment on 16 Feb, 2022 at time 11:00am?`;
+export const appointmentCancellationDescription = `Are you sure you want to cancel`;
+export const APPOINTMENT_ON = `Appointment on`
+export const AT = `at`
 export const CONSENT_AGREEMENT_LABEL = "I agree to the terms & conditions and hereby, authorize AIMED health facilities to keep my personal health record.";
 export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING2 = "Please consult your personal benefit plan details for any out-of-pocket costs which might apply (if applicable).";
 export const APPOINTMENT_CONFIRM_SUBHEADING = "Skip some of the paperwork at the clinic by adding more information. You can access the information form now or later from your email or text message.";
@@ -1685,7 +1714,10 @@ export const PROVIDER_PUBLIC_APPOINTMENT_ROUTE = "/provider-public-appointment";
 export const FACILITY_PUBLIC_APPOINTMENT_ROUTE = "/facility-public-appointment";
 export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION_ROUTE}/success`;
 export const PATIENT_APPOINTMENT_CANCEL = `${PUBLIC_APPOINTMENT_ROUTE}/appointment-cancel`;
-export const INSURANCE_ELIGIBILITY_ROUTE = `/insurance-eligibility`
+export const INSURANCE_ELIGIBILITY_ROUTE = `/insurance-eligibility`;
+export const ICD_10_ROUTE = `/icd-10`;
+export const CPT_CODE_ROUTE = `/cpt-code`;
+
 // Facility Routes
 export const BILLING_PROFILE_ROUTE = "billing-profile";
 export const FACILITY_INFO_ROUTE = "facility-information";
@@ -1856,6 +1888,7 @@ export const CANT_BOOK_APPOINTMENT = "You can not book this appointment.";
 export const ALREADY_DEACTIVATED_MESSAGE = "User is already deactivated.";
 export const PATIENT_ALLERGY_ADDED = "Patient allergy added successfully!";
 export const PATIENT_PROBLEM_ADDED = "Patient problem added successfully!";
+export const PATIENT_SURGICAL_HISTORY_ADD = "Patient surgical history added successfully!"
 export const CANT_CANCELLED_APPOINTMENT = "Appointment can't be cancelled.";
 export const INSURANCE_CARD_DELETED = 'Insurance Card deleted successfully';
 export const ADMIN_PORTAL_MESSAGE = "Please sign in to explore Admin Portal.";
@@ -1864,9 +1897,14 @@ export const EMERGENCY_ACCESS_UPDATE = "Emergency Access updated successfully";
 export const PATIENT_ALLERGY_UPDATED = "Patient allergy updated successfully!";
 export const OTP_NOT_FOUND_EXCEPTION_MESSAGE = "Precondition Failed Exception";
 export const PATIENT_PROBLEM_UPDATED = "Patient problem updated successfully!";
+export const PATIENT_MEDICATION_UPDATED = "Patient medication updated successfully!";
+export const PATIENT_SURGICAL_HISTORY_UPDATED = "Patient surgical history updated successfully!";
 export const RESET_PASSWORD_MESSAGE = "Please enter your new secure password.";
 export const PATIENT_ALLERGY_DELETED = "Patient allergy deleted successfully!";
 export const PATIENT_PROBLEM_DELETED = "Patient problem deleted successfully!";
+export const PATIENT_SURGICAL_HISTORY_DELETE = "Patient surgical history removed successfully!"
+export const PATIENT_MEDICATION_ADD = "Patient medication added successfully"
+export const MEDICATION_PROBLEM_DELETED = "Medication deleted successfully";
 export const SCHEDULE_CREATED_SUCCESSFULLY = "Schedule is booked successfully";
 export const SET_PASSWORD_SUCCESS = "Your password has been set successfully.";
 export const SCHEDULE_UPDATED_SUCCESSFULLY = "Schedule is updated successfully";
@@ -1910,6 +1948,8 @@ export const LOGGED_OUT_BEFORE_RESETTING_PASSWORD =
   "Please log out before resetting password";
 export const FORGET_PASSWORD_SUCCESS =
   "An email has been sent to your registered email address";
+export const UPFRONT_PAYMENT_SUCCESS =
+  "UpFront Payment Saved Successfully";
 export const APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY =
   "Appointment status is updated successfully";
 export const APPOINTMENT_REMINDER_SENT_SUCCESSFULLY =
@@ -2616,6 +2656,12 @@ export enum CARD_LAYOUT_MODAL {
   ICDCodes = 'ICDCodes',
 }
 
+export enum UPFRONT_PAYMENT_TYPES {
+  Copay = 'Copay',
+  Additional = 'Additional',
+  Previous = 'Previous'
+}
+
 export enum ATTACHMENT_TITLES {
   Signature = "Signature",
   Agreement = "Agreement",
@@ -2702,35 +2748,35 @@ export const MAPPED_STATUS = [
 
 export const INVENTORY_ITEMS = [
   {
-    name: ICT_TEN,
-    link: "/",
-    desc: ICT_TEN_DESCRIPTION,
+    name: ICD_TEN,
+    link: ICD_10_ROUTE,
+    desc: ICD_TEN_DESCRIPTION,
   },
-  {
-    name: ICT_NINE,
-    link: "/",
-    desc: ICT_NINE_DESCRIPTION,
-  },
+  // {
+  //   name: ICT_NINE,
+  //   link: "/",
+  //   desc: ICT_NINE_DESCRIPTION,
+  // },
   {
     name: CPT_CODES,
-    link: "/",
+    link: CPT_CODE_ROUTE,
     desc: CPT_CODES_DESCRIPTION,
   },
-  {
-    name: MEDICINES,
-    link: "/",
-    desc: MEDICINES_DESCRIPTION,
-  },
-  {
-    name: TESTS,
-    link: "/",
-    desc: TESTS_DESCRIPTION,
-  },
-  {
-    name: VACCINES,
-    link: "/",
-    desc: VACCINES_DESCRIPTION,
-  },
+  // {
+  //   name: MEDICINES,
+  //   link: "/",
+  //   desc: MEDICINES_DESCRIPTION,
+  // },
+  // {
+  //   name: TESTS,
+  //   link: "/",
+  //   desc: TESTS_DESCRIPTION,
+  // },
+  // {
+  //   name: VACCINES,
+  //   link: "/",
+  //   desc: VACCINES_DESCRIPTION,
+  // },
 ];
 
 export const APPOINTMENT_SETTINGS_ITEMS = [
@@ -3065,6 +3111,13 @@ export const TEST_FIELD_INITIAL_VALUES: TestOption = {
   diagnosesIds: [EMPTY_MULTISELECT_OPTION]
 };
 
+export const UPFRONT_INITIAL_VALUES: UpFrontPaymentTypeProps = {
+  amount: 0,
+  type: { id: '', name: '' },
+  notes: '',
+  paymentType: UPFRONT_PAYMENT_TYPES.Copay
+};
+
 export const ORDERS_RESULT_INITIAL_VALUES_1: LabOrdersResultOption1 = {
   normalRange: '',
   normalRangeUnits: '',
@@ -3077,11 +3130,21 @@ export const ORDERS_RESULT_INITIAL_VALUES_2: LabOrdersResultOption2 = {
   resultValue: { id: '', name: '' },
 };
 
+export const UPFRONT_TYPE_OPTIONS: SelectorOption[] = [
+  { id: 'Cash', name: 'Cash' },
+  { id: 'Check', name: 'Check' },
+  { id: 'American Express', name: 'American Express' },
+  { id: 'Mastercard', name: 'Mastercard' },
+  { id: 'Visa', name: 'Visa' },
+  { id: 'Discover', name: 'Discover' },
+  { id: 'Other', name: 'Other' },
+];
+
 export const CHECK_IN_STEPS = [
   CHECK_IN,
   PATIENT_INFO,
   CHART_TEXT,
-  LAB_ORDERS,
+  // LAB_ORDERS,
   BILLING_AND_INSURANCE,
 ];
 
@@ -3359,7 +3422,8 @@ export const MISCELLANEOUS_SETTINGS_ITEMS = [
   }
 ];
 
-export const TELEHEALTH_URL = 'https://doxy.me'
+export const TELEHEALTH_URL = 'https://doxy.me';
+export const EXPRESS_HEALTHCARE_URL = "https://www.expresshealthcaremd.com/wp-content/uploads/2022/04/new-transparent-logo.png";
 
 //Form Builder API urls
 export const USER_FORM_IMAGE_UPLOAD_URL = `/user-form/upload`
@@ -3729,6 +3793,11 @@ export const PATIENT_CHARTING_TABS = [
     icon: LabOrderIcon,
     title: "Lab Orders",
     value: "7",
+  },
+  {
+    icon: VaccineIcon,
+    title: "Vaccines",
+    value: "8",
   }
 ]
 
@@ -3882,6 +3951,7 @@ export const FAMILY_RELATIVE_MAPPED = [
 
 
 export const familyRelativeFormDefaultValue = {
+  id: '',
   relative: { id: '', name: '' },
   onsetAge: '',
   died: '',
@@ -4365,3 +4435,139 @@ export enum CONFIRMATION_MODAL_TYPE {
   CANCEL = 'cancel',
   DISCHARGE = 'discharge'
 }
+
+export const VACCINE_UNITS_MAPPED = [
+  { id: "mL", name: "ML" },
+  { id: "mcg", name: "MCG" },
+  { id: "mg", name: "MG" },
+]
+
+export const VACCINE_ROUTES_MAPPED = [
+  { id: "buccal", name: "Buccal" },
+  { id: "dental", name: "Dental" },
+  { id: "epidural", name: "Epidural" },
+  { id: "hemodialysis", name: "Hemodialysis" },
+  { id: "implant", name: "Implant" },
+  { id: "in_vitro", name: "In Vitro" },
+  { id: "inhalation", name: "Inhalation" },
+  { id: "injection", name: "Injection" },
+  { id: "intra_arterial", name: "Intra Arterial" },
+  { id: "intra_articular", name: "Intra Articular" },
+  { id: "intra_cavernosal", name: "Intra Cavernosal" },
+  { id: "intra_urethral", name: "Intra Urethral" },
+  { id: "intra_dermal", name: "Intra Dermal" },
+  { id: "intra_muscular", name: "Intra Muscular" },
+  { id: "intra_nasal", name: "Intra Nasal" },
+  { id: "intra_ocular", name: "Intra Ocular" },
+  { id: "intra_peritoneal", name: "Intra Peritoneal" },
+  { id: "intra_pleural", name: "Intra Pleural" },
+  { id: "intra_thecal", name: "Intra Thecal" },
+  { id: "intra Uterine", name: "Intra Uterine" },
+  { id: "intra_venous", name: "Intra Venous" },
+  { id: "intra_vesical", name: "Intra Vesical" },
+  { id: "irrigation", name: "Irrigation" },
+  { id: "miscellaneous", name: "Miscellaneous" },
+  { id: "mucous_membrane", name: "Mucous Membrane" },
+  { id: "ophthalmic", name: "Ophthalmic" },
+  { id: "oral", name: "Oral" },
+  { id: "otic", name: "Otic" },
+  { id: "perfusion", name: "Perfusion" },
+  { id: "rectal", name: "Rectal" },
+  { id: "subcutaneous", name: "Subcutaneous" },
+  { id: "sublingual", name: "Sublingual" },
+  { id: "Topical", name: "Topical" },
+  { id: "transdermal", name: "Transdermal" },
+  { id: "trans_lingual", name: "Trans Lingual" },
+  { id: "vaginal", name: "Vaginal" },
+]
+
+
+export const VACCINE_SITES_MAPPED = [
+  { id: "bladder", name: "Bladder" },
+  { id: "ear_left", name: "Ear, Left" },
+  { id: "chest_left", name: "Chest, Left" },
+  { id: "buttock_left", name: "Buttock, Left" },
+  { id: "ankle_left", name: "Ankle, Left" },
+  { id: "abdomen_llq", name: "Abdomen, LLQ" },
+  { id: "abdomen_luq", name: "Abdomen, LUQ" },
+  { id: "abdomen_rlq", name: "Abdomen, RLQ" },
+  { id: "abdomen_ruq", name: "Abdomen, RUQ" },
+  { id: "ankle_right", name: "Ankle, Right" },
+  { id: "chest_right", name: "Chest, Right" },
+  { id: "buttock_right", name: "Buttock, Right" },
+  { id: "deltoid_left", name: "Deltoid, Left" },
+  { id: "deltoid_right", name: "Deltoid, Right" },
+  { id: "arm_left_upper", name: "Arm, Left Upper" },
+  { id: "arm_right_upper", name: "Arm, Right Upper" },
+  { id: "chest_port_left", name: "Chest Port, Left" },
+  { id: "chest_port_right", name: "Chest Port, Right" },
+  { id: "dorsogluteal_left", name: "Dorsogluteal, Left" },
+  { id: "dorsogluteal_right", name: "Dorsogluteal, Right" },
+  { id: "antecubital_fossa_left", name: "Antecubital Fossa, Left" },
+  { id: "antecubital_fossa_right", name: "Antecubital Fossa, Right" },
+  { id: "oral", name: "Oral" },
+  { id: "nasal", name: "Nasal" },
+  { id: "foot_left", name: "Foot, Left" },
+  { id: "eye_right", name: "Eye, Right" },
+  { id: "eye_left", name: "Eye, Left" },
+  { id: "hand_right", name: "Hand, Right" },
+  { id: "hand_left", name: "Hand, Left" },
+  { id: "hip_right", name: "Hip, Right" },
+  { id: "hip_left", name: "Hip, Left" },
+  { id: "knee_left", name: "Knee, Left" },
+  { id: "knee_right", name: "Knee, Right" },
+  { id: "foot_right", name: "Foot, Right" },
+  { id: "ear_right", name: "Ear, Right" },
+  { id: "elbow_right", name: "Elbow, Left" },
+  { id: "elbow_left", name: "Elbow, Right" },
+  { id: "forearm_left", name: "Forearm, Left" },
+  { id: "forearm_right", name: "Forearm, Right" },
+  { id: "other", name: "Other" },
+  { id: "penis", name: "Penis" },
+  { id: "rectal", name: "Rectal" },
+  { id: "rectus_femoris_left", name: "Rectus femoris, Left" },
+  { id: "rectus_femoris_right", name: "Rectus femoris, Right" },
+  { id: "scrotum", name: "Scrotum" },
+  { id: "shoulder_left", name: "Shoulder, Left" },
+  { id: "shoulder_right", name: "Shoulder, Right" },
+  { id: "thigh_left", name: "Thigh, Left" },
+  { id: "thigh_right", name: "Thigh, Right" },
+  { id: "thumb_left", name: "Thumb, Left" },
+  { id: "thumb_right", name: "Thumb, Right" },
+  { id: "vaginal", name: "Vaginal" },
+  { id: "uterus", name: "Uterus" },
+  { id: "vastus_lateralis_left", name: "Vastus Lateralis, Left" },
+  { id: "vastus_lateralis_right", name: "Vastus Lateralis, Right" },
+  { id: "ventrogluteal_left", name: "Ventrogluteal, Left" },
+  { id: "ventrogluteal_right", name: "Ventrogluteal, Right" },
+  { id: "wrist_left", name: "Wrist, Left" },
+  { id: "wrist_right", name: "Wrist, Right" },
+  { id: "left_arm", name: "Left Arm" },
+  { id: "right_arm", name: "Right Arm" },
+  { id: "right_upper_arm", name: "Right Upper Arm" },
+  { id: "left_upper_arm", name: "Left Upper Arm" },
+  { id: "left_leg", name: "Left Leg" },
+  { id: "right_leg", name: "Right Leg" },
+  { id: "left_acf", name: "Left ACF" },
+  { id: "right_acf", name: "Right ACF" },
+  { id: "abdomen", name: "Abdomen" },
+  { id: "left_lower_thigh", name: "Left Lower Thigh" },
+  { id: "right_lower_thigh", name: "Right Lower Thigh" },
+  { id: "left_upper_thigh", name: "Left Upper Thigh" },
+  { id: "right_upper_thigh", name: "Right Upper Thigh" },
+  { id: "right_upper_extremity", name: "Right Upper Extremity" },
+  { id: "left_lower_extremity", name: "Left Lower Extremity" },
+  { id: "left_upper_extremity", name: "Left Upper Extremity" },
+  { id: "right_lower_extremity", name: "Right Lower Extremity" },
+  { id: "intra_articular_joint", name: "INTRA ARTICULAR JOINT" },
+  { id: "left_abdomen", name: "Left Abdomen" },
+  { id: "right_abdomen", name: "Right Abdomen" },
+  { id: "bilateral_knee", name: "Bilateral Knee" },
+  { id: "bilateral_thigh", name: "Bilateral Thigh" },
+  { id: "left_upper_eyelid", name: "Left Upper Eyelid" },
+  { id: "right_lower_eyelid", name: "Right Lower Eyelid" },
+  { id: "right_upper_eyelid", name: "Right Upper Eyelid" },
+  { id: "left_lower_eyelid", name: "Left Lower Eyelid" },
+  { id: "left_flank", name: "Left Flank" },
+  { id: "right_flank", name: "Right Flank" },
+]

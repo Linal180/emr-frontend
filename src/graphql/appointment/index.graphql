@@ -419,3 +419,26 @@ mutation UpdateAppointmentBillingStatus(
 
   }
 }
+
+
+query GetPublicAppointment($getAppointmentWithToken: GetAppointmentWithToken!) {
+  getAppointmentWithToken(getAppointmentWithToken: $getAppointmentWithToken) {
+    response {
+      error
+      status
+      message
+    }
+
+    appointment {
+      id
+      scheduleEndDateTime
+      scheduleStartDateTime
+
+      patient {
+        id
+        firstName
+        lastName
+      }
+    }
+  }
+}
