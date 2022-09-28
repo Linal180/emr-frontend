@@ -73,7 +73,7 @@ export const useColorLibStepIconStyles = makeStyles({
 
 export const useExternalPatientStyles = makeStyles({
   stepperGrid: {
-    minWidth: 320,
+    // minWidth: 320,
   },
 
   mainGridContainer: {
