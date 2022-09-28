@@ -88,6 +88,7 @@ import ClaimStatus from "../pages/main/billing/claimStatusListing";
 import { SendSMS } from "../pages/main/sendSms";
 import { InsuranceEligibility } from "../pages/main/insuranceEligibility";
 import { ICDTenCodes } from "../pages/main/icd10";
+import { CptCodes } from "../pages/main/cptCode";
 // constants, contexts and utils
 import { AuthContext } from "../context";
 import { isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin } from "../utils";
@@ -104,7 +105,7 @@ import {
   PRACTICE_DETAILS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, PROFILE_ROUTE, PROVIDER_PUBLIC_APPOINTMENT_ROUTE,
   PUBLIC_FORM_BUILDER_FAIL_ROUTE, PUBLIC_FORM_BUILDER_ROUTE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, RESET_PASSWORD_ROUTE,
   ROLES_ROUTE, ROOT_ROUTE, SETTINGS_ROUTE, SET_PASSWORD_ROUTE, SIGNATURE_ROUTE, SLOT_CONFIRMATION, STAFF_ROUTE,
-  LAB_RESULTS_INFO, SUPER_BILL_ROUTE, TWO_FA_AUTHENTICATION_ROUTE, CHART_ROUTE, SEND_SMS_ROUTE, ADD_TEST_SPECIMEN_ROUTE, INSURANCE_ELIGIBILITY_ROUTE, ICD_10_ROUTE
+  LAB_RESULTS_INFO, SUPER_BILL_ROUTE, TWO_FA_AUTHENTICATION_ROUTE, CHART_ROUTE, SEND_SMS_ROUTE, ADD_TEST_SPECIMEN_ROUTE, INSURANCE_ELIGIBILITY_ROUTE, ICD_10_ROUTE, CPT_CODE_ROUTE
 } from "../constants";
 import { LabResultDetail } from "../pages/main/reports/labResultDetail";
 
@@ -212,6 +213,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={SEND_SMS_ROUTE} component={SendSMS} />
       <PrivateRoute exact path={INSURANCE_ELIGIBILITY_ROUTE} component={InsuranceEligibility} />
       <PrivateRoute exact path={ICD_10_ROUTE} component={ICDTenCodes} />
+      <PrivateRoute exact path={CPT_CODE_ROUTE} component={CptCodes} />
 
       <PublicRoute path={MAINTENANCE_ROUTE} component={Maintenance} allow exact />
 
