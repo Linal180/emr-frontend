@@ -320,8 +320,8 @@ const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({
         {problemId && stateProblem ? <>
           <Box display="flex" alignItems="center" justifyContent="space-between">
             <Box display="flex" alignItems="center" >
-              <Button size='small' onClick={backHandler}
-                disabled={loading || isEdit }
+              <Button size='small' onClick={isEdit ? () => handleClose(false) : backHandler}
+                disabled={loading}
               >
                 <PageBackIcon />
               </Button>
