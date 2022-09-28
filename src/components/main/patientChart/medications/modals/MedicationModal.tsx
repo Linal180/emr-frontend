@@ -378,6 +378,7 @@ const MedicationModal: FC<AddModalProps> = ({
                     loading={loading}
                     label={""}
                     name='stopDate'
+                    disableFuture={false}
                   />
                 </Grid>
               </Grid>

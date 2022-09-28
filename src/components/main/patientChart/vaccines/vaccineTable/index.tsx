@@ -66,10 +66,10 @@ const VaccinesTable: FC<VaccinesTableProps> = (props): JSX.Element => {
           dispatch({ type: ActionType.SET_DEL_ID, delId: '' })
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
-          if (!!data && (data.length > 1 || isLast(data?.length, page))) {
+          if (!!data && ((data?.length || 0) > 1 || isLast(data?.length || 0, page))) {
             await fetchVaccines()
           } else {
-            dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, isLast?.length || 0) })
+            dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, data?.length || 0) })
           }
         }
       }
