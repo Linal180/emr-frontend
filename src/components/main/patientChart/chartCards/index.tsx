@@ -22,20 +22,22 @@ import ChartSelectionModal from './ChartModal/ChartSelectionModal';
 // interfaces, graphql, constants block /styles
 import { DischargeIcon } from "../../../../assets/svgs";
 import {
-  CHART_TEXT, CONFIRMATION_MODAL_TYPE, DISCHARGE, DISCHARGE_PATIENT_DESCRIPTION, PATIENT_CHARTING_TABS, PATIENT_DISCHARGED, PATIENT_DISCHARGED_SUCCESS,
-  PRINT_CHART,
-  TO_BILLING
+  CHART_TEXT, CONFIRMATION_MODAL_TYPE, DISCHARGE, DISCHARGE_PATIENT_DESCRIPTION, PATIENT_CHARTING_MENU, PATIENT_CHARTING_TABS,
+  PATIENT_DISCHARGED, PATIENT_DISCHARGED_SUCCESS, PRINT_CHART, TO_BILLING
 } from "../../../../constants";
 import { AuthContext, ChartContextProvider } from '../../../../context';
 import { AppointmentStatus, useUpdateAppointmentStatusMutation } from "../../../../generated/graphql";
 import { ChartComponentProps, ParamsType } from "../../../../interfacesTypes";
 import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
 import { useChartingStyles } from "../../../../styles/chartingStyles";
+import { useExternalPatientStyles } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
 import { BLUE, GRAY_SIMPLE, WHITE } from '../../../../theme';
 import { isAdmin, isOnlyDoctor } from "../../../../utils";
+import StepperCard from "../../../common/StepperCard";
 
 const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appointmentInfo, fetchAppointment, labOrderHandler }): JSX.Element => {
-  const classes = useChartingStyles()
+  const classes = useChartingStyles();
+  const patientClasses = useExternalPatientStyles();
   const { user } = useContext(AuthContext);
   const { roles } = user || {}
   const isAdminUser = isAdmin(roles)
@@ -45,7 +47,7 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
   const [modulesToPrint, setModulesToPrint] = useState<string[]>([])
   const [isChartPdfModalOpen, setIsChartPdfModalOpen] = useState<boolean>(false)
   const [openDelete, setOpenDelete] = useState<boolean>(false)
-  const [{ tabValue }, dispatch] =
+  const [{ activeStep, tabValue }, dispatch] =
     useReducer<Reducer<State, Action>>(patientReducer, initialState)
 
   const handleChange = (_: ChangeEvent<{}>, newValue: string) =>
@@ -90,6 +92,42 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
   }
 
   const isPatientDischarged = status === AppointmentStatus.Checkout || status === AppointmentStatus.Discharged
+
+  const getActiveComponent = (step: number | undefined) => {
+    switch (step) {
+      case 0:
+        return <TriageNoteTab shouldDisableEdit={shouldDisableEdit} />
+
+      case 1:
+        return (
+          <VitalTab shouldDisableEdit={shouldDisableEdit} />
+        )
+
+      case 2:
+        return <ProblemTab shouldDisableEdit={shouldDisableEdit} />
+
+      case 3:
+        return <ChartContextProvider>
+          <AllergyTab shouldDisableEdit={shouldDisableEdit} />
+        </ChartContextProvider>
+
+      case 4:
+        return <MedicationTab shouldDisableEdit={shouldDisableEdit} />
+
+      case 5:
+        return <HistoryTab shouldDisableEdit={shouldDisableEdit} />
+
+      case 6:
+        return <LabOrdersTable appointmentInfo={appointmentInfo} shouldDisableEdit={shouldDisableEdit} />
+
+      case 7:
+        return <Vaccines shouldDisableEdit={shouldDisableEdit} />
+      default:
+        return (
+          <></>
+        )
+    }
+  }
 
   return (
     <>
@@ -170,9 +208,22 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
                     }
                   </Box>
                 </Card>
+
+                <Box p={2} />
+
+                <Card className={patientClasses.stepperContainer}>
+                  <StepperCard
+                    stepperData={PATIENT_CHARTING_MENU}
+                    activeStep={activeStep as number}
+                    handleStep={(index: number) => dispatch && dispatch({
+                      type: ActionType.SET_ACTIVE_STEP, activeStep: index
+                    })}
+                  />
+                </Card>
               </Grid>
 
               <Grid item lg={10} md={12} sm={12} xs={12}>
+
                 <Box className={classes.tabPanelPadding}>
                   <Box pt={0} borderRadius={8}>
                     <TabPanel value="1">
@@ -232,6 +283,8 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
                     </TabPanel>
                   </Box>
                 </Box>
+
+                {getActiveComponent(activeStep)}
               </Grid>
             </Grid>
           </TabContext>

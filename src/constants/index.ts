@@ -3801,6 +3801,33 @@ export const PATIENT_CHARTING_TABS = [
   }
 ]
 
+export const PATIENT_CHARTING_MENU = [
+  {
+    title: "Triage Notes",
+  },
+  {
+    title: "Vitals",
+  },
+  {
+    title: "Problems",
+  },
+  {
+    title: "Allergies",
+  },
+  {
+    title: "Medication",
+  },
+  {
+    title: "History",
+  },
+  {
+    title: "Lab Orders",
+  },
+  {
+    title: "Vaccines",
+  }
+]
+
 export const HISTORY_CHARTING_TABS = [
   // {
   //   title: "Social History",

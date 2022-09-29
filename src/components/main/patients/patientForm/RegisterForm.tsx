@@ -25,6 +25,7 @@ import { ParamsType, PatientCardsProps, PatientInputProps } from '../../../../in
 import { useExternalPatientStyles } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
 import { useFindAppointmentInsuranceStatusLazyQuery } from '../../../../generated/graphql';
 import CardComponent from '../../../common/CardComponent';
+import { ActionType } from '../../../../reducers/patientReducer';
 
 const RegisterFormComponent: FC<PatientCardsProps> = ({
   getPatientLoading, dispatch, isEdit, state, shouldDisableEdit, disableSubmit, shouldShowBread
@@ -215,7 +216,9 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
               <StepperCard
                 stepperData={stepperData}
                 activeStep={activeStep as number}
-                dispatch={dispatch}
+                handleStep={(index: number) => dispatch && dispatch({
+                  type: ActionType.SET_ACTIVE_STEP, activeStep: index
+                })}
               />
             </Card>
           </Box>

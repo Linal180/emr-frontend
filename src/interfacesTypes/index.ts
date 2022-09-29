@@ -650,7 +650,7 @@ export interface FormVerification {
 export interface StepperComponentProps {
   activeStep: number;
   stepperData?: StepperData[];
-  dispatch?: Dispatch<PatientAction>
+  handleStep?: Function
 }
 
 interface BasicContactControlInputs {
