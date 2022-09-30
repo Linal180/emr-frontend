@@ -79,7 +79,11 @@ const AllergyTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
     try {
       await findAllPatientAllergies({
         variables: {
-          patientAllergyInput: { patientId: id, paginationOptions: { page, limit: EIGHT_PAGE_LIMIT } }
+          patientAllergyInput: {
+            patientId: id,
+            paginationOptions: { page, limit: EIGHT_PAGE_LIMIT },
+            // ...(appointmentId ? { appointmentId } : {})
+          }
         },
       })
     } catch (error) { }

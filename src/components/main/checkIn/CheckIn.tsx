@@ -1,14 +1,14 @@
 //packages import
-import { FC, useContext } from "react";
-import { ChevronRight, } from "@material-ui/icons";
 import { Box, Button, Card, colors, Grid, Typography } from "@material-ui/core";
+import { ChevronRight } from "@material-ui/icons";
+import { FC, useContext } from "react";
 //constants, interfaces, utils, types
-import { CheckInComponentProps } from "../../../interfacesTypes";
 import {
-  APPOINTMENT_INFO, APPOINTMENT_TYPE, CHECK_IN, CHECK_IN_AT_TEXT, FACILITY_LOCATION, N_A, PRIMARY_INSURANCE,
-  PROVIDER_NAME, REASON, SELF_CHECK_IN
+  APPOINTMENT_INFO, APPOINTMENT_TYPE, CHECK_IN_AT_TEXT, FACILITY_LOCATION, N_A, PRIMARY_INSURANCE,
+  PROVIDER_NAME, REASON, SELF_CHECK_IN, START_CHECK_IN
 } from "../../../constants";
 import { AuthContext } from "../../../context";
+import { CheckInComponentProps } from "../../../interfacesTypes";
 import { isBiller } from "../../../utils";
 import UpFrontPayment from "../billing/upfrontPayment";
 
@@ -36,8 +36,8 @@ const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep, shou
           <Button
             variant="contained" color="primary"
             endIcon={<Box width={20}><ChevronRight /></Box>}
-            onClick={() => isBillerUser ? handleStep(4) : handleStep(1)}>
-            {CHECK_IN}
+            onClick={() => isBillerUser ? handleStep(4) : handleStep(0, true)}>
+            {START_CHECK_IN}
           </Button>
         </Box>
 
@@ -103,7 +103,7 @@ const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep, shou
       </Card>
 
       <Box p={2} />
-      
+
       <UpFrontPayment handleStep={handleStep} shouldDisableEdit={shouldDisableEdit} />
     </>
   )

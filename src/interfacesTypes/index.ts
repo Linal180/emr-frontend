@@ -153,6 +153,14 @@ export interface TableLoaderType {
   numberOfColumns: number;
 }
 
+export type ReviewTabProps = {
+  shouldShowAdd?: boolean
+}
+
+export type AppointmentReasonProps = {
+  shouldShowAdd?: boolean
+}
+
 export interface DialogTypes {
   isOpen: boolean;
   isEdit?: boolean;
@@ -528,6 +536,7 @@ export interface TooltipData {
 
 export interface StepperData {
   title: string;
+  completed?: boolean
 }
 
 export interface SearchComponentProps {
@@ -600,6 +609,13 @@ export type PatientChartingInfo = {
   surgicalHistories: SurgicalHistory[]
   triageNotes: TriageNotes[]
   familyHistories: FamilyHistory[]
+}
+
+export type PatientChartingReview = {
+  patientAllergies: PatientAllergies[]
+  patientMedications: PatientMedication[]
+  patientProblems: PatientProblems[]
+  patientVitals: PatientVitals[]
 }
 
 interface CustomBillingAddressInputs {
@@ -878,6 +894,23 @@ export interface AddAllergyModalProps extends GeneralFormProps {
   fetch?: () => void
 }
 
+export type AddMedicationModalProps = {
+  isOpen?: boolean
+  handleModalClose: () => void
+  fetch?: () => void
+  handleAdd?: Function
+  alreadyAddedMedications?: string[]
+}
+
+export interface AddAppointmentReasonProps extends GeneralFormProps {
+  isOpen?: boolean
+  handleModalClose: () => void
+  fetch?: () => void,
+  title?: string
+  handleAdd?: Function
+  alreadyAddedProblems?: string[]
+}
+
 export type AddVaccineProps = GeneralFormProps & {
   isOpen?: boolean
   handleModalClose: () => void
@@ -1081,6 +1114,41 @@ export interface LabOrdersCreateFormInput {
   orderNum?: string
   accessionNumber?: string
 };
+
+export type AssessmentMedication = Omit<Medications, 'patientMedications' | "__typename"> & {
+  medicationId: string
+  patientMedicationId?: string
+}
+
+export type AssessmentProblemType = {
+  problemId: string
+  isSigned: boolean
+  forOrders: boolean
+  icdCodes: {
+    id: string,
+    code: string,
+    description: string
+    snoMedCodeId: string
+  },
+  medications?: AssessmentMedication[]
+}
+
+export type AssessmentProblems = {
+  problems: AssessmentProblemType[]
+}
+
+export type AssessmentPlanProblemsProps = {
+  fetchProblems: Function
+  assessmentProblems: AssessmentProblemType[]
+  setAssessmentProblems: Function
+}
+
+export type AssessmentPlanMedicationProps = {
+  index: number,
+  problem: AssessmentProblemType
+  assessmentProblems: AssessmentProblemType[]
+  setAssessmentProblems: Function
+}
 
 export interface LabOrdersSpecimenTypeInput {
   index: number
@@ -1965,6 +2033,7 @@ export interface ChartComponentProps {
   fetchAppointment?: Function
   appointmentInfo?: SelectorOption
   labOrderHandler?: Function
+  isInTake?: boolean
 }
 
 export interface BillingComponentProps extends GeneralFormProps {

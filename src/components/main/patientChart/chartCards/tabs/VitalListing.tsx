@@ -89,7 +89,8 @@ const VitalTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
         variables: {
           patientVitalInput: {
             patientId: id,
-            paginationOptions: { page: vitalPage, limit: VITAL_LIST_PAGE_LIMIT }
+            paginationOptions: { page: vitalPage, limit: VITAL_LIST_PAGE_LIMIT },
+            // ...(appointmentId ? { appointmentId } : {})
           }
         },
       })

@@ -87,6 +87,10 @@ query GetPatientMedications($getPatientMedication: GetPatientMedication!){
 
 mutation AddPatientMedication($createPatientMedicationInput: CreatePatientMedicationInput!){
   addPatientMedication(createPatientMedicationInput: $createPatientMedicationInput){
+    patientMedication {
+      id
+    }
+
     response {
       status
       message

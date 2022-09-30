@@ -32,7 +32,9 @@ export interface State {
   patientMedications: PatientMedicationsPayload['patientMedications']
   patientSurgicalHistory: SurgicalHistoriesPayload['surgicalHistories']
   surgicalHistoryDeleteId: string;
-  patientChartingInfo: PatientChartingInfo | null
+  patientChartingInfo: PatientChartingInfo | null,
+  problemIndex: number | null;
+  medicationIndex: number | null;
 }
 
 export const initialState: State = {
@@ -63,7 +65,9 @@ export const initialState: State = {
   patientMedications: [],
   patientSurgicalHistory: [],
   surgicalHistoryDeleteId: '',
-  patientChartingInfo: null
+  patientChartingInfo: null,
+  problemIndex: null,
+  medicationIndex: null
 }
 
 export enum ActionType {
@@ -94,7 +98,9 @@ export enum ActionType {
   SET_PATIENT_MEDICATIONS = "setPatientMedication",
   SET_PATIENT_SURGICAL_HISTORY = "setPatientSurgicalHistory",
   SET_SURGICAL_HISTORY_DELETE_ID = "setSurgicalHistoryDeleteId",
-  SET_PATIENT_CHARTING_INFO = "setPatientChartingInfo"
+  SET_PATIENT_CHARTING_INFO = "setPatientChartingInfo",
+  SET_PROBLEM_INDEX = 'setProblemIndex',
+  SET_MEDICATION_INDEX = 'setMedicationIndex'
 }
 
 export type Action =
@@ -113,7 +119,7 @@ export type Action =
   | { type: ActionType.SET_IS_SEARCH_OPEN, isSearchOpen: HTMLElement | null }
   | { type: ActionType.SET_SELECTED_REACTIONS, selectedReactions: multiOptionType[] }
   | { type: ActionType.SET_REACTION_LIST, reactionList: ReactionsPayload['reactions'] }
-  | { type: ActionType.SET_SELECTED_ITEM, selectedItem: Allergies | Medications | IcdCodesWithSnowMedCode | IcdCodes | SurgicalCode | undefined | Cvx}
+  | { type: ActionType.SET_SELECTED_ITEM, selectedItem: Allergies | Medications | IcdCodesWithSnowMedCode | IcdCodes | SurgicalCode | undefined | Cvx }
   | { type: ActionType.SET_PATIENT_VITALS, patientVitals: PatientVitalPayload['patientVital'] }
   | { type: ActionType.SET_PATIENT_PROBLEMS, patientProblems: PatientProblemsPayload['patientProblems'] }
   | { type: ActionType.SET_PATIENT_ALLERGIES, patientAllergies: PatientAllergiesPayload['patientAllergies'] }
@@ -126,6 +132,8 @@ export type Action =
   | { type: ActionType.SET_PATIENT_SURGICAL_HISTORY, patientSurgicalHistory: SurgicalHistoriesPayload['surgicalHistories'] }
   | { type: ActionType.SET_SURGICAL_HISTORY_DELETE_ID, surgicalHistoryDeleteId: string }
   | { type: ActionType.SET_PATIENT_CHARTING_INFO, patientChartingInfo: PatientChartingInfo | null }
+  | { type: ActionType.SET_PROBLEM_INDEX, problemIndex: number | null }
+  | { type: ActionType.SET_MEDICATION_INDEX, medicationIndex: number | null }
 
 
 export const chartReducer = (state: State, action: Action): State => {
@@ -296,6 +304,18 @@ export const chartReducer = (state: State, action: Action): State => {
       return {
         ...state,
         patientChartingInfo: action.patientChartingInfo
+      }
+
+    case ActionType.SET_PROBLEM_INDEX:
+      return {
+        ...state,
+        problemIndex: action.problemIndex
+      }
+
+    case ActionType.SET_MEDICATION_INDEX:
+      return {
+        ...state,
+        medicationIndex: action.medicationIndex
       }
   }
 };

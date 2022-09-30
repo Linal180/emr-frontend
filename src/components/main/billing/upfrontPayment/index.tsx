@@ -229,7 +229,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
 
           <Box p={2} />
 
-          <Card>
+          {cptCodes && <Card>
             <Box px={3} pt={1} bgcolor={GREEN} borderRadius={8}>
               <Grid container>
                 <Grid item md={8} sm={12} xs={12}>
@@ -316,7 +316,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
                 </Grid>
               </Grid>
             </Box>
-          </Card>
+          </Card>}
         </form>
       </FormProvider>
 

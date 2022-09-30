@@ -14,7 +14,7 @@ import PatientForm from "../patients/patientForm";
 import CheckIn from "./CheckIn";
 // constants, interfaces, utils block
 import { ChevronRightIcon } from "../../../assets/svgs";
-import { CHECK_IN_STEPS, PATIENT_INFO, TO_CHART, TO_LAB_ORDERS } from "../../../constants";
+import { CHECK_IN_STEPS, DONE_CHECK_IN, PATIENT_INFO } from "../../../constants";
 import { AuthContext } from "../../../context";
 import {
   AppointmentPayload, AppointmentStatus, AttachmentsPayload, OrderOfBenefitType, PatientPayload,
@@ -35,6 +35,7 @@ import { convertDateFromUnix, getFormattedDate, isBiller, isFrontDesk } from "..
 import ChartCards from "../patientChart/chartCards";
 import ChartPrintModal from "../patientChart/chartCards/ChartModal/ChartPrintModal";
 import ChartSelectionModal from "../patientChart/chartCards/ChartModal/ChartSelectionModal";
+import SignOff from "./SignOff";
 
 const CheckInStepIcon = (props: StepIconProps) => {
   const classes = useCheckInStepIconStyles();
@@ -156,14 +157,9 @@ const CheckInComponent = (): JSX.Element => {
       const { updateAppointment: updateAppointmentResponse } = data ?? {}
       const { response, appointment } = updateAppointmentResponse ?? {}
       if (response) {
-        const { status } = response
         const { status: aptStatus } = appointment || {}
         if (aptStatus === AppointmentStatus.Arrived) {
           await fetchPatientInsurances()
-        }
-
-        if (patientId && status && status === 200) {
-          await fetchAppointment()
         }
       }
     }
@@ -186,25 +182,52 @@ const CheckInComponent = (): JSX.Element => {
     }
   }, [appointmentId, handleCheckIn, patientId, status])
 
-  const handleStep = (step: number) => {
+  const handleStep = (step: number, patientInfo?: boolean) => {
+    let stepToChange
+    switch (step) {
+      case 0:
+        stepToChange = patientInfo ? 1 : 0;
+        break
+
+      case 1:
+        stepToChange = 2;
+        break
+
+      case 2:
+        stepToChange = 3;
+        break
+
+      case 3:
+        stepToChange = 4;
+        break
+
+      case 4:
+        stepToChange = 5;
+        break
+      default:
+        stepToChange = step
+        break
+    }
+
+
     updateAppointment({
       variables: {
         updateAppointmentInput: {
           id: appointmentId ?? '',
-          checkInActiveStep: String(step)
+          checkInActiveStep: String(stepToChange)
         }
       }
     })
 
-    dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: step })
+    dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: stepToChange })
   };
 
   const getStepContent = (step: number) => {
     switch (step) {
       case 0:
-        return <CheckIn appointmentState={state} appointmentDispatcher={dispatch} handleStep={handleStep} shouldDisableEdit={shouldDisableEdit}/>
+        return <ChecKInStep isCheckIn={false} />
       case 1:
-        return <PatientInfo />
+        return <ChecKInStep isCheckIn={true} />
       // case 2:
       //   return <Insurance />
       case 2:
@@ -212,7 +235,10 @@ const CheckInComponent = (): JSX.Element => {
       // case 3:
       //   return <LabOrders appointmentInfo={appointmentInfo} handleStep={() => handleStep(4)} shouldDisableEdit={shouldDisableEdit} />
       case 3:
+        return <Exam />
       case 4:
+        return <SignOff />
+      case 5:
         return <BillingComponent shouldDisableEdit={shouldDisableEdit} />
       default:
         return <CircularProgress />;
@@ -221,30 +247,36 @@ const CheckInComponent = (): JSX.Element => {
 
   const handlePatientUpdate = () => {
     !shouldDisableEdit && patientRef.current?.submit()
-    isFrontDeskUser ? handleStep(3) : handleStep(2)
+    isFrontDeskUser ? handleStep(4) : handleStep(1)
   }
 
   // 1- PATIENT-INFO
-  const PatientInfo = () =>
+  const ChecKInStep = ({ isCheckIn = false }) =>
     <>
-      <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
-        <Typography variant="h4">{PATIENT_INFO}</Typography>
+      {
+        isCheckIn ? <>
+          <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
+            <Typography variant="h4">{PATIENT_INFO}</Typography>
 
-        <Button variant="contained" color="primary" onClick={handlePatientUpdate}>
-          {isFrontDeskUser ? TO_LAB_ORDERS : TO_CHART}
-          <ChevronRight />
-        </Button>
-      </Box>
+            <Button variant="contained" color="primary" onClick={handlePatientUpdate}>
+              {/* {isFrontDeskUser ? TO_LAB_ORDERS : TO_CHART} */}
+              {DONE_CHECK_IN}
+              <ChevronRight />
+            </Button>
+          </Box>
 
-      <Box p={3}>
-        <PatientForm
-          id={patientId}
-          isEdit
-          shouldShowBread={false}
-          ref={patientRef}
-          shouldDisableEdit={shouldDisableEdit}
-        />
-      </Box>
+          <Box p={3}>
+            <PatientForm
+              id={patientId}
+              isEdit
+              shouldShowBread={false}
+              ref={patientRef}
+              shouldDisableEdit={shouldDisableEdit}
+            />
+          </Box>
+        </> :
+          <CheckIn appointmentState={state} appointmentDispatcher={dispatch} handleStep={handleStep} shouldDisableEdit={shouldDisableEdit} />
+      }
     </>
 
   // 3- CHART
@@ -252,10 +284,24 @@ const CheckInComponent = (): JSX.Element => {
     <>
       <ChartCards
         status={status}
+        labOrderHandler={() => handleStep(2)}
+        appointmentInfo={appointmentInfo}
+        fetchAppointment={fetchAppointment}
+        shouldDisableEdit={shouldDisableEdit}
+        isInTake={true}
+      />
+    </>
+
+  // 3- CHART
+  const Exam = () =>
+    <>
+      <ChartCards
+        status={status}
         labOrderHandler={() => handleStep(3)}
         appointmentInfo={appointmentInfo}
         fetchAppointment={fetchAppointment}
         shouldDisableEdit={shouldDisableEdit}
+        isInTake={false}
       />
     </>
 
@@ -270,6 +316,29 @@ const CheckInComponent = (): JSX.Element => {
       if (index !== 2) {
         handleStep(index)
       }
+    }
+  }
+
+  const getActiveStep = () => {
+    switch (activeStep) {
+      case 0:
+      case 1:
+        return 0;
+
+      case 2:
+        return 1
+
+      case 3:
+        return 2
+
+      case 4:
+        return 3
+
+      case 5:
+        return 4
+
+      default:
+        return activeStep
     }
   }
 
@@ -297,7 +366,7 @@ const CheckInComponent = (): JSX.Element => {
         <Box p={1} />
 
         <Box className={checkInClasses.checkInProfileBox}>
-          <Stepper alternativeLabel activeStep={activeStep} connector={<CheckInConnector />}>
+          <Stepper alternativeLabel activeStep={getActiveStep()} connector={<CheckInConnector />}>
             {CHECK_IN_STEPS.map((label, index) => (
               <Step key={label}>
                 <StepLabel onClick={() => (isBillerUser || isFrontDeskUser) ? handleStepChange(index) : handleStep(index)} StepIconComponent={CheckInStepIcon}>

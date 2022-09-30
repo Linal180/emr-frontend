@@ -36,7 +36,7 @@ const AllergyModal: FC<AddModalProps> = ({
 }): JSX.Element => {
   const chartingClasses = useChartingStyles()
   const { id, name } = item as Allergies || {}
-  const { id: patientId } = useParams<ParamsType>()
+  const { id: patientId, appointmentId } = useParams<ParamsType>()
   const onsets = Object.keys(AllergyOnset)
 
   const allergySeverity = MAPPED_ALLERGY_SEVERITY.map((severity) => severity.id)
@@ -166,7 +166,8 @@ const AllergyModal: FC<AddModalProps> = ({
           ...(allergyType && { allergyType: allergyType?.toUpperCase() as AllergyType })
         }
       const commonInputs = {
-        patientId, reactionsIds: selectedReactions, ...allergyInput
+        patientId, reactionsIds: selectedReactions, ...allergyInput,
+        ...(appointmentId ? { appointmentId } : {})
       }
 
       const inputs = {

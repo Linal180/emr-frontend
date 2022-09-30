@@ -82,7 +82,10 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
     try {
       await findAllPatientProblems({
         variables: {
-          patientProblemInput: { patientId: id, paginationOptions: { page, limit: EIGHT_PAGE_LIMIT } }
+          patientProblemInput: {
+            patientId: id, paginationOptions: { page, limit: EIGHT_PAGE_LIMIT },
+            // ...(appointmentId ? { appointmentId } : {})
+          }
         },
       })
     } catch (error) { }

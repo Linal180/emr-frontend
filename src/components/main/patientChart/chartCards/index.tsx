@@ -1,29 +1,32 @@
 // packages block
-import { useParams } from "react-router";
+import { Box, Button, Card, colors, Grid, Tab, Typography } from "@material-ui/core";
 import { ChevronRight, PrintOutlined } from "@material-ui/icons";
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
-import { Box, Button, Card, colors, Grid, Tab, Typography } from "@material-ui/core";
-import { ChangeEvent, FC, ReactElement, Reducer, useContext, useReducer, useState } from 'react';
+import { ChangeEvent, FC, ReactElement, Reducer, useContext, useMemo, useReducer, useState } from 'react';
+import { useParams } from "react-router";
 // components block
-import Vaccines from '../vaccines';
 import Alert from "../../../common/Alert";
-import HistoryTab from './tabs/HistoryTab';
-import VitalTab from './tabs/VitalListing';
-import Loader from "../../../common/Loader";
-import AllergyTab from './tabs/AllergyListing';
-import ProblemTab from './tabs/ProblemListing';
-import LatestVitalCard from "../latestVitalCard";
-import MedicationTab from './tabs/MedicationsListing';
-import TriageNoteTab from './tabs/TriageNotesListing';
-import ChartPrintModal from "./ChartModal/ChartPrintModal";
-import LabOrdersTable from "../../../common/patient/labOrders";
 import ConfirmationModal from "../../../common/ConfirmationModal";
+import Loader from "../../../common/Loader";
+import LabOrdersTable from "../../../common/patient/labOrders";
+import LatestVitalCard from "../latestVitalCard";
+import Vaccines from '../vaccines';
+import ChartPrintModal from "./ChartModal/ChartPrintModal";
 import ChartSelectionModal from './ChartModal/ChartSelectionModal';
+import AllergyTab from './tabs/AllergyListing';
+import HistoryTab from './tabs/HistoryTab';
+import MedicationTab from './tabs/MedicationsListing';
+import ProblemTab from './tabs/ProblemListing';
+import TriageNoteTab from './tabs/TriageNotesListing';
+import VitalTab from './tabs/VitalListing';
 // interfaces, graphql, constants block /styles
-import { DischargeIcon } from "../../../../assets/svgs";
+import { DischargeIcon, HistoryIcon } from "../../../../assets/svgs";
 import {
-  CHART_TEXT, CONFIRMATION_MODAL_TYPE, DISCHARGE, DISCHARGE_PATIENT_DESCRIPTION, PATIENT_CHARTING_MENU, PATIENT_CHARTING_TABS,
-  PATIENT_DISCHARGED, PATIENT_DISCHARGED_SUCCESS, PRINT_CHART, TO_BILLING
+  ASSESSMENT_PLAN_OPTION,
+  CHART_TEXT, CONFIRMATION_MODAL_TYPE, DISCHARGE, DISCHARGE_PATIENT_DESCRIPTION, DONE_INTAKE, PATIENT_CHARTING_MENU, PATIENT_CHARTING_TABS,
+  PATIENT_DISCHARGED, PATIENT_DISCHARGED_SUCCESS, PRINT_CHART, REASON_FOR_VISIT_OPTION,
+  REVIEW_OPTION,
+  SIGN_OFF
 } from "../../../../constants";
 import { AuthContext, ChartContextProvider } from '../../../../context';
 import { AppointmentStatus, useUpdateAppointmentStatusMutation } from "../../../../generated/graphql";
@@ -34,8 +37,13 @@ import { useExternalPatientStyles } from '../../../../styles/publicAppointmentSt
 import { BLUE, GRAY_SIMPLE, WHITE } from '../../../../theme';
 import { isAdmin, isOnlyDoctor } from "../../../../utils";
 import StepperCard from "../../../common/StepperCard";
+import AppointmentReason from "./tabs/AppointmentReason";
+import FamilyHistory from "./familyHistory";
+import SurgicalHistoryTab from "./tabs/SurgicalHistoryListing";
+import AssessmentPlanTab from "./AssessmentPlan/AssessmentPlanTab";
+import ReviewTab from "./tabs/ReviewTab";
 
-const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appointmentInfo, fetchAppointment, labOrderHandler }): JSX.Element => {
+const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appointmentInfo, fetchAppointment, labOrderHandler, isInTake }): JSX.Element => {
   const classes = useChartingStyles();
   const patientClasses = useExternalPatientStyles();
   const { user } = useContext(AuthContext);
@@ -47,6 +55,7 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
   const [modulesToPrint, setModulesToPrint] = useState<string[]>([])
   const [isChartPdfModalOpen, setIsChartPdfModalOpen] = useState<boolean>(false)
   const [openDelete, setOpenDelete] = useState<boolean>(false)
+  const [stepArray, setStepArray] = useState<number[]>([])
   const [{ activeStep, tabValue }, dispatch] =
     useReducer<Reducer<State, Action>>(patientReducer, initialState)
 
@@ -87,6 +96,21 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
     } catch (error) { }
   }
 
+  const stepperDataWithIndicator = useMemo(() => {
+    return PATIENT_CHARTING_MENU.map((menu, index) => {
+      if (stepArray.includes(index)) {
+        return {
+          ...menu,
+          completed: true
+        }
+      }
+      return {
+        ...menu,
+        completed: false
+      }
+    })
+  }, [stepArray])
+
   if (updateAppointmentStatusLoading) {
     return <Loader loading loaderText="Discharging Patient..." />
   }
@@ -96,32 +120,38 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
   const getActiveComponent = (step: number | undefined) => {
     switch (step) {
       case 0:
+        return <AppointmentReason />
+      case 1:
         return <TriageNoteTab shouldDisableEdit={shouldDisableEdit} />
 
-      case 1:
-        return (
-          <VitalTab shouldDisableEdit={shouldDisableEdit} />
-        )
-
       case 2:
-        return <ProblemTab shouldDisableEdit={shouldDisableEdit} />
+        return <VitalTab shouldDisableEdit={shouldDisableEdit} />
 
       case 3:
+        return <ProblemTab shouldDisableEdit={shouldDisableEdit} />
+
+      case 4:
         return <ChartContextProvider>
           <AllergyTab shouldDisableEdit={shouldDisableEdit} />
         </ChartContextProvider>
 
-      case 4:
+      case 5:
         return <MedicationTab shouldDisableEdit={shouldDisableEdit} />
 
-      case 5:
-        return <HistoryTab shouldDisableEdit={shouldDisableEdit} />
-
       case 6:
-        return <LabOrdersTable appointmentInfo={appointmentInfo} shouldDisableEdit={shouldDisableEdit} />
+        return <FamilyHistory shouldDisableEdit={shouldDisableEdit} />
 
       case 7:
+        return <SurgicalHistoryTab shouldDisableEdit={shouldDisableEdit} />
+
+      case 8:
+        return <LabOrdersTable appointmentInfo={appointmentInfo} shouldDisableEdit={shouldDisableEdit} />
+
+      case 9:
         return <Vaccines shouldDisableEdit={shouldDisableEdit} />
+
+      case 10:
+        return <AssessmentPlanTab />
       default:
         return (
           <></>
@@ -129,10 +159,66 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
     }
   }
 
+  const transformedPatientChartingSteps = PATIENT_CHARTING_TABS.reduce((acc, stepData) => {
+    if (stepData.value === '6') {
+      acc.push(...[
+        {
+          icon: HistoryIcon,
+          title: "Family History",
+          value: "6",
+        },
+        {
+          icon: HistoryIcon,
+          title: "Surgical History",
+          value: "7",
+        },
+      ])
+
+      return acc
+    }
+    if (Number(stepData.value) > 6) {
+      acc.push({
+        ...stepData,
+        value: String(Number(stepData.value) + 1)
+      })
+
+      return acc
+    }
+
+    acc.push(stepData)
+    return acc
+  }, [] as {
+    icon: () => JSX.Element;
+    title: string;
+    value: string;
+  }[])
+
+  const handleStep = (index: number) => {
+    dispatch && dispatch({
+      type: ActionType.SET_ACTIVE_STEP, activeStep: index
+    })
+
+    if (stepArray.includes(index)) {
+      return
+    } else {
+      setStepArray((prev => [...prev, index]))
+    }
+  }
+
+
+  const chartingStepsToMap = appointmentId ? isInTake ?
+    [REASON_FOR_VISIT_OPTION, ...transformedPatientChartingSteps.map(stepData => {
+      return { ...stepData, value: String(Number(stepData.value) + 1) }
+    }), ASSESSMENT_PLAN_OPTION] :
+    [REVIEW_OPTION, ...PATIENT_CHARTING_TABS.map(stepData => {
+      return { ...stepData, value: String(Number(stepData.value) + 1) }
+    }), ASSESSMENT_PLAN_OPTION] : PATIENT_CHARTING_TABS
+
   return (
     <>
       <Box className="card-box-shadow" mb={3}>
         <LatestVitalCard patientId={id} />
+        <Box mt={3} />
       </Box>
 
       <Card>
@@ -159,7 +245,7 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
               <Button variant="contained" color="primary" onClick={() => {
                 labOrderHandler && labOrderHandler()
               }}>
-                {TO_BILLING}
+                {isInTake ? DONE_INTAKE : SIGN_OFF}
                 <ChevronRight />
               </Button>
             </Box>}
@@ -170,14 +256,14 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
           <TabContext value={tabValue}>
             <Grid container spacing={2}>
               <Grid item lg={2} md={12} sm={12} xs={12}>
-                <Card>
+                {!isInTake && <Card>
                   <Box px={3} py={1} className={classes.cardBox}>
                     <TabList className={classes.tabList}
                       orientation='vertical'
                       onChange={handleChange}
                       aria-label="communication tabs"
                     >
-                      {PATIENT_CHARTING_TABS.map(item => {
+                      {chartingStepsToMap.map(item => {
                         const { icon: Icon, title, value } = item
 
                         return <Tab className={classes.tab}
@@ -187,7 +273,7 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
                       })}
                     </TabList>
 
-                    {appointmentId && (isAdminUser || isDoctorUser) &&
+                    {!isInTake && appointmentId && (isAdminUser || isDoctorUser) &&
                       <Box component="button" border="none" width="100%" mb={1}
                         minHeight={52} bgcolor={isPatientDischarged ? GRAY_SIMPLE : BLUE} borderRadius={4}
                       >
@@ -207,44 +293,48 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
                       </Box>
                     }
                   </Box>
-                </Card>
+                </Card>}
 
                 <Box p={2} />
 
-                <Card className={patientClasses.stepperContainer}>
+                {isInTake && <Card className={patientClasses.stepperContainer}>
                   <StepperCard
-                    stepperData={PATIENT_CHARTING_MENU}
+                    stepperData={stepperDataWithIndicator}
                     activeStep={activeStep as number}
-                    handleStep={(index: number) => dispatch && dispatch({
-                      type: ActionType.SET_ACTIVE_STEP, activeStep: index
-                    })}
+                    handleStep={(index: number) => handleStep(index)}
                   />
-                </Card>
+                </Card>}
               </Grid>
 
               <Grid item lg={10} md={12} sm={12} xs={12}>
+                {!isInTake ? <Box className={classes.tabPanelPadding}>
+                  {appointmentId &&
+                    <Box pt={0} borderRadius={8}>
+                      <TabPanel value={"1"}>
+                        {isInTake ? <AppointmentReason /> : <ReviewTab />}
+                      </TabPanel>
+                    </Box>}
 
-                <Box className={classes.tabPanelPadding}>
                   <Box pt={0} borderRadius={8}>
-                    <TabPanel value="1">
+                    <TabPanel value={appointmentId ? "2" : "1"}>
                       <TriageNoteTab shouldDisableEdit={shouldDisableEdit} />
                     </TabPanel>
                   </Box>
 
                   <Box pt={0} bgcolor={WHITE} borderRadius={8}>
-                    <TabPanel value="2">
+                    <TabPanel value={appointmentId ? "3" : "2"}>
                       <VitalTab shouldDisableEdit={shouldDisableEdit} />
                     </TabPanel>
                   </Box>
 
                   <Box pt={0} bgcolor={WHITE} borderRadius={8}>
-                    <TabPanel value="3">
+                    <TabPanel value={appointmentId ? "4" : "3"}>
                       <ProblemTab shouldDisableEdit={shouldDisableEdit} />
                     </TabPanel>
                   </Box>
 
                   <Box pt={0} bgcolor={WHITE} borderRadius={8}>
-                    <TabPanel value="4">
+                    <TabPanel value={appointmentId ? "5" : "4"}>
                       <ChartContextProvider>
                         <AllergyTab shouldDisableEdit={shouldDisableEdit} />
                       </ChartContextProvider>
@@ -252,39 +342,47 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
                   </Box>
 
                   <Box pt={0} bgcolor={WHITE} borderRadius={8}>
-                    <TabPanel value="5">
-                      <ChartContextProvider>
-                        <MedicationTab shouldDisableEdit={shouldDisableEdit} />
-                      </ChartContextProvider>
+                    <TabPanel value={appointmentId ? "6" : "5"}>
+                      <MedicationTab shouldDisableEdit={shouldDisableEdit} />
+                    </TabPanel>
+                  </Box>
+
+                  {!isInTake ? <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                    <TabPanel value={appointmentId ? "7" : "6"}>
+                      <HistoryTab shouldDisableEdit={shouldDisableEdit} />
+                    </TabPanel>
+                  </Box> : <>
+                    <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                      <TabPanel value="7">
+                        <FamilyHistory shouldDisableEdit={shouldDisableEdit} />
+                      </TabPanel>
+                    </Box>
+
+                    <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                      <TabPanel value="8">
+                        <SurgicalHistoryTab shouldDisableEdit={shouldDisableEdit} />
+                      </TabPanel>
+                    </Box>
+                  </>}
+
+                  <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                    <TabPanel value={appointmentId ? isInTake ? "9" : "8" : "7"}>
+                      <LabOrdersTable appointmentInfo={appointmentInfo} shouldDisableEdit={shouldDisableEdit} />
                     </TabPanel>
                   </Box>
 
                   <Box pt={0} bgcolor={WHITE} borderRadius={8}>
-                    <TabPanel value="6">
-                      <ChartContextProvider>
-                        <HistoryTab shouldDisableEdit={shouldDisableEdit} />
-                      </ChartContextProvider>
+                    <TabPanel value={appointmentId ? isInTake ? "10" : "9" : "8"}>
+                      <Vaccines shouldDisableEdit={shouldDisableEdit} />
                     </TabPanel>
                   </Box>
 
-                  <Box pt={0} bgcolor={WHITE} borderRadius={8}>
-                    <TabPanel value="7">
-                      <ChartContextProvider>
-                        <LabOrdersTable appointmentInfo={appointmentInfo} shouldDisableEdit={shouldDisableEdit} />
-                      </ChartContextProvider>
+                  {appointmentId && <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                    <TabPanel value={appointmentId ? isInTake ? "11" : "10" : "9"}>
+                      <AssessmentPlanTab />
                     </TabPanel>
-                  </Box>
-
-                  <Box pt={0} bgcolor={WHITE} borderRadius={8}>
-                    <TabPanel value="8">
-                      <ChartContextProvider>
-                        <Vaccines shouldDisableEdit={shouldDisableEdit} />
-                      </ChartContextProvider>
-                    </TabPanel>
-                  </Box>
-                </Box>
-
-                {getActiveComponent(activeStep)}
+                  </Box>}
+                </Box> : getActiveComponent(activeStep)}
               </Grid>
             </Grid>
           </TabContext>
