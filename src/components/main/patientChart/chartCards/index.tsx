@@ -295,14 +295,14 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
                   </Box>
                 </Card>}
 
-                <Box p={2} />
-
                 {isInTake && <Card className={patientClasses.stepperContainer}>
-                  <StepperCard
-                    stepperData={stepperDataWithIndicator}
-                    activeStep={activeStep as number}
-                    handleStep={(index: number) => handleStep(index)}
-                  />
+                  <Box className={classes.cardBox}>
+                    <StepperCard
+                      stepperData={stepperDataWithIndicator}
+                      activeStep={activeStep as number}
+                      handleStep={(index: number) => handleStep(index)}
+                    />
+                  </Box>
                 </Card>}
               </Grid>
 

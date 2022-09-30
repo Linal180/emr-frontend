@@ -25,7 +25,7 @@ import {
 } from "../../../../../utils";
 import {
   ACTIONS, ADD_NEW_TEXT, DASHES, DELETE_PROBLEM_DESCRIPTION, ICD_CODE, ONSET_DATE, EIGHT_PAGE_LIMIT,
-  PATIENT_PROBLEM_DELETED, PROBLEM_TEXT, STATUS, TYPE, COMMENTS
+  PATIENT_PROBLEM_DELETED, PROBLEM_TEXT, STATUS, TYPE, COMMENTS, NEXT
 } from "../../../../../constants";
 import {
   IcdCodes, PatientProblemsPayload, useFindAllPatientProblemsLazyQuery, useRemovePatientProblemMutation
@@ -150,16 +150,22 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
         <Grid item md={12} sm={12} xs={12}>
           <Card>
             <Box className={classes.cardBox}>
-              <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
+              <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
                 <Typography variant='h3'>{PROBLEM_TEXT}</Typography>
 
-                {!shouldDisableEdit &&
-                  <Button
-                    variant='contained' color='primary'
-                    startIcon={<Box width={20}><AddWhiteIcon /></Box>}
-                    onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
-                    {ADD_NEW_TEXT}
-                  </Button>}
+                <Box display='flex' alignItems='center'>
+                  {!shouldDisableEdit &&
+                    <Button
+                      variant='contained' color='primary'
+                      startIcon={<Box width={20}><AddWhiteIcon /></Box>}
+                      onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
+                      {ADD_NEW_TEXT}
+                    </Button>}
+
+                  <Box p={1} />
+
+                  <Button variant='contained' color='secondary'>{NEXT}</Button>
+                </Box>
               </Box>
 
               <Box className={classes.tableBox}>

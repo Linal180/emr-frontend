@@ -10,7 +10,7 @@ import Alert from "../../../../common/Alert";
 import TableLoader from "../../../../common/TableLoader";
 //constants, interfaces, utils
 import {
-  CONFLICT_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, FORBIDDEN_EXCEPTION, NOTES, PAGE_LIMIT, SAVE_TEXT,
+  CONFLICT_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, FORBIDDEN_EXCEPTION, NEXT, NOTES, PAGE_LIMIT, SAVE_TEXT,
   TRIAGE_NOTES, UPDATE_TRIAGE_NOTES, VITAL_LIST_PAGE_LIMIT
 } from "../../../../../constants";
 import InputController from "../../../../../controller";
@@ -187,8 +187,10 @@ const TriageNoteTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
             ) : <Box className={classes.cardBox}>
               <FormProvider {...methods}>
                 <form>
-                  <Box px={2} py={2}>
+                  <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
                     <Typography variant='h3'>{TRIAGE_NOTES}</Typography>
+
+                    <Button variant='contained' color='secondary'>{NEXT}</Button>
                   </Box>
                 </form>
               </FormProvider>

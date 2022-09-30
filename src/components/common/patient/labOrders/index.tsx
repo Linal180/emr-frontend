@@ -1,5 +1,5 @@
 // packages block
-import { Box, Button, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
+import { Box, Button, Card, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
 import { Add } from '@material-ui/icons';
 import { Pagination } from "@material-ui/lab";
 import { ChangeEvent, FC, Reducer, useCallback, useEffect, useMemo, useReducer } from "react";
@@ -17,7 +17,7 @@ import SideDrawer from "../../SideDrawer";
 // constant, utils and styles block
 import { OutlinedAddIcon, PrintGrayIcon } from "../../../../assets/svgs";
 import {
-  ADD_LAB_ORDERS_RESULTS_ROUTE, APPOINTMENT, DATE, EMPTY_OPTION, LAB_ORDERS_LIMIT, LAB_TEST_STATUSES, MANUAL_ENTRY, NOT_FOUND_EXCEPTION,
+  ADD_LAB_ORDERS_RESULTS_ROUTE, APPOINTMENT, DATE, EMPTY_OPTION, LAB_ORDERS_LIMIT, LAB_TEST_STATUSES, MANUAL_ENTRY, NEXT, NOT_FOUND_EXCEPTION,
   ORDER_NUM, RESULTS, RESULTS_ENTERED, STATUS, TESTS, USER_NOT_FOUND_EXCEPTION_MESSAGE
 } from "../../../../constants";
 import {
@@ -26,11 +26,13 @@ import {
 import { LabOrderInput, LabOrdersTableProps, ParamsType, SelectorOption } from "../../../../interfacesTypes";
 import { Action, ActionType, initialState, labReducer, State } from "../../../../reducers/labReducer";
 import { useTableStyles } from "../../../../styles/tableStyles";
+import { useChartingStyles } from '../../../../styles/chartingStyles';
 import { appointmentStatus, convertDateFromUnix, formatValue, renderTh } from "../../../../utils";
 import LabTestModal from "../../../main/reports/labResultsListing/LabTestModal";
 
 const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisableEdit }): JSX.Element => {
   const classes = useTableStyles();
+  const chartingClasses = useChartingStyles();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(labReducer, initialState)
   const { isStickerModalOpen, labOrders, page, pages, searchQuery, stickerOrder, isEdit, drawerOpened, labTestIds, labTestsToEdit, orderNum } = state
 
@@ -178,149 +180,157 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisabl
 
   return (
     <>
-      <Box className={classes.mainTableContainer}>
-        <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(() => { })}>
-            <Box display="flex" flexWrap="wrap" justifyContent="space-between" alignItems="center">
-              <Box mb={2}>
-                <Search search={search} />
-              </Box>
+      <Card>
+        <Box className={chartingClasses.cardBox}>
+          <Box className={classes.mainTableContainer}>
+            <FormProvider {...methods}>
+              <form onSubmit={handleSubmit(() => { })}>
+                <Box mb={2} display="flex" flexWrap="wrap" justifyContent="space-between" alignItems="center">
+                  <Search search={search} />
 
-              {!shouldDisableEdit && <Box mb={2}>
-                <Button variant="outlined"
-                  color="inherit" className='blue-button-new'
-                  startIcon={<Box width={20}><Add /></Box>}
-                  onClick={toggleSideDrawer}
-                  disabled={loading}
-                >
-                  {MANUAL_ENTRY}
-                </Button>
-              </Box>}
-            </Box>
+                  <Box display='flex' alignItems='center'>
+                    {!shouldDisableEdit && <Box>
+                      <Button variant="outlined"
+                        color="inherit" className='blue-button-new'
+                        startIcon={<Box width={20}><Add /></Box>}
+                        onClick={toggleSideDrawer}
+                        disabled={loading}
+                      >
+                        {MANUAL_ENTRY}
+                      </Button>
+                    </Box>}
 
+                    <Box p={1} />
 
-            <SideDrawer
-              drawerOpened={drawerOpened}
-              toggleSideDrawer={toggleSideDrawer} >
-              {drawerOpened && <AddLabOrdersComponent
-                toggleSideDrawer={handleReload}
-                isEdit={!!labTestsToEdit?.length}
-                labTestsToEdit={labTestsToEdit}
-                orderNumber={orderNum}
-                appointmentInfo={appointmentInfo}
-              />}
-            </SideDrawer>
+                    <Button variant='contained' color='secondary'>{NEXT}</Button>
+                  </Box>
+                </Box>
 
 
-            <Box className="table-overflow">
-              <Table aria-label="customized table" className={classes.table}>
-                <TableHead>
-                  <TableRow>
-                    {renderTh(ORDER_NUM)}
-                    {renderTh(APPOINTMENT)}
-                    {renderTh(TESTS)}
-                    {renderTh(DATE)}
-                    {renderTh(STATUS)}
-                    {renderTh(RESULTS_ENTERED)}
-                    {renderTh(RESULTS)}
-                  </TableRow>
-                </TableHead>
+                <SideDrawer
+                  drawerOpened={drawerOpened}
+                  toggleSideDrawer={toggleSideDrawer} >
+                  {drawerOpened && <AddLabOrdersComponent
+                    toggleSideDrawer={handleReload}
+                    isEdit={!!labTestsToEdit?.length}
+                    labTestsToEdit={labTestsToEdit}
+                    orderNumber={orderNum}
+                    appointmentInfo={appointmentInfo}
+                  />}
+                </SideDrawer>
 
-                <TableBody>
-                  {Object.values(transformedLabOrders).map((labOrders) => {
-                    const { appointment, createdAt, labTestStatus, orderNumber, testObservations } = labOrders[0] as LabTestPayload['labTest'] ?? {}
-                    const { appointmentType, scheduleStartDateTime } = appointment ?? {}
 
-                    return (
+                <Box className="table-overflow">
+                  <Table aria-label="customized table" className={classes.table}>
+                    <TableHead>
                       <TableRow>
-                        <TableCell scope="row">
-                          <Box className={shouldDisableEdit ? "" : "pointer-cursor"} onClick={shouldDisableEdit ? () => { } : () => handleLabOrderEdit(orderNumber || '', labOrders)}>
-                            <Typography color='secondary'>
-                              {orderNumber}
-                            </Typography>
-                          </Box>
-                        </TableCell>
-                        <TableCell scope="row">
-                          <Typography>
-                            <b>
-                              {appointmentType?.name ? `${appointmentType?.name ?? ''}` : '--'}
-                            </b>
-                            <br />
-                            {appointmentType?.name ? convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm A') : ''}
-                          </Typography>
+                        {renderTh(ORDER_NUM)}
+                        {renderTh(APPOINTMENT)}
+                        {renderTh(TESTS)}
+                        {renderTh(DATE)}
+                        {renderTh(STATUS)}
+                        {renderTh(RESULTS_ENTERED)}
+                        {renderTh(RESULTS)}
+                      </TableRow>
+                    </TableHead>
 
-                        </TableCell>
-                        <TableCell scope="row">
-                          <ul>
-                            {labOrders.map((labOrder: LabTestPayload['labTest']) => (
-                              <li>{labOrder?.test?.component?.slice(0, 20) ?? '- -'}...</li>
-                            ))}
-                          </ul>
-                        </TableCell>
-                        <TableCell scope="row">{convertDateFromUnix(createdAt, 'MM-DD-YYYY')}</TableCell>
-                        <TableCell scope="row">
-                          {isEdit && orderNum === orderNumber ? <>
-                            <Selector
-                              name="status"
-                              label=""
-                              value={EMPTY_OPTION}
-                              options={LAB_TEST_STATUSES}
-                              onSelect={({ id }: SelectorOption) => onSelectStatus(id)}
-                              onOutsideClick={clearEdit}
-                            />
-                          </>
-                            :
-                            <Box className={classes.status} component='span' color={textColor}
-                              onClick={() => handleEdit(orderNumber || '', labTestStatus || '', (labOrders)?.map((labOrder: LabTestPayload['labTest']) => labOrder?.id || ''))}
-                            >
-                              {formatValue(labTestStatus ?? '')}
-                            </Box>
-                          }
-                        </TableCell>
-                        <TableCell scope="row">
-                          {testObservations?.length ? convertDateFromUnix(testObservations?.[0]?.createdAt, 'MM-DD-YYYY') : '- -'}
-                        </TableCell>
-                        <TableCell scope="row">
-                          <Box display="flex" alignItems="center">
-                            <IconButton size='small' onClick={() => history.push(appointmentId ? `${ADD_LAB_ORDERS_RESULTS_ROUTE}/${id}/${orderNumber}/${appointmentId}` : `${ADD_LAB_ORDERS_RESULTS_ROUTE}/${id}/${orderNumber}`)}>
-                              <OutlinedAddIcon />
-                            </IconButton>
+                    <TableBody>
+                      {Object.values(transformedLabOrders).map((labOrders) => {
+                        const { appointment, createdAt, labTestStatus, orderNumber, testObservations } = labOrders[0] as LabTestPayload['labTest'] ?? {}
+                        const { appointmentType, scheduleStartDateTime } = appointment ?? {}
 
-                            {/* <IconButton size='small'>
+                        return (
+                          <TableRow>
+                            <TableCell scope="row">
+                              <Box className={shouldDisableEdit ? "" : "pointer-cursor"} onClick={shouldDisableEdit ? () => { } : () => handleLabOrderEdit(orderNumber || '', labOrders)}>
+                                <Typography color='secondary'>
+                                  {orderNumber}
+                                </Typography>
+                              </Box>
+                            </TableCell>
+                            <TableCell scope="row">
+                              <Typography>
+                                <b>
+                                  {appointmentType?.name ? `${appointmentType?.name ?? ''}` : '--'}
+                                </b>
+                                <br />
+                                {appointmentType?.name ? convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm A') : ''}
+                              </Typography>
+
+                            </TableCell>
+                            <TableCell scope="row">
+                              <ul>
+                                {labOrders.map((labOrder: LabTestPayload['labTest']) => (
+                                  <li>{labOrder?.test?.component?.slice(0, 20) ?? '- -'}...</li>
+                                ))}
+                              </ul>
+                            </TableCell>
+                            <TableCell scope="row">{convertDateFromUnix(createdAt, 'MM-DD-YYYY')}</TableCell>
+                            <TableCell scope="row">
+                              {isEdit && orderNum === orderNumber ? <>
+                                <Selector
+                                  name="status"
+                                  label=""
+                                  value={EMPTY_OPTION}
+                                  options={LAB_TEST_STATUSES}
+                                  onSelect={({ id }: SelectorOption) => onSelectStatus(id)}
+                                  onOutsideClick={clearEdit}
+                                />
+                              </>
+                                :
+                                <Box className={classes.status} component='span' color={textColor}
+                                  onClick={() => handleEdit(orderNumber || '', labTestStatus || '', (labOrders)?.map((labOrder: LabTestPayload['labTest']) => labOrder?.id || ''))}
+                                >
+                                  {formatValue(labTestStatus ?? '')}
+                                </Box>
+                              }
+                            </TableCell>
+                            <TableCell scope="row">
+                              {testObservations?.length ? convertDateFromUnix(testObservations?.[0]?.createdAt, 'MM-DD-YYYY') : '- -'}
+                            </TableCell>
+                            <TableCell scope="row">
+                              <Box display="flex" alignItems="center">
+                                <IconButton size='small' onClick={() => history.push(appointmentId ? `${ADD_LAB_ORDERS_RESULTS_ROUTE}/${id}/${orderNumber}/${appointmentId}` : `${ADD_LAB_ORDERS_RESULTS_ROUTE}/${id}/${orderNumber}`)}>
+                                  <OutlinedAddIcon />
+                                </IconButton>
+
+                                {/* <IconButton size='small'>
                                   <Box width={20}>
                                     <EyeIcon />
                                   </Box>
                               </IconButton> */}
 
-                            <ResultDownloadLink orderNumber={orderNumber || ''} />
+                                <ResultDownloadLink orderNumber={orderNumber || ''} />
 
-                            <Box>
-                              <IconButton size='small' onClick={() => {
-                                dispatch({ type: ActionType.SET_IS_STICKER_MODAL_OPEN, isStickerModalOpen: true });
-                                dispatch({ type: ActionType.SET_STICKER_ORDER, stickerOrder: orderNumber || '' })
-                              }}>
-                                <PrintGrayIcon />
-                              </IconButton>
-                            </Box>
-                          </Box>
-                        </TableCell>
-                      </TableRow>
-                    )
-                  })
-                    // )
-                  }
-                </TableBody>
-              </Table>
-            </Box>
-          </form>
-        </FormProvider>
-      </Box>
+                                <Box>
+                                  <IconButton size='small' onClick={() => {
+                                    dispatch({ type: ActionType.SET_IS_STICKER_MODAL_OPEN, isStickerModalOpen: true });
+                                    dispatch({ type: ActionType.SET_STICKER_ORDER, stickerOrder: orderNumber || '' })
+                                  }}>
+                                    <PrintGrayIcon />
+                                  </IconButton>
+                                </Box>
+                              </Box>
+                            </TableCell>
+                          </TableRow>
+                        )
+                      })
+                        // )
+                      }
+                    </TableBody>
+                  </Table>
+                </Box>
+              </form>
+            </FormProvider>
 
-      {((!loading && Object.keys(transformedLabOrders)?.length === 0) || error) && (
-        <Box display="flex" justifyContent="center" pb={12} pt={5}>
-          <NoDataFoundComponent />
+            {((!loading && Object.keys(transformedLabOrders)?.length === 0) || error) && (
+              <Box display="flex" justifyContent="center" pb={12} pt={5}>
+                <NoDataFoundComponent />
+              </Box>
+            )}
+          </Box>
         </Box>
-      )}
+      </Card>
 
       {pages > 1 &&
         <Box display="flex" justifyContent="flex-end" p={3}>

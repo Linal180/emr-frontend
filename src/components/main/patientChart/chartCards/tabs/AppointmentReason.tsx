@@ -2,7 +2,7 @@ import { Box, Button, Card, colors, IconButton, Typography } from '@material-ui/
 import { RemoveCircleOutline } from '@material-ui/icons'
 import { Reducer, useCallback, useEffect, useReducer } from 'react'
 import { useParams } from 'react-router'
-import { ADD, APPOINTMENT_REASON_DELETED, DELETE_REASON_DESCRIPTION, EIGHT_PAGE_LIMIT, REASON, REASON_VISIT } from '../../../../../constants'
+import { ADD, APPOINTMENT_REASON_DELETED, DELETE_REASON_DESCRIPTION, EIGHT_PAGE_LIMIT, NEXT, REASON, REASON_VISIT } from '../../../../../constants'
 import { PatientProblemsPayload, useFindAllPatientProblemsLazyQuery, useRemovePatientProblemMutation } from '../../../../../generated/graphql'
 import { AppointmentReasonProps, ParamsType } from '../../../../../interfacesTypes'
 import { Action, ActionType, chartReducer, initialState, State } from '../../../../../reducers/chartReducer'
@@ -104,13 +104,19 @@ function AppointmentReason({ shouldShowAdd }: AppointmentReasonProps) {
           <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" borderBottom={`1px solid ${colors.grey[300]}`}>
             <Typography variant='h3'>{REASON_VISIT}</Typography>
 
-            {!shouldShowAdd && <Button
-              variant="contained"
-              color="primary"
-              onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}
-            >
-              {ADD}
-            </Button>}
+            <Box display='flex' alignItems='center'>
+              {!shouldShowAdd && <Button
+                variant="contained"
+                color="primary"
+                onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}
+              >
+                {ADD}
+              </Button>}
+
+              <Box p={1} />
+
+              <Button variant='contained' color='secondary'>{NEXT}</Button>
+            </Box>
           </Box>
 
 

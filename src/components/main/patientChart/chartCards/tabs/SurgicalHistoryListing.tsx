@@ -15,7 +15,7 @@ import SurgicalHistoryModal from "../../surgicalHistory/modals/SurgicalHistoryMo
 // constants, utils, interfaces ang graphql block
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from "../../../../../assets/svgs";
 import {
-  ACTIONS, ADD_NEW_TEXT, DASHES, DELETE_SURGICAL_HISTORY_DESCRIPTION, EIGHT_PAGE_LIMIT, NOTES, PATIENT_SURGICAL_HISTORY_DELETE, PROCEDURE_TEXT, SURGERY_DATE, SURGICAL_HISTORY_TEXT
+  ACTIONS, ADD_NEW_TEXT, DASHES, DELETE_SURGICAL_HISTORY_DESCRIPTION, EIGHT_PAGE_LIMIT, NEXT, NOTES, PATIENT_SURGICAL_HISTORY_DELETE, PROCEDURE_TEXT, SURGERY_DATE, SURGICAL_HISTORY_TEXT
 } from "../../../../../constants";
 import { SurgicalHistoriesPayload, useFindAllSurgicalHistoryLazyQuery, useRemoveSurgicalHistoryMutation } from "../../../../../generated/graphql";
 import { ChartComponentProps, ParamsType, SurgicalCode } from "../../../../../interfacesTypes";
@@ -139,82 +139,89 @@ const SurgicalHistoryTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
   return (
     <>
       <Card>
-        <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant='h3'>{SURGICAL_HISTORY_TEXT}</Typography>
+        <Box className={classes.cardBox}>
+          <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
+            <Typography variant='h3'>{SURGICAL_HISTORY_TEXT}</Typography>
 
-          {!shouldDisableEdit &&
-            <Button
-              variant='contained' color='primary'
-              startIcon={<Box width={20}><AddWhiteIcon /></Box>}
-              onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
-              {ADD_NEW_TEXT}
-            </Button>}
-        </Box>
+            <Box display='flex' alignItems='center'>
+              {!shouldDisableEdit &&
+                <Button
+                  variant='contained' color='primary'
+                  startIcon={<Box width={20}><AddWhiteIcon /></Box>}
+                  onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
+                  {ADD_NEW_TEXT}
+                </Button>}
+              <Box p={1} />
 
-        <Box className={classes.tableBox}>
-          <Table aria-label="customized table" className={classesTable.table}>
-            <TableHead>
-              <TableRow>
-                {renderTh(PROCEDURE_TEXT)}
-                {renderTh(SURGERY_DATE)}
-                {renderTh(NOTES)}
-                {!shouldDisableEdit && renderTh(ACTIONS)}
-              </TableRow>
-            </TableHead>
-
-            {loading ? (
-              <TableRow>
-                <TableCell colSpan={8}>
-                  <TableLoader numberOfRows={EIGHT_PAGE_LIMIT} numberOfColumns={5} />
-                </TableCell>
-              </TableRow>
-            ) : <TableBody>
-              {patientSurgicalHistory?.map((patientSurgicalHistory) => {
-                const { id, code, codeType, description, notes, surgeryDate } = patientSurgicalHistory ?? {}
-                const codeInfo = {
-                  code,
-                  description,
-                  codeType
-                } as SurgicalCode
-                return (
-                  <TableRow>
-                    <TableCell scope="row">
-                      <Typography>{`${code} | ${description}` ?? DASHES}</Typography>
-                    </TableCell>
-
-                    <TableCell scope="row">
-                      <Typography>{getFormatDateString(surgeryDate, "MM/DD/YYYY") ?? DASHES}</Typography>
-                    </TableCell>
-
-                    <TableCell scope="row">
-                      <Typography className={classes.textOverflow}>{notes}</Typography>
-                    </TableCell>
-
-                    {
-                      !shouldDisableEdit && <TableCell scope="row">
-                        <Box display='flex' alignItems='center'>
-                          <IconButton size='small' onClick={() => id && handleEdit(id, codeInfo)}>
-                            <EditOutlinedIcon />
-                          </IconButton>
-
-                          <IconButton size='small' onClick={() => id && onDeleteClick(id)}>
-                            <TrashOutlinedSmallIcon />
-                          </IconButton>
-                        </Box>
-                      </TableCell>
-                    }
-                  </TableRow>
-                )
-              })}
-            </TableBody>
-            }
-          </Table>
-
-          {((!loading && patientSurgicalHistory?.length === 0) || error) && (
-            <Box display="flex" justifyContent="center" pb={12} pt={5}>
-              <NoDataFoundComponent />
+              <Button variant='contained' color='secondary'>{NEXT}</Button>
             </Box>
-          )}
+          </Box>
+
+          <Box className={classes.tableBox}>
+            <Table aria-label="customized table" className={classesTable.table}>
+              <TableHead>
+                <TableRow>
+                  {renderTh(PROCEDURE_TEXT)}
+                  {renderTh(SURGERY_DATE)}
+                  {renderTh(NOTES)}
+                  {!shouldDisableEdit && renderTh(ACTIONS)}
+                </TableRow>
+              </TableHead>
+
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={8}>
+                    <TableLoader numberOfRows={EIGHT_PAGE_LIMIT} numberOfColumns={5} />
+                  </TableCell>
+                </TableRow>
+              ) : <TableBody>
+                {patientSurgicalHistory?.map((patientSurgicalHistory) => {
+                  const { id, code, codeType, description, notes, surgeryDate } = patientSurgicalHistory ?? {}
+                  const codeInfo = {
+                    code,
+                    description,
+                    codeType
+                  } as SurgicalCode
+                  return (
+                    <TableRow>
+                      <TableCell scope="row">
+                        <Typography>{`${code} | ${description}` ?? DASHES}</Typography>
+                      </TableCell>
+
+                      <TableCell scope="row">
+                        <Typography>{getFormatDateString(surgeryDate, "MM/DD/YYYY") ?? DASHES}</Typography>
+                      </TableCell>
+
+                      <TableCell scope="row">
+                        <Typography className={classes.textOverflow}>{notes}</Typography>
+                      </TableCell>
+
+                      {
+                        !shouldDisableEdit && <TableCell scope="row">
+                          <Box display='flex' alignItems='center'>
+                            <IconButton size='small' onClick={() => id && handleEdit(id, codeInfo)}>
+                              <EditOutlinedIcon />
+                            </IconButton>
+
+                            <IconButton size='small' onClick={() => id && onDeleteClick(id)}>
+                              <TrashOutlinedSmallIcon />
+                            </IconButton>
+                          </Box>
+                        </TableCell>
+                      }
+                    </TableRow>
+                  )
+                })}
+              </TableBody>
+              }
+            </Table>
+
+            {((!loading && patientSurgicalHistory?.length === 0) || error) && (
+              <Box display="flex" justifyContent="center" pb={12} pt={5}>
+                <NoDataFoundComponent />
+              </Box>
+            )}
+          </Box>
         </Box>
       </Card>
 

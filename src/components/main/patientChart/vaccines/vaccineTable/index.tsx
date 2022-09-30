@@ -18,7 +18,7 @@ import { vaccinesReducer, Action, ActionType, State, initialState } from '../../
 import { Cvx, FindAllVaccinesPayload, useFindAllVaccinesLazyQuery, useRemoveVaccineMutation } from '../../../../../generated/graphql';
 import {
   ACTIONS, ADD_NEW_TEXT, ADMINISTER_BY, ADMINISTRATION_DATE, AMOUNT_UNIT_TEXT, DASHES,
-  DELETE_VACCINE_DESCRIPTION, EIGHT_PAGE_LIMIT, EXPIRY_DATE, NAME, PAGE_LIMIT, ROUTE,
+  DELETE_VACCINE_DESCRIPTION, EIGHT_PAGE_LIMIT, EXPIRY_DATE, NAME, NEXT, PAGE_LIMIT, ROUTE,
   SITE_TEXT, VACCINE_TEXT
 } from '../../../../../constants'
 import Alert from '../../../../common/Alert';
@@ -131,16 +131,22 @@ const VaccinesTable: FC<VaccinesTableProps> = (props): JSX.Element => {
         <Grid item md={12} sm={12} xs={12}>
           <Card>
             <Box className={classes.cardBox}>
-              <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
+              <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
                 <Typography variant='h3'>{VACCINE_TEXT}</Typography>
 
-                {!shouldDisableEdit &&
-                  <Button
-                    variant='contained' color='primary'
-                    startIcon={<Box width={20}><AddWhiteIcon /></Box>}
-                    onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
-                    {ADD_NEW_TEXT}
-                  </Button>}
+                <Box display='flex' alignItems='center'>
+                  {!shouldDisableEdit &&
+                    <Button
+                      variant='contained' color='primary'
+                      startIcon={<Box width={20}><AddWhiteIcon /></Box>}
+                      onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
+                      {ADD_NEW_TEXT}
+                    </Button>}
+
+                  <Box p={1} />
+
+                  <Button variant='contained' color='secondary'>{NEXT}</Button>
+                </Box>
               </Box>
 
               <Box className={`${classes.tableBox} ${classes.vaccineTable}`}>

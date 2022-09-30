@@ -15,7 +15,7 @@ import MedicationModal from "../../medications/modals/MedicationModal";
 // constants, utils, interfaces ang graphql block
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from "../../../../../assets/svgs";
 import {
-  ACTIONS, ADD_NEW_TEXT, COMMENTS, DASHES, DELETE_MEDICATION_DESCRIPTION, EIGHT_PAGE_LIMIT, MEDICATIONS_TEXT, MEDICATION_PROBLEM_DELETED, MEDICATION_TEXT, SIG, START_DATE, STATUS
+  ACTIONS, ADD_NEW_TEXT, COMMENTS, DASHES, DELETE_MEDICATION_DESCRIPTION, EIGHT_PAGE_LIMIT, MEDICATIONS_TEXT, MEDICATION_PROBLEM_DELETED, MEDICATION_TEXT, NEXT, SIG, START_DATE, STATUS
 } from "../../../../../constants";
 import { Medications, PatientMedicationsPayload, useFindAllPatientMedicationsLazyQuery, useRemovePatientMedicationMutation } from "../../../../../generated/graphql";
 import { ChartComponentProps, ParamsType } from "../../../../../interfacesTypes";
@@ -80,199 +80,205 @@ const MedicationTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
           patientMedicationInput: {
             patientId: id,
             paginationOptions: { page, limit: EIGHT_PAGE_LIMIT },
-          // ...(appointmentId ? { appointmentId } : {})
-        }
-      },
+            // ...(appointmentId ? { appointmentId } : {})
+          }
+        },
       })
-} catch (error) { }
+    } catch (error) { }
   }, [findAllPatientMedications, id, page]);
 
-useEffect(() => {
-  id && fetchMedications()
-}, [fetchMedications, id, page])
+  useEffect(() => {
+    id && fetchMedications()
+  }, [fetchMedications, id, page])
 
-const handleEditModalClose = () => {
-  dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: false })
-}
+  const handleEditModalClose = () => {
+    dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: false })
+  }
 
-const handleEdit = (id: string, medication: Medications) => {
-  dispatch({ type: ActionType.SET_SELECTED_ITEM, selectedItem: medication })
-  dispatch({ type: ActionType.SET_ITEM_ID, itemId: id })
-  dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: true })
-};
+  const handleEdit = (id: string, medication: Medications) => {
+    dispatch({ type: ActionType.SET_SELECTED_ITEM, selectedItem: medication })
+    dispatch({ type: ActionType.SET_ITEM_ID, itemId: id })
+    dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: true })
+  };
 
-const [removePatientMedication, { loading: removeMedicationLoading }] = useRemovePatientMedicationMutation({
-  onError({ message }) {
-    Alert.error(message)
-  },
+  const [removePatientMedication, { loading: removeMedicationLoading }] = useRemovePatientMedicationMutation({
+    onError({ message }) {
+      Alert.error(message)
+    },
 
-  async onCompleted(data) {
-    const { removePatientMedication: { response } } = data;
+    async onCompleted(data) {
+      const { removePatientMedication: { response } } = data;
 
-    if (response) {
-      const { status } = response
+      if (response) {
+        const { status } = response
 
-      if (status && status === 200) {
-        Alert.success(MEDICATION_PROBLEM_DELETED);
-        dispatch({ type: ActionType.SET_MEDICATION_DELETE_ID, medicationDeleteId: '' })
-        dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
+        if (status && status === 200) {
+          Alert.success(MEDICATION_PROBLEM_DELETED);
+          dispatch({ type: ActionType.SET_MEDICATION_DELETE_ID, medicationDeleteId: '' })
+          dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
-        if (!!patientMedications && (patientMedications.length > 1 || isLast(patientMedications.length, page))) {
-          await fetchMedications()
-        } else {
-          dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, patientMedications?.length || 0) })
+          if (!!patientMedications && (patientMedications.length > 1 || isLast(patientMedications.length, page))) {
+            await fetchMedications()
+          } else {
+            dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, patientMedications?.length || 0) })
+          }
         }
       }
     }
+  });
+
+  const onDeleteClick = (id: string) => {
+    if (id) {
+      dispatch({ type: ActionType.SET_MEDICATION_DELETE_ID, medicationDeleteId: id })
+      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
+    }
+  };
+
+  const handleDelete = async () => {
+    medicationDeleteId && await removePatientMedication({
+      variables: { removePatientMedication: { id: medicationDeleteId } }
+    })
   }
-});
 
-const onDeleteClick = (id: string) => {
-  if (id) {
-    dispatch({ type: ActionType.SET_MEDICATION_DELETE_ID, medicationDeleteId: id })
-    dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
-  }
-};
+  return (
+    <>
+      <Grid container spacing={3}>
+        <Grid item md={12} sm={12} xs={12}>
+          <Card>
+            <Box className={classes.cardBox}>
+              <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
+                <Typography variant='h3'>{MEDICATIONS_TEXT}</Typography>
 
-const handleDelete = async () => {
-  medicationDeleteId && await removePatientMedication({
-    variables: { removePatientMedication: { id: medicationDeleteId } }
-  })
-}
+                <Box display='flex' alignItems='center'>
+                  {!shouldDisableEdit &&
+                    <Button
+                      variant='contained' color='primary'
+                      startIcon={<Box width={20}><AddWhiteIcon /></Box>}
+                      onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
+                      {ADD_NEW_TEXT}
+                    </Button>}
 
-return (
-  <>
-    <Grid container spacing={3}>
-      <Grid item md={12} sm={12} xs={12}>
-        <Card>
-          <Box className={classes.cardBox}>
-            <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
-              <Typography variant='h3'>{MEDICATIONS_TEXT}</Typography>
+                  <Box p={1} />
 
-              {!shouldDisableEdit &&
-                <Button
-                  variant='contained' color='primary'
-                  startIcon={<Box width={20}><AddWhiteIcon /></Box>}
-                  onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
-                  {ADD_NEW_TEXT}
-                </Button>}
-            </Box>
+                  <Button variant='contained' color='secondary'>{NEXT}</Button>
+                </Box>
+              </Box>
 
-            <Box className={classes.tableBox}>
-              <Table aria-label="customized table" className={classesTable.table}>
-                <TableHead>
-                  <TableRow>
-                    {renderTh(MEDICATION_TEXT)}
-                    {renderTh(START_DATE)}
-                    {renderTh(SIG)}
-                    {renderTh(STATUS)}
-                    {renderTh(COMMENTS)}
-                    {!shouldDisableEdit && renderTh(ACTIONS)}
-                  </TableRow>
-                </TableHead>
+              <Box className={classes.tableBox}>
+                <Table aria-label="customized table" className={classesTable.table}>
+                  <TableHead>
+                    <TableRow>
+                      {renderTh(MEDICATION_TEXT)}
+                      {renderTh(START_DATE)}
+                      {renderTh(SIG)}
+                      {renderTh(STATUS)}
+                      {renderTh(COMMENTS)}
+                      {!shouldDisableEdit && renderTh(ACTIONS)}
+                    </TableRow>
+                  </TableHead>
 
-                {loading ? (
-                  <TableRow>
-                    <TableCell colSpan={8}>
-                      <TableLoader numberOfRows={EIGHT_PAGE_LIMIT} numberOfColumns={5} />
-                    </TableCell>
-                  </TableRow>
-                ) : <TableBody>
-                  {patientMedications?.map((patientMedication) => {
-                    const { id, medication, note, sig, startDate, status } = patientMedication ?? {}
-                    return (
-                      <TableRow>
-                        <TableCell scope="row">
-                          <Typography>{medication?.fullName ?? DASHES}</Typography>
-                        </TableCell>
+                  {loading ? (
+                    <TableRow>
+                      <TableCell colSpan={8}>
+                        <TableLoader numberOfRows={EIGHT_PAGE_LIMIT} numberOfColumns={5} />
+                      </TableCell>
+                    </TableRow>
+                  ) : <TableBody>
+                    {patientMedications?.map((patientMedication) => {
+                      const { id, medication, note, sig, startDate, status } = patientMedication ?? {}
+                      return (
+                        <TableRow>
+                          <TableCell scope="row">
+                            <Typography>{medication?.fullName ?? DASHES}</Typography>
+                          </TableCell>
 
-                        <TableCell scope="row">
-                          <Typography>{getFormatDateString(startDate, "MM/DD/YYYY") ?? DASHES}</Typography>
-                        </TableCell>
+                          <TableCell scope="row">
+                            <Typography>{getFormatDateString(startDate, "MM/DD/YYYY") ?? DASHES}</Typography>
+                          </TableCell>
 
-                        <TableCell scope="row">
-                          <Typography>
-                            {sig ?? DASHES}
-                          </Typography>
-                        </TableCell>
+                          <TableCell scope="row">
+                            <Typography>
+                              {sig ?? DASHES}
+                            </Typography>
+                          </TableCell>
 
-                        <TableCell scope="row">
-                          <Box className={classes.activeBox} bgcolor={getProblemTypeColor(status?.toUpperCase() || '')}>
-                            {status}
-                          </Box>
-                        </TableCell>
-
-                        <TableCell scope="row">
-                          <Typography className={classes.textOverflow}>{note}</Typography>
-                        </TableCell>
-
-                        {
-                          !shouldDisableEdit && <TableCell scope="row">
-                            <Box display='flex' alignItems='center'>
-                              <IconButton size='small' onClick={() => id && medication && handleEdit(id, medication)}>
-                                <EditOutlinedIcon />
-                              </IconButton>
-
-                              <IconButton size='small' onClick={() => id && onDeleteClick(id)}>
-                                <TrashOutlinedSmallIcon />
-                              </IconButton>
+                          <TableCell scope="row">
+                            <Box className={classes.activeBox} bgcolor={getProblemTypeColor(status?.toUpperCase() || '')}>
+                              {status}
                             </Box>
                           </TableCell>
-                        }
-                      </TableRow>
-                    )
-                  })}
-                </TableBody>
-                }
-              </Table>
 
-              {((!loading && patientMedications?.length === 0) || error) && (
-                <Box display="flex" justifyContent="center" pb={12} pt={5}>
-                  <NoDataFoundComponent />
-                </Box>
-              )}
+                          <TableCell scope="row">
+                            <Typography className={classes.textOverflow}>{note}</Typography>
+                          </TableCell>
+
+                          {
+                            !shouldDisableEdit && <TableCell scope="row">
+                              <Box display='flex' alignItems='center'>
+                                <IconButton size='small' onClick={() => id && medication && handleEdit(id, medication)}>
+                                  <EditOutlinedIcon />
+                                </IconButton>
+
+                                <IconButton size='small' onClick={() => id && onDeleteClick(id)}>
+                                  <TrashOutlinedSmallIcon />
+                                </IconButton>
+                              </Box>
+                            </TableCell>
+                          }
+                        </TableRow>
+                      )
+                    })}
+                  </TableBody>
+                  }
+                </Table>
+
+                {((!loading && patientMedications?.length === 0) || error) && (
+                  <Box display="flex" justifyContent="center" pb={12} pt={5}>
+                    <NoDataFoundComponent />
+                  </Box>
+                )}
+              </Box>
             </Box>
-          </Box>
-        </Card>
+          </Card>
+        </Grid>
+
+        <ConfirmationModal
+          title={MEDICATION_TEXT}
+          isOpen={openDelete}
+          isLoading={removeMedicationLoading}
+          description={DELETE_MEDICATION_DESCRIPTION}
+          handleDelete={handleDelete}
+          setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
+        />
+
+        {isSubModalOpen && <MedicationModal
+          item={selectedItem}
+          dispatcher={dispatch}
+          isEdit
+          recordId={itemId}
+          fetch={async () => fetchMedications()}
+          handleClose={handleEditModalClose}
+          isOpen={isSubModalOpen}
+        />
+        }
       </Grid>
 
-      <ConfirmationModal
-        title={MEDICATION_TEXT}
-        isOpen={openDelete}
-        isLoading={removeMedicationLoading}
-        description={DELETE_MEDICATION_DESCRIPTION}
-        handleDelete={handleDelete}
-        setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
-      />
+      {isOpen &&
+        <AddMedication isOpen={isOpen} handleModalClose={handleModalClose} fetch={() => fetchMedications()} />}
 
-      {isSubModalOpen && <MedicationModal
-        item={selectedItem}
-        dispatcher={dispatch}
-        isEdit
-        recordId={itemId}
-        fetch={async () => fetchMedications()}
-        handleClose={handleEditModalClose}
-        isOpen={isSubModalOpen}
-      />
-      }
-    </Grid>
-
-    {isOpen &&
-      <AddMedication isOpen={isOpen} handleModalClose={handleModalClose} fetch={() => fetchMedications()} />}
-
-    {totalPages > 1 && !loading && (
-      <Box display="flex" justifyContent="flex-end" p={3}>
-        <Pagination
-          count={totalPages}
-          shape="rounded"
-          variant="outlined"
-          page={page}
-          onChange={handleChange}
-        />
-      </Box>
-    )}
-  </>
-)
+      {totalPages > 1 && !loading && (
+        <Box display="flex" justifyContent="flex-end" p={3}>
+          <Pagination
+            count={totalPages}
+            shape="rounded"
+            variant="outlined"
+            page={page}
+            onChange={handleChange}
+          />
+        </Box>
+      )}
+    </>
+  )
 }
 
 export default MedicationTab;

@@ -8,6 +8,7 @@ import { AssessmentPlanProblemsProps, ParamsType } from '../../../../../interfac
 import { Action, ActionType, chartReducer, initialState, State } from '../../../../../reducers/chartReducer';
 import { useChartingStyles } from '../../../../../styles/chartingStyles';
 import Alert from '../../../../common/Alert';
+import NoDataFoundComponent from '../../../../common/NoDataFoundComponent';
 import AppointmentReasonModal from '../AppointmentReason/AppointmentReasonModal';
 import AssessmentPlanMedication from './AssessmentPlanMedication';
 
@@ -204,6 +205,10 @@ function AssessmentPlanProblems({ fetchProblems, assessmentProblems: problems, s
           </>
         )
       })}
+
+      {!problems?.length && <Box display="flex" justifyContent="center" pb={12} pt={5}>
+        <NoDataFoundComponent />
+      </Box>}
 
       {isOpen &&
         <AppointmentReasonModal
