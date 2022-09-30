@@ -1,0 +1,17 @@
+query FindAllSections($findAllSectionsInput: FindAllSectionsInput!){
+  findAllSections(findAllSectionsInput: $findAllSectionsInput){
+    response {
+      status
+      message
+    }
+    
+    pagination {
+      totalPages
+      page
+    }
+    
+    sections {
+      id
+    }
+  }
+}
