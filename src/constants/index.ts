@@ -5,8 +5,8 @@ import states from "states-us";
 import { v4 as uuid } from "uuid";
 // graphql and interfaces block
 import {
-  AllergiesIcon, CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, HistoryIcon, LabOrderIcon, MedicationIcon,
-  NumberIcon, ProblemsIcon, RadioGroupIcon, SelectIcon, TextAreaIcon, TextIcon, TriageIcon, VaccineIcon, VitalsIcon
+  AllergiesIcon, AssessmentPlanIcon, CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, HistoryIcon, LabOrderIcon, MedicationIcon,
+  NumberIcon, ProblemsIcon, RadioGroupIcon, ReasonForVisit, SelectIcon, TextAreaIcon, TextIcon, TriageIcon, VaccineIcon, VitalsIcon
 } from "../assets/svgs";
 import {
   AbnormalFlag, AllergySeverity, AppointmentStatus, Communicationtype, CopayType, DoctorPatientRelationType, ElementType,
@@ -107,6 +107,8 @@ export const NO_ERROR_FOUND = 'No error found'
 export const REMOVE_FACILITY_FIELD = 'Please remove facility field. As you are making facility form'
 export const FUTURE_DATE = 'Disable Past Date'
 export const PAST_DATE = 'Disable Future Date'
+export const ASSESSMENT_PLAN = 'Assessment & Plan'
+export const FOLLOWUP = 'Follow up'
 export const STATUS_NAME = 'Status Name';
 export const REQUIRED = 'Required';
 export const FILE_REQUIRED = 'Please select at least one file';
@@ -295,6 +297,13 @@ export const MINUTES = "minutes";
 export const USA = "United States";
 export const RE_SCHEDULE = "Re-Schedule";
 export const CHECK_IN = "Check In";
+export const START_CHECK_IN = "Start Check In";
+export const DONE_CHECK_IN = "Done with Check In";
+export const TO_INTAKE = "To Intake";
+export const TO_EXAM = "To Exam";
+export const TO_CHECKOUT = "To Checkout";
+export const DONE_INTAKE = "Done with Intake";
+export const REASON_VISIT = "Reason For Visit";
 export const TELEHEALTH = "Telehealth";
 export const INSURANCES = "Insurances";
 export const START_TELEHEALTH = "Start Telehealth";
@@ -1015,7 +1024,9 @@ export const CARD_NUMBER = "Card Number";
 export const EXPIRY_DATE = "Expiry Date";
 export const RESEND_OTP = "Resend OTP ?";
 export const ADD_PROBLEM = "Add Problem";
+export const ADD_REASON = "Add Reason";
 export const ADD_MEDICATION = "Add Medication";
+export const ADD_ORDER = "Add Order"
 export const ADD_SURGICAL_HISTORY = "Add Surgical History";
 export const UPDATE_SURGICAL_HISTORY = "Update Surgical History";
 export const MY_PATIENTS = "My Patients";
@@ -1036,6 +1047,8 @@ export const SEND_SMS = "Send SMS";
 export const US_DATE_FORMAT = "mm/dd/yyyy";
 export const PRACTICE_NPI = "Practice NPI";
 export const PATIENT_INFO = "Patient Info";
+export const INTAKE = "Intake";
+export const EXAM = "Exam";
 export const USER_ROLE = "boca_admin_role";
 export const DELETE_STAFF = "Delete Staff";
 export const ADD_FACILITY = "Add Facility";
@@ -1236,6 +1249,7 @@ export const PAYMENTS = "Payments";
 export const GUARDIAN = "Guardian";
 export const EMPLOYER = "Employer";
 export const CHECKOUT = "checkout";
+export const CHECKOUT_TEXT = "Checkout";
 export const CHECKOUT_DISCHARGE = "checkout & discharge";
 export const INDUSTRY = "Industry";
 export const DISCHARGE = "Discharge";
@@ -1488,6 +1502,7 @@ export const REMOVE_COPAY_AMOUNT = "Remove Copay Amount";
 export const NOT_FOUND_EXCEPTION = "Not Found Exception";
 export const FORBIDDEN_EXCEPTION = "Forbidden Exception";
 export const SEARCH_FOR_PROBLEMS = "Search for Problems";
+export const REASON_ADDED = 'Reason Added'
 export const SEARCH_FOR_VACCINES = "Search for vaccines";
 export const SEARCH_FOR_DISEASE = "Search for Disease";
 export const CONTACT_INFORMATION = "Contact Information";
@@ -1533,6 +1548,7 @@ export const COINSURANCE_PERCENTAGE = "Coinsurance percentage";
 export const TWO_FA_AUTHENTICATION = "2-Factor Authentication";
 export const NOTHING_HERE_TEXT = "Seems there is nothing here";
 export const SEARCH_FOR_MEDICATIONS = "Search for Medications";
+export const SEARCH_FOR_TESTS = "Search for Tests";
 export const DELETE_RECORD_TEXT = "You are about delete record";
 export const DELETE_ROLE_DESCRIPTION = "Confirm to delete role";
 export const REGISTRATION_DEPARTMENT = "Registration Department";
@@ -1558,6 +1574,7 @@ export const DELETE_SERVICE_DESCRIPTION = "Confirm to delete Service";
 export const PUBLIC_FORM_FAIL_MESSAGE = 'Your record is not created.';
 export const VERIFICATION_MESSAGE = "You are verified. Please login.";
 export const DELETE_PROBLEM_DESCRIPTION = "Confirm to delete problem";
+export const DELETE_REASON_DESCRIPTION = "Confirm to delete appointment reason";
 export const DELETE_VACCINE_DESCRIPTION = "Confirm to delete vaccine";
 export const DELETE_ICD_10_DESCRIPTION = "Confirm to delete icd-10";
 export const DELETE_CPT_CODE_DESCRIPTION = "Confirm to delete CPT code";
@@ -1902,6 +1919,7 @@ export const PATIENT_SURGICAL_HISTORY_UPDATED = "Patient surgical history update
 export const RESET_PASSWORD_MESSAGE = "Please enter your new secure password.";
 export const PATIENT_ALLERGY_DELETED = "Patient allergy deleted successfully!";
 export const PATIENT_PROBLEM_DELETED = "Patient problem deleted successfully!";
+export const APPOINTMENT_REASON_DELETED = "Appointment Reason deleted successfully!";
 export const PATIENT_SURGICAL_HISTORY_DELETE = "Patient surgical history removed successfully!"
 export const PATIENT_MEDICATION_ADD = "Patient medication added successfully"
 export const MEDICATION_PROBLEM_DELETED = "Medication deleted successfully";
@@ -3142,10 +3160,14 @@ export const UPFRONT_TYPE_OPTIONS: SelectorOption[] = [
 
 export const CHECK_IN_STEPS = [
   CHECK_IN,
-  PATIENT_INFO,
-  CHART_TEXT,
+  INTAKE,
+  EXAM,
+  SIGN_OFF,
+  CHECKOUT_TEXT
+  // PATIENT_INFO,
+  // CHART_TEXT,
   // LAB_ORDERS,
-  BILLING_AND_INSURANCE,
+  // BILLING_AND_INSURANCE,
 ];
 
 export const ADD_INSURANCE_STEPS = [
@@ -3798,10 +3820,31 @@ export const PATIENT_CHARTING_TABS = [
     icon: VaccineIcon,
     title: "Vaccines",
     value: "8",
-  }
+  },
 ]
 
+export const REASON_FOR_VISIT_OPTION = {
+  icon: ReasonForVisit,
+  title: "Reason For Visit",
+  value: "1",
+}
+
+export const REVIEW_OPTION = {
+  icon: ReasonForVisit,
+  title: "Review",
+  value: "1",
+}
+
+export const ASSESSMENT_PLAN_OPTION = {
+  icon: AssessmentPlanIcon,
+  title: "Assessment & Plan",
+  value: "10",
+}
+
 export const PATIENT_CHARTING_MENU = [
+  {
+    title: "Reason For Visit",
+  },
   {
     title: "Triage Notes",
   },
@@ -3818,13 +3861,19 @@ export const PATIENT_CHARTING_MENU = [
     title: "Medication",
   },
   {
-    title: "History",
+    title: "Family History",
+  },
+  {
+    title: "Surgical History",
   },
   {
     title: "Lab Orders",
   },
   {
     title: "Vaccines",
+  },
+  {
+    title: "Orders And Diagnoses",
   }
 ]
 

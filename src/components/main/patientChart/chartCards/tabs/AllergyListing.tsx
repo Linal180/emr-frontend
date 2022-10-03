@@ -1,37 +1,37 @@
-import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer } from "react";
-import { useParams } from "react-router";
-import { Pagination } from "@material-ui/lab";
 import {
   Box, Button, Card, Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow,
   Typography
 } from "@material-ui/core";
+import { Pagination } from "@material-ui/lab";
+import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer } from "react";
+import { useParams } from "react-router";
 // components block
 import Alert from "../../../../common/Alert";
+import ConfirmationModal from "../../../../common/ConfirmationModal";
+import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
 import TableLoader from "../../../../common/TableLoader";
 import AddAllergy from "../../allergies/modals/AddAllergy";
 import AllergyModal from "../../allergies/modals/AllergyModal";
-import ConfirmationModal from "../../../../common/ConfirmationModal";
-import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
 // constants, utils, styles, interfaces and graphql block
-import { GREEN, RED, WHITE } from "../../../../../theme";
-import { useChartingStyles } from "../../../../../styles/chartingStyles";
-import { useTableStyles } from "../../../../../styles/tableStyles";
-import { ChartComponentProps, ParamsType } from "../../../../../interfacesTypes";
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from "../../../../../assets/svgs";
-import { Action, ActionType, chartReducer, initialState, State } from "../../../../../reducers/chartReducer";
 import {
-  formatValue, getFormatDateString, getSeverityColor, renderTh, getPageNumber, isLast
-} from "../../../../../utils";
+  ACTIONS, ACTIVE, ADD_NEW_TEXT, ALLERGIES_TEXT, ALLERGY_TEXT, DASHES, DELETE_ALLERGY_DESCRIPTION,
+  EIGHT_PAGE_LIMIT, INACTIVE, NEXT, NOTES, ONSET_DATE, PAGE_LIMIT, PATIENT_ALLERGY_DELETED, SEVERITY,
+  STATUS
+} from "../../../../../constants";
 import {
   Allergies, PatientAllergiesPayload, useFindAllPatientAllergiesLazyQuery, useRemovePatientAllergyMutation
 } from "../../../../../generated/graphql";
+import { AllergyTabProps, ParamsType } from "../../../../../interfacesTypes";
+import { Action, ActionType, chartReducer, initialState, State } from "../../../../../reducers/chartReducer";
+import { useChartingStyles } from "../../../../../styles/chartingStyles";
+import { useTableStyles } from "../../../../../styles/tableStyles";
+import { GREEN, RED, WHITE } from "../../../../../theme";
 import {
-  ACTIONS, ACTIVE, ADD_NEW_TEXT, ALLERGIES_TEXT, ALLERGY_TEXT, DASHES, DELETE_ALLERGY_DESCRIPTION,
-  EIGHT_PAGE_LIMIT, INACTIVE, NOTES, ONSET_DATE, PAGE_LIMIT, PATIENT_ALLERGY_DELETED, SEVERITY,
-  STATUS
-} from "../../../../../constants";
+  formatValue, getFormatDateString, getPageNumber, getSeverityColor, isLast, renderTh
+} from "../../../../../utils";
 
-const AllergyTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
+const AllergyTab: FC<AllergyTabProps> = ({ shouldDisableEdit, handleStep }) => {
   const { id } = useParams<ParamsType>()
   const classes = useChartingStyles()
   const classesTable = useTableStyles();
@@ -79,7 +79,11 @@ const AllergyTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
     try {
       await findAllPatientAllergies({
         variables: {
-          patientAllergyInput: { patientId: id, paginationOptions: { page, limit: EIGHT_PAGE_LIMIT } }
+          patientAllergyInput: {
+            patientId: id,
+            paginationOptions: { page, limit: EIGHT_PAGE_LIMIT },
+            // ...(appointmentId ? { appointmentId } : {})
+          }
         },
       })
     } catch (error) { }
@@ -144,16 +148,29 @@ const AllergyTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
         <Grid item md={12} sm={12} xs={12}>
           <Card>
             <Box className={classes.cardBox}>
-              <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
+              <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
                 <Typography variant='h3'>{ALLERGIES_TEXT}</Typography>
 
-                {!shouldDisableEdit &&
-                  <Button
-                    variant='contained' color='primary'
-                    startIcon={<Box width={20}><AddWhiteIcon /></Box>}
-                    onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
-                    {ADD_NEW_TEXT}
+                <Box display='flex' alignItems='center'>
+                  {!shouldDisableEdit &&
+                    <Button
+                      variant='contained' color='primary'
+                      startIcon={<Box width={20}><AddWhiteIcon /></Box>}
+                      onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
+                      {ADD_NEW_TEXT}
+                    </Button>}
+
+                  <Box p={1} />
+
+                  {handleStep && <Button
+                    variant='contained'
+                    color='secondary'
+                    size="large"
+                    onClick={()=>handleStep(5)}
+                  >
+                    {NEXT}
                   </Button>}
+                </Box>
               </Box>
 
               <Box className={classes.tableBox}>

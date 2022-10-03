@@ -1183,7 +1183,6 @@ export const cptFeeScheduleSchema = yup.object({
   shortDescription: yup.string(),
   code: selectorSchema(CPT_CODE_PROCEDURE_CODE),
   serviceFee: yup.string().required(requiredMessage(SERVICE_FEE_CHARGE)).test('', invalidMessage(SERVICE_FEE_CHARGE), (value) => {
-    console.log('serviceFee', String(value))
     return !!value ? !String(value).includes('-') ? Number(value) >= 0 : false : true
   }),
 })
