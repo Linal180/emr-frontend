@@ -4571,3 +4571,11 @@ export const VACCINE_SITES_MAPPED = [
   { id: "left_flank", name: "Left Flank" },
   { id: "right_flank", name: "Right Flank" },
 ]
+
+export enum QuestionType {
+  SWITCH = 'switch',
+  SELECT= 'select',
+  INPUT = 'input',
+  DATE = 'date',
+  NUMBER = 'number'
+}

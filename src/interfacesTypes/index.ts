@@ -2185,6 +2185,7 @@ export type SocialSwitchCardPropsType = {
   title: string;
   notesName: string;
   switchName: string;
+  isDependentQ?: boolean
 }
 
 export type SocialInputCardPropsType = {
@@ -2193,6 +2194,7 @@ export type SocialInputCardPropsType = {
   inputName: string;
   inputFieldType?: string
   notStep?: boolean
+  isDependentQ?: boolean
 }
 
 export type SocialSelectorCardPropsType  = {
@@ -2200,6 +2202,7 @@ export type SocialSelectorCardPropsType  = {
   notesName: string;
   selectorName: string;
   selectorOptions: SelectorOption[];
+  isDependentQ?: boolean
 }
 
 export type FamilyHistoryFormType = {

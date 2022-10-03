@@ -8,11 +8,11 @@ import { NOTES } from '../../../../../constants';
 import { SocialSelectorCardPropsType } from '../../../../../interfacesTypes';
 
 
-const SocialSelectorCard: FC<SocialSelectorCardPropsType> = ({ notesName, selectorName, selectorOptions, title }): JSX.Element => {
+const SocialSelectorCard: FC<SocialSelectorCardPropsType> = ({ notesName, selectorName, selectorOptions, title, isDependentQ = false }): JSX.Element => {
   return (
     <Grid container alignItems="center" spacing={2} direction="row">
       <Grid item md={6} sm={12} xs={12}>
-        <Box>
+        <Box ml={isDependentQ ? 3 : 0}>
           <Typography variant="body1" color="initial">{title}</Typography>
         </Box>
       </Grid>

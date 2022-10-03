@@ -1659,6 +1659,23 @@ export type CreateVitalInput = {
   weightUnit: WeightType;
 };
 
+export type DependentQuestions = {
+  __typename?: 'DependentQuestions';
+  answer?: Maybe<Array<Scalars['String']>>;
+  createdAt?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  note?: Maybe<Scalars['String']>;
+  options?: Maybe<Array<SelectorType>>;
+  parentId?: Maybe<Scalars['String']>;
+  questionType?: Maybe<Scalars['String']>;
+  questions?: Maybe<Questions>;
+  questionsId?: Maybe<Scalars['String']>;
+  specialId?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['String']>;
+};
+
 export type DisableDoctor = {
   id: Scalars['String'];
 };
@@ -2162,6 +2179,17 @@ export type FindAllNdcPayload = {
   ndcs?: Maybe<Array<Ndc>>;
   pagination?: Maybe<PaginationPayload>;
   response?: Maybe<ResponsePayloadResponse>;
+};
+
+export type FindAllSectionsInput = {
+  paginationOptions: PaginationInput;
+};
+
+export type FindAllSectionsPayload = {
+  __typename?: 'FindAllSectionsPayload';
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+  sections?: Maybe<Array<Maybe<Sections>>>;
 };
 
 export type FindAllVaccinesInput = {
@@ -3992,6 +4020,7 @@ export type Patient = {
   resultConsent?: Maybe<Scalars['Boolean']>;
   sexAtBirth?: Maybe<Genderidentity>;
   sexualOrientation?: Maybe<Sexualorientation>;
+  socialHistory?: Maybe<SocialHistory>;
   ssn?: Maybe<Scalars['String']>;
   statementDelivereOnline?: Maybe<Scalars['Boolean']>;
   statementNote?: Maybe<Scalars['String']>;
@@ -4834,6 +4863,7 @@ export type Query = {
   findAllPublicFacility: FacilitiesPayload;
   findAllReactions: ReactionsPayload;
   findAllSchedules: SchedulesPayload;
+  findAllSections: FindAllSectionsPayload;
   findAllServices: ServicesPayload;
   findAllStaff: AllStaffPayload;
   findAllSurgicalHistory: SurgicalHistoriesPayload;
@@ -5179,6 +5209,11 @@ export type QueryFindAllReactionsArgs = {
 
 export type QueryFindAllSchedulesArgs = {
   scheduleInput: ScheduleInput;
+};
+
+
+export type QueryFindAllSectionsArgs = {
+  findAllSectionsInput: FindAllSectionsInput;
 };
 
 
@@ -5576,6 +5611,23 @@ export type QuerySearchUserArgs = {
   search: Scalars['String'];
 };
 
+export type Questions = {
+  __typename?: 'Questions';
+  answer?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  dependentQuestions?: Maybe<Array<DependentQuestions>>;
+  id: Scalars['String'];
+  note?: Maybe<Scalars['String']>;
+  options?: Maybe<Array<SelectorType>>;
+  questionType?: Maybe<Scalars['String']>;
+  sections?: Maybe<Sections>;
+  sectionsId?: Maybe<Scalars['String']>;
+  specialId?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['String']>;
+};
+
 /** The user race assigned */
 export enum Race {
   AmericanIndianAlaskaNative = 'AMERICAN_INDIAN_ALASKA_NATIVE',
@@ -5933,6 +5985,18 @@ export type SearchSnoMedCodesInput = {
   searchTerm: Scalars['String'];
 };
 
+export type Sections = {
+  __typename?: 'Sections';
+  createdAt?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  questions?: Maybe<Array<Questions>>;
+  socialHistory?: Maybe<SocialHistory>;
+  socialHistoryId?: Maybe<Scalars['String']>;
+  specialId?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
 export type SectionsInputs = {
   col: Scalars['Int'];
   fields: Array<FieldsInputs>;
@@ -5948,6 +6012,12 @@ export type SectionsTypes = {
   id: Scalars['String'];
   name: Scalars['String'];
   sectionId?: Maybe<Scalars['String']>;
+};
+
+export type SelectorType = {
+  __typename?: 'SelectorType';
+  id?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
 };
 
 export type SendSmsInput = {
@@ -6172,6 +6242,15 @@ export type SnoMedCodes = {
   recordId?: Maybe<Scalars['String']>;
   referencedComponentId?: Maybe<Scalars['String']>;
   refsetId?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type SocialHistory = {
+  __typename?: 'SocialHistory';
+  createdAt?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  patient?: Maybe<Patient>;
+  sections?: Maybe<Array<Sections>>;
   updatedAt?: Maybe<Scalars['String']>;
 };
 
@@ -8065,6 +8144,13 @@ export type SearchSnoMedCodesQueryVariables = Exact<{
 
 
 export type SearchSnoMedCodesQuery = { __typename?: 'Query', searchSnoMedCodeByIcdCodes: { __typename?: 'snoMedCodesPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, snoMedCodes?: Array<{ __typename: 'SnoMedCodes', id: string, referencedComponentId?: string | null } | null> | null } };
+
+export type FindAllSectionsQueryVariables = Exact<{
+  findAllSectionsInput: FindAllSectionsInput;
+}>;
+
+
+export type FindAllSectionsQuery = { __typename?: 'Query', findAllSections: { __typename?: 'FindAllSectionsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null, page?: number | null } | null, sections?: Array<{ __typename?: 'Sections', id: string, name?: string | null, specialId?: string | null, questions?: Array<{ __typename?: 'Questions', id: string, title?: string | null, note?: string | null, value?: string | null, questionType?: string | null, specialId?: string | null, options?: Array<{ __typename?: 'SelectorType', id?: string | null, name?: string | null }> | null, dependentQuestions?: Array<{ __typename?: 'DependentQuestions', id: string, title?: string | null, note?: string | null, value?: string | null, answer?: Array<string> | null, specialId?: string | null, questionType?: string | null, options?: Array<{ __typename?: 'SelectorType', id?: string | null, name?: string | null }> | null }> | null }> | null } | null> | null } };
 
 export type FindAllSurgicalHistoryQueryVariables = Exact<{
   surgicalHistoryInput: SurgicalHistoryInput;
@@ -13414,6 +13500,78 @@ export function useSearchSnoMedCodesLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type SearchSnoMedCodesQueryHookResult = ReturnType<typeof useSearchSnoMedCodesQuery>;
 export type SearchSnoMedCodesLazyQueryHookResult = ReturnType<typeof useSearchSnoMedCodesLazyQuery>;
 export type SearchSnoMedCodesQueryResult = Apollo.QueryResult<SearchSnoMedCodesQuery, SearchSnoMedCodesQueryVariables>;
+export const FindAllSectionsDocument = gql`
+    query FindAllSections($findAllSectionsInput: FindAllSectionsInput!) {
+  findAllSections(findAllSectionsInput: $findAllSectionsInput) {
+    response {
+      status
+      message
+    }
+    pagination {
+      totalPages
+      page
+    }
+    sections {
+      id
+      name
+      specialId
+      questions {
+        id
+        title
+        note
+        value
+        questionType
+        specialId
+        options {
+          id
+          name
+        }
+        dependentQuestions {
+          id
+          title
+          note
+          value
+          answer
+          specialId
+          questionType
+          options {
+            id
+            name
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllSectionsQuery__
+ *
+ * To run a query within a React component, call `useFindAllSectionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllSectionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllSectionsQuery({
+ *   variables: {
+ *      findAllSectionsInput: // value for 'findAllSectionsInput'
+ *   },
+ * });
+ */
+export function useFindAllSectionsQuery(baseOptions: Apollo.QueryHookOptions<FindAllSectionsQuery, FindAllSectionsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllSectionsQuery, FindAllSectionsQueryVariables>(FindAllSectionsDocument, options);
+      }
+export function useFindAllSectionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllSectionsQuery, FindAllSectionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllSectionsQuery, FindAllSectionsQueryVariables>(FindAllSectionsDocument, options);
+        }
+export type FindAllSectionsQueryHookResult = ReturnType<typeof useFindAllSectionsQuery>;
+export type FindAllSectionsLazyQueryHookResult = ReturnType<typeof useFindAllSectionsLazyQuery>;
+export type FindAllSectionsQueryResult = Apollo.QueryResult<FindAllSectionsQuery, FindAllSectionsQueryVariables>;
 export const FindAllSurgicalHistoryDocument = gql`
     query FindAllSurgicalHistory($surgicalHistoryInput: SurgicalHistoryInput!) {
   findAllSurgicalHistory(surgicalHistoryInput: $surgicalHistoryInput) {

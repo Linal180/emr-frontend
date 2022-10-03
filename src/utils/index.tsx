@@ -2403,3 +2403,83 @@ export const dateFormateForEmail = (dateTime: string) => {
   const time = moment(appointmentDateStr).format("hh:mm A")
   return { date: date, time: time }
 }
+
+const getSocialQsType = (type: string, value: any) => {
+  switch (type) {
+    case "boolean":
+      return `${value}`
+    case "object":
+
+      if (Object.prototype.hasOwnProperty.call(value, 'id')) {
+        return value?.id;
+      }
+      else {
+        return moment(value).format()
+      }
+
+    case "string":
+
+      return value;
+
+    default:
+      return ''
+  }
+}
+
+export const getSocialHistoryFormValues = (data: any) => {
+  const arr = []
+  for (const key in data) {
+    if (Object.prototype.hasOwnProperty.call(data, key)) {
+      const QKey = data[`${key}`]
+
+
+      const dependentQuestions = []
+
+      if (Object.prototype.hasOwnProperty.call(QKey, 'dependent')) {
+
+        const dependentQs = data[`${key}`]['dependent']
+
+        for (const key in dependentQs) {
+          if (Object.prototype.hasOwnProperty.call(dependentQs, key)) {
+            const dependentQKey = dependentQs[`${key}`]
+            if (Object.prototype.hasOwnProperty.call(dependentQKey, 'value')
+              && Object.prototype.hasOwnProperty.call(dependentQKey, 'note')
+            ) {
+
+              const value = dependentQKey['value']
+              const note = dependentQKey['note']
+              const str = value ?? ''
+              const type = typeof str;
+              const strValue = getSocialQsType(type, str);
+
+              dependentQuestions.push({
+                name: key,
+                value: strValue as string,
+                note: note as string
+              })
+            }
+          }
+        }
+      }
+
+      if (Object.prototype.hasOwnProperty.call(QKey, 'value')
+        && Object.prototype.hasOwnProperty.call(QKey, 'note')
+      ) {
+        const value = QKey['value']
+        const note = QKey['note']
+        const str = value ?? ''
+        const type = typeof str;
+        const strValue = getSocialQsType(type, str);
+        const newQuestions = dependentQuestions?.map((item) => ({ ...item, parentId: key }))
+
+        arr.push({
+          name: key,
+          value: strValue as string,
+          note: note as string,
+          dependentQuestions: newQuestions
+        })
+      }
+    }
+  }
+  return arr;
+}

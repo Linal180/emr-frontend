@@ -7,11 +7,11 @@ import { NOTES } from '../../../../../constants';
 import { SocialInputCardPropsType } from '../../../../../interfacesTypes';
 
 
-const SocialInputCard: FC<SocialInputCardPropsType> = ({ notesName, inputName, title, inputFieldType, notStep }): JSX.Element => {
+const SocialInputCard: FC<SocialInputCardPropsType> = ({ notesName, inputName, title, inputFieldType, notStep, isDependentQ = false }): JSX.Element => {
   return (
     <Grid container alignItems="center" spacing={2} direction="row">
       <Grid item md={6} sm={12} xs={12}>
-        <Box>
+        <Box ml={isDependentQ ? 3 : 0}>
           <Typography variant="body1" color="initial">{title}</Typography>
         </Box>
       </Grid>
@@ -20,6 +20,7 @@ const SocialInputCard: FC<SocialInputCardPropsType> = ({ notesName, inputName, t
         <InputController
           fieldType={inputFieldType}
           controllerName={inputName}
+          defaultValue={''}
           notStep={notStep}
         />
       </Grid>

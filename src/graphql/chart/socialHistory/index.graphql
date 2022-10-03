@@ -1,17 +1,48 @@
-query FindAllSections($findAllSectionsInput: FindAllSectionsInput!){
-  findAllSections(findAllSectionsInput: $findAllSectionsInput){
+query FindAllSections($findAllSectionsInput: FindAllSectionsInput!) {
+  findAllSections(findAllSectionsInput: $findAllSectionsInput) {
     response {
       status
       message
     }
-    
+
     pagination {
       totalPages
       page
     }
-    
+
     sections {
       id
+      name
+      specialId
+
+      questions {
+        id
+        title
+        note
+        value
+        questionType
+        specialId
+
+        options {
+          id
+          name
+        }
+
+        dependentQuestions {
+          id
+          title
+          note
+          value
+          answer
+          specialId
+          questionType
+
+          options {
+            id
+            name
+          }
+        }
+      }
     }
   }
 }
