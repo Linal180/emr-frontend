@@ -1,27 +1,28 @@
 //packages block
+import { useParams } from "react-router";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { forwardRef, useCallback, useEffect, useImperativeHandle } from "react";
 import {
   Box, Button, Card, Grid, Table, TableBody, TableHead, TableRow, Typography
 } from "@material-ui/core";
-import { forwardRef, useCallback, useEffect, useImperativeHandle } from "react";
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import InputController from "../../../../controller";
 //components block
 import UpFrontPaymentType from "./UpFrontPaymentType";
 import Alert from "../../../common/Alert";
 import Loader from "../../../common/Loader";
-// graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useParams } from "react-router";
-import {
-  ACTION, ADJUSTMENTS, AMOUNT, AMOUNT_TYPE, BALANCE, CHARGE_ENTRY, EXPECTED, NOTES, NOT_FOUND_EXCEPTION, PAID, PAYMENT, TOTAL_CHARGES, TYPE,
-  UPFRONT_INITIAL_VALUES, UPFRONT_PAYMENT_SUCCESS, UPFRONT_PAYMENT_TYPES, USER_NOT_FOUND_EXCEPTION_MESSAGE
-} from "../../../../constants";
-import { useCreateUpFrontPaymentMutation, useFetchUpFrontPaymentDetailsByAppointmentIdLazyQuery } from "../../../../generated/graphql";
-import { CreateUpFrontPayment, FormForwardRef, ParamsType, UpFrontPaymentProps } from "../../../../interfacesTypes";
-import { useTableStyles } from "../../../../styles/tableStyles";
-import { GREEN, WHITE } from "../../../../theme";
-import { renderTh, setRecord } from "../../../../utils";
 import { createUpFrontPaymentSchema } from "../../../../validationSchemas";
+// graphql, constants, context, interfaces/types, reducer, svgs and utils block
+import { GREY, } from "../../../../theme";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { renderTh, setRecord } from "../../../../utils";
+import { useTableStyles } from "../../../../styles/tableStyles";
+import { CreateUpFrontPayment, FormForwardRef, ParamsType, UpFrontPaymentProps } from "../../../../interfacesTypes";
+import { useCreateUpFrontPaymentMutation, useFetchUpFrontPaymentDetailsByAppointmentIdLazyQuery } from "../../../../generated/graphql";
+import {
+  ACTION, ADJUSTMENTS, AMOUNT, AMOUNT_TYPE, BALANCE, CHARGE_ENTRY, CPT_TEXT, EXPECTED, NOTES, NOT_FOUND_EXCEPTION, PAID, 
+  PAYMENT, TOTAL_TEXT, TYPE, UPFRONT_INITIAL_VALUES, UPFRONT_PAYMENT_SUCCESS, UPFRONT_PAYMENT_TYPES, 
+  USER_NOT_FOUND_EXCEPTION_MESSAGE
+} from "../../../../constants";
 
 const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProps>((
   { cptCodes, handleStep, shouldDisableEdit }, ref
@@ -217,17 +218,125 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
                     </TableHead>
 
                     <TableBody>
-                      <UpFrontPaymentType moduleName={UPFRONT_PAYMENT_TYPES.Copay} shouldDisableEdit={shouldDisableEdit} />
+                      {/* <UpFrontPaymentType moduleName={UPFRONT_PAYMENT_TYPES.Copay} shouldDisableEdit={shouldDisableEdit} /> */}
                       <UpFrontPaymentType moduleName={UPFRONT_PAYMENT_TYPES.Additional} shouldDisableEdit={shouldDisableEdit} />
                       <UpFrontPaymentType moduleName={UPFRONT_PAYMENT_TYPES.Previous} shouldDisableEdit={shouldDisableEdit} />
                     </TableBody>
                   </Table>
                 </Box>
               </Box>
+
+              <Box mt={3} px={3} pt={1} bgcolor={GREY} borderRadius={8}>
+                <Grid container>
+                  <Grid item md={8} sm={12} xs={12}>
+                    <Grid container spacing={0} direction="row">
+                      <Grid item md={3} sm={6} xs={12}>
+                        <Box display="flex" alignItems="center">
+                          <Typography variant="h5">{TOTAL_TEXT} :</Typography>
+
+                          <Box ml={1} width={150}>
+                            <InputController
+                              fieldType="text"
+                              controllerLabel={''}
+                              controllerName="totalCharges"
+                              disabled={shouldDisableEdit}
+                              className="payment-input"
+                            />
+                          </Box>
+                        </Box>
+                      </Grid>
+
+                      <Grid item md={3} sm={6} xs={12}>
+                        <Box display="flex" alignItems="center">
+                          <Typography variant="h5">{EXPECTED} :</Typography>
+
+                          <Box ml={1} width={150}>
+                            <InputController
+                              fieldType="text"
+                              controllerLabel={''}
+                              controllerName="expected"
+                              disabled={shouldDisableEdit}
+                              className="payment-input"
+                            />
+                          </Box>
+                        </Box>
+                      </Grid>
+
+                      <Grid item md={3} sm={6} xs={12}>
+                        <Box display="flex" alignItems="center">
+                          <Typography variant="h5">{ADJUSTMENTS} :</Typography>
+
+                          <Box ml={1} width={150}>
+                            <InputController
+                              fieldType="text"
+                              controllerLabel={''}
+                              controllerName="adjustments"
+                              disabled={shouldDisableEdit}
+                              className="payment-input"
+                            />
+                          </Box>
+                        </Box>
+                      </Grid>
+
+                      <Grid item md={3} sm={6} xs={12}>
+                        <Box ml={1} display="flex" alignItems="center">
+                          <Typography variant="h5">{CPT_TEXT} :</Typography>
+
+                          <Box ml={1} width={150}>
+                            <InputController
+                              fieldType="text"
+                              controllerLabel={''}
+                              controllerName="cptAmount"
+                              disabled={shouldDisableEdit}
+                              className="payment-input"
+                            />
+                          </Box>
+                        </Box>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+
+                  <Grid item md={4} sm={12} xs={12}>
+                    <Grid container spacing={0} direction="row">
+                      <Grid item md={6} sm={6} xs={12}>
+                        <Box ml={1} display="flex" alignItems="center">
+                          <Typography variant="h5">{PAID} :</Typography>
+
+                          <Box ml={1} width={150}>
+                            <InputController
+                              fieldType="text"
+                              controllerLabel={''}
+                              controllerName="paid"
+                              disabled={shouldDisableEdit}
+                              className="payment-input"
+                            />
+                          </Box>
+                        </Box>
+                      </Grid>
+
+                      <Grid item md={6} sm={6} xs={12}>
+                        <Box display="flex" alignItems="center">
+                          <Typography variant="h5">{BALANCE} :</Typography>
+
+                          <Box ml={1} width={150}>
+                            <InputController
+                              fieldType="text"
+                              controllerLabel={''}
+                              controllerName="balance"
+                              disabled={shouldDisableEdit}
+                              className="payment-input"
+                            />
+                          </Box>
+                        </Box>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Box>
             </Box>
           </Card>
 
-          <Box p={2} />
+          {/* <Box p={2} />
 
           <Card>
             <Box px={3} pt={1} bgcolor={GREEN} borderRadius={8}>
@@ -316,7 +425,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
                 </Grid>
               </Grid>
             </Box>
-          </Card>
+          </Card> */}
         </form>
       </FormProvider>
 

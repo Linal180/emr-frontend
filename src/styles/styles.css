@@ -965,3 +965,8 @@ input[type=number] {
   max-width: 100%;
   width: 40px;
 }
+
+.payment-input {
+  background-color: #fff;
+  border-radius: 8px;
+}
