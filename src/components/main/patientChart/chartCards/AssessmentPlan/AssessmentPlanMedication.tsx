@@ -3,19 +3,20 @@ import { AddCircleOutline, RemoveCircleOutline } from '@material-ui/icons'
 import { Reducer, useReducer } from 'react'
 import { useParams } from 'react-router'
 import { CrossIcon } from '../../../../../assets/svgs'
-import { Medications, useAddPatientMedicationMutation, useRemovePatientMedicationMutation, useRemovePatientProblemMutation } from '../../../../../generated/graphql'
+import { LabTestStatus, LoincCodePayload, Medications, useAddPatientMedicationMutation, useCreateLabTestMutation, useRemoveLabTestMutation, useRemovePatientMedicationMutation, useRemovePatientProblemMutation } from '../../../../../generated/graphql'
 import { AssessmentPlanMedicationProps, ParamsType } from '../../../../../interfacesTypes'
 import { Action, ActionType, chartReducer, initialState, State } from '../../../../../reducers/chartReducer'
+import { generateString } from '../../../../../utils'
 import Alert from '../../../../common/Alert'
-import AddMedication from '../../medications/modals/AddMedication'
+import DiagnosesModal from './DiagnosesModal'
 
-function AssessmentPlanMedication({ index, problem, setAssessmentProblems, assessmentProblems }: AssessmentPlanMedicationProps) {
+function AssessmentPlanMedication({ index, problem, setAssessmentProblems, assessmentProblems, shouldDisableEdit }: AssessmentPlanMedicationProps) {
   const { id: patientId, appointmentId } = useParams<ParamsType>()
-  const { medications, problemId, icdCodes } = problem || {}
+  const { medications, problemId, icdCodes, tests } = problem || {}
   const { code, description } = icdCodes
   const [state, dispatch] =
     useReducer<Reducer<State, Action>>(chartReducer, initialState)
-  const { medicationIndex, isSubModalOpen } = state
+  const { medicationIndex, isSubModalOpen, testIndex } = state
 
   const handleChildModalClose = () => {
     dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: false })
@@ -66,6 +67,47 @@ function AssessmentPlanMedication({ index, problem, setAssessmentProblems, asses
     }
   });
 
+  const [createLabTest] = useCreateLabTestMutation({
+    onError({ message }) {
+      Alert.error(message)
+    },
+
+    onCompleted(data) {
+      if (data) {
+        const { createLabTest } = data
+        const { labTest } = createLabTest || {}
+        const { id } = labTest || {}
+
+        const transformedTests = tests?.map((test, subIndex) => {
+          let transformedTestId
+          if (testIndex === subIndex) {
+            transformedTestId = id
+          } else {
+            transformedTestId = test.patientTestId
+          }
+
+          return {
+            ...test,
+            patientTestId: transformedTestId
+          }
+        })
+
+        const transformedProblems = assessmentProblems.map((problem, problemIndex) => {
+          if (problemIndex === index) {
+            return {
+              ...problem,
+              tests: transformedTests
+            }
+          }
+
+          return problem
+        })
+
+        setAssessmentProblems(transformedProblems)
+      }
+    }
+  });
+
   const [removePatientMedication] = useRemovePatientMedicationMutation({
     onError({ message }) {
       Alert.error(message)
@@ -77,68 +119,131 @@ function AssessmentPlanMedication({ index, problem, setAssessmentProblems, asses
       if (response) {
         const { status } = response
 
-        if (status && status === 200) {
-          // dispatch({ type: ActionType.SET_MEDICATION_DELETE_ID, medicationDeleteId: '' })
-          // dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
-
-          // if (!!patientMedications && (patientMedications.length > 1 || isLast(patientMedications.length, page))) {
-          //   await fetchMedications()
-          // } else {
-          //   dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, patientMedications?.length || 0) })
-          // }
-        }
+        if (status && status === 200) { }
       }
     }
   });
 
-  const handleAddMedication = async (item: Medications) => {
-    dispatch({ type: ActionType.SET_MEDICATION_INDEX, medicationIndex: Number(medications?.length || 0) })
-    const transformedProblems = assessmentProblems.map((problem, problemIndex) => {
-      if (problemIndex === index) {
-        return {
-          ...problem,
-          medications: [...(medications || []), { ...item, medicationId: item.id }]
-        }
+  const [removePatientLabTest] = useRemoveLabTestMutation({
+    onError({ message }) {
+      Alert.error(message)
+    },
+
+    async onCompleted(data) {
+      const { removeLabTest } = data || {};
+      const { response } = removeLabTest || {}
+
+      if (response) {
+        const { status } = response
+
+        if (status && status === 200) { }
       }
+    }
+  });
 
-      return problem
-    })
+  const handleAddOrder = async (item: Medications | LoincCodePayload['loincCode'], type: string) => {
+    if (type === 'medication') {
+      dispatch({ type: ActionType.SET_MEDICATION_INDEX, medicationIndex: Number(medications?.length || 0) })
+      const transformedProblems = assessmentProblems.map((problem, problemIndex) => {
+        if (problemIndex === index) {
+          return {
+            ...problem,
+            medications: [...(medications || []), { ...item, medicationId: (item as Medications).id, isSigned: false }]
+          }
+        }
 
-    setAssessmentProblems(transformedProblems)
+        return problem
+      })
+
+      setAssessmentProblems(transformedProblems)
+
+      await addPatientMedication({
+        variables: {
+          createPatientMedicationInput: {
+            appointmentId,
+            patientId,
+            medicationId: (item as Medications).id,
+            patientProblemId: problemId,
+            status: 'ACTIVE'
+          }
+        }
+      })
+    } else {
+      dispatch({ type: ActionType.SET_TEST_INDEX, testIndex: Number(tests?.length || 0) })
+      const transformedProblems = assessmentProblems.map((problem, problemIndex) => {
+        if (problemIndex === index) {
+          return {
+            ...problem,
+            tests: [...(tests || []), { ...item, testId: (item as LoincCodePayload['loincCode'])?.id, isSigned: false }]
+          }
+        }
+
+        return problem
+      })
+
+      setAssessmentProblems(transformedProblems)
+
+      await createLabTest({
+        variables: {
+          createLabTestInput: {
+            createLabTestItemInput: {
+              patientId,
+              appointmentId,
+              problemId,
+              accessionNumber: generateString(6),
+              orderNumber: generateString(),
+              status: LabTestStatus.OrderEntered,
+            },
+            test: item?.id
+          }
+        }
+      })
+    }
     dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: false })
-    await addPatientMedication({
-      variables: {
-        createPatientMedicationInput: {
-          appointmentId,
-          patientId,
-          medicationId: item.id,
-          patientProblemId: problemId,
-          status: 'ACTIVE'
-        }
-      }
-    })
   }
 
-  const handleRemoveMedication = async (subIndex: number) => {
-    const transformedProblems = assessmentProblems.map((problem, problemIndex) => {
-      if (problemIndex === index) {
-        return {
-          ...problem,
-          medications: medications?.filter((_, indexToRemove) => indexToRemove !== subIndex)
+  const handleRemoveOrder = async (subIndex: number, isMedication?: boolean) => {
+    if (isMedication) {
+      const transformedProblems = assessmentProblems.map((problem, problemIndex) => {
+        if (problemIndex === index) {
+          return {
+            ...problem,
+            medications: medications?.filter((_, indexToRemove) => indexToRemove !== subIndex)
+          }
         }
-      }
 
-      return problem
-    })
-    setAssessmentProblems(transformedProblems)
-    const medication = medications?.[subIndex]
-    removePatientMedication({
-      variables: {
-        removePatientMedication: {
-          id: medication?.patientMedicationId || ''
+        return problem
+      })
+      setAssessmentProblems(transformedProblems)
+      const medication = medications?.[subIndex]
+      removePatientMedication({
+        variables: {
+          removePatientMedication: {
+            id: medication?.patientMedicationId || ''
+          }
         }
-      }
-    })
+      })
+    } else {
+      const transformedProblems = assessmentProblems.map((problem, problemIndex) => {
+        if (problemIndex === index) {
+          return {
+            ...problem,
+            tests: tests?.filter((_, indexToRemove) => indexToRemove !== subIndex)
+          }
+        }
+
+        return problem
+      })
+      setAssessmentProblems(transformedProblems)
+      const test = tests?.[subIndex]
+      removePatientLabTest({
+        variables: {
+          removeLabTest: {
+            id: test?.patientTestId
+          }
+        }
+      })
+    }
   }
 
   const [removePatientProblem] = useRemovePatientProblemMutation({
@@ -152,15 +257,7 @@ function AssessmentPlanMedication({ index, problem, setAssessmentProblems, asses
       if (response) {
         const { status } = response
 
-        if (status && status === 200) {
-          // Alert.success(PATIENT_PROBLEM_DELETED);
-
-          // if (!!patientProblems && (patientProblems.length > 1 || isLast(patientProblems.length, page))) {
-          //   await fetchProblems()
-          // } else {
-          //   dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, patientProblems?.length || 0) })
-          // }
-        }
+        if (status && status === 200) { }
       }
     }
   });
@@ -184,7 +281,7 @@ function AssessmentPlanMedication({ index, problem, setAssessmentProblems, asses
         <Typography variant='h4'>{`${description} | ${code} `}</Typography>
       </Box>
 
-      <Box display='flex' alignItems='center'>
+      {shouldDisableEdit && <Box display='flex' alignItems='center'>
         <IconButton size='small' onClick={() => {
           dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: true })
         }}>
@@ -194,8 +291,9 @@ function AssessmentPlanMedication({ index, problem, setAssessmentProblems, asses
         <IconButton size='small' onClick={() => handleProblemRemove(index)}>
           <RemoveCircleOutline color='error' />
         </IconButton>
-      </Box>
+      </Box>}
     </Box>
+    {!!medications?.length && <Typography>Medications</Typography>}
     {
       medications?.length ? medications?.map((medication, subIndex) => {
         const { fullName } = medication
@@ -205,9 +303,31 @@ function AssessmentPlanMedication({ index, problem, setAssessmentProblems, asses
               <li className='li-hover'>
                 <Box py={1} display='flex' justifyContent='space-between' alignItems='center'>
                   <Typography>{fullName}</Typography>
-                  <IconButton size='small' onClick={() => handleRemoveMedication(subIndex)}>
+                  {shouldDisableEdit && <IconButton size='small' onClick={() => handleRemoveOrder(subIndex, true)}>
                     <CrossIcon />
-                  </IconButton>
+                  </IconButton>}
+                </Box>
+              </li>
+            </ul>
+          </Box>
+        )
+      }) :
+        <></>
+    }
+
+    {!!tests?.length && <Typography>Lab Tests</Typography>}
+    {
+      tests?.length ? tests?.map((test, subIndex) => {
+        const { component } = test || {}
+        return (
+          <Box px={2}>
+            <ul>
+              <li className='li-hover'>
+                <Box py={1} display='flex' justifyContent='space-between' alignItems='center'>
+                  <Typography>{component}</Typography>
+                  {shouldDisableEdit && <IconButton size='small' onClick={() => handleRemoveOrder(subIndex)}>
+                    <CrossIcon />
+                  </IconButton>}
                 </Box>
               </li>
             </ul>
@@ -218,12 +338,12 @@ function AssessmentPlanMedication({ index, problem, setAssessmentProblems, asses
     }
 
     {isSubModalOpen &&
-      <AddMedication
+      <DiagnosesModal
         isOpen={isSubModalOpen}
         handleModalClose={handleChildModalClose}
         alreadyAddedMedications={medications?.map(medication => medication.medicationId)}
         fetch={() => { }}
-        handleAdd={(item: Medications) => handleAddMedication(item)}
+        handleAdd={(item: Medications | LoincCodePayload['loincCode'], type: string) => handleAddOrder(item, type)}
       />}
   </>
 }

@@ -1,35 +1,33 @@
 // packages block
-import { RouteProps } from "react-router-dom";
-import { AutocompleteRenderInputParams } from "@material-ui/lab";
-import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
-import { GridSize, PropTypes as MuiPropsTypes } from "@material-ui/core";
-import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
+import { GridSize, PropTypes as MuiPropsTypes } from "@material-ui/core";
+import { AutocompleteRenderInputParams } from "@material-ui/lab";
+import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { ChangeEventHandler, ComponentType, Dispatch, ElementType, ReactNode } from "react";
 import {
   Control, ControllerFieldState, ControllerRenderProps, FieldValues, UseFormReturn,
   ValidationRule
 } from "react-hook-form";
+import { RouteProps } from "react-router-dom";
+import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
 // constants, reducers, graphql block
 import { ATTACHMENT_TITLES, CONFIRMATION_MODAL_TYPE, ITEM_MODULE, UPFRONT_PAYMENT_TYPES } from "../constants";
 import {
-  AllDoctorPayload, Allergies, AppointmentsPayload, AppointmentStatus, Attachment, AttachmentPayload,
-  AttachmentType, BillingPayload, CodeType, CreateAppointmentInput, CreateContactInput,
-  CreateCptFeeScheduleInput, CreateDoctorItemInput, CreateExternalAppointmentItemInput, CreateFeeScheduleInput,
-  CreatePatientAllergyInput, CreatePatientItemInput, CreatePatientMedicationInput, CreatePracticeItemInput,
+  AddVaccineInput, AllDoctorPayload, Allergies, AppointmentsPayload, AppointmentStatus, Attachment, AttachmentPayload,
+  AttachmentType, BillingPayload, CodeType, CreateAppointmentInput, CreateContactInput, CreateCptCodeInput, CreateCptFeeScheduleInput, CreateDoctorItemInput, CreateExternalAppointmentItemInput, CreateFeeScheduleInput, CreateIcdCodeInput, CreatePatientAllergyInput, CreatePatientItemInput, CreatePatientMedicationInput, CreatePracticeItemInput,
   CreateProblemInput, CreateScheduleInput, CreateServiceInput, CreateStaffItemInput, Cvx, Doctor, DoctorPatient,
   FacilitiesPayload, FamilyHistory, FetchBillingClaimStatusesInput, FieldsInputs, FormElement, FormTabsInputs,
-  IcdCodes, IcdCodesWithSnowMedCode, LabTests, LabTestsPayload, LoginUserInput, Medications, PatientAllergies,
+  IcdCodes, IcdCodesWithSnowMedCode, LabTests, LabTestsPayload, LoginUserInput, LoincCodePayload, Medications, Patient, PatientAllergies,
   PatientMedication, PatientPayload, PatientProblems, PatientProviderPayload, PatientsPayload, PatientVitals,
   PermissionsPayload, PolicyEligibilityWithPatientPayload, Practice, PracticePayload, ReactionsPayload,
   ResponsePayloadResponse, RolesPayload, Schedule, SectionsInputs, ServicesPayload, Staff, SurgicalHistory,
   TriageNotes, TwoFactorInput, UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput,
-  UpdateFacilityTimeZoneInput, User, UsersFormsElements, VerifyCodeInput, Patient, AddVaccineInput,
-  CreateIcdCodeInput, CreateCptCodeInput
+  UpdateFacilityTimeZoneInput, User, UsersFormsElements, VerifyCodeInput
 } from "../generated/graphql";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
 import { Action as BillingAction, State as BillingState } from "../reducers/billingReducer";
 import { Action as ChartAction } from "../reducers/chartReducer";
+import { Action as cptCodeAction } from "../reducers/cptCodeReducer";
 import {
   Action as PublicFormBuilderAction, State as ExternalFormBuilderState
 } from "../reducers/externalFormBuilderReducer";
@@ -39,14 +37,13 @@ import {
 import { Action as FacilityAction, State as FacilityState } from "../reducers/facilityReducer";
 import { Action as FeeScheduleAction, State as FeeScheduleState } from '../reducers/feeScheduleReducer';
 import { Action as FormBuilderAction, State as FormBuilderState } from "../reducers/formBuilderReducer";
+import { Action as IcdCodeAction } from "../reducers/icdTenReducer";
 import { Action as InsuranceAction } from "../reducers/insuranceReducer";
 import { Action, State as MediaState } from "../reducers/mediaReducer";
 import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
 import { Action as PracticeAction } from "../reducers/practiceReducer";
 import { Action as ScheduleAction, State as ScheduleState } from "../reducers/scheduleReducer";
-import { Action as VaccineAction, } from "../reducers/vaccinesReducer";
-import { Action as IcdCodeAction, } from "../reducers/icdTenReducer";
-import { Action as cptCodeAction, } from "../reducers/cptCodeReducer";
+import { Action as VaccineAction } from "../reducers/vaccinesReducer";
 
 export type Order = 'ASC' | 'DESC';
 type Key = string | number | undefined;
@@ -155,10 +152,17 @@ export interface TableLoaderType {
 
 export type ReviewTabProps = {
   shouldShowAdd?: boolean
+  shouldShowCheckout?: boolean
+  handleStepChange?: Function
 }
 
 export type AppointmentReasonProps = {
   shouldShowAdd?: boolean
+  isInTake?: boolean
+  handleStep?: Function
+  shouldDisableEdit?: boolean
+  shouldShowCheckout?: boolean
+  handleStepChange?: Function
 }
 
 export interface DialogTypes {
@@ -902,6 +906,14 @@ export type AddMedicationModalProps = {
   alreadyAddedMedications?: string[]
 }
 
+export type DiagnosesModalModalProps = {
+  isOpen?: boolean
+  handleModalClose: () => void
+  fetch?: () => void
+  handleAdd?: Function
+  alreadyAddedMedications?: string[]
+}
+
 export interface AddAppointmentReasonProps extends GeneralFormProps {
   isOpen?: boolean
   handleModalClose: () => void
@@ -909,6 +921,7 @@ export interface AddAppointmentReasonProps extends GeneralFormProps {
   title?: string
   handleAdd?: Function
   alreadyAddedProblems?: string[]
+  searchPlaceholder?: string
 }
 
 export type AddVaccineProps = GeneralFormProps & {
@@ -940,6 +953,8 @@ export interface CheckInComponentProps {
   appointmentDispatcher: Dispatch<AppointmentAction>
   handleStep: Function
   shouldDisableEdit?: boolean
+  activeStep?: number
+  handleProceed?: Function
 }
 
 export interface PolicyAttachmentProps {
@@ -963,6 +978,7 @@ export interface LabOrderCreateProps {
 export interface LabOrdersTableProps {
   appointmentInfo?: SelectorOption
   shouldDisableEdit?: boolean
+  handleStep?: Function
 }
 
 export interface LabOrderInitialScreenProps extends LabOrderCreateProps {
@@ -1118,6 +1134,13 @@ export interface LabOrdersCreateFormInput {
 export type AssessmentMedication = Omit<Medications, 'patientMedications' | "__typename"> & {
   medicationId: string
   patientMedicationId?: string
+  isSigned: boolean
+}
+
+export type AssessmentTest = LoincCodePayload['loincCode'] & {
+  testId: string
+  patientTestId?: string
+  isSigned: boolean
 }
 
 export type AssessmentProblemType = {
@@ -1131,6 +1154,7 @@ export type AssessmentProblemType = {
     snoMedCodeId: string
   },
   medications?: AssessmentMedication[]
+  tests?: AssessmentTest[]
 }
 
 export type AssessmentProblems = {
@@ -1141,6 +1165,7 @@ export type AssessmentPlanProblemsProps = {
   fetchProblems: Function
   assessmentProblems: AssessmentProblemType[]
   setAssessmentProblems: Function
+  shouldDisableEdit?: boolean
 }
 
 export type AssessmentPlanMedicationProps = {
@@ -1148,6 +1173,7 @@ export type AssessmentPlanMedicationProps = {
   problem: AssessmentProblemType
   assessmentProblems: AssessmentProblemType[]
   setAssessmentProblems: Function
+  shouldDisableEdit?: boolean
 }
 
 export interface LabOrdersSpecimenTypeInput {
@@ -2036,6 +2062,26 @@ export interface ChartComponentProps {
   isInTake?: boolean
 }
 
+export type TriageNoteProps = {
+  shouldDisableEdit?: boolean
+  isInTake?: boolean
+  handleStep?: Function
+}
+
+export type VitalTabProps = {
+  shouldDisableEdit?: boolean
+  isInTake?: boolean
+  handleStep?: Function
+}
+
+export type ProblemTabProps = VitalTabProps & {}
+
+export type AllergyTabProps = VitalTabProps & {}
+
+export type MedicationTabProps = VitalTabProps & {}
+
+export type SurgicalTabProps = VitalTabProps & {}
+
 export interface BillingComponentProps extends GeneralFormProps {
   shouldDisableEdit?: boolean
   submitButtonText?: string
@@ -2232,6 +2278,7 @@ export type ItemSelectForwardRef = {
 
 export type FamilyHistoryProps = {
   shouldDisableEdit?: boolean
+  handleStep?: Function
 }
 
 export type FamilyHistoryFormProps = {
@@ -2266,10 +2313,12 @@ export type LatestVitalCardProps = {
 
 export type VaccinesProps = {
   shouldDisableEdit?: boolean
+  handleStep?: Function
 }
 
 export type VaccinesTableProps = {
   shouldDisableEdit?: boolean
+  handleStep?: Function
 }
 
 export type IcdCodesTableProps = {

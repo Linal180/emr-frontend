@@ -7,7 +7,7 @@ import { AssessmentProblemType, ParamsType } from '../../../interfacesTypes'
 import { useChartingStyles } from '../../../styles/chartingStyles'
 import ReviewTab from '../patientChart/chartCards/tabs/ReviewTab'
 
-function SignOff() {
+function SignOff({ handleStepChange }: { handleStepChange: Function }) {
   const { id: patientId, appointmentId } = useParams<ParamsType>()
   const [assessmentProblems, setAssessmentProblems] = useState<AssessmentProblemType[]>([])
 
@@ -31,7 +31,7 @@ function SignOff() {
 
             if (patientProblems && status && status === 200) {
               const transformedPatientProblems = patientProblems.map((problem, index) => {
-                const { ICDCode, id: problemId, snowMedCode, patientMedications, forOrders, isSigned } = problem || {}
+                const { ICDCode, id: problemId, snowMedCode, patientMedications, forOrders, isSigned, labTests } = problem || {}
                 const { id: snoMedCodeId } = snowMedCode || {}
 
                 const icdCodes = {
@@ -57,7 +57,23 @@ function SignOff() {
                     rxNumber,
                     termType,
                     updatedAt,
-                    patientMedicationId
+                    patientMedicationId,
+                    isSigned: isSigned || false
+                  }
+                }) || []
+
+                const transformedPatientTests = labTests?.map((patientTest, subIndex) => {
+                  const { id: patientTestId, test } = patientTest || {}
+                  const id = test?.id || ''
+                  const component = test?.component
+                  const testId = test?.id || ''
+
+                  return {
+                    id,
+                    component,
+                    testId,
+                    patientTestId,
+                    isSigned: isSigned || false
                   }
                 }) || []
 
@@ -66,7 +82,8 @@ function SignOff() {
                   icdCodes,
                   problemId: problemId || '',
                   medications: transformedPatientMedications,
-                  forOrders: forOrders || false
+                  forOrders: forOrders || false,
+                  tests: transformedPatientTests
                 }
               })
 
@@ -95,7 +112,7 @@ function SignOff() {
   const classes = useChartingStyles()
   return (
     <div>
-      <ReviewTab shouldShowAdd={false} />
+      <ReviewTab shouldShowAdd={false} shouldShowCheckout handleStepChange={handleStepChange} />
       <Box m={3} />
       <Card>
         <Box pb={2} className={classes.cardBox}>
@@ -107,7 +124,7 @@ function SignOff() {
 
           <Box p={2}>
             {assessmentProblems.map(problem => {
-              const { icdCodes, medications } = problem || {}
+              const { icdCodes, medications, tests } = problem || {}
               const { code, description } = icdCodes || {}
 
               return <>
@@ -116,6 +133,7 @@ function SignOff() {
                     <Typography variant='h4'>{`${description} | ${code} `}</Typography>
                   </Box>
                 </Box>
+                <Typography>Medications</Typography>
                 {medications?.map((medication => {
                   const { fullName } = medication || {}
                   return (
@@ -124,6 +142,22 @@ function SignOff() {
                         <li>
                           <Box py={1} display='flex' justifyContent='space-between' alignItems='center'>
                             <Typography>{fullName}</Typography>
+                          </Box>
+                        </li>
+                      </ul>
+                    </Box>
+                  )
+                }))}
+
+                <Typography>Lab Tests</Typography>
+                {tests?.map((test => {
+                  const { component } = test || {}
+                  return (
+                    <Box px={2}>
+                      <ul>
+                        <li>
+                          <Box py={1} display='flex' justifyContent='space-between' alignItems='center'>
+                            <Typography>{component}</Typography>
                           </Box>
                         </li>
                       </ul>

@@ -6,7 +6,7 @@ import { useFindAllPatientProblemsWithMedicationLazyQuery } from '../../../../..
 import { AssessmentProblemType, ParamsType } from '../../../../../interfacesTypes'
 import AssessmentPlanProblems from './AssessmentPlanProblems'
 
-function AssessmentPlanTab() {
+function AssessmentPlanTab({ shouldDisableEdit }: { shouldDisableEdit?: boolean }) {
   const { id: patientId, appointmentId } = useParams<ParamsType>()
   const [assessmentProblems, setAssessmentProblems] = useState<AssessmentProblemType[]>([])
 
@@ -30,7 +30,7 @@ function AssessmentPlanTab() {
 
             if (patientProblems && status && status === 200) {
               const transformedPatientProblems = patientProblems.map((problem, index) => {
-                const { ICDCode, id: problemId, snowMedCode, patientMedications, forOrders, isSigned } = problem || {}
+                const { ICDCode, id: problemId, snowMedCode, patientMedications, forOrders, isSigned, labTests } = problem || {}
                 const { id: snoMedCodeId } = snowMedCode || {}
 
                 const icdCodes = {
@@ -56,7 +56,23 @@ function AssessmentPlanTab() {
                     rxNumber,
                     termType,
                     updatedAt,
-                    patientMedicationId
+                    patientMedicationId,
+                    isSigned: isSigned || false
+                  }
+                }) || []
+
+                const transformedPatientTests = labTests?.map((patientTest, subIndex) => {
+                  const { id: patientTestId, test } = patientTest || {}
+                  const id = test?.id || ''
+                  const component = test?.component
+                  const testId = test?.id || ''
+
+                  return {
+                    id,
+                    component,
+                    testId,
+                    patientTestId,
+                    isSigned: isSigned || false
                   }
                 }) || []
 
@@ -65,6 +81,7 @@ function AssessmentPlanTab() {
                   icdCodes,
                   problemId: problemId || '',
                   medications: transformedPatientMedications,
+                  tests: transformedPatientTests,
                   forOrders: forOrders || false
                 }
               })
@@ -93,7 +110,11 @@ function AssessmentPlanTab() {
 
   return (
     <div>
-      <AssessmentPlanProblems fetchProblems={fetchProblems} assessmentProblems={assessmentProblems} setAssessmentProblems={setAssessmentProblems} />
+      <AssessmentPlanProblems
+        fetchProblems={fetchProblems}
+        assessmentProblems={assessmentProblems}
+        setAssessmentProblems={setAssessmentProblems}
+        shouldDisableEdit={shouldDisableEdit} />
       <Box m={2} />
     </div >
   )

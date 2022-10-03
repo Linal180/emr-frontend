@@ -18,7 +18,7 @@ import {
   ACTIONS, ADD_NEW_TEXT, COMMENTS, DASHES, DELETE_MEDICATION_DESCRIPTION, EIGHT_PAGE_LIMIT, MEDICATIONS_TEXT, MEDICATION_PROBLEM_DELETED, MEDICATION_TEXT, NEXT, SIG, START_DATE, STATUS
 } from "../../../../../constants";
 import { Medications, PatientMedicationsPayload, useFindAllPatientMedicationsLazyQuery, useRemovePatientMedicationMutation } from "../../../../../generated/graphql";
-import { ChartComponentProps, ParamsType } from "../../../../../interfacesTypes";
+import { MedicationTabProps, ParamsType } from "../../../../../interfacesTypes";
 import {
   Action, ActionType, chartReducer, initialState, State
 } from "../../../../../reducers/chartReducer";
@@ -26,7 +26,7 @@ import { useChartingStyles } from "../../../../../styles/chartingStyles";
 import { useTableStyles } from "../../../../../styles/tableStyles";
 import { getFormatDateString, getPageNumber, getProblemTypeColor, isLast, renderTh } from "../../../../../utils";
 
-const MedicationTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
+const MedicationTab: FC<MedicationTabProps> = ({ shouldDisableEdit, handleStep }) => {
   const classes = useChartingStyles();
   const classesTable = useTableStyles()
   const { id } = useParams<ParamsType>()
@@ -160,7 +160,14 @@ const MedicationTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
 
                   <Box p={1} />
 
-                  <Button variant='contained' color='secondary'>{NEXT}</Button>
+                  {handleStep && <Button
+                    variant='contained'
+                    color='secondary'
+                    size="large"
+                    onClick={()=>handleStep(6)}
+                  >
+                    {NEXT}
+                  </Button>}
                 </Box>
               </Box>
 

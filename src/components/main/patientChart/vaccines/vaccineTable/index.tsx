@@ -24,7 +24,7 @@ import {
 import Alert from '../../../../common/Alert';
 
 const VaccinesTable: FC<VaccinesTableProps> = (props): JSX.Element => {
-  const { shouldDisableEdit } = props || {}
+  const { shouldDisableEdit, handleStep } = props || {}
 
   const classes = useChartingStyles();
   const classesTable = useTableStyles()
@@ -145,7 +145,14 @@ const VaccinesTable: FC<VaccinesTableProps> = (props): JSX.Element => {
 
                   <Box p={1} />
 
-                  <Button variant='contained' color='secondary'>{NEXT}</Button>
+                  {handleStep && <Button
+                    variant='contained'
+                    color='secondary'
+                    size="large"
+                    onClick={() => handleStep(10)}
+                  >
+                    {NEXT}
+                  </Button>}
                 </Box>
               </Box>
 

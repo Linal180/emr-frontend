@@ -1375,6 +1375,7 @@ export type CreateLabTestItemInput = {
   orderNumber?: Maybe<Scalars['String']>;
   patientId: Scalars['String'];
   primaryProviderId?: Maybe<Scalars['String']>;
+  problemId?: Maybe<Scalars['String']>;
   providerNotes?: Maybe<Scalars['String']>;
   receivedDate?: Maybe<Scalars['String']>;
   referringProviderId?: Maybe<Scalars['String']>;
@@ -1561,6 +1562,7 @@ export type CreateProblemInput = {
   providerId?: Maybe<Scalars['String']>;
   snowMedCodeId?: Maybe<Scalars['String']>;
   staffId?: Maybe<Scalars['String']>;
+  testIds?: Maybe<Array<Scalars['String']>>;
 };
 
 export type CreateScheduleInput = {
@@ -2710,6 +2712,8 @@ export type LabTests = {
   orderNumber?: Maybe<Scalars['String']>;
   patient?: Maybe<Patient>;
   patientId?: Maybe<Scalars['String']>;
+  patientProblem?: Maybe<PatientProblems>;
+  patientProblemId?: Maybe<Scalars['String']>;
   primaryProvider?: Maybe<Doctor>;
   primaryProviderId?: Maybe<Scalars['String']>;
   providerNotes?: Maybe<Scalars['String']>;
@@ -4261,6 +4265,7 @@ export type PatientProblems = {
   forOrders?: Maybe<Scalars['Boolean']>;
   id: Scalars['String'];
   isSigned?: Maybe<Scalars['Boolean']>;
+  labTests?: Maybe<Array<LabTests>>;
   note?: Maybe<Scalars['String']>;
   patient?: Maybe<Patient>;
   patientId?: Maybe<Scalars['String']>;
@@ -6920,6 +6925,7 @@ export type UpdateLabTestItemInput = {
   orderNumber?: Maybe<Scalars['String']>;
   patientId?: Maybe<Scalars['String']>;
   primaryProviderId?: Maybe<Scalars['String']>;
+  problemId?: Maybe<Scalars['String']>;
   providerNotes?: Maybe<Scalars['String']>;
   receivedDate?: Maybe<Scalars['String']>;
   referringProviderId?: Maybe<Scalars['String']>;
@@ -8086,7 +8092,7 @@ export type FindAllPatientProblemsWithMedicationQueryVariables = Exact<{
 }>;
 
 
-export type FindAllPatientProblemsWithMedicationQuery = { __typename?: 'Query', findAllPatientProblem: { __typename?: 'PatientProblemsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null, page?: number | null } | null, patientProblems?: Array<{ __typename?: 'PatientProblems', id: string, problemType: ProblemType, forOrders?: boolean | null, isSigned?: boolean | null, problemSeverity: ProblemSeverity, problemStartDate?: string | null, note?: string | null, ICDCode?: { __typename: 'ICDCodes', id: string, code: string, description?: string | null } | null, patientMedications?: Array<{ __typename?: 'PatientMedication', id: string, medication?: { __typename?: 'Medications', id: string, fullName?: string | null, termType?: string | null, rxNumber?: string | null, createdAt?: string | null, updatedAt?: string | null } | null }> | null, snowMedCode?: { __typename?: 'SnoMedCodes', id: string, referencedComponentId?: string | null } | null } | null> | null } };
+export type FindAllPatientProblemsWithMedicationQuery = { __typename?: 'Query', findAllPatientProblem: { __typename?: 'PatientProblemsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null, page?: number | null } | null, patientProblems?: Array<{ __typename?: 'PatientProblems', id: string, problemType: ProblemType, forOrders?: boolean | null, isSigned?: boolean | null, problemSeverity: ProblemSeverity, problemStartDate?: string | null, note?: string | null, ICDCode?: { __typename: 'ICDCodes', id: string, code: string, description?: string | null } | null, patientMedications?: Array<{ __typename?: 'PatientMedication', id: string, medication?: { __typename?: 'Medications', id: string, fullName?: string | null, termType?: string | null, rxNumber?: string | null, createdAt?: string | null, updatedAt?: string | null } | null }> | null, labTests?: Array<{ __typename?: 'LabTests', id: string, test?: { __typename?: 'LoincCodes', id: string, component?: string | null } | null }> | null, snowMedCode?: { __typename?: 'SnoMedCodes', id: string, referencedComponentId?: string | null } | null } | null> | null } };
 
 export type GetPatientProblemQueryVariables = Exact<{
   getPatientProblem: GetPatientProblem;
@@ -8789,7 +8795,7 @@ export type CreateLabTestMutationVariables = Exact<{
 }>;
 
 
-export type CreateLabTestMutation = { __typename?: 'Mutation', createLabTest: { __typename?: 'LabTestPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, labTest?: { __typename?: 'LabTests', orderNumber?: string | null } | null } };
+export type CreateLabTestMutation = { __typename?: 'Mutation', createLabTest: { __typename?: 'LabTestPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, labTest?: { __typename?: 'LabTests', id: string, orderNumber?: string | null } | null } };
 
 export type UpdateLabTestMutationVariables = Exact<{
   updateLabTestInput: UpdateLabTestInput;
@@ -13349,6 +13355,13 @@ export const FindAllPatientProblemsWithMedicationDocument = gql`
           rxNumber
           createdAt
           updatedAt
+        }
+      }
+      labTests {
+        id
+        test {
+          id
+          component
         }
       }
       snowMedCode {
@@ -18568,6 +18581,7 @@ export const CreateLabTestDocument = gql`
       message
     }
     labTest {
+      id
       orderNumber
     }
   }

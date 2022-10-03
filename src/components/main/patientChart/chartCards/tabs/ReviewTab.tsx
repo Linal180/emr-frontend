@@ -7,7 +7,7 @@ import { ParamsType, PatientChartingReview, ReviewTabProps } from '../../../../.
 import { useChartingStyles } from '../../../../../styles/chartingStyles'
 import AppointmentReason from './AppointmentReason'
 
-function ReviewTab({ shouldShowAdd }: ReviewTabProps) {
+function ReviewTab({ shouldShowAdd, shouldShowCheckout, handleStepChange }: ReviewTabProps) {
   const classes = useChartingStyles()
   const { id: patientId, appointmentId } = useParams<ParamsType>()
   const [patientChartingReview, setPatientChartingReview] = useState<PatientChartingReview | null>(null)
@@ -64,7 +64,7 @@ function ReviewTab({ shouldShowAdd }: ReviewTabProps) {
 
   return (
     <div>
-      <AppointmentReason shouldShowAdd />
+      <AppointmentReason shouldShowAdd shouldShowCheckout={shouldShowCheckout} handleStepChange={handleStepChange} />
 
       <Box m={2} />
 

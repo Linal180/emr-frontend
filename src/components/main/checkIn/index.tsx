@@ -61,6 +61,7 @@ const CheckInComponent = (): JSX.Element => {
   const [modulesToPrint, setModulesToPrint] = useState<string[]>([])
   const [isChartingModalOpen, setIsChartingModalOpen] = useState(false)
   const [isChartPdfModalOpen, setIsChartPdfModalOpen] = useState<boolean>(false)
+  const [shouldProceed, setShouldProceed] = useState<boolean>(false)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState);
   const [, patientDispatcher] =
     useReducer<Reducer<PatientState, PatientAction>>(patientReducer, patientInitialState)
@@ -223,6 +224,10 @@ const CheckInComponent = (): JSX.Element => {
   };
 
   const getStepContent = (step: number) => {
+    if (!shouldProceed) {
+      return <ChecKInStep isCheckIn={false} />
+    }
+
     switch (step) {
       case 0:
         return <ChecKInStep isCheckIn={false} />
@@ -237,7 +242,7 @@ const CheckInComponent = (): JSX.Element => {
       case 3:
         return <Exam />
       case 4:
-        return <SignOff />
+        return <SignOff handleStepChange={handleStep} />
       case 5:
         return <BillingComponent shouldDisableEdit={shouldDisableEdit} />
       default:
@@ -275,7 +280,14 @@ const CheckInComponent = (): JSX.Element => {
             />
           </Box>
         </> :
-          <CheckIn appointmentState={state} appointmentDispatcher={dispatch} handleStep={handleStep} shouldDisableEdit={shouldDisableEdit} />
+          <CheckIn
+            appointmentState={state}
+            appointmentDispatcher={dispatch}
+            handleStep={handleStep}
+            shouldDisableEdit={shouldDisableEdit}
+            activeStep={activeStep}
+            handleProceed={activeStep > 0 ? () => setShouldProceed(true) : undefined}
+          />
       }
     </>
 

@@ -1,37 +1,37 @@
-import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer } from "react";
-import { useParams } from "react-router";
-import { Pagination } from "@material-ui/lab";
 import {
   Box, Button, Card, Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow,
   Typography
 } from "@material-ui/core";
+import { Pagination } from "@material-ui/lab";
+import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer } from "react";
+import { useParams } from "react-router";
 // components block
 import Alert from "../../../../common/Alert";
+import ConfirmationModal from "../../../../common/ConfirmationModal";
+import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
 import TableLoader from "../../../../common/TableLoader";
 import AddAllergy from "../../allergies/modals/AddAllergy";
 import AllergyModal from "../../allergies/modals/AllergyModal";
-import ConfirmationModal from "../../../../common/ConfirmationModal";
-import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
 // constants, utils, styles, interfaces and graphql block
-import { GREEN, RED, WHITE } from "../../../../../theme";
-import { useChartingStyles } from "../../../../../styles/chartingStyles";
-import { useTableStyles } from "../../../../../styles/tableStyles";
-import { ChartComponentProps, ParamsType } from "../../../../../interfacesTypes";
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from "../../../../../assets/svgs";
-import { Action, ActionType, chartReducer, initialState, State } from "../../../../../reducers/chartReducer";
-import {
-  formatValue, getFormatDateString, getSeverityColor, renderTh, getPageNumber, isLast
-} from "../../../../../utils";
-import {
-  Allergies, PatientAllergiesPayload, useFindAllPatientAllergiesLazyQuery, useRemovePatientAllergyMutation
-} from "../../../../../generated/graphql";
 import {
   ACTIONS, ACTIVE, ADD_NEW_TEXT, ALLERGIES_TEXT, ALLERGY_TEXT, DASHES, DELETE_ALLERGY_DESCRIPTION,
   EIGHT_PAGE_LIMIT, INACTIVE, NEXT, NOTES, ONSET_DATE, PAGE_LIMIT, PATIENT_ALLERGY_DELETED, SEVERITY,
   STATUS
 } from "../../../../../constants";
+import {
+  Allergies, PatientAllergiesPayload, useFindAllPatientAllergiesLazyQuery, useRemovePatientAllergyMutation
+} from "../../../../../generated/graphql";
+import { AllergyTabProps, ParamsType } from "../../../../../interfacesTypes";
+import { Action, ActionType, chartReducer, initialState, State } from "../../../../../reducers/chartReducer";
+import { useChartingStyles } from "../../../../../styles/chartingStyles";
+import { useTableStyles } from "../../../../../styles/tableStyles";
+import { GREEN, RED, WHITE } from "../../../../../theme";
+import {
+  formatValue, getFormatDateString, getPageNumber, getSeverityColor, isLast, renderTh
+} from "../../../../../utils";
 
-const AllergyTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
+const AllergyTab: FC<AllergyTabProps> = ({ shouldDisableEdit, handleStep }) => {
   const { id } = useParams<ParamsType>()
   const classes = useChartingStyles()
   const classesTable = useTableStyles();
@@ -162,7 +162,14 @@ const AllergyTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
 
                   <Box p={1} />
 
-                  <Button variant='contained' color='secondary'>{NEXT}</Button>
+                  {handleStep && <Button
+                    variant='contained'
+                    color='secondary'
+                    size="large"
+                    onClick={()=>handleStep(5)}
+                  >
+                    {NEXT}
+                  </Button>}
                 </Box>
               </Box>
 

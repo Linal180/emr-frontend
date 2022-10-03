@@ -1,37 +1,36 @@
 // packages block
-import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer } from "react";
-import { useParams } from "react-router";
-import { Pagination } from "@material-ui/lab";
 import {
   Box, Button, Card, Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography
 } from "@material-ui/core";
+import { Pagination } from "@material-ui/lab";
+import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer } from "react";
+import { useParams } from "react-router";
 // components block
 import Alert from "../../../../common/Alert";
+import ConfirmationModal from "../../../../common/ConfirmationModal";
+import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
 import TableLoader from "../../../../common/TableLoader";
 import AddProblem from "../../problems/modals/AddProblem";
 import ProblemModal from "../../problems/modals/ProblemModal";
-import ConfirmationModal from "../../../../common/ConfirmationModal";
-import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
 // constants, utils, interfaces ang graphql block
-import { useChartingStyles } from "../../../../../styles/chartingStyles";
-import { useTableStyles } from "../../../../../styles/tableStyles";
-import { ChartComponentProps, ParamsType } from "../../../../../interfacesTypes";
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from "../../../../../assets/svgs";
 import {
-  Action, ActionType, chartReducer, initialState, State
-} from "../../../../../reducers/chartReducer";
-import {
-  getFormatDateString, getProblemSeverityColor, getProblemTypeColor, renderTh, getPageNumber, isLast
-} from "../../../../../utils";
-import {
-  ACTIONS, ADD_NEW_TEXT, DASHES, DELETE_PROBLEM_DESCRIPTION, ICD_CODE, ONSET_DATE, EIGHT_PAGE_LIMIT,
-  PATIENT_PROBLEM_DELETED, PROBLEM_TEXT, STATUS, TYPE, COMMENTS, NEXT
+  ACTIONS, ADD_NEW_TEXT, COMMENTS, DASHES, DELETE_PROBLEM_DESCRIPTION, EIGHT_PAGE_LIMIT, ICD_CODE, NEXT, ONSET_DATE, PATIENT_PROBLEM_DELETED, PROBLEM_TEXT, STATUS, TYPE
 } from "../../../../../constants";
 import {
   IcdCodes, PatientProblemsPayload, useFindAllPatientProblemsLazyQuery, useRemovePatientProblemMutation
 } from "../../../../../generated/graphql";
+import { ParamsType, ProblemTabProps } from "../../../../../interfacesTypes";
+import {
+  Action, ActionType, chartReducer, initialState, State
+} from "../../../../../reducers/chartReducer";
+import { useChartingStyles } from "../../../../../styles/chartingStyles";
+import { useTableStyles } from "../../../../../styles/tableStyles";
+import {
+  getFormatDateString, getPageNumber, getProblemSeverityColor, getProblemTypeColor, isLast, renderTh
+} from "../../../../../utils";
 
-const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
+const ProblemTab: FC<ProblemTabProps> = ({ shouldDisableEdit, handleStep }) => {
   const classes = useChartingStyles();
   const classesTable = useTableStyles()
   const { id } = useParams<ParamsType>()
@@ -164,7 +163,7 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
 
                   <Box p={1} />
 
-                  <Button variant='contained' color='secondary'>{NEXT}</Button>
+                  {handleStep && <Button variant='contained' color='secondary' size="large" onClick={() => handleStep(4)}>{NEXT}</Button>}
                 </Box>
               </Box>
 

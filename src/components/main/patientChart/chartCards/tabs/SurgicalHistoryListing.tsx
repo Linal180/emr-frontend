@@ -18,7 +18,7 @@ import {
   ACTIONS, ADD_NEW_TEXT, DASHES, DELETE_SURGICAL_HISTORY_DESCRIPTION, EIGHT_PAGE_LIMIT, NEXT, NOTES, PATIENT_SURGICAL_HISTORY_DELETE, PROCEDURE_TEXT, SURGERY_DATE, SURGICAL_HISTORY_TEXT
 } from "../../../../../constants";
 import { SurgicalHistoriesPayload, useFindAllSurgicalHistoryLazyQuery, useRemoveSurgicalHistoryMutation } from "../../../../../generated/graphql";
-import { ChartComponentProps, ParamsType, SurgicalCode } from "../../../../../interfacesTypes";
+import { ParamsType, SurgicalCode, SurgicalTabProps } from "../../../../../interfacesTypes";
 import {
   Action, ActionType, chartReducer, initialState, State
 } from "../../../../../reducers/chartReducer";
@@ -26,7 +26,7 @@ import { useChartingStyles } from "../../../../../styles/chartingStyles";
 import { useTableStyles } from "../../../../../styles/tableStyles";
 import { getFormatDateString, getPageNumber, isLast, renderTh } from "../../../../../utils";
 
-const SurgicalHistoryTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
+const SurgicalHistoryTab: FC<SurgicalTabProps> = ({ shouldDisableEdit, handleStep }) => {
   const classes = useChartingStyles();
   const classesTable = useTableStyles()
   const { id } = useParams<ParamsType>()
@@ -153,7 +153,14 @@ const SurgicalHistoryTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
                 </Button>}
               <Box p={1} />
 
-              <Button variant='contained' color='secondary'>{NEXT}</Button>
+              {handleStep && <Button
+                variant='contained'
+                color='secondary'
+                size="large"
+                onClick={() => handleStep(8)}
+              >
+                {NEXT}
+              </Button>}
             </Box>
           </Box>
 

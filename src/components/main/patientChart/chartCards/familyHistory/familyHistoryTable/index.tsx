@@ -23,7 +23,7 @@ import {
 } from "../../../../../../constants";
 
 
-const FamilyHistoryTable: FC<FamilyHistoryProps> = ({ shouldDisableEdit = false }): JSX.Element => {
+const FamilyHistoryTable: FC<FamilyHistoryProps> = ({ shouldDisableEdit = false, handleStep }): JSX.Element => {
   const { id: patientId } = useParams<ParamsType>()
   const classes = useTableStyles();
   const chartingClasses = useChartingStyles();
@@ -128,9 +128,16 @@ const FamilyHistoryTable: FC<FamilyHistoryProps> = ({ shouldDisableEdit = false 
                 {ADD_NEW_TEXT}
               </Button>}
 
-              <Box p={1} />
+            <Box p={1} />
 
-              <Button variant='contained' color='secondary'>{NEXT}</Button>
+            {handleStep && <Button
+              variant='contained'
+              color='secondary'
+              size="large"
+              onClick={() => handleStep(7)}
+            >
+              {NEXT}
+            </Button>}
           </Box>
         </Box>
 

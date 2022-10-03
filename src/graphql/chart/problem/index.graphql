@@ -76,6 +76,14 @@ query FindAllPatientProblemsWithMedication(
         }
       }
 
+      labTests {
+        id
+        test {
+          id
+          component
+        }
+      }
+
       snowMedCode {
         id
         referencedComponentId

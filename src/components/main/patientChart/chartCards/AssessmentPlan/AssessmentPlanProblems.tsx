@@ -12,7 +12,7 @@ import NoDataFoundComponent from '../../../../common/NoDataFoundComponent';
 import AppointmentReasonModal from '../AppointmentReason/AppointmentReasonModal';
 import AssessmentPlanMedication from './AssessmentPlanMedication';
 
-function AssessmentPlanProblems({ fetchProblems, assessmentProblems: problems, setAssessmentProblems }: AssessmentPlanProblemsProps) {
+function AssessmentPlanProblems({ fetchProblems, assessmentProblems: problems, setAssessmentProblems, shouldDisableEdit }: AssessmentPlanProblemsProps) {
   const classes = useChartingStyles()
   const { id: patientId, appointmentId } = useParams<ParamsType>()
   // const { control, setValue, watch } = useFormContext<AssessmentProblems>()
@@ -66,29 +66,7 @@ function AssessmentPlanProblems({ fetchProblems, assessmentProblems: problems, s
     onCompleted(data) {
       const { updatePatientProblemSigned: { response } } = data;
 
-      if (response) {
-        // const { status } = response
-
-        // if (status && status === 200) {
-        //   const { id } = patientProblem || {}
-        //   const transformedProblems = problems?.map((problem, index) => {
-        //     const { icdCodes, isSigned, problemId, medications } = problem
-        //     let transformedProblemId = ''
-        //     if (index === problemIndex) {
-        //       transformedProblemId = id || ''
-        //     } else {
-        //       transformedProblemId = problemId || ''
-        //     }
-
-        //     return {
-        //       icdCodes, problemId: transformedProblemId,
-        //       isSigned, medications
-        //     }
-        //   }) || []
-
-        //   setAssessmentProblems(transformedProblems)
-        // }
-      }
+      if (response) { }
     }
   });
 
@@ -120,10 +98,20 @@ function AssessmentPlanProblems({ fetchProblems, assessmentProblems: problems, s
   }
 
   const numberOfOrders = problems?.reduce((acc, problem) => {
-    if (problem.isSigned) {
-      return acc
-    }
-    return acc += problem.medications?.length || 0
+    const numberOfMedications = problem.medications?.reduce((acc, medication) => {
+      if (medication.isSigned) {
+        return acc
+      }
+      return acc += 1
+    }, 0)
+
+    const numberOfTests: number = problem.tests?.reduce((acc, test) => {
+      if (test.isSigned) {
+        return acc
+      }
+      return acc += 1
+    }, 0) || 0
+    return acc += (numberOfTests || 0) + (numberOfMedications || 0)
   }, 0)
 
   const handleAssessment = async () => {
@@ -164,13 +152,13 @@ function AssessmentPlanProblems({ fetchProblems, assessmentProblems: problems, s
             <Box display='flex' alignItems='center'>
               <Typography variant='h3'>{ASSESSMENT_PLAN}</Typography>
 
-              <Box ml={1} pb={1} display="flex" alignItems="center" justifyContent="flex-end">
+              {!shouldDisableEdit && <Box ml={1} pb={1} display="flex" alignItems="center" justifyContent="flex-end">
                 <Button onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
                   <AddCircleOutline color='secondary' />
                   <Box ml={1} />
                   <Typography color="secondary">{'DIAGNOSIS & ORDERS'}</Typography>
                 </Button>
-              </Box>
+              </Box>}
             </Box>
 
             <Box display='flex' alignItems='center'>
@@ -218,6 +206,7 @@ function AssessmentPlanProblems({ fetchProblems, assessmentProblems: problems, s
           alreadyAddedProblems={problems?.map(problem => problem?.icdCodes?.id)}
           title="Add Diagnose"
           handleAdd={(item: IcdCodesWithSnowMedCode) => handleProblemAdd(item)}
+          searchPlaceholder="Search..."
         />}
     </div>
   )

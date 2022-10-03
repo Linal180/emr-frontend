@@ -1,8 +1,8 @@
 import { Box, Button, Card, colors, IconButton, Typography } from '@material-ui/core'
-import { RemoveCircleOutline } from '@material-ui/icons'
+import { ChevronRight, RemoveCircleOutline } from '@material-ui/icons'
 import { Reducer, useCallback, useEffect, useReducer } from 'react'
 import { useParams } from 'react-router'
-import { ADD, APPOINTMENT_REASON_DELETED, DELETE_REASON_DESCRIPTION, EIGHT_PAGE_LIMIT, NEXT, REASON, REASON_VISIT } from '../../../../../constants'
+import { ADD, APPOINTMENT_REASON_DELETED, DELETE_REASON_DESCRIPTION, EIGHT_PAGE_LIMIT, NEXT, REASON, REASON_VISIT, TO_CHECKOUT } from '../../../../../constants'
 import { PatientProblemsPayload, useFindAllPatientProblemsLazyQuery, useRemovePatientProblemMutation } from '../../../../../generated/graphql'
 import { AppointmentReasonProps, ParamsType } from '../../../../../interfacesTypes'
 import { Action, ActionType, chartReducer, initialState, State } from '../../../../../reducers/chartReducer'
@@ -11,7 +11,7 @@ import Alert from '../../../../common/Alert'
 import ConfirmationModal from '../../../../common/ConfirmationModal'
 import AppointmentReasonModal from '../AppointmentReason/AppointmentReasonModal'
 
-function AppointmentReason({ shouldShowAdd }: AppointmentReasonProps) {
+function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableEdit, shouldShowCheckout, handleStepChange }: AppointmentReasonProps) {
   const classes = useChartingStyles()
   const { appointmentId, id: patientId } = useParams<ParamsType>()
   const [state, dispatch] =
@@ -105,7 +105,7 @@ function AppointmentReason({ shouldShowAdd }: AppointmentReasonProps) {
             <Typography variant='h3'>{REASON_VISIT}</Typography>
 
             <Box display='flex' alignItems='center'>
-              {!shouldShowAdd && <Button
+              {!shouldDisableEdit && !shouldShowAdd && <Button
                 variant="contained"
                 color="primary"
                 onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}
@@ -115,7 +115,16 @@ function AppointmentReason({ shouldShowAdd }: AppointmentReasonProps) {
 
               <Box p={1} />
 
-              <Button variant='contained' color='secondary'>{NEXT}</Button>
+              {isInTake ? <Button variant='contained' color='secondary' onClick={() => handleStep && handleStep(1)} size="large">{NEXT}</Button> :
+                shouldShowCheckout ? <Button
+                  variant='contained'
+                  color='primary'
+                  onClick={() => handleStepChange && handleStepChange(5)}
+                  size="large"
+                >
+                  {TO_CHECKOUT}
+                  <ChevronRight />
+                </Button> : <></>}
             </Box>
           </Box>
 

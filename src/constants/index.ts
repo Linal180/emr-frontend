@@ -299,6 +299,9 @@ export const RE_SCHEDULE = "Re-Schedule";
 export const CHECK_IN = "Check In";
 export const START_CHECK_IN = "Start Check In";
 export const DONE_CHECK_IN = "Done with Check In";
+export const TO_INTAKE = "To Intake";
+export const TO_EXAM = "To Exam";
+export const TO_CHECKOUT = "To Checkout";
 export const DONE_INTAKE = "Done with Intake";
 export const REASON_VISIT = "Reason For Visit";
 export const TELEHEALTH = "Telehealth";
@@ -1023,6 +1026,7 @@ export const RESEND_OTP = "Resend OTP ?";
 export const ADD_PROBLEM = "Add Problem";
 export const ADD_REASON = "Add Reason";
 export const ADD_MEDICATION = "Add Medication";
+export const ADD_ORDER = "Add Order"
 export const ADD_SURGICAL_HISTORY = "Add Surgical History";
 export const UPDATE_SURGICAL_HISTORY = "Update Surgical History";
 export const MY_PATIENTS = "My Patients";
@@ -1245,6 +1249,7 @@ export const PAYMENTS = "Payments";
 export const GUARDIAN = "Guardian";
 export const EMPLOYER = "Employer";
 export const CHECKOUT = "checkout";
+export const CHECKOUT_TEXT = "Checkout";
 export const CHECKOUT_DISCHARGE = "checkout & discharge";
 export const INDUSTRY = "Industry";
 export const DISCHARGE = "Discharge";
@@ -1543,6 +1548,7 @@ export const COINSURANCE_PERCENTAGE = "Coinsurance percentage";
 export const TWO_FA_AUTHENTICATION = "2-Factor Authentication";
 export const NOTHING_HERE_TEXT = "Seems there is nothing here";
 export const SEARCH_FOR_MEDICATIONS = "Search for Medications";
+export const SEARCH_FOR_TESTS = "Search for Tests";
 export const DELETE_RECORD_TEXT = "You are about delete record";
 export const DELETE_ROLE_DESCRIPTION = "Confirm to delete role";
 export const REGISTRATION_DEPARTMENT = "Registration Department";
@@ -3157,10 +3163,11 @@ export const CHECK_IN_STEPS = [
   INTAKE,
   EXAM,
   SIGN_OFF,
+  CHECKOUT_TEXT
   // PATIENT_INFO,
   // CHART_TEXT,
   // LAB_ORDERS,
-  BILLING_AND_INSURANCE,
+  // BILLING_AND_INSURANCE,
 ];
 
 export const ADD_INSURANCE_STEPS = [

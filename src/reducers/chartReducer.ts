@@ -1,6 +1,6 @@
 import {
   AllCptCodePayload,
-  Allergies, AllergiesPayload, Cvx, FindAllCvxPayload, IcdCodes, IcdCodesPayload, IcdCodesWithSnowMedCode, Medications, MedicationsPayload, PatientAllergiesPayload, PatientMedicationsPayload, PatientProblemsPayload, PatientVitalPayload, ReactionsPayload, SurgicalHistoriesPayload
+  Allergies, AllergiesPayload, Cvx, FindAllCvxPayload, IcdCodes, IcdCodesPayload, IcdCodesWithSnowMedCode, LoincCodesPayload, Medications, MedicationsPayload, PatientAllergiesPayload, PatientMedicationsPayload, PatientProblemsPayload, PatientVitalPayload, ReactionsPayload, SurgicalHistoriesPayload
 } from "../generated/graphql";
 import { multiOptionType, PatientChartingInfo, SurgicalCode } from "../interfacesTypes";
 
@@ -27,7 +27,7 @@ export interface State {
   patientProblems: PatientProblemsPayload['patientProblems'],
   patientAllergies: PatientAllergiesPayload['patientAllergies'],
   selectedItem: Allergies | Medications | IcdCodesWithSnowMedCode | IcdCodes | SurgicalCode | undefined | Cvx;
-  searchedData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'] | MedicationsPayload['medications'] | AllCptCodePayload['cptCodes'] | FindAllCvxPayload['cvxs'];
+  searchedData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'] | MedicationsPayload['medications'] | AllCptCodePayload['cptCodes'] | FindAllCvxPayload['cvxs'] | LoincCodesPayload['loincCodes'];
   medicationDeleteId: string;
   patientMedications: PatientMedicationsPayload['patientMedications']
   patientSurgicalHistory: SurgicalHistoriesPayload['surgicalHistories']
@@ -35,6 +35,7 @@ export interface State {
   patientChartingInfo: PatientChartingInfo | null,
   problemIndex: number | null;
   medicationIndex: number | null;
+  testIndex: number | null;
 }
 
 export const initialState: State = {
@@ -67,7 +68,8 @@ export const initialState: State = {
   surgicalHistoryDeleteId: '',
   patientChartingInfo: null,
   problemIndex: null,
-  medicationIndex: null
+  medicationIndex: null,
+  testIndex: null
 }
 
 export enum ActionType {
@@ -100,7 +102,8 @@ export enum ActionType {
   SET_SURGICAL_HISTORY_DELETE_ID = "setSurgicalHistoryDeleteId",
   SET_PATIENT_CHARTING_INFO = "setPatientChartingInfo",
   SET_PROBLEM_INDEX = 'setProblemIndex',
-  SET_MEDICATION_INDEX = 'setMedicationIndex'
+  SET_MEDICATION_INDEX = 'setMedicationIndex',
+  SET_TEST_INDEX = 'setTestIndex'
 }
 
 export type Action =
@@ -123,7 +126,7 @@ export type Action =
   | { type: ActionType.SET_PATIENT_VITALS, patientVitals: PatientVitalPayload['patientVital'] }
   | { type: ActionType.SET_PATIENT_PROBLEMS, patientProblems: PatientProblemsPayload['patientProblems'] }
   | { type: ActionType.SET_PATIENT_ALLERGIES, patientAllergies: PatientAllergiesPayload['patientAllergies'] }
-  | { type: ActionType.SET_SEARCHED_DATA, searchedData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'] | MedicationsPayload['medications'] | AllCptCodePayload['cptCodes'] | FindAllCvxPayload['cvxs'] }
+  | { type: ActionType.SET_SEARCHED_DATA, searchedData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'] | MedicationsPayload['medications'] | AllCptCodePayload['cptCodes'] | FindAllCvxPayload['cvxs'] | LoincCodesPayload['loincCodes'] }
   | { type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: boolean }
   | { type: ActionType.SET_ALLERGY_DELETE_ID, allergyDeleteId: string }
   | { type: ActionType.SET_PROBLEM_DELETE_ID, problemDeleteId: string }
@@ -134,6 +137,7 @@ export type Action =
   | { type: ActionType.SET_PATIENT_CHARTING_INFO, patientChartingInfo: PatientChartingInfo | null }
   | { type: ActionType.SET_PROBLEM_INDEX, problemIndex: number | null }
   | { type: ActionType.SET_MEDICATION_INDEX, medicationIndex: number | null }
+  | { type: ActionType.SET_TEST_INDEX, testIndex: number | null }
 
 
 export const chartReducer = (state: State, action: Action): State => {
@@ -316,6 +320,12 @@ export const chartReducer = (state: State, action: Action): State => {
       return {
         ...state,
         medicationIndex: action.medicationIndex
+      }
+
+    case ActionType.SET_TEST_INDEX:
+      return {
+        ...state,
+        testIndex: action.testIndex
       }
   }
 };

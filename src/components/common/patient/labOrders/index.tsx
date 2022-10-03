@@ -30,7 +30,7 @@ import { useChartingStyles } from '../../../../styles/chartingStyles';
 import { appointmentStatus, convertDateFromUnix, formatValue, renderTh } from "../../../../utils";
 import LabTestModal from "../../../main/reports/labResultsListing/LabTestModal";
 
-const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisableEdit }): JSX.Element => {
+const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisableEdit, handleStep }): JSX.Element => {
   const classes = useTableStyles();
   const chartingClasses = useChartingStyles();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(labReducer, initialState)
@@ -202,7 +202,14 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisabl
 
                     <Box p={1} />
 
-                    <Button variant='contained' color='secondary'>{NEXT}</Button>
+                    {handleStep && <Button
+                      variant='contained'
+                      color='secondary'
+                      size="large"
+                      onClick={() => handleStep(9)}
+                    >
+                      {NEXT}
+                    </Button>}
                   </Box>
                 </Box>
 

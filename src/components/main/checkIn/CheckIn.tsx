@@ -4,15 +4,15 @@ import { ChevronRight } from "@material-ui/icons";
 import { FC, useContext } from "react";
 //constants, interfaces, utils, types
 import {
-  APPOINTMENT_INFO, APPOINTMENT_TYPE, CHECK_IN_AT_TEXT, FACILITY_LOCATION, N_A, PRIMARY_INSURANCE,
-  PROVIDER_NAME, REASON, SELF_CHECK_IN, START_CHECK_IN
+  APPOINTMENT_INFO, APPOINTMENT_TYPE, CHECK_IN_AT_TEXT, DONE_CHECK_IN, FACILITY_LOCATION, N_A, PRIMARY_INSURANCE,
+  PROVIDER_NAME, REASON, SELF_CHECK_IN, SIGN_OFF, START_CHECK_IN, TO_CHECKOUT, TO_EXAM, TO_INTAKE
 } from "../../../constants";
 import { AuthContext } from "../../../context";
 import { CheckInComponentProps } from "../../../interfacesTypes";
 import { isBiller } from "../../../utils";
 import UpFrontPayment from "../billing/upfrontPayment";
 
-const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep, shouldDisableEdit }) => {
+const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep, shouldDisableEdit, activeStep, handleProceed }) => {
   const { user } = useContext(AuthContext)
   const { roles } = user || {}
   const isBillerUser = isBiller(roles);
@@ -25,6 +25,34 @@ const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep, shou
 
   const fullName = firstName && lastName ? `${firstName} ${lastName}` : N_A
 
+  const getProceedBtnTitle = () => {
+    if (activeStep === 0) {
+      return START_CHECK_IN
+    }
+
+    if (activeStep === 1) {
+      return DONE_CHECK_IN
+    }
+
+    if (activeStep === 2) {
+      return TO_INTAKE
+    }
+
+    if (activeStep === 3) {
+      return TO_EXAM
+    }
+
+    if (activeStep === 4) {
+      return SIGN_OFF
+    }
+
+    if (activeStep === 5) {
+      return TO_CHECKOUT
+    }
+
+    return START_CHECK_IN
+  }
+
   return (
     <>
       <Card>
@@ -36,8 +64,8 @@ const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep, shou
           <Button
             variant="contained" color="primary"
             endIcon={<Box width={20}><ChevronRight /></Box>}
-            onClick={() => isBillerUser ? handleStep(4) : handleStep(0, true)}>
-            {START_CHECK_IN}
+            onClick={() => isBillerUser ? handleStep(4) : handleProceed ? handleProceed(true) : handleStep(0, true)}>
+            {getProceedBtnTitle()}
           </Button>
         </Box>
 
@@ -104,7 +132,7 @@ const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep, shou
 
       <Box p={2} />
 
-      <UpFrontPayment handleStep={handleStep} shouldDisableEdit={shouldDisableEdit} />
+      {(activeStep || 0) === 0 && <UpFrontPayment handleStep={handleStep} shouldDisableEdit={shouldDisableEdit} />}
     </>
   )
 }
