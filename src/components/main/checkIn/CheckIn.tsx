@@ -26,31 +26,28 @@ const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep, shou
   const fullName = firstName && lastName ? `${firstName} ${lastName}` : N_A
 
   const getProceedBtnTitle = () => {
-    if (activeStep === 0) {
-      return START_CHECK_IN
-    }
+    switch (activeStep) {
+      case 0:
+        return START_CHECK_IN
 
-    if (activeStep === 1) {
-      return DONE_CHECK_IN
-    }
+      case 1:
+        return DONE_CHECK_IN
 
-    if (activeStep === 2) {
-      return TO_INTAKE
-    }
+      case 2:
+        return TO_INTAKE
 
-    if (activeStep === 3) {
-      return TO_EXAM
-    }
+      case 3:
+        return TO_EXAM
 
-    if (activeStep === 4) {
-      return SIGN_OFF
-    }
+      case 4:
+        return SIGN_OFF
 
-    if (activeStep === 5) {
-      return TO_CHECKOUT
-    }
+      case 5:
+        return TO_CHECKOUT
 
-    return START_CHECK_IN
+      default:
+        return START_CHECK_IN
+    }
   }
 
   return (
