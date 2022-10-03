@@ -19,17 +19,19 @@ const StepperCard = ({ activeStep, stepperData, handleStep }: StepperComponentPr
       style={{ position: 'relative' }}
       data-cy="newCourseStepper"
     >
-      {stepperData?.map(({ title }, index) => {
+      {stepperData?.map(({ title, completed: customCompleted }, index) => {
         return (
           <Step key={`${index}-${title}`}>
-            <StepLabel className='pointer-cursor' StepIconComponent={CustomStepIcon} onClick={() => handleStep && handleStep(index)}>
+            <StepLabel className='pointer-cursor' StepIconComponent={(props) => <CustomStepIcon
+              {...{ ...props, completed: customCompleted ?? props.completed }}
+            />} onClick={() => handleStep && handleStep(index)}>
               <Typography variant="h4" component="h5">
                 {title}
               </Typography>
             </StepLabel>
           </Step>)
       })}
-    </Stepper>
+    </Stepper >
   );
 };
 

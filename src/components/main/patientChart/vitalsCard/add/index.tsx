@@ -38,7 +38,7 @@ import {
 export const AddVitals = memo(({
   fetchPatientAllVitals, patientStates, dispatcher, handleClose, }: AddPatientVitalsProps) => {
   const chartingClasses = useChartingStyles()
-  const { id: patientId } = useParams<ParamsType>()
+  const { id: patientId, appointmentId } = useParams<ParamsType>()
   const methods = useForm<VitalFormInput>({ mode: "all", resolver: yupResolver(patientVitalSchema) });
   const { handleSubmit, reset, watch, setValue } = methods;
   const { PatientHeight, PatientWeight, patientHeadCircumference, patientTemperature } = watch()
@@ -123,7 +123,8 @@ export const AddVitals = memo(({
               headCircumference: HeadCircumferenceType.Inch, respiratoryRate, diastolicBloodPressure, PainRange,
               systolicBloodPressure, oxygenSaturation, PatientHeight, PatientWeight, PatientBMI, pulseRate,
               patientHeadCircumference, smokingStatus: smokingStatusLabel as SmokingStatus, patientTemperature,
-              vitalCreationDate: vitalsDate ?? new Date().toUTCString()
+              vitalCreationDate: vitalsDate ?? new Date().toUTCString(),
+              ...(appointmentId ? { appointmentId } : {})
             }
           }
         })
@@ -137,7 +138,8 @@ export const AddVitals = memo(({
             headCircumference: HeadCircumferenceType.Inch, respiratoryRate, diastolicBloodPressure, PainRange,
             systolicBloodPressure, oxygenSaturation, PatientHeight, PatientWeight, PatientBMI, pulseRate,
             patientHeadCircumference, smokingStatus: smokingStatusLabel as SmokingStatus, patientTemperature,
-            vitalCreationDate: vitalsDate ?? new Date().toUTCString()
+            vitalCreationDate: vitalsDate ?? new Date().toUTCString(),
+            ...(appointmentId ? { appointmentId } : {})
           }
         }
       })

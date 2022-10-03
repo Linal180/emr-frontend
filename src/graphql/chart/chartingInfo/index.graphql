@@ -132,3 +132,63 @@ query GetPatientChartingInfo(
     }
   }
 }
+
+query GetPatientChartingReview(
+  $patientChartingReviewInput: PatientChartingReviewInput!
+) {
+  getPatientChartingReview(patientChartingReviewInput: $patientChartingReviewInput) {
+    response {
+      status
+      message
+    }
+
+    patientVitals {
+      id
+      vitalCreationDate
+      patientTemperature
+      systolicBloodPressure
+      diastolicBloodPressure
+      respiratoryRate
+      PatientBMI
+    }
+
+    patientAllergies {
+      id
+      allergySeverity
+      allergyOnset
+      allergyStartDate
+      comments
+      isActive
+      allergy {
+        name
+        allergyType
+      }
+    }
+
+    patientProblems {
+      id
+      problemType
+      problemSeverity
+      problemStartDate
+      note
+
+      ICDCode {
+        code
+        description
+      }
+    }
+
+    patientMedications {
+      id
+      sig
+      startDate
+      status
+      stopDate
+      stopReason
+      note
+      medication {
+        fullName
+      }
+    }
+  }
+}

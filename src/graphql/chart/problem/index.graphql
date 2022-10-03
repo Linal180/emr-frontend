@@ -1,24 +1,24 @@
 # ----------------- PATIENT  PROBLEMS  --------------
 
-query FindAllPatientProblems($patientProblemInput: PatientProblemInput!){
-  findAllPatientProblem(patientProblemInput: $patientProblemInput){
+query FindAllPatientProblems($patientProblemInput: PatientProblemInput!) {
+  findAllPatientProblem(patientProblemInput: $patientProblemInput) {
     response {
       status
       message
     }
-    
+
     pagination {
       totalPages
       page
     }
-    
+
     patientProblems {
       id
       problemType
       problemSeverity
       problemStartDate
       note
-      
+
       ICDCode {
         __typename
         id
@@ -26,7 +26,7 @@ query FindAllPatientProblems($patientProblemInput: PatientProblemInput!){
         description
       }
 
-      snowMedCode{
+      snowMedCode {
         id
         referencedComponentId
       }
@@ -34,13 +34,71 @@ query FindAllPatientProblems($patientProblemInput: PatientProblemInput!){
   }
 }
 
-query GetPatientProblem($getPatientProblem: GetPatientProblem!){
-  getPatientProblem(getPatientProblem: $getPatientProblem){
+query FindAllPatientProblemsWithMedication(
+  $patientProblemInput: PatientProblemInput!
+) {
+  findAllPatientProblem(patientProblemInput: $patientProblemInput) {
     response {
       status
       message
     }
-    
+
+    pagination {
+      totalPages
+      page
+    }
+
+    patientProblems {
+      id
+      problemType
+      forOrders
+      isSigned
+      problemSeverity
+      problemStartDate
+      note
+
+      ICDCode {
+        __typename
+        id
+        code
+        description
+      }
+
+      patientMedications {
+        id
+        medication {
+          id
+          fullName
+          termType
+          rxNumber
+          createdAt
+          updatedAt
+        }
+      }
+
+      labTests {
+        id
+        test {
+          id
+          component
+        }
+      }
+
+      snowMedCode {
+        id
+        referencedComponentId
+      }
+    }
+  }
+}
+
+query GetPatientProblem($getPatientProblem: GetPatientProblem!) {
+  getPatientProblem(getPatientProblem: $getPatientProblem) {
+    response {
+      status
+      message
+    }
+
     patientProblem {
       id
       problemType
@@ -48,14 +106,14 @@ query GetPatientProblem($getPatientProblem: GetPatientProblem!){
       problemStartDate
       note
 
-      snowMedCode{
+      snowMedCode {
         id
         referencedComponentId
       }
 
       appointment {
         id
-        
+
         appointmentType {
           id
           serviceType
@@ -65,8 +123,12 @@ query GetPatientProblem($getPatientProblem: GetPatientProblem!){
   }
 }
 
-mutation AddPatientProblem($createProblemInput: CreateProblemInput!){
-  addPatientProblem(createProblemInput: $createProblemInput){
+mutation AddPatientProblem($createProblemInput: CreateProblemInput!) {
+  addPatientProblem(createProblemInput: $createProblemInput) {
+    patientProblem {
+      id
+    }
+
     response {
       status
       message
@@ -74,8 +136,8 @@ mutation AddPatientProblem($createProblemInput: CreateProblemInput!){
   }
 }
 
-mutation UpdatePatientProblem($updateProblemInput: UpdateProblemInput!){
-  updatePatientProblem(updateProblemInput: $updateProblemInput){
+mutation UpdatePatientProblem($updateProblemInput: UpdateProblemInput!) {
+  updatePatientProblem(updateProblemInput: $updateProblemInput) {
     response {
       status
       message
@@ -83,8 +145,8 @@ mutation UpdatePatientProblem($updateProblemInput: UpdateProblemInput!){
   }
 }
 
-mutation RemovePatientProblem($removeProblem: RemoveProblem!){
-  removePatientProblem(removeProblem: $removeProblem){
+mutation UpdatePatientProblemSigned($updateProblemSignedInput: UpdateProblemSignedInput!) {
+  updatePatientProblemSigned(updateProblemSignedInput: $updateProblemSignedInput) {
     response {
       status
       message
@@ -92,22 +154,32 @@ mutation RemovePatientProblem($removeProblem: RemoveProblem!){
   }
 }
 
-
-query FindAllPatientProblemsIcdCode($patientProblemInput: PatientProblemInput!){
-  findAllPatientProblem(patientProblemInput: $patientProblemInput){
+mutation RemovePatientProblem($removeProblem: RemoveProblem!) {
+  removePatientProblem(removeProblem: $removeProblem) {
     response {
       status
       message
     }
-    
+  }
+}
+
+query FindAllPatientProblemsIcdCode(
+  $patientProblemInput: PatientProblemInput!
+) {
+  findAllPatientProblem(patientProblemInput: $patientProblemInput) {
+    response {
+      status
+      message
+    }
+
     pagination {
       totalPages
       page
     }
-    
+
     patientProblems {
       id
-      
+
       ICDCode {
         id
         code

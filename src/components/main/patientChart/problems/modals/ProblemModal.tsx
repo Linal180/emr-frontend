@@ -35,7 +35,7 @@ const ProblemModal: FC<AddModalProps> = ({
 }): JSX.Element => {
   const chartingClasses = useChartingStyles()
   const { id: icdCodeId, code, description, } = item as IcdCodes || {}
-  const { id: patientId } = useParams<ParamsType>()
+  const { id: patientId, appointmentId } = useParams<ParamsType>()
   const statuses = Object.keys(ProblemType)
 
   const [typeStatus, setTypeStatus] = useState<string>(statuses[0])
@@ -158,10 +158,8 @@ const ProblemModal: FC<AddModalProps> = ({
   const handleSeverity = (severity: string) => setSeverity(severity)
 
   const onSubmit: SubmitHandler<PatientProblemInputs> = async ({
-    note, appointmentId, problemStartDate
+    note, problemStartDate
   }) => {
-    const { id: selectedAppointment } = appointmentId || {};
-
     const commonInput = {
       note,
       ...(severity && { problemSeverity: severity.toUpperCase() as ProblemSeverity, }),
@@ -169,8 +167,8 @@ const ProblemModal: FC<AddModalProps> = ({
       ...(typeStatus && { problemType: typeStatus.toUpperCase() as ProblemType })
     }
 
-    const extendedInput = selectedAppointment ?
-      { appointmentId: selectedAppointment, ...commonInput } : { ...commonInput }
+    const extendedInput = appointmentId ?
+      { appointmentId, ...commonInput } : { ...commonInput }
 
     if (isEdit) {
       recordId && await updatePatientProblem({
