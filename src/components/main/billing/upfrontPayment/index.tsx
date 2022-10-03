@@ -19,8 +19,8 @@ import { useTableStyles } from "../../../../styles/tableStyles";
 import { CreateUpFrontPayment, FormForwardRef, ParamsType, UpFrontPaymentProps } from "../../../../interfacesTypes";
 import { useCreateUpFrontPaymentMutation, useFetchUpFrontPaymentDetailsByAppointmentIdLazyQuery } from "../../../../generated/graphql";
 import {
-  ACTION, ADJUSTMENTS, AMOUNT, AMOUNT_TYPE, BALANCE, CHARGE_ENTRY, CPT_TEXT, EXPECTED, NOTES, NOT_FOUND_EXCEPTION, PAID, 
-  PAYMENT, TOTAL_TEXT, TYPE, UPFRONT_INITIAL_VALUES, UPFRONT_PAYMENT_SUCCESS, UPFRONT_PAYMENT_TYPES, 
+  ACTION, ADJUSTMENTS, AMOUNT, AMOUNT_TYPE, BALANCE, CHARGE_ENTRY, COLLECTED_AMOUNT, CPT_TEXT, DUE_AMOUNT, EXPECTED, NOTES, NOT_FOUND_EXCEPTION, PAID, 
+  PAYMENT, PAYMENT_TYPE, TOTAL_TEXT, TYPE, UPFRONT_INITIAL_VALUES, UPFRONT_PAYMENT_SUCCESS, UPFRONT_PAYMENT_TYPES, 
   USER_NOT_FOUND_EXCEPTION_MESSAGE
 } from "../../../../constants";
 
@@ -210,15 +210,16 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
                     <TableHead>
                       <TableRow>
                         {renderTh(AMOUNT_TYPE)}
-                        {renderTh(AMOUNT)}
-                        {renderTh(TYPE)}
+                        {renderTh(DUE_AMOUNT)}
+                        {renderTh(COLLECTED_AMOUNT)}
+                        {renderTh(PAYMENT_TYPE)}
                         {renderTh(NOTES)}
-                        {!shouldDisableEdit && renderTh(ACTION)}
+                        {/* {!shouldDisableEdit && renderTh(ACTION)} */}
                       </TableRow>
                     </TableHead>
 
                     <TableBody>
-                      {/* <UpFrontPaymentType moduleName={UPFRONT_PAYMENT_TYPES.Copay} shouldDisableEdit={shouldDisableEdit} /> */}
+                      <UpFrontPaymentType moduleName={UPFRONT_PAYMENT_TYPES.Copay} shouldDisableEdit={shouldDisableEdit} />
                       <UpFrontPaymentType moduleName={UPFRONT_PAYMENT_TYPES.Additional} shouldDisableEdit={shouldDisableEdit} />
                       <UpFrontPaymentType moduleName={UPFRONT_PAYMENT_TYPES.Previous} shouldDisableEdit={shouldDisableEdit} />
                     </TableBody>

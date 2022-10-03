@@ -970,9 +970,8 @@ input[type=number] {
   width: 40px;
 }
 
-.payment-input {
+.payment-input .MuiOutlinedInput-root{
   background-color: #fff;
-  border-radius: 8px;
 }
 
 .li-hover:hover {
