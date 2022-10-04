@@ -31,7 +31,7 @@ import {
   patientReducer, State as PatientState
 } from "../../../reducers/patientReducer";
 import { CheckInConnector, useCheckInProfileStyles, useCheckInStepIconStyles } from '../../../styles/checkInStyles';
-import { convertDateFromUnix, getFormattedDate, isBiller, isFrontDesk } from "../../../utils";
+import { convertDateFromUnix, getFormattedDate, isBiller, isFrontDesk, isStaff } from "../../../utils";
 import ChartCards from "../patientChart/chartCards";
 import ChartPrintModal from "../patientChart/chartCards/ChartModal/ChartPrintModal";
 import ChartSelectionModal from "../patientChart/chartCards/ChartModal/ChartSelectionModal";
@@ -57,6 +57,7 @@ const CheckInComponent = (): JSX.Element => {
   const { roles } = user || {}
   const isBillerUser = isBiller(roles);
   const isFrontDeskUser = isFrontDesk(roles);
+  const isStaffUser = isStaff(roles);
   const checkInClasses = useCheckInProfileStyles();
   const [modulesToPrint, setModulesToPrint] = useState<string[]>([])
   const [isChartingModalOpen, setIsChartingModalOpen] = useState(false)
@@ -184,6 +185,23 @@ const CheckInComponent = (): JSX.Element => {
   }, [appointmentId, handleCheckIn, patientId, status])
 
   const handleStep = (step: number, patientInfo?: boolean) => {
+    if (isBillerUser) {
+      if (![0, 4].includes(step)) {
+        return
+      }
+    }
+
+    if (isFrontDeskUser) {
+      if (![0].includes(step)) {
+        return
+      }
+    }
+
+    if (isStaffUser && !isBillerUser) {
+      if (![0, 1].includes(step)) {
+        return
+      }
+    }
     let stepToChange
     switch (step) {
       case 0:
@@ -226,6 +244,24 @@ const CheckInComponent = (): JSX.Element => {
   const getStepContent = (step: number) => {
     if (!shouldProceed) {
       return <ChecKInStep isCheckIn={false} />
+    }
+
+    if (isBillerUser) {
+      if (![0, 5].includes(step)) {
+        return
+      }
+    }
+
+    if (isFrontDeskUser) {
+      if (![0, 1].includes(step)) {
+        return
+      }
+    }
+
+    if (isStaffUser && !isBillerUser) {
+      if (![0, 1, 2].includes(step)) {
+        return
+      }
     }
 
     switch (step) {
@@ -325,7 +361,13 @@ const CheckInComponent = (): JSX.Element => {
     }
 
     if (isFrontDeskUser) {
-      if (index !== 2) {
+      if ([0].includes(index)) {
+        handleStep(index)
+      }
+    }
+
+    if (isStaffUser) {
+      if ([0, 1].includes(index)) {
         handleStep(index)
       }
     }
@@ -381,7 +423,7 @@ const CheckInComponent = (): JSX.Element => {
           <Stepper alternativeLabel activeStep={getActiveStep()} connector={<CheckInConnector />}>
             {CHECK_IN_STEPS.map((label, index) => (
               <Step key={label}>
-                <StepLabel onClick={() => (isBillerUser || isFrontDeskUser) ? handleStepChange(index) : handleStep(index)} StepIconComponent={CheckInStepIcon}>
+                <StepLabel onClick={() => (isBillerUser || isFrontDeskUser || isStaffUser) ? handleStepChange(index) : handleStep(index)} StepIconComponent={CheckInStepIcon}>
                   <Box ml={0} display='flex' alignItems='center' className='pointer-cursor'>
                     {label}
                     <Box p={0.5} />

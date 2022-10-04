@@ -66,6 +66,7 @@ query FindAllPatientProblemsWithMedication(
 
       patientMedications {
         id
+        isSigned
         medication {
           id
           fullName
@@ -78,6 +79,7 @@ query FindAllPatientProblemsWithMedication(
 
       labTests {
         id
+        isSigned
         test {
           id
           component
