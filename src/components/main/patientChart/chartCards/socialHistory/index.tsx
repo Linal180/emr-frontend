@@ -1,23 +1,21 @@
 import { useParams } from "react-router-dom";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Box, Button, colors, Typography } from "@material-ui/core";
-import { FC, Fragment, Reducer, useCallback, useEffect, useReducer } from "react";
+import { Box, Button, Typography } from "@material-ui/core";
+import { FC, Reducer, useCallback, useEffect, useMemo, useReducer } from "react";
 //components
+import QuestionCard from "./questionCard";
 import Alert from "../../../../common/Alert";
-import SocialDateCard from "./socialDateCard";
-import Loader from "../../../../common/Loader";
-import SocialInputCard from "./socialInputCard";
-import SocialSwitchCard from './socialSwitchCard';
-import SocialSelectorCard from "./socialSelectorCard";
 //constants
-import { PAGE_LIMIT, QuestionType, SUBMIT, } from "../../../../../constants";
-import {
-  DependentQuestions, Questions, SocialAnswer, SocialDependentAnswer,
-  useCreatePatientSocialHistoryMutation, useFindAllSectionsLazyQuery, usePatientSocialHistoryLazyQuery
-} from '../../../../../generated/graphql'
-import { ParamsType, SelectorOption, SocialHistoryProps } from "../../../../../interfacesTypes";
-import { socialHistoryReducer, ActionType, State, initialState, Action } from "../../../../../reducers/socialHistoryReducer";
 import { getSocialHistoryFormValues } from "../../../../../utils";
+import { PAGE_LIMIT, QuestionType, SOCIAL_HISTORY_TEXT, SUBMIT } from "../../../../../constants";
+import { ParamsType, SocialHistoryProps } from "../../../../../interfacesTypes";
+import { socialHistoryReducer, ActionType, State, initialState, Action } from "../../../../../reducers/socialHistoryReducer";
+import {
+  SocialAnswer, SocialDependentAnswer, useCreatePatientSocialHistoryMutation, useFindAllSectionsLazyQuery,
+  usePatientSocialHistoryLazyQuery
+} from '../../../../../generated/graphql'
+import TableLoader from "../../../../common/TableLoader";
+import CardComponent from "../../../../common/CardComponent";
 
 const SocialHistory: FC<SocialHistoryProps> = ({ shouldDisableEdit = false }): JSX.Element => {
 
@@ -25,10 +23,8 @@ const SocialHistory: FC<SocialHistoryProps> = ({ shouldDisableEdit = false }): J
   const { id: patientId } = useParams<ParamsType>()
 
   const [state, dispatch] = useReducer<Reducer<State, Action>>(socialHistoryReducer, initialState);
-  const { sections, itemId } = state;
-  const { watch, handleSubmit, setValue } = methods;
-
-  const questionValue = watch();
+  const { sections, itemId, socialAnswer } = state;
+  const { handleSubmit, setValue } = methods;
 
 
   const [findAllSections, { loading: sectionLoading }] = useFindAllSectionsLazyQuery({
@@ -58,14 +54,14 @@ const SocialHistory: FC<SocialHistoryProps> = ({ shouldDisableEdit = false }): J
   });
 
   const [createSocialHistory, { loading: createLoading }] = useCreatePatientSocialHistoryMutation({
-    onCompleted: async (data) => {
+    onCompleted: (data) => {
       const { createPatientSocialHistory } = data || {}
       const { response, socialHistory } = createPatientSocialHistory || {}
       const { status, message } = response || {}
       const { id } = socialHistory || {}
       if (status === 200 && id) {
         message && Alert.success(message)
-        await fetchPatientSocialHistory()
+        fetchPatientSocialHistory()
       } else {
         message && Alert.error(message)
       }
@@ -85,7 +81,7 @@ const SocialHistory: FC<SocialHistoryProps> = ({ shouldDisableEdit = false }): J
         const { id, socialAnswer } = socialHistory || {}
         id && dispatch({ type: ActionType.SET_ITEM_ID, itemId: id })
         if (socialAnswer) {
-          socialAnswer?.map((answer) => setAnswer(answer as SocialAnswer))
+          socialAnswer?.length && dispatch({ type: ActionType.SET_SOCIAL_ANSWER, socialAnswer: socialAnswer as SocialAnswer[] })
         }
       }
     },
@@ -115,155 +111,7 @@ const SocialHistory: FC<SocialHistoryProps> = ({ shouldDisableEdit = false }): J
     patientId && fetchSocialHistory()
   }, [patientId, fetchSocialHistory])
 
-  const getDependentQuestionCard = (question: DependentQuestions, QId: string, value?: string | undefined) => {
-    const { id, questionType, title, options, answer } = question || {}
-    const key = questionType as QuestionType;
-
-    if (value && answer?.includes(value)) {
-
-      switch (key) {
-
-        case QuestionType.DATE:
-
-          return <SocialDateCard
-            title={title || ''}
-            key={`${id}-${title}`}
-            notesName={`${QId}.dependent.${id}.note`}
-            switchName={`${QId}.dependent.${id}.value`}
-            isDependentQ
-          />
-
-
-        case QuestionType.INPUT:
-
-          return <SocialInputCard
-            title={title || ''}
-            key={`${id}-${title}`}
-            notesName={`${QId}.dependent.${id}.note`}
-            inputName={`${QId}.dependent.${id}.value`}
-            isDependentQ
-          />
-
-        case QuestionType.NUMBER:
-          return <SocialInputCard
-            notStep
-            title={title || ''}
-            key={`${id}-${title}`}
-            notesName={`${QId}.dependent.${id}.note`}
-            inputName={`${QId}.dependent.${id}.value`}
-            inputFieldType={'number'}
-            isDependentQ
-          />
-
-
-        case QuestionType.SELECT:
-
-          return <SocialSelectorCard
-            title={title || ''}
-            key={`${id}-${title}`}
-            notesName={`${QId}.dependent.${id}.note`}
-            selectorName={`${QId}.dependent.${id}.value`}
-            selectorOptions={options as SelectorOption[] || []}
-            isDependentQ
-          />
-
-
-        case QuestionType.SWITCH:
-          return <SocialSwitchCard
-            title={title || ''}
-            key={`${id}-${title}`}
-            notesName={`${QId}.dependent.${id}.note`}
-            switchName={`${QId}.dependent.${id}.value`}
-            isDependentQ
-          />
-
-
-        default:
-
-          return <></>
-      }
-    } else {
-      return <></>
-    }
-  }
-
-  const getQuestionCard = (question: Questions) => {
-    const { id, questionType, title, options, dependentQuestions } = question || {}
-    const key = questionType as QuestionType;
-    const res = questionValue ? questionValue[`${id}`] : {}
-
-    switch (key) {
-      case QuestionType.DATE:
-
-        return <Fragment>
-          <SocialDateCard
-            title={title || ''}
-            key={`${id}-${title}`}
-            notesName={`${id}.note`}
-            switchName={`${id}.value`}
-          />
-
-        </Fragment>
-      case QuestionType.INPUT:
-
-        return <Fragment>
-          <SocialInputCard
-            title={title || ''}
-            key={`${id}-${title}`}
-            notesName={`${id}.note`}
-            inputName={`${id}.value`}
-          />
-        </Fragment>
-
-      case QuestionType.NUMBER:
-
-        return <SocialInputCard
-          notStep
-          title={title || ''}
-          key={`${id}-${title}`}
-          notesName={`${id}.note`}
-          inputName={`${id}.value`}
-          inputFieldType={'number'}
-        />
-
-      case QuestionType.SELECT:
-        const { value: select } = res || {}
-        const { id: selectValue } = select || {}
-
-        return <Fragment>
-          <SocialSelectorCard
-            title={title || ''}
-            key={`${id}-${title}`}
-            notesName={`${id}.note`}
-            selectorName={`${id}.value`}
-            selectorOptions={options as SelectorOption[] || []}
-          />
-          {dependentQuestions && dependentQuestions?.length > 0 && <Box>
-            {dependentQuestions?.map((dependentQuestion) => getDependentQuestionCard(dependentQuestion, id, selectValue))}
-          </Box>}
-        </Fragment>
-
-      case QuestionType.SWITCH:
-        const { value } = res || {}
-        return <Fragment>
-          <SocialSwitchCard
-            title={title || ''}
-            key={`${id}-${title}`}
-            notesName={`${id}.note`}
-            switchName={`${id}.value`}
-          />
-          {dependentQuestions && dependentQuestions?.length > 0 && value &&
-            <Box >
-              {dependentQuestions?.map((dependentQuestion) => getDependentQuestionCard(dependentQuestion, id, value ? 'yes' : 'no'))}
-            </Box>}
-        </Fragment>
-      default:
-
-        return <></>
-    }
-  }
-
-  const setDependentAnswer = (answer: SocialDependentAnswer, QId: string) => {
+  const setDependentAnswer = useCallback((answer: SocialDependentAnswer, QId: string) => {
     const { name, note, value, dependentQuestion } = answer
     const { questionType, options } = dependentQuestion || {}
     const key = questionType as QuestionType;
@@ -306,9 +154,9 @@ const SocialHistory: FC<SocialHistoryProps> = ({ shouldDisableEdit = false }): J
         break;
     }
 
-  }
+  }, [setValue])
 
-  const setAnswer = (answer: SocialAnswer) => {
+  const setAnswer = useCallback((answer: SocialAnswer) => {
     const { name, note, value, question, socialDependentAnswer } = answer
     const { questionType, options } = question || {}
     const key = questionType as QuestionType;
@@ -341,13 +189,23 @@ const SocialHistory: FC<SocialHistoryProps> = ({ shouldDisableEdit = false }): J
       case QuestionType.SWITCH:
         setValue(`${name}.note`, note || '')
         value && setValue(`${name}.value`, value === 'true' ? true : false)
+        socialDependentAnswer && socialDependentAnswer?.length > 0
+          && socialDependentAnswer?.map((dependent) => setDependentAnswer(dependent, name || ''))
         break;
       default:
         setValue(`${name}.note`, note || '')
         value && setValue(`${name}.value`, value)
         break;
     }
-  }
+  }, [setValue, setDependentAnswer])
+
+  useMemo(() => {
+    if (socialAnswer?.length) {
+      socialAnswer?.map((answer) => setAnswer(answer))
+      return socialAnswer
+    }
+    return []
+  }, [socialAnswer, setAnswer])
 
   const onSubmit: SubmitHandler<any> = async (data) => {
     const values = getSocialHistoryFormValues(data);
@@ -368,33 +226,43 @@ const SocialHistory: FC<SocialHistoryProps> = ({ shouldDisableEdit = false }): J
 
   const loading = sectionLoading || createLoading || getLoading;
 
+
   if (loading) {
-   return <Loader loading />
+    return <TableLoader numberOfColumns={1} numberOfRows={10} />
   }
 
-  return (<FormProvider {...methods}>
-    <form onSubmit={handleSubmit(onSubmit)}>
+  return (
 
-      {sections?.map((section) => {
-        const { id, name, questions } = section || {}
-        return (
-          <Box key={id} m={2}>
-            <Box>
-              <Box pt={2} pb={1} borderBottom={`1px solid ${colors.grey[300]}`}>
-                <Typography variant='h3'>{name}</Typography>
-              </Box>
-              {questions?.map((question) => getQuestionCard(question))}
-            </Box>
+    <FormProvider {...methods}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
+
+          <Typography variant='h3'>
+            {SOCIAL_HISTORY_TEXT}
+          </Typography>
+
+          <Box display='flex' alignItems='center'>
+            <Button type="submit" variant="contained" color="primary">
+              {SUBMIT}
+            </Button>
           </Box>
-        )
-      })}
-      <Box>
-        <Button type="submit">
-          {SUBMIT}
-        </Button>
-      </Box>
-    </form>
-  </FormProvider>)
+        </Box>
+
+        <Box maxHeight="calc(100vh - 200px)" className="overflowY-auto">
+          {sections?.map((section) => {
+            const { id, name, questions } = section || {}
+            return (
+              <CardComponent cardTitle={name || ''} key={id}>
+                {questions?.map((question, index) => <QuestionCard key={`${index}-${id}`} question={question} />)}
+              </CardComponent>
+            )
+          })}
+        </Box>
+
+      </form>
+    </FormProvider>
+
+  )
 }
 
 export default SocialHistory

@@ -1,30 +1,34 @@
-import { FindAllSectionsPayload } from "../generated/graphql"
+import { FindAllSectionsPayload, SocialAnswer } from "../generated/graphql"
 
 export interface State {
   page: number;
   totalPages: number;
-  sections: FindAllSectionsPayload['sections']
   itemId: string;
+  socialAnswer: SocialAnswer[];
+  sections: FindAllSectionsPayload['sections']
 }
 
 export const initialState: State = {
-  sections: [],
   page: 1,
   itemId: '',
+  sections: [],
   totalPages: 0,
+  socialAnswer: []
 }
 
 export enum ActionType {
-  SET_SECTIONS = 'setSections',
-  SET_TOTAL_PAGES = 'setTotalPages',
   SET_PAGE = 'setPage',
   SET_ITEM_ID = 'SET_ITEM_ID',
+  SET_SECTIONS = 'setSections',
+  SET_TOTAL_PAGES = 'setTotalPages',
+  SET_SOCIAL_ANSWER = 'setSocialAnswer'
 }
 
 export type Action =
   { type: ActionType.SET_PAGE; page: number } |
   { type: ActionType.SET_ITEM_ID, itemId: string } |
   { type: ActionType.SET_TOTAL_PAGES; totalPages: number } |
+  { type: ActionType.SET_SOCIAL_ANSWER; socialAnswer: SocialAnswer[] } |
   { type: ActionType.SET_SECTIONS; sections: FindAllSectionsPayload['sections'] }
 
 
@@ -54,5 +58,10 @@ export const socialHistoryReducer = (state: State, action: Action): State => {
         itemId: action.itemId
       }
 
+    case ActionType.SET_SOCIAL_ANSWER:
+      return {
+        ...state,
+        socialAnswer: action.socialAnswer
+      }
   }
 }
