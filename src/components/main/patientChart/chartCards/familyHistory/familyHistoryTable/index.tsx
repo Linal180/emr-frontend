@@ -2,7 +2,7 @@ import { useParams } from "react-router";
 import { Pagination } from "@material-ui/lab";
 import { Edit as EditIcon } from "@material-ui/icons";
 import { ChangeEvent, FC, Fragment, Reducer, useCallback, useEffect, useReducer } from "react";
-import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
+import { Box, Button, Card, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
 //components
 import Alert from '../../../../../common/Alert';
 import FamilyHistoryForm from "../familyHistoryForm";
@@ -12,19 +12,21 @@ import NoDataFoundComponent from "../../../../../common/NoDataFoundComponent";
 //svgs
 import { formatValue, getPageNumber, isLast, renderTh } from "../../../../../../utils";
 import { useTableStyles } from "../../../../../../styles/tableStyles";
+import { useChartingStyles } from '../../../../../../styles/chartingStyles';
 import { AddWhiteIcon, TrashNewIcon } from "../../../../../../assets/svgs";
 import { FamilyHistoryProps, ParamsType } from "../../../../../../interfacesTypes"
 import { familyHistoryReducer, Action, ActionType, State, initialState } from "../../../../../../reducers/familyHistoryReducer";
 import { FamilyHistoriesPayload, useFindAllFamilyHistoryLazyQuery, useRemoveFamilyHistoryMutation } from "../../../../../../generated/graphql";
 import {
-  ACTIONS, ADD_NEW_TEXT, DELETE_FAMILY_DESCRIPTION, DIED_TEXT, FAMILY_HISTORY_TEXT, NAME, NOTES, ONSET_AGE_TEXT,
+  ACTIONS, ADD_NEW_TEXT, DELETE_FAMILY_DESCRIPTION, DIED_TEXT, FAMILY_HISTORY_TEXT, NAME, NEXT, NOTES, ONSET_AGE_TEXT,
   PAGE_LIMIT, RELATIVE
 } from "../../../../../../constants";
 
 
-const FamilyHistoryTable: FC<FamilyHistoryProps> = ({ shouldDisableEdit = false }): JSX.Element => {
+const FamilyHistoryTable: FC<FamilyHistoryProps> = ({ shouldDisableEdit = false, handleStep }): JSX.Element => {
   const { id: patientId } = useParams<ParamsType>()
-  const classes = useTableStyles()
+  const classes = useTableStyles();
+  const chartingClasses = useChartingStyles();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(familyHistoryReducer, initialState);
   const { page, familyHistories, openAdd, totalPages, openDelete, delFamilyId, editFamilyId } = state || {}
 
@@ -111,80 +113,101 @@ const FamilyHistoryTable: FC<FamilyHistoryProps> = ({ shouldDisableEdit = false 
   }
 
   return (<Fragment>
-    <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
-      <Typography variant='h3'>{FAMILY_HISTORY_TEXT}</Typography>
-      {!shouldDisableEdit &&
-        <Button
-          variant='contained' color='primary'
-          startIcon={<Box width={20}><AddWhiteIcon /></Box>}
-          onClick={() => dispatch({ type: ActionType.SET_OPEN_ADD, openAdd: !openAdd })}
-        >
-          {ADD_NEW_TEXT}
-        </Button>}
-    </Box>
-    <Table aria-label="customized table">
-      <TableHead>
-        <TableRow>
-          {renderTh(NAME)}
-          {renderTh(RELATIVE)}
-          {renderTh(ONSET_AGE_TEXT)}
-          {renderTh(DIED_TEXT)}
-          {renderTh(NOTES)}
-          {!shouldDisableEdit && renderTh(ACTIONS, "center")}
-        </TableRow>
-      </TableHead>
+    <Card>
+      <Box className={chartingClasses.cardBox}>
+        <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
+          <Typography variant='h3'>{FAMILY_HISTORY_TEXT}</Typography>
 
-      <TableBody>
-        {loading ? (
-          <TableRow>
-            <TableCell colSpan={10}>
-              <TableLoader numberOfRows={4} numberOfColumns={4} />
-            </TableCell>
-          </TableRow>
-        ) : (
-          familyHistories?.map((history, i) => {
-            const { id, name, familyHistoryRelatives } = history || {};
+          <Box display='flex' alignItems='center'>
+            {!shouldDisableEdit &&
+              <Button
+                variant='contained' color='primary'
+                startIcon={<Box width={20}><AddWhiteIcon /></Box>}
+                onClick={() => dispatch({ type: ActionType.SET_OPEN_ADD, openAdd: !openAdd })}
+              >
+                {ADD_NEW_TEXT}
+              </Button>}
 
-            return (
-              <Fragment key={`${id}-${i}`}>
-                {familyHistoryRelatives?.map((family, index) => {
-                  const { died, notes, onsetAge, relativeName } = family || {}
+            <Box p={1} />
+
+            {handleStep && <Button
+              variant='contained'
+              color='secondary'
+              size="large"
+              onClick={() => handleStep(7)}
+            >
+              {NEXT}
+            </Button>}
+          </Box>
+        </Box>
+
+        <Box className={chartingClasses.tableBox}>
+          <Table aria-label="customized table">
+            <TableHead>
+              <TableRow>
+                {renderTh(NAME)}
+                {renderTh(RELATIVE)}
+                {renderTh(ONSET_AGE_TEXT)}
+                {renderTh(DIED_TEXT)}
+                {renderTh(NOTES)}
+                {!shouldDisableEdit && renderTh(ACTIONS, "center")}
+              </TableRow>
+            </TableHead>
+
+            <TableBody>
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={10}>
+                    <TableLoader numberOfRows={4} numberOfColumns={4} />
+                  </TableCell>
+                </TableRow>
+              ) : (
+                familyHistories?.map((history, i) => {
+                  const { id, name, familyHistoryRelatives } = history || {};
+
                   return (
-                    <TableRow key={`${id}-${index}`}>
-                      {index === 0 &&
-                        <TableCell rowSpan={familyHistoryRelatives?.length}>
-                          {name}
-                        </TableCell>}
-                      <TableCell style={{ paddingLeft: index === 0 ? 'inherited' : 10 }}>{formatValue(relativeName || '')}</TableCell>
-                      <TableCell>{onsetAge}</TableCell>
-                      <TableCell>{died}</TableCell>
-                      <TableCell>{notes}</TableCell>
-                      {index === 0 && !shouldDisableEdit &&
-                        <TableCell rowSpan={familyHistoryRelatives?.length}>
-                          <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                            <Box className={classes.iconsBackground} onClick={() => editHandler(id || '')}>
-                              <EditIcon />
-                            </Box>
-                            <Box className={classes.iconsBackground} onClick={() => handleDelete(id || '')}>
-                              <TrashNewIcon />
-                            </Box>
-                          </Box>
-                        </TableCell>}
-                    </TableRow>
+                    <Fragment key={`${id}-${i}`}>
+                      {familyHistoryRelatives?.map((family, index) => {
+                        const { died, notes, onsetAge, relativeName } = family || {}
+                        return (
+                          <TableRow key={`${id}-${index}`}>
+                            {index === 0 &&
+                              <TableCell rowSpan={familyHistoryRelatives?.length}>
+                                {name}
+                              </TableCell>}
+                            <TableCell style={{ paddingLeft: index === 0 ? 'inherited' : 10 }}>{formatValue(relativeName || '')}</TableCell>
+                            <TableCell>{onsetAge}</TableCell>
+                            <TableCell>{died}</TableCell>
+                            <TableCell>{notes}</TableCell>
+                            {index === 0 && !shouldDisableEdit &&
+                              <TableCell rowSpan={familyHistoryRelatives?.length}>
+                                <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
+                                  <Box className={classes.iconsBackground} onClick={() => editHandler(id || '')}>
+                                    <EditIcon />
+                                  </Box>
+                                  <Box className={classes.iconsBackground} onClick={() => handleDelete(id || '')}>
+                                    <TrashNewIcon />
+                                  </Box>
+                                </Box>
+                              </TableCell>}
+                          </TableRow>
+                        )
+                      })}
+                    </Fragment>
                   )
-                })}
-              </Fragment>
-            )
-          })
-        )}
-      </TableBody>
-    </Table>
+                })
+              )}
+            </TableBody>
+          </Table>
 
-    {((!loading && familyHistories?.length === 0) || error) &&
-      <Box display="flex" justifyContent="center" pb={12} pt={5}>
-        <NoDataFoundComponent />
+          {((!loading && familyHistories?.length === 0) || error) &&
+            <Box display="flex" justifyContent="center" pb={12} pt={5}>
+              <NoDataFoundComponent />
+            </Box>
+          }
+        </Box>
       </Box>
-    }
+    </Card>
 
     {totalPages > 1 && (
       <Box display="flex" justifyContent="flex-end" p={3}>
@@ -216,7 +239,6 @@ const FamilyHistoryTable: FC<FamilyHistoryProps> = ({ shouldDisableEdit = false 
       handleClose={handleClose}
       fetchFamilyHistory={fetchFamilyHistory}
     />}
-
   </Fragment>
   )
 }

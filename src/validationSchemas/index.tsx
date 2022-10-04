@@ -1111,13 +1111,16 @@ export const createUpFrontPaymentSchema = yup.object({
   [UPFRONT_PAYMENT_TYPES.Additional]: yup.array().of(
     yup.object().shape({
       type: selectorSchema('Type', true),
-      amount: yup.number().positive(INVALID_BILL_FEE_MESSAGE).min(1, INVALID_BILL_FEE_MESSAGE).typeError(requiredMessage(BILLED_AMOUNT)).required(requiredMessage(BILLED_AMOUNT)),
+      amount: yup.number().positive(INVALID_BILL_FEE_MESSAGE).min(0, INVALID_BILL_FEE_MESSAGE).typeError(requiredMessage(BILLED_AMOUNT)).required(requiredMessage(BILLED_AMOUNT)),
     })
   ).test('', requiredMessage('Additional'), (value: any) => !!value && value.length > 0),
   [UPFRONT_PAYMENT_TYPES.Copay]: yup.array().of(
     yup.object().shape({
       type: selectorSchema('Type', true),
-      amount: yup.number().positive(INVALID_BILL_FEE_MESSAGE).min(1, INVALID_BILL_FEE_MESSAGE).typeError(requiredMessage(BILLED_AMOUNT)).required(requiredMessage(BILLED_AMOUNT)),
+      amount: yup.number().test('', 'Amount should be less than Due Amount', (value, { parent }) => {
+        const { dueAmount } =parent || {}
+        return parseInt(String(value) || '0') <= parseInt(dueAmount || '0')
+      }).positive(INVALID_BILL_FEE_MESSAGE).min(0, INVALID_BILL_FEE_MESSAGE).typeError(requiredMessage(BILLED_AMOUNT)).required(requiredMessage(BILLED_AMOUNT)),
     })
   ).test('', requiredMessage('Copay'), (value: any) => !!value && value.length > 0),
   [UPFRONT_PAYMENT_TYPES.Previous]: yup.array().of(
@@ -1183,7 +1186,6 @@ export const cptFeeScheduleSchema = yup.object({
   shortDescription: yup.string(),
   code: selectorSchema(CPT_CODE_PROCEDURE_CODE),
   serviceFee: yup.string().required(requiredMessage(SERVICE_FEE_CHARGE)).test('', invalidMessage(SERVICE_FEE_CHARGE), (value) => {
-    console.log('serviceFee', String(value))
     return !!value ? !String(value).includes('-') ? Number(value) >= 0 : false : true
   }),
 })

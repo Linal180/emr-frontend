@@ -257,6 +257,7 @@ export type Appointment = {
   patientAllergies?: Maybe<Array<PatientAllergies>>;
   patientConsent?: Maybe<PatientConsent>;
   patientId?: Maybe<Scalars['String']>;
+  patientMedications?: Maybe<Array<PatientMedication>>;
   patientProblem?: Maybe<Array<PatientProblems>>;
   patientVitals?: Maybe<Array<PatientVitals>>;
   paymentType: PaymentType;
@@ -1370,10 +1371,12 @@ export type CreateLabTestItemInput = {
   appointmentId?: Maybe<Scalars['String']>;
   collectedDate?: Maybe<Scalars['String']>;
   doctorId?: Maybe<Scalars['String']>;
+  isSigned?: Maybe<Scalars['Boolean']>;
   labName?: Maybe<Scalars['String']>;
   orderNumber?: Maybe<Scalars['String']>;
   patientId: Scalars['String'];
   primaryProviderId?: Maybe<Scalars['String']>;
+  problemId?: Maybe<Scalars['String']>;
   providerNotes?: Maybe<Scalars['String']>;
   receivedDate?: Maybe<Scalars['String']>;
   referringProviderId?: Maybe<Scalars['String']>;
@@ -1489,11 +1492,14 @@ export type CreatePatientItemInput = {
 };
 
 export type CreatePatientMedicationInput = {
+  appointmentId?: Maybe<Scalars['String']>;
+  isSigned?: Maybe<Scalars['Boolean']>;
   medicationId?: Maybe<Scalars['String']>;
   noOfDays?: Maybe<Scalars['String']>;
   note?: Maybe<Scalars['String']>;
   oralRoute?: Maybe<Scalars['String']>;
   patientId?: Maybe<Scalars['String']>;
+  patientProblemId?: Maybe<Scalars['String']>;
   sig?: Maybe<Scalars['String']>;
   startDate?: Maybe<Scalars['String']>;
   status?: Maybe<Scalars['String']>;
@@ -1546,7 +1552,10 @@ export type CreatePracticeItemInput = {
 
 export type CreateProblemInput = {
   appointmentId?: Maybe<Scalars['String']>;
+  forOrders?: Maybe<Scalars['Boolean']>;
   icdCodeId: Scalars['String'];
+  isSigned?: Maybe<Scalars['Boolean']>;
+  medicationIds?: Maybe<Array<Scalars['String']>>;
   note?: Maybe<Scalars['String']>;
   patientId: Scalars['String'];
   problemSeverity?: Maybe<ProblemSeverity>;
@@ -1555,6 +1564,7 @@ export type CreateProblemInput = {
   providerId?: Maybe<Scalars['String']>;
   snowMedCodeId?: Maybe<Scalars['String']>;
   staffId?: Maybe<Scalars['String']>;
+  testIds?: Maybe<Array<Scalars['String']>>;
 };
 
 export type CreateScheduleInput = {
@@ -2699,11 +2709,14 @@ export type LabTests = {
   doctor?: Maybe<Doctor>;
   doctorId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  isSigned?: Maybe<Scalars['Boolean']>;
   labName?: Maybe<Scalars['String']>;
   labTestStatus: LabTestStatus;
   orderNumber?: Maybe<Scalars['String']>;
   patient?: Maybe<Patient>;
   patientId?: Maybe<Scalars['String']>;
+  patientProblem?: Maybe<PatientProblems>;
+  patientProblemId?: Maybe<Scalars['String']>;
   primaryProvider?: Maybe<Doctor>;
   primaryProviderId?: Maybe<Scalars['String']>;
   providerNotes?: Maybe<Scalars['String']>;
@@ -3067,6 +3080,7 @@ export type Mutation = {
   updatePatientMedication: PatientMedicationPayload;
   updatePatientNoteInfo: PatientPayload;
   updatePatientProblem: PatientProblemPayload;
+  updatePatientProblemSigned: PatientProblemPayload;
   updatePatientProfile: PatientPayload;
   updatePatientProvider: PatientPayload;
   updatePatientProviderRelation: PatientDoctorPayload;
@@ -3733,6 +3747,11 @@ export type MutationUpdatePatientProblemArgs = {
 };
 
 
+export type MutationUpdatePatientProblemSignedArgs = {
+  updateProblemSignedInput: UpdateProblemSignedInput;
+};
+
+
 export type MutationUpdatePatientProfileArgs = {
   updatePatientProfileInput: UpdatePatientProfileInput;
 };
@@ -4079,6 +4098,20 @@ export type PatientChartingInfoPayload = {
   triageNotes?: Maybe<Array<Maybe<TriageNotes>>>;
 };
 
+export type PatientChartingReviewInput = {
+  appointmentId?: Maybe<Scalars['String']>;
+  patientId?: Maybe<Scalars['String']>;
+};
+
+export type PatientChartingReviewPayload = {
+  __typename?: 'PatientChartingReviewPayload';
+  patientAllergies?: Maybe<Array<Maybe<PatientAllergies>>>;
+  patientMedications?: Maybe<Array<Maybe<PatientMedication>>>;
+  patientProblems?: Maybe<Array<Maybe<PatientProblems>>>;
+  patientVitals?: Maybe<Array<Maybe<PatientVitals>>>;
+  response?: Maybe<ResponsePayload>;
+};
+
 export type PatientConsent = {
   __typename?: 'PatientConsent';
   agreements?: Maybe<Array<Agreement>>;
@@ -4145,8 +4178,11 @@ export type PatientInviteInput = {
 
 export type PatientMedication = {
   __typename?: 'PatientMedication';
+  appointment?: Maybe<Appointment>;
+  appointmentId?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  isSigned?: Maybe<Scalars['Boolean']>;
   medication?: Maybe<Medications>;
   medicationId?: Maybe<Scalars['String']>;
   noOfDays?: Maybe<Scalars['String']>;
@@ -4154,6 +4190,8 @@ export type PatientMedication = {
   oralRoute?: Maybe<Scalars['String']>;
   patient?: Maybe<Patient>;
   patientId?: Maybe<Scalars['String']>;
+  patientProblem?: Maybe<PatientProblems>;
+  patientProblemId?: Maybe<Scalars['String']>;
   sig?: Maybe<Scalars['String']>;
   startDate?: Maybe<Scalars['String']>;
   status?: Maybe<Scalars['String']>;
@@ -4166,6 +4204,7 @@ export type PatientMedication = {
 };
 
 export type PatientMedicationInput = {
+  appointmentId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
   patientId?: Maybe<Scalars['String']>;
 };
@@ -4208,6 +4247,8 @@ export enum PatientPaymentType {
 }
 
 export type PatientProblemInput = {
+  appointmentId?: Maybe<Scalars['String']>;
+  forOrders?: Maybe<Scalars['Boolean']>;
   paginationOptions: PaginationInput;
   patientId?: Maybe<Scalars['String']>;
 };
@@ -4222,12 +4263,17 @@ export type PatientProblems = {
   __typename?: 'PatientProblems';
   ICDCode?: Maybe<IcdCodes>;
   appointment?: Maybe<Appointment>;
+  appointmentId?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
   doctor?: Maybe<Doctor>;
+  forOrders?: Maybe<Scalars['Boolean']>;
   id: Scalars['String'];
+  isSigned?: Maybe<Scalars['Boolean']>;
+  labTests?: Maybe<Array<LabTests>>;
   note?: Maybe<Scalars['String']>;
   patient?: Maybe<Patient>;
   patientId?: Maybe<Scalars['String']>;
+  patientMedications?: Maybe<Array<PatientMedication>>;
   problemSeverity: ProblemSeverity;
   problemStartDate?: Maybe<Scalars['String']>;
   problemType: ProblemType;
@@ -4884,6 +4930,7 @@ export type Query = {
   getPatientAllergy: PatientAllergyPayload;
   getPatientAppointment: AppointmentsPayload;
   getPatientChartingInfo: PatientChartingInfoPayload;
+  getPatientChartingReview: PatientChartingReviewPayload;
   getPatientLatestVital: PatientVitalPayload;
   getPatientMedications: PatientMedicationPayload;
   getPatientPastUpcomingAppointment: PatientPastUpcomingAppointmentPayload;
@@ -5419,6 +5466,11 @@ export type QueryGetPatientAppointmentArgs = {
 
 export type QueryGetPatientChartingInfoArgs = {
   patientChartingInfoInput: PatientChartingInfoInput;
+};
+
+
+export type QueryGetPatientChartingReviewArgs = {
+  patientChartingReviewInput: PatientChartingReviewInput;
 };
 
 
@@ -6509,6 +6561,8 @@ export type UpFrontPaymentInput = {
 
 export type UpFrontPaymentInputType = {
   amount?: Maybe<Scalars['String']>;
+  copayType?: Maybe<Scalars['String']>;
+  dueAmount?: Maybe<Scalars['String']>;
   notes?: Maybe<Scalars['String']>;
   paymentType?: Maybe<Scalars['String']>;
   type?: Maybe<Scalars['String']>;
@@ -6525,7 +6579,9 @@ export type UpFrontPaymentType = {
   __typename?: 'UpFrontPaymentType';
   UpFrontPayment?: Maybe<UpFrontPayment>;
   amount?: Maybe<Scalars['String']>;
+  copayType?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
+  dueAmount?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   notes?: Maybe<Scalars['String']>;
   paymentType?: Maybe<Scalars['String']>;
@@ -6873,10 +6929,12 @@ export type UpdateLabTestItemInput = {
   collectedDate?: Maybe<Scalars['String']>;
   doctorId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  isSigned?: Maybe<Scalars['Boolean']>;
   labName?: Maybe<Scalars['String']>;
   orderNumber?: Maybe<Scalars['String']>;
   patientId?: Maybe<Scalars['String']>;
   primaryProviderId?: Maybe<Scalars['String']>;
+  problemId?: Maybe<Scalars['String']>;
   providerNotes?: Maybe<Scalars['String']>;
   receivedDate?: Maybe<Scalars['String']>;
   referringProviderId?: Maybe<Scalars['String']>;
@@ -7003,12 +7061,15 @@ export type UpdatePatientItemInput = {
 };
 
 export type UpdatePatientMedicationInput = {
+  appointmentId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  isSigned?: Maybe<Scalars['Boolean']>;
   medicationId?: Maybe<Scalars['String']>;
   noOfDays?: Maybe<Scalars['String']>;
   note?: Maybe<Scalars['String']>;
   oralRoute?: Maybe<Scalars['String']>;
   patientId?: Maybe<Scalars['String']>;
+  patientProblemId?: Maybe<Scalars['String']>;
   sig?: Maybe<Scalars['String']>;
   startDate?: Maybe<Scalars['String']>;
   status?: Maybe<Scalars['String']>;
@@ -7120,6 +7181,11 @@ export type UpdateProblemInput = {
   problemSeverity?: Maybe<ProblemSeverity>;
   problemStartDate?: Maybe<Scalars['String']>;
   problemType?: Maybe<ProblemType>;
+};
+
+export type UpdateProblemSignedInput = {
+  id?: Maybe<Scalars['String']>;
+  isSigned?: Maybe<Scalars['Boolean']>;
 };
 
 export type UpdateRoleInput = {
@@ -7940,6 +8006,13 @@ export type GetPatientChartingInfoQueryVariables = Exact<{
 
 export type GetPatientChartingInfoQuery = { __typename?: 'Query', getPatientChartingInfo: { __typename?: 'PatientChartingInfoPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, patientInfo?: { __typename?: 'Patient', firstName?: string | null, lastName?: string | null, middleName?: string | null, ssn?: string | null, dob?: string | null, email?: string | null, genderIdentity?: Genderidentity | null, patientRecord?: string | null, race?: Race | null, ethnicity?: Ethnicity | null, language?: string | null, contacts?: Array<{ __typename?: 'Contact', name?: string | null, relationship?: RelationshipType | null, contactType?: ContactType | null, primaryContact?: boolean | null, phone?: string | null, address?: string | null, address2?: string | null, zipCode?: string | null, city?: string | null, state?: string | null, mobile?: string | null }> | null, facility?: { __typename?: 'Facility', name: string, practice?: { __typename?: 'Practice', name: string, attachments?: Array<{ __typename?: 'Attachment', url?: string | null }> | null } | null, contacts?: Array<{ __typename?: 'Contact', primaryContact?: boolean | null, phone?: string | null, address?: string | null, address2?: string | null, zipCode?: string | null, city?: string | null, state?: string | null }> | null } | null } | null, patientVitals?: Array<{ __typename?: 'PatientVitals', id: string, vitalCreationDate?: string | null, patientTemperature?: string | null, systolicBloodPressure?: string | null, diastolicBloodPressure?: string | null, respiratoryRate?: string | null, PatientBMI?: string | null } | null> | null, patientAllergies?: Array<{ __typename?: 'PatientAllergies', id: string, allergySeverity: AllergySeverity, allergyOnset: AllergyOnset, allergyStartDate?: string | null, comments?: string | null, isActive?: boolean | null, allergy?: { __typename?: 'Allergies', name?: string | null, allergyType: AllergyType } | null } | null> | null, patientProblems?: Array<{ __typename?: 'PatientProblems', id: string, problemType: ProblemType, problemSeverity: ProblemSeverity, problemStartDate?: string | null, note?: string | null, ICDCode?: { __typename?: 'ICDCodes', code: string, description?: string | null } | null } | null> | null, triageNotes?: Array<{ __typename?: 'TriageNotes', id: string, notes?: string | null } | null> | null, patientMedications?: Array<{ __typename?: 'PatientMedication', id: string, sig?: string | null, startDate?: string | null, status?: string | null, stopDate?: string | null, stopReason?: string | null, note?: string | null, medication?: { __typename?: 'Medications', fullName?: string | null } | null } | null> | null, surgicalHistories?: Array<{ __typename?: 'SurgicalHistory', id: string, code?: string | null, description?: string | null, surgeryDate?: string | null, notes?: string | null } | null> | null, familyHistories?: Array<{ __typename?: 'FamilyHistory', id: string, name?: string | null, familyHistoryRelatives?: Array<{ __typename?: 'FamilyHistoryRelative', relativeName?: string | null, onsetAge?: string | null, died?: string | null, notes?: string | null }> | null } | null> | null } };
 
+export type GetPatientChartingReviewQueryVariables = Exact<{
+  patientChartingReviewInput: PatientChartingReviewInput;
+}>;
+
+
+export type GetPatientChartingReviewQuery = { __typename?: 'Query', getPatientChartingReview: { __typename?: 'PatientChartingReviewPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, patientVitals?: Array<{ __typename?: 'PatientVitals', id: string, vitalCreationDate?: string | null, patientTemperature?: string | null, systolicBloodPressure?: string | null, diastolicBloodPressure?: string | null, respiratoryRate?: string | null, PatientBMI?: string | null } | null> | null, patientAllergies?: Array<{ __typename?: 'PatientAllergies', id: string, allergySeverity: AllergySeverity, allergyOnset: AllergyOnset, allergyStartDate?: string | null, comments?: string | null, isActive?: boolean | null, allergy?: { __typename?: 'Allergies', name?: string | null, allergyType: AllergyType } | null } | null> | null, patientProblems?: Array<{ __typename?: 'PatientProblems', id: string, problemType: ProblemType, problemSeverity: ProblemSeverity, problemStartDate?: string | null, note?: string | null, ICDCode?: { __typename?: 'ICDCodes', code: string, description?: string | null } | null } | null> | null, patientMedications?: Array<{ __typename?: 'PatientMedication', id: string, sig?: string | null, startDate?: string | null, status?: string | null, stopDate?: string | null, stopReason?: string | null, note?: string | null, medication?: { __typename?: 'Medications', fullName?: string | null } | null } | null> | null } };
+
 export type CreateFamilyHistoryMutationVariables = Exact<{
   createFamilyHistoryInput: CreateFamilyHistoryInput;
 }>;
@@ -8001,7 +8074,7 @@ export type AddPatientMedicationMutationVariables = Exact<{
 }>;
 
 
-export type AddPatientMedicationMutation = { __typename?: 'Mutation', addPatientMedication: { __typename?: 'PatientMedicationPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null } };
+export type AddPatientMedicationMutation = { __typename?: 'Mutation', addPatientMedication: { __typename?: 'PatientMedicationPayload', patientMedication?: { __typename?: 'PatientMedication', id: string } | null, response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null } };
 
 export type UpdatePatientMedicationMutationVariables = Exact<{
   updatePatientMedicationInput: UpdatePatientMedicationInput;
@@ -8024,6 +8097,13 @@ export type FindAllPatientProblemsQueryVariables = Exact<{
 
 export type FindAllPatientProblemsQuery = { __typename?: 'Query', findAllPatientProblem: { __typename?: 'PatientProblemsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null, page?: number | null } | null, patientProblems?: Array<{ __typename?: 'PatientProblems', id: string, problemType: ProblemType, problemSeverity: ProblemSeverity, problemStartDate?: string | null, note?: string | null, ICDCode?: { __typename: 'ICDCodes', id: string, code: string, description?: string | null } | null, snowMedCode?: { __typename?: 'SnoMedCodes', id: string, referencedComponentId?: string | null } | null } | null> | null } };
 
+export type FindAllPatientProblemsWithMedicationQueryVariables = Exact<{
+  patientProblemInput: PatientProblemInput;
+}>;
+
+
+export type FindAllPatientProblemsWithMedicationQuery = { __typename?: 'Query', findAllPatientProblem: { __typename?: 'PatientProblemsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null, page?: number | null } | null, patientProblems?: Array<{ __typename?: 'PatientProblems', id: string, problemType: ProblemType, forOrders?: boolean | null, isSigned?: boolean | null, problemSeverity: ProblemSeverity, problemStartDate?: string | null, note?: string | null, ICDCode?: { __typename: 'ICDCodes', id: string, code: string, description?: string | null } | null, patientMedications?: Array<{ __typename?: 'PatientMedication', id: string, isSigned?: boolean | null, medication?: { __typename?: 'Medications', id: string, fullName?: string | null, termType?: string | null, rxNumber?: string | null, createdAt?: string | null, updatedAt?: string | null } | null }> | null, labTests?: Array<{ __typename?: 'LabTests', id: string, isSigned?: boolean | null, test?: { __typename?: 'LoincCodes', id: string, component?: string | null } | null }> | null, snowMedCode?: { __typename?: 'SnoMedCodes', id: string, referencedComponentId?: string | null } | null } | null> | null } };
+
 export type GetPatientProblemQueryVariables = Exact<{
   getPatientProblem: GetPatientProblem;
 }>;
@@ -8036,7 +8116,7 @@ export type AddPatientProblemMutationVariables = Exact<{
 }>;
 
 
-export type AddPatientProblemMutation = { __typename?: 'Mutation', addPatientProblem: { __typename?: 'PatientProblemPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null } };
+export type AddPatientProblemMutation = { __typename?: 'Mutation', addPatientProblem: { __typename?: 'PatientProblemPayload', patientProblem?: { __typename?: 'PatientProblems', id: string } | null, response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null } };
 
 export type UpdatePatientProblemMutationVariables = Exact<{
   updateProblemInput: UpdateProblemInput;
@@ -8044,6 +8124,13 @@ export type UpdatePatientProblemMutationVariables = Exact<{
 
 
 export type UpdatePatientProblemMutation = { __typename?: 'Mutation', updatePatientProblem: { __typename?: 'PatientProblemPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null } };
+
+export type UpdatePatientProblemSignedMutationVariables = Exact<{
+  updateProblemSignedInput: UpdateProblemSignedInput;
+}>;
+
+
+export type UpdatePatientProblemSignedMutation = { __typename?: 'Mutation', updatePatientProblemSigned: { __typename?: 'PatientProblemPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null } };
 
 export type RemovePatientProblemMutationVariables = Exact<{
   removeProblem: RemoveProblem;
@@ -8718,7 +8805,7 @@ export type CreateLabTestMutationVariables = Exact<{
 }>;
 
 
-export type CreateLabTestMutation = { __typename?: 'Mutation', createLabTest: { __typename?: 'LabTestPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, labTest?: { __typename?: 'LabTests', orderNumber?: string | null } | null } };
+export type CreateLabTestMutation = { __typename?: 'Mutation', createLabTest: { __typename?: 'LabTestPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, labTest?: { __typename?: 'LabTests', id: string, orderNumber?: string | null } | null } };
 
 export type UpdateLabTestMutationVariables = Exact<{
   updateLabTestInput: UpdateLabTestInput;
@@ -12598,6 +12685,90 @@ export function useGetPatientChartingInfoLazyQuery(baseOptions?: Apollo.LazyQuer
 export type GetPatientChartingInfoQueryHookResult = ReturnType<typeof useGetPatientChartingInfoQuery>;
 export type GetPatientChartingInfoLazyQueryHookResult = ReturnType<typeof useGetPatientChartingInfoLazyQuery>;
 export type GetPatientChartingInfoQueryResult = Apollo.QueryResult<GetPatientChartingInfoQuery, GetPatientChartingInfoQueryVariables>;
+export const GetPatientChartingReviewDocument = gql`
+    query GetPatientChartingReview($patientChartingReviewInput: PatientChartingReviewInput!) {
+  getPatientChartingReview(
+    patientChartingReviewInput: $patientChartingReviewInput
+  ) {
+    response {
+      status
+      message
+    }
+    patientVitals {
+      id
+      vitalCreationDate
+      patientTemperature
+      systolicBloodPressure
+      diastolicBloodPressure
+      respiratoryRate
+      PatientBMI
+    }
+    patientAllergies {
+      id
+      allergySeverity
+      allergyOnset
+      allergyStartDate
+      comments
+      isActive
+      allergy {
+        name
+        allergyType
+      }
+    }
+    patientProblems {
+      id
+      problemType
+      problemSeverity
+      problemStartDate
+      note
+      ICDCode {
+        code
+        description
+      }
+    }
+    patientMedications {
+      id
+      sig
+      startDate
+      status
+      stopDate
+      stopReason
+      note
+      medication {
+        fullName
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPatientChartingReviewQuery__
+ *
+ * To run a query within a React component, call `useGetPatientChartingReviewQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPatientChartingReviewQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPatientChartingReviewQuery({
+ *   variables: {
+ *      patientChartingReviewInput: // value for 'patientChartingReviewInput'
+ *   },
+ * });
+ */
+export function useGetPatientChartingReviewQuery(baseOptions: Apollo.QueryHookOptions<GetPatientChartingReviewQuery, GetPatientChartingReviewQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPatientChartingReviewQuery, GetPatientChartingReviewQueryVariables>(GetPatientChartingReviewDocument, options);
+      }
+export function useGetPatientChartingReviewLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPatientChartingReviewQuery, GetPatientChartingReviewQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPatientChartingReviewQuery, GetPatientChartingReviewQueryVariables>(GetPatientChartingReviewDocument, options);
+        }
+export type GetPatientChartingReviewQueryHookResult = ReturnType<typeof useGetPatientChartingReviewQuery>;
+export type GetPatientChartingReviewLazyQueryHookResult = ReturnType<typeof useGetPatientChartingReviewLazyQuery>;
+export type GetPatientChartingReviewQueryResult = Apollo.QueryResult<GetPatientChartingReviewQuery, GetPatientChartingReviewQueryVariables>;
 export const CreateFamilyHistoryDocument = gql`
     mutation CreateFamilyHistory($createFamilyHistoryInput: CreateFamilyHistoryInput!) {
   createFamilyHistory(createFamilyHistoryInput: $createFamilyHistoryInput) {
@@ -12991,6 +13162,9 @@ export const AddPatientMedicationDocument = gql`
   addPatientMedication(
     createPatientMedicationInput: $createPatientMedicationInput
   ) {
+    patientMedication {
+      id
+    }
     response {
       status
       message
@@ -13157,6 +13331,87 @@ export function useFindAllPatientProblemsLazyQuery(baseOptions?: Apollo.LazyQuer
 export type FindAllPatientProblemsQueryHookResult = ReturnType<typeof useFindAllPatientProblemsQuery>;
 export type FindAllPatientProblemsLazyQueryHookResult = ReturnType<typeof useFindAllPatientProblemsLazyQuery>;
 export type FindAllPatientProblemsQueryResult = Apollo.QueryResult<FindAllPatientProblemsQuery, FindAllPatientProblemsQueryVariables>;
+export const FindAllPatientProblemsWithMedicationDocument = gql`
+    query FindAllPatientProblemsWithMedication($patientProblemInput: PatientProblemInput!) {
+  findAllPatientProblem(patientProblemInput: $patientProblemInput) {
+    response {
+      status
+      message
+    }
+    pagination {
+      totalPages
+      page
+    }
+    patientProblems {
+      id
+      problemType
+      forOrders
+      isSigned
+      problemSeverity
+      problemStartDate
+      note
+      ICDCode {
+        __typename
+        id
+        code
+        description
+      }
+      patientMedications {
+        id
+        isSigned
+        medication {
+          id
+          fullName
+          termType
+          rxNumber
+          createdAt
+          updatedAt
+        }
+      }
+      labTests {
+        id
+        isSigned
+        test {
+          id
+          component
+        }
+      }
+      snowMedCode {
+        id
+        referencedComponentId
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllPatientProblemsWithMedicationQuery__
+ *
+ * To run a query within a React component, call `useFindAllPatientProblemsWithMedicationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllPatientProblemsWithMedicationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllPatientProblemsWithMedicationQuery({
+ *   variables: {
+ *      patientProblemInput: // value for 'patientProblemInput'
+ *   },
+ * });
+ */
+export function useFindAllPatientProblemsWithMedicationQuery(baseOptions: Apollo.QueryHookOptions<FindAllPatientProblemsWithMedicationQuery, FindAllPatientProblemsWithMedicationQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllPatientProblemsWithMedicationQuery, FindAllPatientProblemsWithMedicationQueryVariables>(FindAllPatientProblemsWithMedicationDocument, options);
+      }
+export function useFindAllPatientProblemsWithMedicationLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllPatientProblemsWithMedicationQuery, FindAllPatientProblemsWithMedicationQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllPatientProblemsWithMedicationQuery, FindAllPatientProblemsWithMedicationQueryVariables>(FindAllPatientProblemsWithMedicationDocument, options);
+        }
+export type FindAllPatientProblemsWithMedicationQueryHookResult = ReturnType<typeof useFindAllPatientProblemsWithMedicationQuery>;
+export type FindAllPatientProblemsWithMedicationLazyQueryHookResult = ReturnType<typeof useFindAllPatientProblemsWithMedicationLazyQuery>;
+export type FindAllPatientProblemsWithMedicationQueryResult = Apollo.QueryResult<FindAllPatientProblemsWithMedicationQuery, FindAllPatientProblemsWithMedicationQueryVariables>;
 export const GetPatientProblemDocument = gql`
     query GetPatientProblem($getPatientProblem: GetPatientProblem!) {
   getPatientProblem(getPatientProblem: $getPatientProblem) {
@@ -13216,6 +13471,9 @@ export type GetPatientProblemQueryResult = Apollo.QueryResult<GetPatientProblemQ
 export const AddPatientProblemDocument = gql`
     mutation AddPatientProblem($createProblemInput: CreateProblemInput!) {
   addPatientProblem(createProblemInput: $createProblemInput) {
+    patientProblem {
+      id
+    }
     response {
       status
       message
@@ -13285,6 +13543,42 @@ export function useUpdatePatientProblemMutation(baseOptions?: Apollo.MutationHoo
 export type UpdatePatientProblemMutationHookResult = ReturnType<typeof useUpdatePatientProblemMutation>;
 export type UpdatePatientProblemMutationResult = Apollo.MutationResult<UpdatePatientProblemMutation>;
 export type UpdatePatientProblemMutationOptions = Apollo.BaseMutationOptions<UpdatePatientProblemMutation, UpdatePatientProblemMutationVariables>;
+export const UpdatePatientProblemSignedDocument = gql`
+    mutation UpdatePatientProblemSigned($updateProblemSignedInput: UpdateProblemSignedInput!) {
+  updatePatientProblemSigned(updateProblemSignedInput: $updateProblemSignedInput) {
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+export type UpdatePatientProblemSignedMutationFn = Apollo.MutationFunction<UpdatePatientProblemSignedMutation, UpdatePatientProblemSignedMutationVariables>;
+
+/**
+ * __useUpdatePatientProblemSignedMutation__
+ *
+ * To run a mutation, you first call `useUpdatePatientProblemSignedMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePatientProblemSignedMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePatientProblemSignedMutation, { data, loading, error }] = useUpdatePatientProblemSignedMutation({
+ *   variables: {
+ *      updateProblemSignedInput: // value for 'updateProblemSignedInput'
+ *   },
+ * });
+ */
+export function useUpdatePatientProblemSignedMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePatientProblemSignedMutation, UpdatePatientProblemSignedMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdatePatientProblemSignedMutation, UpdatePatientProblemSignedMutationVariables>(UpdatePatientProblemSignedDocument, options);
+      }
+export type UpdatePatientProblemSignedMutationHookResult = ReturnType<typeof useUpdatePatientProblemSignedMutation>;
+export type UpdatePatientProblemSignedMutationResult = Apollo.MutationResult<UpdatePatientProblemSignedMutation>;
+export type UpdatePatientProblemSignedMutationOptions = Apollo.BaseMutationOptions<UpdatePatientProblemSignedMutation, UpdatePatientProblemSignedMutationVariables>;
 export const RemovePatientProblemDocument = gql`
     mutation RemovePatientProblem($removeProblem: RemoveProblem!) {
   removePatientProblem(removeProblem: $removeProblem) {
@@ -18299,6 +18593,7 @@ export const CreateLabTestDocument = gql`
       message
     }
     labTest {
+      id
       orderNumber
     }
   }

@@ -442,6 +442,7 @@ mutation CreateLabTest($createLabTestInput: CreateLabTestInput!){
     }
 
     labTest {
+      id
       orderNumber
     }
   }
