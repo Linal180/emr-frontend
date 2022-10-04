@@ -19,6 +19,12 @@ import MedicationTab from './tabs/MedicationsListing';
 import ProblemTab from './tabs/ProblemListing';
 import TriageNoteTab from './tabs/TriageNotesListing';
 import VitalTab from './tabs/VitalListing';
+import StepperCard from "../../../common/StepperCard";
+import AssessmentPlanTab from "./AssessmentPlan/AssessmentPlanTab";
+import FamilyHistory from "./familyHistory";
+import AppointmentReason from "./tabs/AppointmentReason";
+import ReviewTab from "./tabs/ReviewTab";
+import SurgicalHistoryTab from "./surgicalHistory/SurgicalHistoryListing";
 // interfaces, graphql, constants block /styles
 import { HistoryIcon } from "../../../../assets/svgs";
 import {
@@ -36,12 +42,7 @@ import { useChartingStyles } from "../../../../styles/chartingStyles";
 import { useExternalPatientStyles } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
 import { WHITE } from '../../../../theme';
 import { isAdmin, isOnlyDoctor } from "../../../../utils";
-import StepperCard from "../../../common/StepperCard";
-import AssessmentPlanTab from "./AssessmentPlan/AssessmentPlanTab";
-import FamilyHistory from "./familyHistory";
-import AppointmentReason from "./tabs/AppointmentReason";
-import ReviewTab from "./tabs/ReviewTab";
-import SurgicalHistoryTab from "./tabs/SurgicalHistoryListing";
+
 
 const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appointmentInfo, fetchAppointment, labOrderHandler, isInTake }): JSX.Element => {
   const classes = useChartingStyles();
