@@ -514,7 +514,7 @@ const BillingForm: FC<BillingFormProps> = ({
         <Box p={1} />
 
         <UpFrontPayment
-          cptCodes={cptFeeSchedule}
+          cptCodes={cptFeeSchedule ?? []}
           ref={billingRef}
           shouldDisableEdit={shouldDisableEdit}
         />

@@ -26,6 +26,10 @@ body {
   font-family: Inter, sans-serif;
 }
 
+.MuiSvgIcon-colorSecondary {
+  color: #204ECF !important;
+}
+
 .MuiTab-root {
   padding: 12px 15px !important;
 }
@@ -964,4 +968,13 @@ input[type=number] {
 .step-icon .MuiStepLabel-iconContainer {
   max-width: 100%;
   width: 40px;
+}
+
+.payment-input .MuiOutlinedInput-root{
+  background-color: #fff;
+}
+
+.li-hover:hover {
+  box-shadow: 0px 4px 30px rgba(56, 71, 109, 0.09);
+  padding: 2px;
 }

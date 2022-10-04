@@ -1,21 +1,22 @@
 //packages import
-import { FC, useContext } from "react";
-import { ChevronRight, } from "@material-ui/icons";
 import { Box, Button, Card, colors, Grid, Typography } from "@material-ui/core";
+import { ChevronRight } from "@material-ui/icons";
+import { FC, useContext } from "react";
 //constants, interfaces, utils, types
-import { CheckInComponentProps } from "../../../interfacesTypes";
 import {
-  APPOINTMENT_INFO, APPOINTMENT_TYPE, CHECK_IN, CHECK_IN_AT_TEXT, FACILITY_LOCATION, N_A, PRIMARY_INSURANCE,
-  PROVIDER_NAME, REASON, SELF_CHECK_IN
+  APPOINTMENT_INFO, APPOINTMENT_TYPE, CHECK_IN_AT_TEXT, DONE_CHECK_IN, FACILITY_LOCATION, N_A, PRIMARY_INSURANCE,
+  PROVIDER_NAME, REASON, SELF_CHECK_IN, SIGN_OFF, START_CHECK_IN, TO_CHECKOUT, TO_EXAM, TO_INTAKE
 } from "../../../constants";
 import { AuthContext } from "../../../context";
+import { CheckInComponentProps } from "../../../interfacesTypes";
 import { isBiller } from "../../../utils";
 import UpFrontPayment from "../billing/upfrontPayment";
 
-const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep, shouldDisableEdit }) => {
+const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep, shouldDisableEdit, activeStep, handleProceed }) => {
   const { user } = useContext(AuthContext)
   const { roles } = user || {}
   const isBillerUser = isBiller(roles);
+
 
   const { appointment, primaryInsurance } = appointmentState;
   const { appointmentType, provider, facility, reason, checkedInAt, selfCheckIn } = appointment ?? {}
@@ -24,6 +25,34 @@ const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep, shou
   const { name: serviceName } = appointmentType ?? {}
 
   const fullName = firstName && lastName ? `${firstName} ${lastName}` : N_A
+
+  const getProceedBtnTitle = () => {
+    if(isBillerUser){
+      return TO_CHECKOUT
+    }
+    switch (activeStep) {
+      case 0:
+        return START_CHECK_IN
+
+      case 1:
+        return DONE_CHECK_IN
+
+      case 2:
+        return TO_INTAKE
+
+      case 3:
+        return TO_EXAM
+
+      case 4:
+        return SIGN_OFF
+
+      case 5:
+        return TO_CHECKOUT
+
+      default:
+        return START_CHECK_IN
+    }
+  }
 
   return (
     <>
@@ -36,8 +65,8 @@ const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep, shou
           <Button
             variant="contained" color="primary"
             endIcon={<Box width={20}><ChevronRight /></Box>}
-            onClick={() => isBillerUser ? handleStep(4) : handleStep(1)}>
-            {CHECK_IN}
+            onClick={() => handleProceed ? handleProceed(true) : isBillerUser ? handleStep(4) : handleStep(0, true)}>
+            {getProceedBtnTitle()}
           </Button>
         </Box>
 
@@ -103,8 +132,8 @@ const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep, shou
       </Card>
 
       <Box p={2} />
-      
-      <UpFrontPayment handleStep={handleStep} shouldDisableEdit={shouldDisableEdit} />
+
+      {(activeStep || 0) === 0 && <UpFrontPayment handleStep={handleStep} shouldDisableEdit={shouldDisableEdit} />}
     </>
   )
 }

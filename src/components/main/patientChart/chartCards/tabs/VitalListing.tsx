@@ -14,12 +14,12 @@ import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
 import { AddWhiteIcon } from "../../../../../assets/svgs";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
 import { usePatientVitalListingStyles } from "../../../../../styles/patientVitalsStyles";
-import { ChartComponentProps, ParamsType, PatientInputProps } from "../../../../../interfacesTypes";
-import { ADD_NEW_TEXT, PAGE_LIMIT, VITALS_TEXT, VITAL_LIST_PAGE_LIMIT } from "../../../../../constants";
+import { ParamsType, PatientInputProps, VitalTabProps } from "../../../../../interfacesTypes";
+import { ADD_NEW_TEXT, NEXT, PAGE_LIMIT, VITALS_TEXT, VITAL_LIST_PAGE_LIMIT } from "../../../../../constants";
 import { PatientVitalsPayload, useFindAllPatientVitalsLazyQuery } from "../../../../../generated/graphql";
 import { Action, initialState, patientReducer, State, ActionType } from "../../../../../reducers/patientReducer";
 
-const VitalTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
+const VitalTab: FC<VitalTabProps> = ({ shouldDisableEdit, handleStep }) => {
   const classes = useChartingStyles()
   const { id } = useParams<ParamsType>()
   const vitalClasses = usePatientVitalListingStyles()
@@ -89,7 +89,8 @@ const VitalTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
         variables: {
           patientVitalInput: {
             patientId: id,
-            paginationOptions: { page: vitalPage, limit: VITAL_LIST_PAGE_LIMIT }
+            paginationOptions: { page: vitalPage, limit: VITAL_LIST_PAGE_LIMIT },
+            // ...(appointmentId ? { appointmentId } : {})
           }
         },
       })
@@ -110,19 +111,25 @@ const VitalTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
             ) : <Box className={classes.cardBox}>
               <FormProvider {...methods}>
                 <form>
-                  <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
+                  <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
                     <Typography variant='h3'>{VITALS_TEXT}</Typography>
 
-                    {!shouldDisableEdit &&
-                      <Button
-                        variant='contained' color='primary'
-                        onClick={() => dispatch({
-                          type: ActionType.SET_OPEN_VITAL, openVital: true
-                        })}
-                        startIcon={<Box width={20}><AddWhiteIcon /></Box>}
-                      >
-                        {ADD_NEW_TEXT}
-                      </Button>}
+                    <Box display='flex' alignItems='center'>
+                      {!shouldDisableEdit &&
+                        <Button
+                          variant='contained' color='primary'
+                          onClick={() => dispatch({
+                            type: ActionType.SET_OPEN_VITAL, openVital: true
+                          })}
+                          startIcon={<Box width={20}><AddWhiteIcon /></Box>}
+                        >
+                          {ADD_NEW_TEXT}
+                        </Button>}
+
+                      <Box p={1} />
+
+                      {handleStep && <Button variant='contained' color='secondary' onClick={()=>handleStep(3)} size="large">{NEXT}</Button>}
+                    </Box>
                   </Box>
                 </form>
               </FormProvider>

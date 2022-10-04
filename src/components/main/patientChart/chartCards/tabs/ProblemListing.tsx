@@ -1,37 +1,36 @@
 // packages block
-import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer } from "react";
-import { useParams } from "react-router";
-import { Pagination } from "@material-ui/lab";
 import {
   Box, Button, Card, Grid, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography
 } from "@material-ui/core";
+import { Pagination } from "@material-ui/lab";
+import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer } from "react";
+import { useParams } from "react-router";
 // components block
 import Alert from "../../../../common/Alert";
+import ConfirmationModal from "../../../../common/ConfirmationModal";
+import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
 import TableLoader from "../../../../common/TableLoader";
 import AddProblem from "../../problems/modals/AddProblem";
 import ProblemModal from "../../problems/modals/ProblemModal";
-import ConfirmationModal from "../../../../common/ConfirmationModal";
-import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
 // constants, utils, interfaces ang graphql block
-import { useChartingStyles } from "../../../../../styles/chartingStyles";
-import { useTableStyles } from "../../../../../styles/tableStyles";
-import { ChartComponentProps, ParamsType } from "../../../../../interfacesTypes";
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from "../../../../../assets/svgs";
 import {
-  Action, ActionType, chartReducer, initialState, State
-} from "../../../../../reducers/chartReducer";
-import {
-  getFormatDateString, getProblemSeverityColor, getProblemTypeColor, renderTh, getPageNumber, isLast
-} from "../../../../../utils";
-import {
-  ACTIONS, ADD_NEW_TEXT, DASHES, DELETE_PROBLEM_DESCRIPTION, ICD_CODE, ONSET_DATE, EIGHT_PAGE_LIMIT,
-  PATIENT_PROBLEM_DELETED, PROBLEM_TEXT, STATUS, TYPE, COMMENTS
+  ACTIONS, ADD_NEW_TEXT, COMMENTS, DASHES, DELETE_PROBLEM_DESCRIPTION, EIGHT_PAGE_LIMIT, ICD_CODE, NEXT, ONSET_DATE, PATIENT_PROBLEM_DELETED, PROBLEM_TEXT, STATUS, TYPE
 } from "../../../../../constants";
 import {
   IcdCodes, PatientProblemsPayload, useFindAllPatientProblemsLazyQuery, useRemovePatientProblemMutation
 } from "../../../../../generated/graphql";
+import { ParamsType, ProblemTabProps } from "../../../../../interfacesTypes";
+import {
+  Action, ActionType, chartReducer, initialState, State
+} from "../../../../../reducers/chartReducer";
+import { useChartingStyles } from "../../../../../styles/chartingStyles";
+import { useTableStyles } from "../../../../../styles/tableStyles";
+import {
+  getFormatDateString, getPageNumber, getProblemSeverityColor, getProblemTypeColor, isLast, renderTh
+} from "../../../../../utils";
 
-const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
+const ProblemTab: FC<ProblemTabProps> = ({ shouldDisableEdit, handleStep }) => {
   const classes = useChartingStyles();
   const classesTable = useTableStyles()
   const { id } = useParams<ParamsType>()
@@ -82,7 +81,10 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
     try {
       await findAllPatientProblems({
         variables: {
-          patientProblemInput: { patientId: id, paginationOptions: { page, limit: EIGHT_PAGE_LIMIT } }
+          patientProblemInput: {
+            patientId: id, paginationOptions: { page, limit: EIGHT_PAGE_LIMIT },
+            // ...(appointmentId ? { appointmentId } : {})
+          }
         },
       })
     } catch (error) { }
@@ -147,16 +149,22 @@ const ProblemTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
         <Grid item md={12} sm={12} xs={12}>
           <Card>
             <Box className={classes.cardBox}>
-              <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
+              <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
                 <Typography variant='h3'>{PROBLEM_TEXT}</Typography>
 
-                {!shouldDisableEdit &&
-                  <Button
-                    variant='contained' color='primary'
-                    startIcon={<Box width={20}><AddWhiteIcon /></Box>}
-                    onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
-                    {ADD_NEW_TEXT}
-                  </Button>}
+                <Box display='flex' alignItems='center'>
+                  {!shouldDisableEdit &&
+                    <Button
+                      variant='contained' color='primary'
+                      startIcon={<Box width={20}><AddWhiteIcon /></Box>}
+                      onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
+                      {ADD_NEW_TEXT}
+                    </Button>}
+
+                  <Box p={1} />
+
+                  {handleStep && <Button variant='contained' color='secondary' size="large" onClick={() => handleStep(4)}>{NEXT}</Button>}
+                </Box>
               </Box>
 
               <Box className={classes.tableBox}>

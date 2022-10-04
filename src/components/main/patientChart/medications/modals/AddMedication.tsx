@@ -11,14 +11,14 @@ import {
   ADD_MEDICATION, NO_RECORDS, PAGE_LIMIT, SEARCH_FOR_MEDICATIONS
 } from "../../../../../constants";
 import { Medications, MedicationsPayload, useFindAllMedicationsLazyQuery } from "../../../../../generated/graphql";
-import { AddAllergyModalProps } from "../../../../../interfacesTypes";
+import { AddMedicationModalProps } from "../../../../../interfacesTypes";
 import {
   Action, ActionType, chartReducer, initialState, State
 } from "../../../../../reducers/chartReducer";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
 import { GREY_SEVEN } from "../../../../../theme";
 
-const AddMedication: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose, fetch }) => {
+const AddMedication: FC<AddMedicationModalProps> = ({ isOpen = false, handleModalClose, fetch, handleAdd, alreadyAddedMedications }) => {
   const chartingClasses = useChartingStyles()
   const [{ isSubModalOpen, selectedItem, searchQuery, searchedData }, dispatch] =
     useReducer<Reducer<State, Action>>(chartReducer, initialState)
@@ -100,11 +100,14 @@ const AddMedication: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalCl
           :
           (searchedData && searchedData.length > 0 ?
             searchedData?.map(item => {
-              const { fullName } = item as Medications || {}
-
+              const { fullName, id } = item as Medications || {}
+              if (alreadyAddedMedications?.includes(id)) {
+                return <></>
+              }
+              
               return (
                 <Box key={`${fullName}`} my={0.2} className={chartingClasses.hoverClass}
-                  onClick={() => item && handleOpenForm(item as Medications)}
+                  onClick={() => item && handleAdd ? handleAdd(item) : handleOpenForm(item as Medications)}
                 >
                   <Box display="flex" flexDirection="column" px={2}>
                     <Typography variant='body1'>{fullName}</Typography>
@@ -121,7 +124,7 @@ const AddMedication: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalCl
         }
       </Box>
     )
-  }, [chartingClasses.hoverClass, searchIcdCodesLoading, searchedData])
+  }, [alreadyAddedMedications, chartingClasses.hoverClass, handleAdd, searchIcdCodesLoading, searchedData])
 
 
   return (

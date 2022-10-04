@@ -1,13 +1,12 @@
 // packages block
-import { Stepper, Step, StepLabel, Typography} from '@material-ui/core';
+import { Step, StepLabel, Stepper, Typography } from '@material-ui/core';
 // components block
 import CustomStepIcon from './CustomStepIcon';
 // constants, interfaces and styles block
 import { StepperComponentProps } from "../../interfacesTypes";
 import { CustomConnector, useExternalPatientStyles } from "../../styles/publicAppointmentStyles/externalPatientStyles";
-import { ActionType } from '../../reducers/patientReducer';
 
-const StepperCard = ({ activeStep, stepperData, dispatch }: StepperComponentProps) => {
+const StepperCard = ({ activeStep, stepperData, handleStep }: StepperComponentProps) => {
   const classes = useExternalPatientStyles();
   // const matches = useMediaQuery('(min-width:960px)');
 
@@ -20,19 +19,19 @@ const StepperCard = ({ activeStep, stepperData, dispatch }: StepperComponentProp
       style={{ position: 'relative' }}
       data-cy="newCourseStepper"
     >
-      {stepperData?.map(({ title }, index) => {
+      {stepperData?.map(({ title, completed: customCompleted }, index) => {
         return (
           <Step key={`${index}-${title}`}>
-            <StepLabel className='pointer-cursor' StepIconComponent={CustomStepIcon} onClick={() => dispatch && dispatch({
-              type: ActionType.SET_ACTIVE_STEP, activeStep: index
-            })}>
+            <StepLabel className='pointer-cursor' StepIconComponent={(props) => <CustomStepIcon
+              {...{ ...props, completed: customCompleted ?? props.completed }}
+            />} onClick={() => handleStep && handleStep(index)}>
               <Typography variant="h4" component="h5">
                 {title}
               </Typography>
             </StepLabel>
           </Step>)
       })}
-    </Stepper>
+    </Stepper >
   );
 };
 
