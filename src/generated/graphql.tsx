@@ -1504,6 +1504,12 @@ export type CreatePatientMedicationInput = {
   timeDuration?: Maybe<Scalars['String']>;
 };
 
+export type CreatePatientSocialHistoryInput = {
+  id?: Maybe<Scalars['String']>;
+  patientId?: Maybe<Scalars['String']>;
+  socialAnswer: Array<SocialAnswerInput>;
+};
+
 export type CreatePolicyInput = {
   coinsurancePercentage?: Maybe<Scalars['String']>;
   copays?: Maybe<Array<CopayInput>>;
@@ -3005,6 +3011,7 @@ export type Mutation = {
   createModifier: ModifierPayload;
   createPatient: PatientPayload;
   createPatientConsent: PatientConsentPayload;
+  createPatientSocialHistory: PatientSocialHistoryPayload;
   createPermission: PermissionPayload;
   createPolicy: PolicyPayload;
   createPolicyHolder: PolicyHolder;
@@ -3313,6 +3320,11 @@ export type MutationCreatePatientArgs = {
 
 export type MutationCreatePatientConsentArgs = {
   createPatientConsentInputs: CreatePatientConsentInputs;
+};
+
+
+export type MutationCreatePatientSocialHistoryArgs = {
+  createPatientSocialHistoryInput: CreatePatientSocialHistoryInput;
 };
 
 
@@ -4283,6 +4295,16 @@ export type PatientProviderPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+export type PatientSocialHistoryInput = {
+  patientId?: Maybe<Scalars['String']>;
+};
+
+export type PatientSocialHistoryPayload = {
+  __typename?: 'PatientSocialHistoryPayload';
+  response?: Maybe<ResponsePayloadResponse>;
+  socialHistory?: Maybe<SocialHistory>;
+};
+
 export type PatientTriageNoteInput = {
   appointmentId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
@@ -4946,6 +4968,7 @@ export type Query = {
   getUsersWithRoles: PracticeUserRolesPayload;
   getVaccine: VaccinePayload;
   me: UserPayload;
+  patientSocialHistory: PatientSocialHistoryPayload;
   searchIcdCodes: IcdCodesPayload;
   searchSnoMedCodeByIcdCodes: SnoMedCodesPayload;
   searchUser: UsersPayload;
@@ -5597,6 +5620,11 @@ export type QueryGetVaccineArgs = {
 };
 
 
+export type QueryPatientSocialHistoryArgs = {
+  patientSocialHistoryInput: PatientSocialHistoryInput;
+};
+
+
 export type QuerySearchIcdCodesArgs = {
   searchIcdCodesInput: SearchIcdCodesInput;
 };
@@ -5991,8 +6019,6 @@ export type Sections = {
   id: Scalars['String'];
   name?: Maybe<Scalars['String']>;
   questions?: Maybe<Array<Questions>>;
-  socialHistory?: Maybe<SocialHistory>;
-  socialHistoryId?: Maybe<Scalars['String']>;
   specialId?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
 };
@@ -6245,12 +6271,52 @@ export type SnoMedCodes = {
   updatedAt?: Maybe<Scalars['String']>;
 };
 
+export type SocialAnswer = {
+  __typename?: 'SocialAnswer';
+  createdAt?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  note?: Maybe<Scalars['String']>;
+  question?: Maybe<Questions>;
+  questionId?: Maybe<Scalars['String']>;
+  socialDependentAnswer?: Maybe<Array<SocialDependentAnswer>>;
+  updatedAt?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['String']>;
+};
+
+export type SocialAnswerInput = {
+  name: Scalars['String'];
+  note: Scalars['String'];
+  socialDependentAnswer: Array<SocialDependentAnswerInput>;
+  value: Scalars['String'];
+};
+
+export type SocialDependentAnswer = {
+  __typename?: 'SocialDependentAnswer';
+  createdAt?: Maybe<Scalars['String']>;
+  dependentQuestion?: Maybe<DependentQuestions>;
+  dependentQuestionId?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  note?: Maybe<Scalars['String']>;
+  parentId?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+  value?: Maybe<Scalars['String']>;
+};
+
+export type SocialDependentAnswerInput = {
+  name: Scalars['String'];
+  note: Scalars['String'];
+  parentId: Scalars['String'];
+  value: Scalars['String'];
+};
+
 export type SocialHistory = {
   __typename?: 'SocialHistory';
   createdAt?: Maybe<Scalars['String']>;
   id: Scalars['String'];
-  patient?: Maybe<Patient>;
-  sections?: Maybe<Array<Sections>>;
+  patientId?: Maybe<Scalars['String']>;
+  socialAnswer?: Maybe<Array<SocialAnswer>>;
   updatedAt?: Maybe<Scalars['String']>;
 };
 
@@ -8151,6 +8217,20 @@ export type FindAllSectionsQueryVariables = Exact<{
 
 
 export type FindAllSectionsQuery = { __typename?: 'Query', findAllSections: { __typename?: 'FindAllSectionsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null, page?: number | null } | null, sections?: Array<{ __typename?: 'Sections', id: string, name?: string | null, specialId?: string | null, questions?: Array<{ __typename?: 'Questions', id: string, title?: string | null, note?: string | null, value?: string | null, questionType?: string | null, specialId?: string | null, options?: Array<{ __typename?: 'SelectorType', id?: string | null, name?: string | null }> | null, dependentQuestions?: Array<{ __typename?: 'DependentQuestions', id: string, title?: string | null, note?: string | null, value?: string | null, answer?: Array<string> | null, specialId?: string | null, questionType?: string | null, options?: Array<{ __typename?: 'SelectorType', id?: string | null, name?: string | null }> | null }> | null }> | null } | null> | null } };
+
+export type CreatePatientSocialHistoryMutationVariables = Exact<{
+  createPatientSocialHistoryInput: CreatePatientSocialHistoryInput;
+}>;
+
+
+export type CreatePatientSocialHistoryMutation = { __typename?: 'Mutation', createPatientSocialHistory: { __typename?: 'PatientSocialHistoryPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, socialHistory?: { __typename?: 'SocialHistory', id: string } | null } };
+
+export type PatientSocialHistoryQueryVariables = Exact<{
+  patientSocialHistoryInput: PatientSocialHistoryInput;
+}>;
+
+
+export type PatientSocialHistoryQuery = { __typename?: 'Query', patientSocialHistory: { __typename?: 'PatientSocialHistoryPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, socialHistory?: { __typename?: 'SocialHistory', id: string, patientId?: string | null, socialAnswer?: Array<{ __typename?: 'SocialAnswer', id: string, name?: string | null, note?: string | null, value?: string | null, questionId?: string | null, question?: { __typename?: 'Questions', questionType?: string | null, options?: Array<{ __typename?: 'SelectorType', id?: string | null, name?: string | null }> | null } | null, socialDependentAnswer?: Array<{ __typename?: 'SocialDependentAnswer', id: string, name?: string | null, note?: string | null, value?: string | null, parentId?: string | null, dependentQuestionId?: string | null, dependentQuestion?: { __typename?: 'DependentQuestions', questionType?: string | null, options?: Array<{ __typename?: 'SelectorType', id?: string | null, name?: string | null }> | null } | null }> | null }> | null } | null } };
 
 export type FindAllSurgicalHistoryQueryVariables = Exact<{
   surgicalHistoryInput: SurgicalHistoryInput;
@@ -13572,6 +13652,118 @@ export function useFindAllSectionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type FindAllSectionsQueryHookResult = ReturnType<typeof useFindAllSectionsQuery>;
 export type FindAllSectionsLazyQueryHookResult = ReturnType<typeof useFindAllSectionsLazyQuery>;
 export type FindAllSectionsQueryResult = Apollo.QueryResult<FindAllSectionsQuery, FindAllSectionsQueryVariables>;
+export const CreatePatientSocialHistoryDocument = gql`
+    mutation CreatePatientSocialHistory($createPatientSocialHistoryInput: CreatePatientSocialHistoryInput!) {
+  createPatientSocialHistory(
+    createPatientSocialHistoryInput: $createPatientSocialHistoryInput
+  ) {
+    response {
+      status
+      message
+    }
+    socialHistory {
+      id
+    }
+  }
+}
+    `;
+export type CreatePatientSocialHistoryMutationFn = Apollo.MutationFunction<CreatePatientSocialHistoryMutation, CreatePatientSocialHistoryMutationVariables>;
+
+/**
+ * __useCreatePatientSocialHistoryMutation__
+ *
+ * To run a mutation, you first call `useCreatePatientSocialHistoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePatientSocialHistoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createPatientSocialHistoryMutation, { data, loading, error }] = useCreatePatientSocialHistoryMutation({
+ *   variables: {
+ *      createPatientSocialHistoryInput: // value for 'createPatientSocialHistoryInput'
+ *   },
+ * });
+ */
+export function useCreatePatientSocialHistoryMutation(baseOptions?: Apollo.MutationHookOptions<CreatePatientSocialHistoryMutation, CreatePatientSocialHistoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreatePatientSocialHistoryMutation, CreatePatientSocialHistoryMutationVariables>(CreatePatientSocialHistoryDocument, options);
+      }
+export type CreatePatientSocialHistoryMutationHookResult = ReturnType<typeof useCreatePatientSocialHistoryMutation>;
+export type CreatePatientSocialHistoryMutationResult = Apollo.MutationResult<CreatePatientSocialHistoryMutation>;
+export type CreatePatientSocialHistoryMutationOptions = Apollo.BaseMutationOptions<CreatePatientSocialHistoryMutation, CreatePatientSocialHistoryMutationVariables>;
+export const PatientSocialHistoryDocument = gql`
+    query PatientSocialHistory($patientSocialHistoryInput: PatientSocialHistoryInput!) {
+  patientSocialHistory(patientSocialHistoryInput: $patientSocialHistoryInput) {
+    response {
+      status
+      message
+    }
+    socialHistory {
+      id
+      patientId
+      socialAnswer {
+        id
+        name
+        note
+        value
+        questionId
+        question {
+          questionType
+          options {
+            id
+            name
+          }
+        }
+        socialDependentAnswer {
+          id
+          name
+          note
+          value
+          parentId
+          dependentQuestionId
+          dependentQuestion {
+            questionType
+            options {
+              id
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __usePatientSocialHistoryQuery__
+ *
+ * To run a query within a React component, call `usePatientSocialHistoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePatientSocialHistoryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePatientSocialHistoryQuery({
+ *   variables: {
+ *      patientSocialHistoryInput: // value for 'patientSocialHistoryInput'
+ *   },
+ * });
+ */
+export function usePatientSocialHistoryQuery(baseOptions: Apollo.QueryHookOptions<PatientSocialHistoryQuery, PatientSocialHistoryQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<PatientSocialHistoryQuery, PatientSocialHistoryQueryVariables>(PatientSocialHistoryDocument, options);
+      }
+export function usePatientSocialHistoryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PatientSocialHistoryQuery, PatientSocialHistoryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<PatientSocialHistoryQuery, PatientSocialHistoryQueryVariables>(PatientSocialHistoryDocument, options);
+        }
+export type PatientSocialHistoryQueryHookResult = ReturnType<typeof usePatientSocialHistoryQuery>;
+export type PatientSocialHistoryLazyQueryHookResult = ReturnType<typeof usePatientSocialHistoryLazyQuery>;
+export type PatientSocialHistoryQueryResult = Apollo.QueryResult<PatientSocialHistoryQuery, PatientSocialHistoryQueryVariables>;
 export const FindAllSurgicalHistoryDocument = gql`
     query FindAllSurgicalHistory($surgicalHistoryInput: SurgicalHistoryInput!) {
   findAllSurgicalHistory(surgicalHistoryInput: $surgicalHistoryInput) {

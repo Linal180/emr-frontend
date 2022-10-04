@@ -5,30 +5,39 @@ import { FC, Fragment, Reducer, useCallback, useEffect, useReducer } from "react
 //components
 import Alert from "../../../../common/Alert";
 import SocialDateCard from "./socialDateCard";
+import Loader from "../../../../common/Loader";
 import SocialInputCard from "./socialInputCard";
 import SocialSwitchCard from './socialSwitchCard';
 import SocialSelectorCard from "./socialSelectorCard";
 //constants
 import { PAGE_LIMIT, QuestionType, SUBMIT, } from "../../../../../constants";
-import { DependentQuestions, Questions, useFindAllSectionsLazyQuery } from '../../../../../generated/graphql'
+import {
+  DependentQuestions, Questions, SocialAnswer, SocialDependentAnswer,
+  useCreatePatientSocialHistoryMutation, useFindAllSectionsLazyQuery, usePatientSocialHistoryLazyQuery
+} from '../../../../../generated/graphql'
 import { ParamsType, SelectorOption, SocialHistoryProps } from "../../../../../interfacesTypes";
 import { socialHistoryReducer, ActionType, State, initialState, Action } from "../../../../../reducers/socialHistoryReducer";
 import { getSocialHistoryFormValues } from "../../../../../utils";
-import Loader from "../../../../common/Loader";
 
 const SocialHistory: FC<SocialHistoryProps> = ({ shouldDisableEdit = false }): JSX.Element => {
 
   const methods = useForm();
-  const { id } = useParams<ParamsType>()
+  const { id: patientId } = useParams<ParamsType>()
 
   const [state, dispatch] = useReducer<Reducer<State, Action>>(socialHistoryReducer, initialState);
-  const { sections } = state;
-  const { watch, handleSubmit } = methods;
+  const { sections, itemId } = state;
+  const { watch, handleSubmit, setValue } = methods;
 
   const questionValue = watch();
 
 
   const [findAllSections, { loading: sectionLoading }] = useFindAllSectionsLazyQuery({
+
+    variables: {
+      findAllSectionsInput: {
+        paginationOptions: { page: 1, limit: PAGE_LIMIT }
+      }
+    },
 
     onError: ({ message }) => {
       Alert.error(message)
@@ -48,17 +57,63 @@ const SocialHistory: FC<SocialHistoryProps> = ({ shouldDisableEdit = false }): J
     }
   });
 
-  const fetchAllSections = useCallback(async () => {
-    try {
-      await findAllSections({ variables: { findAllSectionsInput: { paginationOptions: { page: 1, limit: PAGE_LIMIT } } } })
-    } catch (error) {
-
+  const [createSocialHistory, { loading: createLoading }] = useCreatePatientSocialHistoryMutation({
+    onCompleted: async (data) => {
+      const { createPatientSocialHistory } = data || {}
+      const { response, socialHistory } = createPatientSocialHistory || {}
+      const { status, message } = response || {}
+      const { id } = socialHistory || {}
+      if (status === 200 && id) {
+        message && Alert.success(message)
+        await fetchPatientSocialHistory()
+      } else {
+        message && Alert.error(message)
+      }
+    },
+    onError: ({ message }) => {
+      Alert.error(message)
     }
-  }, [findAllSections])
+  })
+
+  const [patientSocialHistory, { loading: getLoading }] = usePatientSocialHistoryLazyQuery({
+    onCompleted: (data) => {
+      const { patientSocialHistory } = data || {}
+      const { response, socialHistory } = patientSocialHistory || {}
+      const { status } = response || {}
+
+      if (status === 200) {
+        const { id, socialAnswer } = socialHistory || {}
+        id && dispatch({ type: ActionType.SET_ITEM_ID, itemId: id })
+        if (socialAnswer) {
+          socialAnswer?.map((answer) => setAnswer(answer as SocialAnswer))
+        }
+      }
+    },
+    onError: () => { }
+  })
+
+  const fetchPatientSocialHistory = useCallback(async () => {
+    await patientSocialHistory({
+      variables: {
+        patientSocialHistoryInput: {
+          patientId: patientId
+        }
+      }
+    })
+
+  }, [patientSocialHistory, patientId])
+
+  const fetchSocialHistory = useCallback(async () => {
+    try {
+      await findAllSections()
+      await fetchPatientSocialHistory()
+    } catch (error) { }
+
+  }, [fetchPatientSocialHistory, findAllSections])
 
   useEffect(() => {
-    id && fetchAllSections()
-  }, [id, fetchAllSections])
+    patientId && fetchSocialHistory()
+  }, [patientId, fetchSocialHistory])
 
   const getDependentQuestionCard = (question: DependentQuestions, QId: string, value?: string | undefined) => {
     const { id, questionType, title, options, answer } = question || {}
@@ -208,14 +263,113 @@ const SocialHistory: FC<SocialHistoryProps> = ({ shouldDisableEdit = false }): J
     }
   }
 
-  const onSubmit: SubmitHandler<any> = (data) => {
-    const values = getSocialHistoryFormValues(data);
+  const setDependentAnswer = (answer: SocialDependentAnswer, QId: string) => {
+    const { name, note, value, dependentQuestion } = answer
+    const { questionType, options } = dependentQuestion || {}
+    const key = questionType as QuestionType;
+
+    switch (key) {
+
+      case QuestionType.DATE:
+        note && setValue(`${QId}.dependent.${name}.note`, note)
+        value && setValue(`${QId}.dependent.${name}.value`, new Date(value))
+        break;
+
+      case QuestionType.INPUT:
+        setValue(`${QId}.dependent.${name}.note`, note || '')
+        value && setValue(`${QId}.dependent.${name}.value`, value)
+        break;
+
+      case QuestionType.NUMBER:
+
+        setValue(`${QId}.dependent.${name}.note`, note || '')
+        value && setValue(`${QId}.dependent.${name}.value`, parseInt(value))
+        break;
+
+      case QuestionType.SELECT:
+
+        setValue(`${QId}.dependent.${name}.note`, note || '');
+        const res = options?.find(({ id }) => id === value)
+        value && res && setValue(`${QId}.dependent.${name}.value`, res)
+
+        break;
+
+      case QuestionType.SWITCH:
+        setValue(`${QId}.dependent.${name}.note`, note || '')
+        value && setValue(`${QId}.dependent.${name}.value`, value === 'true' ? true : false)
+        break;
+
+      default:
+
+        setValue(`${QId}.dependent.${name}.note`, note || '')
+        value && setValue(`${QId}.dependent.${name}.value`, value)
+        break;
+    }
 
   }
-  const loading = sectionLoading;
+
+  const setAnswer = (answer: SocialAnswer) => {
+    const { name, note, value, question, socialDependentAnswer } = answer
+    const { questionType, options } = question || {}
+    const key = questionType as QuestionType;
+
+    switch (key) {
+      case QuestionType.DATE:
+        note && setValue(`${name}.note`, note)
+        value && setValue(`${name}.value`, new Date(value))
+        break;
+
+      case QuestionType.INPUT:
+        setValue(`${name}.note`, note || '')
+        value && setValue(`${name}.value`, value)
+        break;
+
+      case QuestionType.NUMBER:
+
+        setValue(`${name}.note`, note || '')
+        value && setValue(`${name}.value`, parseInt(value))
+        break;
+
+      case QuestionType.SELECT:
+        setValue(`${name}.note`, note || '');
+        const res = options?.find(({ id }) => id === value)
+        value && res && setValue(`${name}.value`, res)
+        socialDependentAnswer && socialDependentAnswer?.length > 0
+          && socialDependentAnswer?.map((dependent) => setDependentAnswer(dependent, name || ''))
+        break;
+
+      case QuestionType.SWITCH:
+        setValue(`${name}.note`, note || '')
+        value && setValue(`${name}.value`, value === 'true' ? true : false)
+        break;
+      default:
+        setValue(`${name}.note`, note || '')
+        value && setValue(`${name}.value`, value)
+        break;
+    }
+  }
+
+  const onSubmit: SubmitHandler<any> = async (data) => {
+    const values = getSocialHistoryFormValues(data);
+    try {
+      const inputs = {
+        ...(itemId && { id: itemId }),
+        patientId: patientId,
+        socialAnswer: values,
+      }
+
+      await createSocialHistory({
+        variables: {
+          createPatientSocialHistoryInput: inputs
+        }
+      })
+    } catch (error) { }
+  }
+
+  const loading = sectionLoading || createLoading || getLoading;
 
   if (loading) {
-    <Loader loading={loading} />
+   return <Loader loading />
   }
 
   return (<FormProvider {...methods}>

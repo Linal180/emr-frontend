@@ -46,3 +46,71 @@ query FindAllSections($findAllSectionsInput: FindAllSectionsInput!) {
     }
   }
 }
+
+mutation CreatePatientSocialHistory(
+  $createPatientSocialHistoryInput: CreatePatientSocialHistoryInput!
+) {
+  createPatientSocialHistory(
+    createPatientSocialHistoryInput: $createPatientSocialHistoryInput
+  ) {
+    response {
+      status
+      message
+    }
+
+    socialHistory {
+      id
+    }
+  }
+}
+
+query PatientSocialHistory(
+  $patientSocialHistoryInput: PatientSocialHistoryInput!
+) {
+  patientSocialHistory(patientSocialHistoryInput: $patientSocialHistoryInput) {
+    response {
+      status
+      message
+    }
+
+    socialHistory {
+      id
+      patientId
+
+      socialAnswer {
+        id
+        name
+        note
+        value
+        questionId
+
+        question {
+          questionType
+
+          options {
+            id
+            name
+          }
+        }
+
+        socialDependentAnswer {
+          id
+          name
+          note
+          value
+          parentId
+          dependentQuestionId
+
+          dependentQuestion {
+            questionType
+
+            options {
+              id
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+}

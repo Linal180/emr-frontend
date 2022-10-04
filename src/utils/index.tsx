@@ -2476,7 +2476,7 @@ export const getSocialHistoryFormValues = (data: any) => {
           name: key,
           value: strValue as string,
           note: note as string,
-          dependentQuestions: newQuestions
+          socialDependentAnswer: newQuestions
         })
       }
     }
