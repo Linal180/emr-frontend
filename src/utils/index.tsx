@@ -2051,13 +2051,15 @@ export const getCheckInStatus = (
     case 0:
       return { stage: 'Checked In', stageColor: GREEN_ONE };
     case 1:
-      return { stage: 'With Staff', stageColor: BLUE };
+      return { stage: 'With Front desk', stageColor: BLUE };
     case 2:
-      return { stage: 'Charting', stageColor: ORANGE_SIMPLE };
+      return { stage: 'Ready for Staff', stageColor: ORANGE_SIMPLE };
     case 3:
-      return { stage: 'With Provider', stageColor: BLUE_SEVEN };
+      return { stage: 'Ready for Provider', stageColor: BLUE_SEVEN };
     case 4:
-      return { stage: 'With Biller', stageColor: PURPLE_ONE };
+      return { stage: 'Ready for Checkout', stageColor: PURPLE_ONE };
+    case 5:
+      return { stage: 'Ready for Biller', stageColor: PURPLE_ONE };
 
     default:
       return { stage: '', stageColor: '' }

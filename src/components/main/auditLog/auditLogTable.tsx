@@ -87,7 +87,7 @@ const AuditLogTable = (): JSX.Element => {
       const pageInputs = {
         paginationOptions: { page, limit: USER_LOG_PAGE_LIMIT }, userId: userId ? userId : null,
         moduleType: moduleType ? moduleType : null, patientId: patientId ? patientId : null,
-        startDate: startDate ? startDate : null, endDate: endDate ? endDate : null
+        startDate: startDate ? moment(startDate).subtract(1, 'hour').format() : null, endDate: endDate ? moment(`${endDate} 23:59:59`).format() : null
       }
 
       await findAllUserLogs({ variables: { userLogsInput: { ...pageInputs } } })
@@ -110,7 +110,7 @@ const AuditLogTable = (): JSX.Element => {
         variables: {
           userLogsInput: {
             ...pageInputs, userId: userId ? userId : null, moduleType: moduleType ? moduleType : null,
-            patientId: patientId ? patientId : null, startDate: startDate ? startDate : null, endDate: endDate ? endDate : null
+            patientId: patientId ? patientId : null, startDate: startDate ? moment(startDate).subtract(1, 'hour').format() : null, endDate: endDate ? moment(`${endDate} 23:59:59`).format() : null
           }
         }
       })

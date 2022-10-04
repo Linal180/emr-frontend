@@ -4,9 +4,9 @@ import VaccineTable from './vaccineTable'
 //interface
 import { VaccinesProps } from '../../../../interfacesTypes';
 
-const Vaccines: FC<VaccinesProps> = ({ shouldDisableEdit }): JSX.Element => {
+const Vaccines: FC<VaccinesProps> = ({ shouldDisableEdit, handleStep }): JSX.Element => {
   return (
-    <VaccineTable shouldDisableEdit={shouldDisableEdit} />
+    <VaccineTable shouldDisableEdit={shouldDisableEdit} handleStep={handleStep} />
   )
 }
 

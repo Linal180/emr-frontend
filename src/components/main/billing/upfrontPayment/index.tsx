@@ -2,32 +2,34 @@
 import {
   Box, Button, Card, Grid, Table, TableBody, TableHead, TableRow, Typography
 } from "@material-ui/core";
-import { forwardRef, useCallback, useEffect, useImperativeHandle } from "react";
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { useParams } from "react-router";
 import InputController from "../../../../controller";
 //components block
-import UpFrontPaymentType from "./UpFrontPaymentType";
+import { createUpFrontPaymentSchema } from "../../../../validationSchemas";
 import Alert from "../../../common/Alert";
 import Loader from "../../../common/Loader";
+import UpFrontPaymentType from "./UpFrontPaymentType";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useParams } from "react-router";
 import {
-  ACTION, ADJUSTMENTS, AMOUNT, AMOUNT_TYPE, BALANCE, CHARGE_ENTRY, EXPECTED, NOTES, NOT_FOUND_EXCEPTION, PAID, PAYMENT, TOTAL_CHARGES, TYPE,
-  UPFRONT_INITIAL_VALUES, UPFRONT_PAYMENT_SUCCESS, UPFRONT_PAYMENT_TYPES, USER_NOT_FOUND_EXCEPTION_MESSAGE
+  ADJUSTMENTS, AMOUNT_TYPE, BALANCE, CHARGE_ENTRY, COLLECTED_AMOUNT, CPT_TEXT, DUE_AMOUNT, EXPECTED, NOTES, NOT_FOUND_EXCEPTION, PAID,
+  PAYMENT, PAYMENT_TYPE, TOTAL_TEXT, UPFRONT_INITIAL_VALUES, UPFRONT_PAYMENT_SUCCESS, UPFRONT_PAYMENT_TYPES,
+  USER_NOT_FOUND_EXCEPTION_MESSAGE
 } from "../../../../constants";
-import { useCreateUpFrontPaymentMutation, useFetchUpFrontPaymentDetailsByAppointmentIdLazyQuery } from "../../../../generated/graphql";
+import { Copay, OrderOfBenefitType, useCreateUpFrontPaymentMutation, useFetchPatientInsurancesLazyQuery, useFetchUpFrontPaymentDetailsByAppointmentIdLazyQuery } from "../../../../generated/graphql";
 import { CreateUpFrontPayment, FormForwardRef, ParamsType, UpFrontPaymentProps } from "../../../../interfacesTypes";
 import { useTableStyles } from "../../../../styles/tableStyles";
-import { GREEN, WHITE } from "../../../../theme";
+import { GREY } from "../../../../theme";
 import { renderTh, setRecord } from "../../../../utils";
-import { createUpFrontPaymentSchema } from "../../../../validationSchemas";
 
 const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProps>((
   { cptCodes, handleStep, shouldDisableEdit }, ref
 ): JSX.Element => {
   const classes = useTableStyles();
   const { appointmentId, id } = useParams<ParamsType>()
+  const [copays, setCopays] = useState<Copay[]>([])
   const methods = useForm<CreateUpFrontPayment>({
     defaultValues: {
       Additional: [{ ...UPFRONT_INITIAL_VALUES, paymentType: UPFRONT_PAYMENT_TYPES.Additional }],
@@ -54,6 +56,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
     const balanceAmount = Number(totalAmount) - Number(adjustments) - Number(paid)
 
     setValue('totalCharges', String(totalAmount))
+    setValue('cptCodesAmount', String(totalCptCodeAmount))
     setValue('expected', String(totalAmount))
     setValue('balance', String(balanceAmount))
   }, [Additional, Copay, Previous, adjustments, paid, setValue, totalCharge, totalCptCodeAmount])
@@ -142,9 +145,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
     } catch (error) { }
   }, [appointmentId, getUpFrontPaymentDetails])
 
-  useEffect(() => {
-    fetchUpFrontPayments()
-  }, [fetchUpFrontPayments])
+
 
   const onSubmit: SubmitHandler<CreateUpFrontPayment> = async (values) => {
     const { balance, expected, totalCharges } = values
@@ -152,7 +153,9 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
       return {
         ...upFrontPayment,
         amount: String(upFrontPayment.amount),
-        type: upFrontPayment.type.id
+        type: upFrontPayment.type.id,
+        copayType: upFrontPayment.copayType?.id,
+        dueAmount: upFrontPayment.dueAmount,
       }
     })
     await createUpFrontPayment({
@@ -173,6 +176,55 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
     handleStep && handleStep(4)
   }
 
+  const [fetchPatientInsurances] = useFetchPatientInsurancesLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+    variables: ({
+      id: id
+    }),
+
+    onCompleted(data) {
+      const { fetchPatientInsurances } = data || {}
+
+      if (fetchPatientInsurances) {
+        const { policies, response } = fetchPatientInsurances
+        if (response && response.status === 200) {
+          if (!shouldDisableEdit) {
+            const primaryInsurance = policies?.find((policyInfo) => policyInfo.orderOfBenefit === OrderOfBenefitType.Primary)
+            const secondaryInsurance = policies?.find((policyInfo) => policyInfo.orderOfBenefit === OrderOfBenefitType.Secondary)
+            const tertiaryInsurance = policies?.find((policyInfo) => policyInfo.orderOfBenefit === OrderOfBenefitType.Tertiary)
+
+            const insuranceInfo = primaryInsurance ? primaryInsurance : secondaryInsurance ? secondaryInsurance : tertiaryInsurance
+            const { copays } = insuranceInfo || {}
+            const { type, amount } = copays?.[0] || {}
+            setValue(`Copay.0.dueAmount`, amount as never)
+            setValue(`Copay.0.notes`, '' as never)
+            setValue(`Copay.0.copayType`, setRecord(type || '', type || '') as never)
+            setCopays(copays as Copay[])
+
+            trigger()
+          }
+        }
+      }
+    }
+  });
+
+  const getPatientInsurances = useCallback(() => {
+    try {
+      fetchPatientInsurances({
+        variables: {
+          id: id
+        }
+      })
+    } catch (error) { }
+  }, [fetchPatientInsurances, id])
+
+  useEffect(() => {
+    getPatientInsurances()
+    fetchUpFrontPayments()
+  }, [fetchUpFrontPayments, getPatientInsurances])
+
   useImperativeHandle(ref, () => ({
     submit() {
       handleSubmit(onSubmit)()
@@ -180,7 +232,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
   }));
 
   if (getUpFrontPaymentDetailsLoading) {
-    return <Loader loaderText="Fetching upFront Payments..." loading />
+    return <Loader loading loaderText="Fetching upFront Payments..." />
   }
 
 
@@ -209,27 +261,137 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
                     <TableHead>
                       <TableRow>
                         {renderTh(AMOUNT_TYPE)}
-                        {renderTh(AMOUNT)}
-                        {renderTh(TYPE)}
+                        {!!copays?.length && renderTh(DUE_AMOUNT)}
+                        {renderTh(COLLECTED_AMOUNT)}
+                        {renderTh(PAYMENT_TYPE)}
                         {renderTh(NOTES)}
-                        {!shouldDisableEdit && renderTh(ACTION)}
+                        {/* {!shouldDisableEdit && renderTh(ACTION)} */}
                       </TableRow>
                     </TableHead>
 
                     <TableBody>
-                      <UpFrontPaymentType moduleName={UPFRONT_PAYMENT_TYPES.Copay} shouldDisableEdit={shouldDisableEdit} />
-                      <UpFrontPaymentType moduleName={UPFRONT_PAYMENT_TYPES.Additional} shouldDisableEdit={shouldDisableEdit} />
-                      <UpFrontPaymentType moduleName={UPFRONT_PAYMENT_TYPES.Previous} shouldDisableEdit={shouldDisableEdit} />
+                      {!!copays?.length && <UpFrontPaymentType moduleName={UPFRONT_PAYMENT_TYPES.Copay} shouldDisableEdit={shouldDisableEdit} copays={copays} />}
+                      <UpFrontPaymentType moduleName={UPFRONT_PAYMENT_TYPES.Additional} shouldDisableEdit={shouldDisableEdit} copays={copays} />
+                      <UpFrontPaymentType moduleName={UPFRONT_PAYMENT_TYPES.Previous} shouldDisableEdit={shouldDisableEdit} copays={copays} />
                     </TableBody>
                   </Table>
                 </Box>
               </Box>
+
+              {cptCodes && <Box mt={3} px={3} pt={1} bgcolor={GREY} borderRadius={8}>
+                <Grid container>
+                  <Grid item md={8} sm={12} xs={12}>
+                    <Grid container spacing={0} direction="row">
+                      <Grid item md={3} sm={6} xs={12}>
+                        <Box display="flex" alignItems="center">
+                          <Typography variant="h5">{TOTAL_TEXT} :</Typography>
+
+                          <Box ml={1} width={150}>
+                            <InputController
+                              fieldType="text"
+                              controllerLabel={''}
+                              controllerName="totalCharges"
+                              disabled={shouldDisableEdit}
+                              className="payment-input"
+                            />
+                          </Box>
+                        </Box>
+                      </Grid>
+
+                      <Grid item md={3} sm={6} xs={12}>
+                        <Box display="flex" alignItems="center">
+                          <Typography variant="h5">{EXPECTED} :</Typography>
+
+                          <Box ml={1} width={150}>
+                            <InputController
+                              fieldType="text"
+                              controllerLabel={''}
+                              controllerName="expected"
+                              disabled={shouldDisableEdit}
+                              className="payment-input"
+                            />
+                          </Box>
+                        </Box>
+                      </Grid>
+
+                      <Grid item md={3} sm={6} xs={12}>
+                        <Box display="flex" alignItems="center">
+                          <Typography variant="h5">{ADJUSTMENTS} :</Typography>
+
+                          <Box ml={1} width={150}>
+                            <InputController
+                              fieldType="text"
+                              controllerLabel={''}
+                              controllerName="adjustments"
+                              disabled={shouldDisableEdit}
+                              className="payment-input"
+                            />
+                          </Box>
+                        </Box>
+                      </Grid>
+
+                      <Grid item md={3} sm={6} xs={12}>
+                        <Box ml={1} display="flex" alignItems="center">
+                          <Typography variant="h5">{CPT_TEXT} :</Typography>
+
+                          <Box ml={1} width={150}>
+                            <InputController
+                              fieldType="text"
+                              controllerLabel={''}
+                              controllerName="cptCodesAmount"
+                              disabled={true}
+                              className="payment-input"
+                              defaultValue={String(totalCptCodeAmount)}
+                            />
+                          </Box>
+                        </Box>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+
+                  <Grid item md={4} sm={12} xs={12}>
+                    <Grid container spacing={0} direction="row">
+                      <Grid item md={6} sm={6} xs={12}>
+                        <Box ml={1} display="flex" alignItems="center">
+                          <Typography variant="h5">{PAID} :</Typography>
+
+                          <Box ml={1} width={150}>
+                            <InputController
+                              fieldType="text"
+                              controllerLabel={''}
+                              controllerName="paid"
+                              disabled={shouldDisableEdit}
+                              className="payment-input"
+                            />
+                          </Box>
+                        </Box>
+                      </Grid>
+
+                      <Grid item md={6} sm={6} xs={12}>
+                        <Box display="flex" alignItems="center">
+                          <Typography variant="h5">{BALANCE} :</Typography>
+
+                          <Box ml={1} width={150}>
+                            <InputController
+                              fieldType="text"
+                              controllerLabel={''}
+                              controllerName="balance"
+                              disabled={shouldDisableEdit}
+                              className="payment-input"
+                            />
+                          </Box>
+                        </Box>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Box>}
             </Box>
           </Card>
 
-          <Box p={2} />
+          {/* <Box p={2} />
 
-          <Card>
+          {cptCodes && <Card>
             <Box px={3} pt={1} bgcolor={GREEN} borderRadius={8}>
               <Grid container>
                 <Grid item md={8} sm={12} xs={12}>
@@ -316,7 +478,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
                 </Grid>
               </Grid>
             </Box>
-          </Card>
+          </Card> */}
         </form>
       </FormProvider>
 

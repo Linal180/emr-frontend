@@ -25,6 +25,7 @@ import { ParamsType, PatientCardsProps, PatientInputProps } from '../../../../in
 import { useExternalPatientStyles } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
 import { useFindAppointmentInsuranceStatusLazyQuery } from '../../../../generated/graphql';
 import CardComponent from '../../../common/CardComponent';
+import { ActionType } from '../../../../reducers/patientReducer';
 
 const RegisterFormComponent: FC<PatientCardsProps> = ({
   getPatientLoading, dispatch, isEdit, state, shouldDisableEdit, disableSubmit, shouldShowBread
@@ -74,12 +75,14 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
     const shouldShowInsuranceStep = selection === 'insurance' ? true : false
     switch (step) {
       case !shouldShowBread ? 0 : Infinity:
-        return <InsuranceSelectionCard
-          state={state}
-          dispatch={dispatch}
-          selection={selection}
-          setSelection={setSelection}
-        />
+        return (<>
+          <InsuranceSelectionCard
+            state={state}
+            dispatch={dispatch}
+            selection={selection}
+            setSelection={setSelection}
+          />
+        </>)
 
       case shouldShowInsuranceStep ? 1 : Infinity:
         return (
@@ -90,7 +93,8 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
             cardTitle={INSURANCE}
             disableSubmit={disableSubmit}
             saveBtnText={NEXT}
-          ><InsuranceComponent />
+          >
+            <InsuranceComponent />
           </CardComponent>
         )
 
@@ -206,19 +210,21 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
       </Box> */}
 
       <Grid container spacing={2}>
-        <Grid item lg={3} md={4} sm={12} xs={12}>
+        <Grid item lg={2} md={12} sm={12} xs={12}>
           <Box className={classes.stepperGrid}>
             <Card className={classes.stepperContainer}>
               <StepperCard
                 stepperData={stepperData}
                 activeStep={activeStep as number}
-                dispatch={dispatch}
+                handleStep={(index: number) => dispatch && dispatch({
+                  type: ActionType.SET_ACTIVE_STEP, activeStep: index
+                })}
               />
             </Card>
           </Box>
         </Grid>
 
-        <Grid item lg={9} md={8} sm={12} xs={12}>
+        <Grid item lg={10} md={12} sm={12} xs={12}>
           {getActiveComponent(activeStep)}
         </Grid>
       </Grid>

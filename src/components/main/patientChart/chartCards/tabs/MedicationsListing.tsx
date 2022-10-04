@@ -15,10 +15,10 @@ import MedicationModal from "../../medications/modals/MedicationModal";
 // constants, utils, interfaces ang graphql block
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from "../../../../../assets/svgs";
 import {
-  ACTIONS, ADD_NEW_TEXT, COMMENTS, DASHES, DELETE_MEDICATION_DESCRIPTION, EIGHT_PAGE_LIMIT, MEDICATIONS_TEXT, MEDICATION_PROBLEM_DELETED, MEDICATION_TEXT, SIG, START_DATE, STATUS
+  ACTIONS, ADD_NEW_TEXT, COMMENTS, DASHES, DELETE_MEDICATION_DESCRIPTION, EIGHT_PAGE_LIMIT, MEDICATIONS_TEXT, MEDICATION_PROBLEM_DELETED, MEDICATION_TEXT, NEXT, SIG, START_DATE, STATUS
 } from "../../../../../constants";
 import { Medications, PatientMedicationsPayload, useFindAllPatientMedicationsLazyQuery, useRemovePatientMedicationMutation } from "../../../../../generated/graphql";
-import { ChartComponentProps, ParamsType } from "../../../../../interfacesTypes";
+import { MedicationTabProps, ParamsType } from "../../../../../interfacesTypes";
 import {
   Action, ActionType, chartReducer, initialState, State
 } from "../../../../../reducers/chartReducer";
@@ -26,7 +26,7 @@ import { useChartingStyles } from "../../../../../styles/chartingStyles";
 import { useTableStyles } from "../../../../../styles/tableStyles";
 import { getFormatDateString, getPageNumber, getProblemTypeColor, isLast, renderTh } from "../../../../../utils";
 
-const MedicationTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
+const MedicationTab: FC<MedicationTabProps> = ({ shouldDisableEdit, handleStep }) => {
   const classes = useChartingStyles();
   const classesTable = useTableStyles()
   const { id } = useParams<ParamsType>()
@@ -77,7 +77,11 @@ const MedicationTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
     try {
       await findAllPatientMedications({
         variables: {
-          patientMedicationInput: { patientId: id, paginationOptions: { page, limit: EIGHT_PAGE_LIMIT } }
+          patientMedicationInput: {
+            patientId: id,
+            paginationOptions: { page, limit: EIGHT_PAGE_LIMIT },
+            // ...(appointmentId ? { appointmentId } : {})
+          }
         },
       })
     } catch (error) { }
@@ -142,16 +146,29 @@ const MedicationTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
         <Grid item md={12} sm={12} xs={12}>
           <Card>
             <Box className={classes.cardBox}>
-              <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
+              <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
                 <Typography variant='h3'>{MEDICATIONS_TEXT}</Typography>
 
-                {!shouldDisableEdit &&
-                  <Button
-                    variant='contained' color='primary'
-                    startIcon={<Box width={20}><AddWhiteIcon /></Box>}
-                    onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
-                    {ADD_NEW_TEXT}
+                <Box display='flex' alignItems='center'>
+                  {!shouldDisableEdit &&
+                    <Button
+                      variant='contained' color='primary'
+                      startIcon={<Box width={20}><AddWhiteIcon /></Box>}
+                      onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
+                      {ADD_NEW_TEXT}
+                    </Button>}
+
+                  <Box p={1} />
+
+                  {handleStep && <Button
+                    variant='contained'
+                    color='secondary'
+                    size="large"
+                    onClick={()=>handleStep(6)}
+                  >
+                    {NEXT}
                   </Button>}
+                </Box>
               </Box>
 
               <Box className={classes.tableBox}>

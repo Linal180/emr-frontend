@@ -36,7 +36,7 @@ const MedicationModal: FC<AddModalProps> = ({
 }): JSX.Element => {
   const chartingClasses = useChartingStyles()
   const { id: medicationId, fullName } = item as Medications || {}
-  const { id: patientId } = useParams<ParamsType>()
+  const { id: patientId, appointmentId } = useParams<ParamsType>()
   const statuses = Object.keys(ProblemType)
 
   const methods = useForm<PatientMedicationInputs>({
@@ -170,154 +170,155 @@ const MedicationModal: FC<AddModalProps> = ({
       timeDuration: timeDuration?.id,
       noOfDays,
       medicationId,
-      patientId
-    }
-
-    if (isEdit) {
-      recordId && await updatePatientMedication({
-        variables: {
-          updatePatientMedicationInput: {
-            id: recordId, ...commonInput,
-          }
-        }
-      })
-    } else {
-      await addPatientMedication({
-        variables: {
-          createPatientMedicationInput: {
-            ...commonInput,
-          }
-        }
-      })
-    }
+      patientId,
+      ...(appointmentId ? { appointmentId } : {})
   }
 
-  const loading = addMedicationLoading || updateMedicationLoading || getMedicationLoading
-
-  const getMedicationTypeColor = (type: string) => {
-    switch (type) {
-      case ACTIVE:
-        return GREEN
-
-      case 'Historic':
-        return GREY_TWO
-
-      default:
-        return '';
-    }
+  if (isEdit) {
+    recordId && await updatePatientMedication({
+      variables: {
+        updatePatientMedicationInput: {
+          id: recordId, ...commonInput,
+        }
+      }
+    })
+  } else {
+    await addPatientMedication({
+      variables: {
+        createPatientMedicationInput: {
+          ...commonInput,
+        }
+      }
+    })
   }
+}
 
-  return (
-    <Dialog fullWidth maxWidth="sm" open={isOpen} onClose={handleClose}>
-      <DialogTitle>
-        <Typography variant="h4">{isEdit ? UPDATE_MEDICATION : ADD_MEDICATION}</Typography>
-      </DialogTitle>
+const loading = addMedicationLoading || updateMedicationLoading || getMedicationLoading
 
-      <FormProvider {...methods}>
-        <DialogContent className={chartingClasses.chartModalBox}>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Box display="flex" alignItems="center">
-              <Box className='pointer-cursor' mr={2} onClick={() => dispatcher({
-                type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: false
-              })}>
-                <PageBackIcon />
-              </Box>
+const getMedicationTypeColor = (type: string) => {
+  switch (type) {
+    case ACTIVE:
+      return GREEN
 
-              <Box>
-                {loading ? <TextLoader width='300px' rows={[{ column: 1, size: 12 }]} />
-                  : <Typography variant='h4'>{fullName}</Typography>
-                }
-              </Box>
+    case 'Historic':
+      return GREY_TWO
+
+    default:
+      return '';
+  }
+}
+
+return (
+  <Dialog fullWidth maxWidth="sm" open={isOpen} onClose={handleClose}>
+    <DialogTitle>
+      <Typography variant="h4">{isEdit ? UPDATE_MEDICATION : ADD_MEDICATION}</Typography>
+    </DialogTitle>
+
+    <FormProvider {...methods}>
+      <DialogContent className={chartingClasses.chartModalBox}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Box display="flex" alignItems="center">
+            <Box className='pointer-cursor' mr={2} onClick={() => dispatcher({
+              type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: false
+            })}>
+              <PageBackIcon />
             </Box>
 
-            <Box m={2} />
+            <Box>
+              {loading ? <TextLoader width='300px' rows={[{ column: 1, size: 12 }]} />
+                : <Typography variant='h4'>{fullName}</Typography>
+              }
+            </Box>
+          </Box>
 
-            <Grid container className={chartingClasses.problemGrid}>
-              <Grid item md={12} sm={12} xs={12}>
-                <CheckboxController controllerName='structured' controllerLabel={STRUCTURED} loading={loading} />
-              </Grid>
+          <Box m={2} />
+
+          <Grid container className={chartingClasses.problemGrid}>
+            <Grid item md={12} sm={12} xs={12}>
+              <CheckboxController controllerName='structured' controllerLabel={STRUCTURED} loading={loading} />
             </Grid>
+          </Grid>
 
 
-            {
-              structured ?
-                <>
-                  <Grid container alignContent='center' alignItems='center'>
-                    <Grid item md={3} sm={12} xs={12}>
-                      <Typography variant='body1'>{SIG}</Typography>
-                    </Grid>
-
-                    <Grid item md={9} sm={12} xs={12}>
-                      <Grid container spacing={2} direction="row" alignItems='center'>
-                        <Grid item md={1}>
-                          <Typography variant='body1'>{TAKE}</Typography>
-                        </Grid>
-
-                        <Grid item md={3}>
-                          <InputController
-                            fieldType="number"
-                            controllerName="takeAmount"
-                            controllerLabel={''}
-                          />
-                        </Grid>
-
-                        <Grid item md={3}>
-                          <Selector
-                            addEmpty
-                            name="tabletUnit"
-                            label={""}
-                            options={TABLET_UNIT_OPTIONS}
-                          />
-                        </Grid>
-                      </Grid>
-
-                      <Grid container>
-                        <Grid item md={7}>
-                          <Selector
-                            addEmpty
-                            name="timeDuration"
-                            label={""}
-                            options={TIME_DURATION_OPTIONS}
-                          />
-                        </Grid>
-                      </Grid>
-
-                      <Grid container>
-                        <Grid item md={6}>
-                          <Typography variant='body2'>by oral route</Typography>
-
-                          <Selector
-                            addEmpty
-                            name="oralRoute"
-                            label={""}
-                            options={ORAL_ROUTE_OPTIONS}
-                          />
-                        </Grid>
-
-                        <Grid item md={7}>
-                          <Box display='flex' alignItems='center'>
-                            <Typography variant='body2'>{'for'}</Typography>
-
-                            <Box mx={1}>
-                              <InputController
-                                fieldType="number"
-                                controllerName="noOfDays"
-                                controllerLabel={''}
-                                notStep
-                              />
-                            </Box>
-
-                            <Typography variant='body2'>{'day(s).'}</Typography>
-                          </Box>
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                </> :
+          {
+            structured ?
+              <>
                 <Grid container alignContent='center' alignItems='center'>
                   <Grid item md={3} sm={12} xs={12}>
                     <Typography variant='body1'>{SIG}</Typography>
                   </Grid>
+
+                  <Grid item md={9} sm={12} xs={12}>
+                    <Grid container spacing={2} direction="row" alignItems='center'>
+                      <Grid item md={1}>
+                        <Typography variant='body1'>{TAKE}</Typography>
+                      </Grid>
+
+                      <Grid item md={3}>
+                        <InputController
+                          fieldType="number"
+                          controllerName="takeAmount"
+                          controllerLabel={''}
+                        />
+                      </Grid>
+
+                      <Grid item md={3}>
+                        <Selector
+                          addEmpty
+                          name="tabletUnit"
+                          label={""}
+                          options={TABLET_UNIT_OPTIONS}
+                        />
+                      </Grid>
+                    </Grid>
+
+                    <Grid container>
+                      <Grid item md={7}>
+                        <Selector
+                          addEmpty
+                          name="timeDuration"
+                          label={""}
+                          options={TIME_DURATION_OPTIONS}
+                        />
+                      </Grid>
+                    </Grid>
+
+                    <Grid container>
+                      <Grid item md={6}>
+                        <Typography variant='body2'>by oral route</Typography>
+
+                        <Selector
+                          addEmpty
+                          name="oralRoute"
+                          label={""}
+                          options={ORAL_ROUTE_OPTIONS}
+                        />
+                      </Grid>
+
+                      <Grid item md={7}>
+                        <Box display='flex' alignItems='center'>
+                          <Typography variant='body2'>{'for'}</Typography>
+
+                          <Box mx={1}>
+                            <InputController
+                              fieldType="number"
+                              controllerName="noOfDays"
+                              controllerLabel={''}
+                              notStep
+                            />
+                          </Box>
+
+                          <Typography variant='body2'>{'day(s).'}</Typography>
+                        </Box>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </> :
+              <Grid container alignContent='center' alignItems='center'>
+                <Grid item md={3} sm={12} xs={12}>
+                  <Typography variant='body1'>{SIG}</Typography>
+                </Grid>
 
                   <Grid item md={5} sm={12} xs={12}>
                     <InputController
@@ -331,111 +332,112 @@ const MedicationModal: FC<AddModalProps> = ({
                 </Grid>
             }
 
-            <Grid container alignContent='center' alignItems='center'>
-              <Grid item md={3} sm={12} xs={12}>
-                <Typography variant='body1'>{START_DATE}</Typography>
-              </Grid>
-
-              <Grid item md={5} sm={12} xs={12}>
-                <DatePicker defaultValue={new Date()} name='startDate' label={''} />
-              </Grid>
+          <Grid container alignContent='center' alignItems='center'>
+            <Grid item md={3} sm={12} xs={12}>
+              <Typography variant='body1'>{START_DATE}</Typography>
             </Grid>
 
-            <Grid container alignContent='center' alignItems='center'>
-              <Grid item md={3} sm={12} xs={12}>
-                <Typography variant='body1'>{STATUS}</Typography>
-              </Grid>
+            <Grid item md={5} sm={12} xs={12}>
+              <DatePicker defaultValue={new Date()} name='startDate' label={''} />
+            </Grid>
+          </Grid>
 
-              <Grid item md={5} sm={12} xs={12}>
-                {loading ? renderLoading('') :
-                  <Box mt={0.5} className={chartingClasses.toggleProblem}>
-                    <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
-                      {statuses.map(statusValue =>
-                        <Box onClick={() => handleStatus(statusValue)}
-                          className={statusValue === status ? 'selectedBox selectBox' : 'selectBox'}
-                          style={{
-                            color: statusValue === status ? WHITE : getMedicationTypeColor(statusValue),
-                            backgroundColor: statusValue === status ? getMedicationTypeColor(statusValue) : WHITE,
-                          }}
-                        >
-                          <Typography variant='h6'>{statusValue}</Typography>
-                        </Box>
-                      )}
-                    </Box>
+          <Grid container alignContent='center' alignItems='center'>
+            <Grid item md={3} sm={12} xs={12}>
+              <Typography variant='body1'>{STATUS}</Typography>
+            </Grid>
+
+            <Grid item md={5} sm={12} xs={12}>
+              {loading ? renderLoading('') :
+                <Box mt={0.5} className={chartingClasses.toggleProblem}>
+                  <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+                    {statuses.map(statusValue =>
+                      <Box onClick={() => handleStatus(statusValue)}
+                        className={statusValue === status ? 'selectedBox selectBox' : 'selectBox'}
+                        style={{
+                          color: statusValue === status ? WHITE : getMedicationTypeColor(statusValue),
+                          backgroundColor: statusValue === status ? getMedicationTypeColor(statusValue) : WHITE,
+                        }}
+                      >
+                        <Typography variant='h6'>{statusValue}</Typography>
+                      </Box>
+                    )}
                   </Box>
-                }
-              </Grid>
+                </Box>
+              }
             </Grid>
+          </Grid>
 
-            {status === statuses[1] && <>
-              <Grid container alignContent='center' alignItems='center'>
-                <Grid item md={3} sm={12} xs={12}>
-                  <Typography variant='body1'>{STOP_DATE}</Typography>
-                </Grid>
-
-                <Grid item md={5} sm={12} xs={12}>
-                  <DatePicker
-                    loading={loading}
-                    label={""}
-                    name='stopDate'
-                  />
-                </Grid>
-              </Grid>
-
-              <Grid container alignContent='center' alignItems='center'>
-                <Grid item md={3} sm={12} xs={12}>
-                  <Typography variant='body1'>{STOP_REASON}</Typography>
-                </Grid>
-
-                <Grid item md={5} sm={12} xs={12}>
-                  <Selector
-                    addEmpty
-                    name="stopReason"
-                    label={""}
-                    options={STOP_REASON_OPTIONS}
-                  />
-                </Grid>
-              </Grid>
-            </>
-            }
-
+          {status === statuses[1] && <>
             <Grid container alignContent='center' alignItems='center'>
               <Grid item md={3} sm={12} xs={12}>
-                <Typography variant='body1'>{NOTES}</Typography>
+                <Typography variant='body1'>{STOP_DATE}</Typography>
               </Grid>
 
               <Grid item md={5} sm={12} xs={12}>
-                <InputController
-                  fieldType="text"
-                  controllerName="note"
-                  controllerLabel={''}
-                  notStep
+                <DatePicker
+                  loading={loading}
+                  label={""}
+                  name='stopDate'
+                    disableFuture={false}
                 />
               </Grid>
             </Grid>
-          </form>
-        </DialogContent>
 
-        <DialogActions>
-          <Box display='flex' justifyContent='flex-end' alignItems='center'>
-            <Button variant='text' onClick={closeAddModal}>
-              {CANCEL}
-            </Button>
+            <Grid container alignContent='center' alignItems='center'>
+              <Grid item md={3} sm={12} xs={12}>
+                <Typography variant='body1'>{STOP_REASON}</Typography>
+              </Grid>
 
-            <Box p={1} />
+              <Grid item md={5} sm={12} xs={12}>
+                <Selector
+                  addEmpty
+                  name="stopReason"
+                  label={""}
+                  options={STOP_REASON_OPTIONS}
+                />
+              </Grid>
+            </Grid>
+          </>
+          }
 
-            <Button type='submit' disabled={loading} variant='contained' color='primary'
-              onClick={handleSubmit(onSubmit)}
-            >
-              {isEdit ? UPDATE : ADD}
+          <Grid container alignContent='center' alignItems='center'>
+            <Grid item md={3} sm={12} xs={12}>
+              <Typography variant='body1'>{NOTES}</Typography>
+            </Grid>
 
-              {loading && <CircularProgress size={20} color="inherit" />}
-            </Button>
-          </Box>
-        </DialogActions>
-      </FormProvider>
-    </Dialog >
-  )
+            <Grid item md={5} sm={12} xs={12}>
+              <InputController
+                fieldType="text"
+                controllerName="note"
+                controllerLabel={''}
+                notStep
+              />
+            </Grid>
+          </Grid>
+        </form>
+      </DialogContent>
+
+      <DialogActions>
+        <Box display='flex' justifyContent='flex-end' alignItems='center'>
+          <Button variant='text' onClick={closeAddModal}>
+            {CANCEL}
+          </Button>
+
+          <Box p={1} />
+
+          <Button type='submit' disabled={loading} variant='contained' color='primary'
+            onClick={handleSubmit(onSubmit)}
+          >
+            {isEdit ? UPDATE : ADD}
+
+            {loading && <CircularProgress size={20} color="inherit" />}
+          </Button>
+        </Box>
+      </DialogActions>
+    </FormProvider>
+  </Dialog >
+)
 };
 
 export default MedicationModal;

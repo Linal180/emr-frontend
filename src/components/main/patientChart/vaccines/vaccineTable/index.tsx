@@ -18,13 +18,13 @@ import { vaccinesReducer, Action, ActionType, State, initialState } from '../../
 import { Cvx, FindAllVaccinesPayload, useFindAllVaccinesLazyQuery, useRemoveVaccineMutation } from '../../../../../generated/graphql';
 import {
   ACTIONS, ADD_NEW_TEXT, ADMINISTER_BY, ADMINISTRATION_DATE, AMOUNT_UNIT_TEXT, DASHES,
-  DELETE_VACCINE_DESCRIPTION, EIGHT_PAGE_LIMIT, EXPIRY_DATE, NAME, PAGE_LIMIT, ROUTE,
+  DELETE_VACCINE_DESCRIPTION, EIGHT_PAGE_LIMIT, EXPIRY_DATE, NAME, NEXT, PAGE_LIMIT, ROUTE,
   SITE_TEXT, VACCINE_TEXT
 } from '../../../../../constants'
 import Alert from '../../../../common/Alert';
 
 const VaccinesTable: FC<VaccinesTableProps> = (props): JSX.Element => {
-  const { shouldDisableEdit } = props || {}
+  const { shouldDisableEdit, handleStep } = props || {}
 
   const classes = useChartingStyles();
   const classesTable = useTableStyles()
@@ -66,10 +66,10 @@ const VaccinesTable: FC<VaccinesTableProps> = (props): JSX.Element => {
           dispatch({ type: ActionType.SET_DEL_ID, delId: '' })
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
-          if (!!data && (data.length > 1 || isLast(data?.length, page))) {
+          if (!!data && ((data?.length || 0) > 1 || isLast(data?.length || 0, page))) {
             await fetchVaccines()
           } else {
-            dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, isLast?.length || 0) })
+            dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, data?.length || 0) })
           }
         }
       }
@@ -131,16 +131,29 @@ const VaccinesTable: FC<VaccinesTableProps> = (props): JSX.Element => {
         <Grid item md={12} sm={12} xs={12}>
           <Card>
             <Box className={classes.cardBox}>
-              <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
+              <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
                 <Typography variant='h3'>{VACCINE_TEXT}</Typography>
 
-                {!shouldDisableEdit &&
-                  <Button
-                    variant='contained' color='primary'
-                    startIcon={<Box width={20}><AddWhiteIcon /></Box>}
-                    onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
-                    {ADD_NEW_TEXT}
+                <Box display='flex' alignItems='center'>
+                  {!shouldDisableEdit &&
+                    <Button
+                      variant='contained' color='primary'
+                      startIcon={<Box width={20}><AddWhiteIcon /></Box>}
+                      onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
+                      {ADD_NEW_TEXT}
+                    </Button>}
+
+                  <Box p={1} />
+
+                  {handleStep && <Button
+                    variant='contained'
+                    color='secondary'
+                    size="large"
+                    onClick={() => handleStep(10)}
+                  >
+                    {NEXT}
                   </Button>}
+                </Box>
               </Box>
 
               <Box className={`${classes.tableBox} ${classes.vaccineTable}`}>
