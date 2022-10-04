@@ -2,11 +2,11 @@ import { FC, Fragment } from 'react';
 import { Box } from '@material-ui/core';
 import { useFormContext } from 'react-hook-form';
 //component
-import SocialDateCard from './socialDateCard';
-import SocialSwitchCard from './socialSwitchCard';
-import SocialInputCard from './socialInputCard';
-import SocialSelectorCard from './socialSelectorCard';
-import DependentQuestionCard from './dependentQuestionCard';
+import SocialDateCard from './SocialDateCard';
+import SocialSwitchCard from './SocialSwitchCard';
+import SocialInputCard from './SocialInputCard';
+import SocialSelectorCard from './SocialSelectorCard';
+import DependentQuestionCard from './DependentQuestionCard';
 //constants, interfaces
 import { QuestionType } from '../../../../../constants';
 import { QuestionCardType, SelectorOption } from '../../../../../interfacesTypes';

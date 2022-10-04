@@ -1,9 +1,9 @@
 import { FC } from 'react'
 //components
-import SocialDateCard from './socialDateCard';
-import SocialSwitchCard from './socialSwitchCard';
-import SocialInputCard from './socialInputCard';
-import SocialSelectorCard from './socialSelectorCard';
+import SocialDateCard from './SocialDateCard';
+import SocialSwitchCard from './SocialSwitchCard';
+import SocialInputCard from './SocialInputCard';
+import SocialSelectorCard from './SocialSelectorCard';
 //constants, interfaces
 import { QuestionType } from '../../../../../constants';
 import { DependentQuestionCardType, SelectorOption } from '../../../../../interfacesTypes';

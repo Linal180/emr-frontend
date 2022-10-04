@@ -3,7 +3,7 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, Typography } from "@material-ui/core";
 import { FC, Reducer, useCallback, useEffect, useMemo, useReducer } from "react";
 //components
-import QuestionCard from "./questionCard";
+import QuestionCard from "./QuestionCard";
 import Alert from "../../../../common/Alert";
 //constants
 import { getSocialHistoryFormValues } from "../../../../../utils";
