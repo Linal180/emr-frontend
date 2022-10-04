@@ -273,9 +273,9 @@ const InsuranceComponent = ({
 
         <Box m={3} />
 
-        <Card>
-          <EligibilityTableComponent id={patientId} appointmentId={appointmentId} />
-        </Card>
+        <EligibilityTableComponent id={patientId} appointmentId={appointmentId} />
+
+        <Box p={2} />
 
         {isCardModalOpen &&
           <InsuranceCardsModal

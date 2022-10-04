@@ -10,7 +10,7 @@ import TableLoader from "../../../../../common/TableLoader";
 import ConfirmationModal from "../../../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../../../common/NoDataFoundComponent";
 //svgs
-import { formatValue, renderTh } from "../../../../../../utils";
+import { formatValue, getPageNumber, isLast, renderTh } from "../../../../../../utils";
 import { useTableStyles } from "../../../../../../styles/tableStyles";
 import { AddWhiteIcon, TrashNewIcon } from "../../../../../../assets/svgs";
 import { FamilyHistoryProps, ParamsType } from "../../../../../../interfacesTypes"
@@ -60,7 +60,11 @@ const FamilyHistoryTable: FC<FamilyHistoryProps> = ({ shouldDisableEdit = false 
       if (status === 200 && id) {
         dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
         message && Alert.success(message)
-        await fetchFamilyHistory()
+        if (!!familyHistories && ((familyHistories?.length || 0) > 1 || isLast(familyHistories?.length || 0, page))) {
+          fetchFamilyHistory()
+        } else {
+          dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, familyHistories?.length || 0) })
+        }
       }
     },
     onError: ({ message }) => {

@@ -18,7 +18,7 @@ import {
 import {
   ColumnTypes, FormBuilderFormInitial,
   FormInitialType, ItemsTypes, LabOrdersResultOption1, LabOrdersResultOption2, SelectOptions, SelectorOption,
-  SpecimenTypeOption, StepLabelType, TestOption
+  SpecimenTypeOption, StepLabelType, TestOption, UpFrontPaymentTypeProps
 } from "../interfacesTypes";
 import {
   formatValue, getFormattedDate, getStandardTime, mapEnum, mapEnumWithCode, setRecord, sortingValue
@@ -90,6 +90,7 @@ export enum Heart_RATE_RANGES {
 
 // constants
 export const DIED_TEXT = 'Died'
+export const ICD_TEXT = 'International Classification of Diseases'
 export const DISEASE_TEXT = 'Disease'
 export const ONSET_AGE_TEXT = 'Onset Age'
 export const RELATIVE = 'Relative'
@@ -611,7 +612,7 @@ export const DEACTIVATE_EMERGENCY_ACCESS_MODE =
   "Deactivate Emergency Access Mode";
 export const TEMPORARY_EMERGENCY_ACCESS_DESCRIPTION =
   "Emergency access mode gives practice members temporary administrator permissions in the event of an emergency or crisis. Access is secure and only available to pre-selected practice members designated by a practice administrator.";
-export const ICT_TEN = "ICT-10 Codes";
+export const ICD_TEN = "ICD-10 Codes";
 export const ICD_TEN_CODES = "ICD-10 Codes";
 export const ICD_CODE = "ICD Code";
 export const SNOMED_CODE = "SnoMED Code:";
@@ -625,8 +626,8 @@ export const CUSTOM_CODES = "Custom Codes";
 export const MEDICINES = "Medicines";
 export const TESTS = "Tests";
 export const VACCINES = "Vaccines";
-export const ICT_TEN_DESCRIPTION =
-  "Create and edit ICT-10 codes inventory for your practice";
+export const ICD_TEN_DESCRIPTION =
+  "Create and edit ICD-10 codes inventory for your practice";
 export const ICT_NINE_DESCRIPTION =
   "Create and edit ICT-9 codes inventory for your practice";
 export const CPT_CODES_DESCRIPTION =
@@ -1220,9 +1221,13 @@ export const PRIVACY = "Privacy";
 export const RECEIVED = "Received";
 export const INSURANCE_SELECTION = "Insurance Selection";
 export const NO_INSURANCE_ADDED = "No Insurance Added";
+export const AMOUNT_TYPE = "Amount Type";
+export const CHARGE_ENTRY = "Charge Entry";
 export const PAYMENT = "Payment";
 export const GROUP_NO = "Group #";
 export const ROLES_TEXT = "Roles";
+export const ADDITIONAL = "Additional";
+export const PREVIOUS = "Previous";
 export const IS_ACTIVE = "Active";
 export const TOTAL_TEXT = "Total";
 export const TWO_FA_TEXT = "2-FA";
@@ -1261,7 +1266,10 @@ export const CASH_PAID = "Cash Paid";
 export const TIME_SLOT = "Time Slot";
 export const HOMEBOUND = "Home Bound";
 export const PROFILE_TEXT = "Profile";
-export const TOTAL_CHARGES = "Total Charges:";
+export const EXPECTED = "Expected";
+export const ADJUSTMENTS = "Adjustments";
+export const BALANCE = "Balance";
+export const TOTAL_CHARGES = "Total Charges :";
 export const TOTAL_DISCOUNTS = "Total Discounts:";
 export const PATIENT_PAID = "Patient Paid:";
 export const INSURANCE_PAID = "Insurance Paid:";
@@ -1551,6 +1559,8 @@ export const PUBLIC_FORM_FAIL_MESSAGE = 'Your record is not created.';
 export const VERIFICATION_MESSAGE = "You are verified. Please login.";
 export const DELETE_PROBLEM_DESCRIPTION = "Confirm to delete problem";
 export const DELETE_VACCINE_DESCRIPTION = "Confirm to delete vaccine";
+export const DELETE_ICD_10_DESCRIPTION = "Confirm to delete icd-10";
+export const DELETE_CPT_CODE_DESCRIPTION = "Confirm to delete CPT code";
 export const DELETE_ALLERGY_DESCRIPTION = "Confirm to delete allergy";
 export const CHOOSE_YOUR_PAYMENT_METHOD = "Choose your Payment Method";
 export const NEXT_SCHEDULED_APPOINTMENT = "Next Scheduled Appointment";
@@ -1704,7 +1714,10 @@ export const PROVIDER_PUBLIC_APPOINTMENT_ROUTE = "/provider-public-appointment";
 export const FACILITY_PUBLIC_APPOINTMENT_ROUTE = "/facility-public-appointment";
 export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION_ROUTE}/success`;
 export const PATIENT_APPOINTMENT_CANCEL = `${PUBLIC_APPOINTMENT_ROUTE}/appointment-cancel`;
-export const INSURANCE_ELIGIBILITY_ROUTE = `/insurance-eligibility`
+export const INSURANCE_ELIGIBILITY_ROUTE = `/insurance-eligibility`;
+export const ICD_10_ROUTE = `/icd-10`;
+export const CPT_CODE_ROUTE = `/cpt-code`;
+
 // Facility Routes
 export const BILLING_PROFILE_ROUTE = "billing-profile";
 export const FACILITY_INFO_ROUTE = "facility-information";
@@ -1935,6 +1948,8 @@ export const LOGGED_OUT_BEFORE_RESETTING_PASSWORD =
   "Please log out before resetting password";
 export const FORGET_PASSWORD_SUCCESS =
   "An email has been sent to your registered email address";
+export const UPFRONT_PAYMENT_SUCCESS =
+  "UpFront Payment Saved Successfully";
 export const APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY =
   "Appointment status is updated successfully";
 export const APPOINTMENT_REMINDER_SENT_SUCCESSFULLY =
@@ -2641,6 +2656,12 @@ export enum CARD_LAYOUT_MODAL {
   ICDCodes = 'ICDCodes',
 }
 
+export enum UPFRONT_PAYMENT_TYPES {
+  Copay = 'Copay',
+  Additional = 'Additional',
+  Previous = 'Previous'
+}
+
 export enum ATTACHMENT_TITLES {
   Signature = "Signature",
   Agreement = "Agreement",
@@ -2727,35 +2748,35 @@ export const MAPPED_STATUS = [
 
 export const INVENTORY_ITEMS = [
   {
-    name: ICT_TEN,
-    link: "/",
-    desc: ICT_TEN_DESCRIPTION,
+    name: ICD_TEN,
+    link: ICD_10_ROUTE,
+    desc: ICD_TEN_DESCRIPTION,
   },
-  {
-    name: ICT_NINE,
-    link: "/",
-    desc: ICT_NINE_DESCRIPTION,
-  },
+  // {
+  //   name: ICT_NINE,
+  //   link: "/",
+  //   desc: ICT_NINE_DESCRIPTION,
+  // },
   {
     name: CPT_CODES,
-    link: "/",
+    link: CPT_CODE_ROUTE,
     desc: CPT_CODES_DESCRIPTION,
   },
-  {
-    name: MEDICINES,
-    link: "/",
-    desc: MEDICINES_DESCRIPTION,
-  },
-  {
-    name: TESTS,
-    link: "/",
-    desc: TESTS_DESCRIPTION,
-  },
-  {
-    name: VACCINES,
-    link: "/",
-    desc: VACCINES_DESCRIPTION,
-  },
+  // {
+  //   name: MEDICINES,
+  //   link: "/",
+  //   desc: MEDICINES_DESCRIPTION,
+  // },
+  // {
+  //   name: TESTS,
+  //   link: "/",
+  //   desc: TESTS_DESCRIPTION,
+  // },
+  // {
+  //   name: VACCINES,
+  //   link: "/",
+  //   desc: VACCINES_DESCRIPTION,
+  // },
 ];
 
 export const APPOINTMENT_SETTINGS_ITEMS = [
@@ -3090,6 +3111,13 @@ export const TEST_FIELD_INITIAL_VALUES: TestOption = {
   diagnosesIds: [EMPTY_MULTISELECT_OPTION]
 };
 
+export const UPFRONT_INITIAL_VALUES: UpFrontPaymentTypeProps = {
+  amount: 0,
+  type: { id: '', name: '' },
+  notes: '',
+  paymentType: UPFRONT_PAYMENT_TYPES.Copay
+};
+
 export const ORDERS_RESULT_INITIAL_VALUES_1: LabOrdersResultOption1 = {
   normalRange: '',
   normalRangeUnits: '',
@@ -3101,6 +3129,16 @@ export const ORDERS_RESULT_INITIAL_VALUES_1: LabOrdersResultOption1 = {
 export const ORDERS_RESULT_INITIAL_VALUES_2: LabOrdersResultOption2 = {
   resultValue: { id: '', name: '' },
 };
+
+export const UPFRONT_TYPE_OPTIONS: SelectorOption[] = [
+  { id: 'Cash', name: 'Cash' },
+  { id: 'Check', name: 'Check' },
+  { id: 'American Express', name: 'American Express' },
+  { id: 'Mastercard', name: 'Mastercard' },
+  { id: 'Visa', name: 'Visa' },
+  { id: 'Discover', name: 'Discover' },
+  { id: 'Other', name: 'Other' },
+];
 
 export const CHECK_IN_STEPS = [
   CHECK_IN,

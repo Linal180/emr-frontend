@@ -18,7 +18,24 @@ export const DetailTooltip = withStyles((theme: Theme) => ({
 
 export const useTableStyles = makeStyles(() => ({
   table: {
-    minWidth: 1200
+    minWidth: 1200,
+  },
+
+  paymentTable: { },
+
+  boxBg: {
+    minHeight: 54,
+    display: 'flex',
+    alignItems: 'center',
+
+    "& .MuiFormControl-marginNormal": {
+      margin: 0,
+      padding: 0,
+    },
+    
+    "& .MuiAutocomplete-root": {
+      width: '100%',
+    },
   },
 
   searchBox: {

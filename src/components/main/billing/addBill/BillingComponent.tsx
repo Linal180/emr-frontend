@@ -62,7 +62,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         return
       }
       shouldCheckout && history.push(`${VIEW_APPOINTMENTS_ROUTE}`)
-      fetchBillingDetails()
+      // !shouldSubmitPayment && fetchBillingDetails()
     }
   });
 
@@ -514,7 +514,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
   }, [appointmentId, findAppointmentInsuranceStatus])
 
 
-  const onSubmit: SubmitHandler<CreateBillingProps> = (values) => {
+  const onSubmit: SubmitHandler<CreateBillingProps> = async (values) => {
     if (shouldDisableEdit) {
       history.push(VIEW_APPOINTMENTS_ROUTE)
     } else {
@@ -571,7 +571,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         uncoveredAmount: `${uncoveredAmount}`, from, to, shouldCheckout
       }
 
-      createBilling({
+      await createBilling({
         variables: {
           createBillingInput
         }
