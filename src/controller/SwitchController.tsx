@@ -66,6 +66,7 @@ const SwitchController: FC<SwitchControllerProps> = ({ controllerName, controlle
     <Controller
       name={controllerName}
       control={control}
+      defaultValue={false}
       render={({ field: { value, onChange, ref } }) => (
         <FormControl fullWidth margin="normal" className={classes.toggleContainer}>
           <InputLabel shrink>{controllerLabel}</InputLabel>

@@ -3881,17 +3881,17 @@ export const PATIENT_CHARTING_MENU = [
 ]
 
 export const HISTORY_CHARTING_TABS = [
-  // {
-  //   title: "Social History",
-  //   value: "1",
-  // },
   {
-    title: "Family History",
+    title: "Social History",
     value: "1",
   },
   {
-    title: "Surgical History",
+    title: "Family History",
     value: "2",
+  },
+  {
+    title: "Surgical History",
+    value: "3",
   },
 ]
 
@@ -4037,6 +4037,478 @@ export const familyRelativeFormDefaultValue = {
   notes: '',
 }
 
+// Social History
+export const ACTIVITIES_OF_DAILY_LIVING = 'Activities of Daily Living';
+export const ABLE_TO_CARE_YOURSELF = "Are you able to care for yourself?";
+export const BLIND_OR_DO_YOU_HAVE_DIFFICULTY_SEEING = "Are you blind or do you have difficulty seeing?";
+export const DEAF_OR_DO_YOU_HAVE_DIFFICULTY_SEEING = "Are you deaf or do you have serious difficulty hearing?";
+export const DIFFICULTY_CONCENTRATING_MAKING_DECISION = "Do you have difficulty concentrating, remembering or making decisions?";
+export const DIFFICULTY_WALKING_CLIMBING = "Do you have difficulty walking or climbing stairs?";
+export const DIFFICULTY_DRESSING_BATHING = "Do you have difficulty dressing or bathing?";
+export const DIFFICULTY_DOING_ERRANDS_ALONE = "Do you have difficulty doing errands alone?";
+export const ARE_YOU_ABLE_TO_WALK = "Are you able to walk?";
+export const DO_YOU_HAVE_TRANSPORTATION_DIFFICULTIES = "Do you have transportation difficulties?";
+export const PUBLIC_HEALTH_TRAVEL = "Public Health and Travel";
+export const HAVE_YOU_BEEN_TO_AN_AREA_KNOWN_HIGH_RISK = "Have you been to an area known to be high risk for COVID-19?";
+export const IN_THE_14_DAYS_BEFORE_SYMPTOM_ONSET_CASE_ILL = "In the 14 days before symptom onset, have you had close contact with a laboratory-confirmed COVID-19 while that case was ill?";
+export const IN_THE_14_DAYS_BEFORE_SYMPTOM_ONSET_PERSON_ILL = "In the 14 days before symptom onset, have you had close contact with a person who is under investigation for COVID-19 while that person was ill?";
+export const RESIDE_IN_OR_HAVE_YOU_TRAVELED = "Do you reside in or have you traveled to an area where Ebola virus transmission is active?";
+export const HAVE_YOU_PROCESSED_BLOOD_BODY_FLUIDS = "Have you processed blood or body fluids from an Ebola virus disease patient without appropriate PPE?";
+export const HAVE_YOU_RECENTLY_PLANNING_TO_TRAVEL = "Have you recently or are you planning to travel to an area with Zika virus?";
+export const SUBSTANCE_USE = "Substance Use";
+export const DO_YOU_HAVE_EVER_SMOKED_TOBACCO = "Do you or have you ever smoked tobacco?";
+export const DO_YOU_EVER_USED_TOBACCO_NICOTINE = "Do you or have you ever used any other forms of tobacco or nicotine?";
+export const WHAT_WAS_DATE_OF_YOUR_MOST_RECENT_TOBACCO_SCREENING = "What was the date of your most recent tobacco screening?";
+export const WHAT_IS_YOUR_LEVEL_OF_ALCOHOL_CONSUMPTION = "What is your level of alcohol consumption?";
+export const DO_YOU_USE_ANY_ILLICIT = "Do you use any illicit or recreational drugs?";
+export const WHAT_IS_YOUR_LEVEL_OF_CAFFEINE_CONSUMPTION = "What is your level of caffeine consumption?";
+export const ADVANCED_DIRECTIVE = "Advanced Directive";
+export const DO_YOU_HAVE_AN_ADVANCED_DIRECTIVE = "Do you have an advanced directive?";
+export const IS_BLOOD_TRANSFUSION_ACCEPTABLE_IN_AN_EMERGENCY = "Is blood transfusion acceptable in an emergency?";
+export const HOME_AND_ENVIRONMENT = "Home and Environment";
+export const HAVE_THERE_BEEN_ANY_CHANGES_TO_YOUR_FAMILY = "Have there been any changes to your family or social situation?";
+export const WHAT_TYPE_OF_CHILD_CARE_DO_YOU_USE = "What type of child care do you use?";
+export const DO_YOU_HAVE_ANY_PETS = "Do you have any pets?";
+export const DO_YOU_HAVE_SMOKE_AND_CARBON_MONOXIDE = "Do you have smoke and carbon monoxide detectors in your home?";
+export const ARE_YOU_PASSIVELY_EXPOSED_TO_SMOKE = "Are you passively exposed to smoke?";
+export const ARE_THERE_ANY_GUNS_PRESENT_HOME = "Are there any guns present in your home?";
+export const WHAT_IS_FLUORIDE_STATUS_OF_YOUR_HOME = "What is the fluoride status of your home?";
+export const DO_YOU_USE_INSECT_REPELLENT_ROUTINELY = "Do you use insect repellent routinely?";
+export const DO_YOU_USE_SUNSCREEN = "Do you use sunscreen routinely?";
+export const LIFESTYLE = "Lifestyle";
+export const DO_YOU_FEEL_STRESSED = "Do you feel stressed (tense, restless, nervous, or anxious, or unable to sleep at night)?";
+export const DO_YOU_WEAR_HELMET = "Do you wear a helmet when biking?";
+export const DO_YOU_USE_SEAT_BELT = "Do you use your seat belt or car seat routinely?";
+export const EDUCATION_AND_OCCUPATION = "Education and Occupation";
+export const WHAT_IS_THE_HIGHEST_GRADE_OR_LEVEL_OF_SCHOOL_COMPLETED = "What is the highest grade or level of school you have completed or the highest degree you have received?";
+export const ARE_YOU_CURRENTLY_EMPLOYED = "Are you currently employed?";
+export const MARRIAGE_AND_SEXUALITY = "Marriage and Sexuality";
+export const WHAT_IS_YOUR_RELATIONSHIP_STATUS = "What is your relationship status?";
+export const ARE_YOU_SEXUALLY_ACTIVE = "Are you sexually active?";
+export const HOW_MANY_CHILDREN_DO_YOU_HAVE = "How many children do you have?";
+export const DIET_AND_EXERCISE = "Diet and Exercise";
+export const WHAT_TYPE_OF_DIET_FOLLOWING = "What type of diet are you following?";
+export const WHAT_IS_YOUR_EXERCISE_LEVEL = "What is your exercise level?";
+export const HOW_MANY_DAYS_OF_MODERATE_TO_STRENUOUS_EXERCISE = "How many days of moderate to strenuous exercise, like a brisk walk, did you do in the last 7 days?";
+export const WHAT_TYPES_OF_SPORTING_ACTIVITIES_PARTICIPATE = "What types of sporting activities do you participate in?";
+export const GENDER_IDENTITY_LGBTQ_IDENTITY = "Gender Identity and LGBTQ Identity";
+export const ASSIGNED_SEX_AT_BIRTH = "Assigned sex at birth";
+
+
+// social selectors
+export const ABLE_WALK_MAPPED = [
+  { id: "RESTRICTIONS", name: "Yes: walks without restrictions" },
+  { id: "ASSISTIVE", name: "Yes: walks with assistive device(s)" },
+  { id: "SELF_MOBILITY", name: "Yes: limited self-mobility with assistive device(s); generally relies on wheeled mobility" },
+  { id: "CONFINED", name: "No: Confined to chair" },
+  { id: "INDEPENDENT_WHEELCHAIR", name: "No: Independent in wheelchair" },
+  { id: "HELP_WHEELCHAIR", name: "No: Requires minimal help in wheelchair" },
+  { id: "PUSHING_WHEELCHAIR", name: "No: Dependent on helper pushing wheelchair" },
+  { id: "UNABLE_WALK", name: "No: Unable to walk" },
+  { id: "UNABLE_INITIATE_WALKING", name: "No: Unable to initiate walking" },
+  { id: "BED_RIDDEN", name: "No: Bed-ridden" },
+]
+
+export const SMOKED_TOBACCO_MAPPED = [
+  { id: "NEVER_SMOKER", name: "Never smoker" },
+  { id: "FORMER_SMOKER", name: "Former smoker" },
+  { id: "EVERYDAY_SMOKER", name: "Current every day smoker" },
+  { id: "SOME_DAY_SMOKER", name: "Current some days smoker" },
+  { id: "STATUS_UNKNOWN", name: "Smoker - current status unknown" },
+  { id: "EVER_SMOKED", name: "Unknown if ever smoked" },
+  { id: "NOT_TOLERATED", name: "Not tolerated" },
+  { id: "PATIENT_REFUSED", name: "Patient refused" },
+  { id: "NOT_INDICATED", name: "Not indicated" },
+]
+
+export const ALCOHOL_CONSUMPTION_MAPPED = [
+  { id: "NONE", name: "None" },
+  { id: "OCCASIONAL", name: "Occasional" },
+  { id: "MODERATE", name: "Moderate" },
+  { id: "HEAVY", name: "Heavy" },
+]
+
+export const CAFFEINE_CONSUMPTION_MAPPED = [
+  { id: "NONE", name: "None" },
+  { id: "OCCASIONAL", name: "Occasional" },
+  { id: "MODERATE", name: "Moderate" },
+  { id: "HEAVY", name: "Heavy" },
+]
+
+export const CHILD_CARE_MAPPED = [
+  { id: "NONE", name: "None" },
+  { id: "RELATIVE", name: "Relative" },
+  { id: "PRIVATE_SITTER", name: "Private sitter" },
+  { id: "DAYCARE", name: "Daycare/preschool" },
+]
+
+export const FLUORIDE_STATUS_MAPPED = [
+  { id: "FLUORIDATED", name: "Fluoridated" },
+  { id: "NON_FLUORIDATED", name: "Non-fluoridated" },
+  { id: "UNKNOWN", name: "Unknown" },
+]
+
+export const FEEL_STRESSED_MAPPED = [
+  { id: "NOT_AT_ALL", name: "Not at all" },
+  { id: "ONLY_LITTLE", name: "Only a little" },
+  { id: "SOME_CONTEXT", name: "To some extent" },
+  { id: "RATHER_MUCH", name: "Rather much" },
+  { id: "VERY_MUCH", name: "Very much" },
+]
+
+export const HIGHEST_GRADE_MAPPED = [
+  { id: "NEVER_ATTEND", name: "Never attended/kindergarten only" },
+  { id: "FIRST_GRADE", name: "1st grade" },
+  { id: "SECOND_GRADE", name: "2nd grade" },
+  { id: "THIRD_GRADE", name: "3rd grade" },
+  { id: "FORTH_GRADE", name: "4th grade" },
+  { id: "FIFTH_GRADE", name: "5th grade" },
+  { id: "SIXTH_GRADE", name: "6th grade" },
+  { id: "SEVENTH_GRADE", name: "7th grade" },
+  { id: "EIGHTH_GRADE", name: "8th grade" },
+  { id: "NINTH_GRADE", name: "9th grade" },
+  { id: "TENTH_GRADE", name: "10th grade" },
+  { id: "ELEVENTH_GRADE", name: "11th grade" },
+  { id: "TWELVE_GRADE", name: "12th grade, no diploma" },
+  { id: "GED_EQUIVALENT", name: "GED or equivalent" },
+  { id: "HIGH_SCHOOL_GRADUATE", name: "High school graduate" },
+  { id: "NO_DEGREE", name: "Some college, no degree" },
+  { id: "ASSOCIATE_DEGREE_VOCATIONAL", name: "Associate degree: occupational, technical, or vocational program" },
+  { id: "ASSOCIATE_DEGREE_ACADEMIC", name: "Associate degree: academic program" },
+  { id: "BACHELORS_DEGREE", name: "Bachelor's degree (e.g., BA, AB, BS)" },
+  { id: "MASTERS_DEGREE", name: "Master's degree (e.g., MA, MS, MEng, MEd, MSW, MBA)" },
+  { id: "PROFESSIONAL_SCHOOL_DEGREE", name: "Professional school degree (example: MD, DDS, DVM, JD)" },
+  { id: "DOCTOR_DEGREE", name: "Doctoral degree (example:PhD, EdD)" },
+  { id: "DONT_KNOW", name: "Don't know" },
+  { id: "REFUSED", name: "Refused" },
+]
+
+export const RELATIONSHIP_STATUS_MAPPED = [
+  { id: "UNKNOWN", name: "Unknown" },
+  { id: "MARRIED", name: "Married" },
+  { id: "SINGLE", name: "Single" },
+  { id: "DIVORCED", name: "Divorced" },
+  { id: "SEPARATED", name: "Separated" },
+  { id: "WIDOWED", name: "Widowed" },
+  { id: "DOMESTIC_PARTNER", name: "Domestic partner" },
+  { id: "OTHER", name: "Other" },
+]
+
+export const DIET_TYPE_MAPPED = [
+  { id: "REGULAR", name: "Regular" },
+  { id: "VEGETARIAN", name: "Vegetarian" },
+  { id: "VEGAN", name: "Vegan" },
+  { id: "GLUTEN_FREE", name: "Gluten free" },
+  { id: "SPECIFIC", name: "Specific" },
+  { id: "CARBOHYDRATE", name: "Carbohydrate" },
+  { id: "CARDIAC", name: "Cardiac" },
+  { id: "DIABETIC", name: "Diabetic" },
+]
+
+export const EXERCISE_LEVEL_MAPPED = [
+  { id: "NONE", name: "None" },
+  { id: "OCCASIONAL", name: "Occasional" },
+  { id: "MODERATE", name: "Moderate" },
+  { id: "HEAVY", name: "Heavy" },
+]
+
+export const GENDER_IDENTITY_MAPPED = [
+  { id: "MALE_IDENTIFIES", name: "Identifies as Male" },
+  { id: "FEMALE_IDENTIFIES", name: "Identifies as Female" },
+  { id: "TRANSGENDER_FTM", name: "Transgender Male/Female-to-Male (FTM)" },
+  { id: "TRANSGENDER_MTF", name: "Transgender Female/Male-to-Female (MTF)" },
+  { id: "GENDER_NON_CONFIRM", name: "Gender non-conforming (neither exclusively male nor female)" },
+  { id: "GENDER_CATEGORY", name: "Additional gender category / other, please specify" },
+  { id: "NOT_DISCLOSE", name: "Choose not to disclose" },
+]
+
+export const SEX_AT_BIRTH_MAPPED = [
+  { id: "MALE", name: "Male" },
+  { id: "FEMALE", name: "Female" },
+  { id: "NOT_DISCLOSE", name: "Choose not to disclose" },
+  { id: "UNKNOWN", name: "Unknown" },
+]
+
+export const PRONOUNS_MAPPED = [
+  { id: "HE", name: "he/him" },
+  { id: "SHE", name: "she/her" },
+  { id: "THEY", name: "they/them" },
+]
+
+export const SEXUAL_ORIENTATION_MAPPED = [
+  { id: "LESBIAN", name: "Lesbian, gay or homosexual" },
+  { id: "STRAIGHT", name: "Straight or heterosexual" },
+  { id: "BISEXUAL", name: "Bisexual" },
+  { id: "SOMETHING_ELSE", name: "Something else, please describe" },
+  { id: "DONT_KNOW", name: "Don't know" },
+  { id: "NOT_DISCLOSE", name: "Choose not to disclose" },
+]
+
+export const ACTIVITIES_DAILY_LIVING_MAPPED = [
+  {
+    switchName: 'careYourself',
+    title: ABLE_TO_CARE_YOURSELF,
+    notesName: 'careYourselfNote',
+  },
+  {
+    switchName: 'difficultySeeing',
+    notesName: 'difficultySeeingNote',
+    title: BLIND_OR_DO_YOU_HAVE_DIFFICULTY_SEEING,
+  },
+  {
+    switchName: 'difficultyHearing',
+    notesName: 'difficultyHearingNote',
+    title: DEAF_OR_DO_YOU_HAVE_DIFFICULTY_SEEING,
+  },
+  {
+    switchName: 'difficultyConcentrating',
+    notesName: 'difficultyConcentratingNote',
+    title: DIFFICULTY_CONCENTRATING_MAKING_DECISION,
+  },
+  {
+    switchName: 'difficultyWalking',
+    notesName: 'difficultyWalkingNote',
+    title: DIFFICULTY_WALKING_CLIMBING,
+  },
+  {
+    switchName: 'difficultyDressing',
+    notesName: 'difficultyDressingNote',
+    title: DIFFICULTY_DRESSING_BATHING,
+  },
+  {
+    switchName: 'difficultyErrands',
+    notesName: 'difficultyErrandsNote',
+    title: DIFFICULTY_DOING_ERRANDS_ALONE,
+  },
+  {
+    switchName: 'difficultyTransportation',
+    notesName: 'difficultyTransportationNote',
+    title: DO_YOU_HAVE_TRANSPORTATION_DIFFICULTIES,
+  }
+]
+
+export const CIGARETTE_LEVEL_MAPPED = [
+  {
+    id: 'never_used_electronic_cigarettes',
+    name: "Never used electronic cigarettes"
+  },
+  {
+    name: "Former user of electronic cigarettes",
+    id: 'former_user_of_electronic_cigarettes'
+  },
+  {
+    id: 'current_user_of_electronic_cigarettes',
+    name: "Current user of electronic cigarettes"
+  }
+]
+
+export const SMOKELESS_TOBACCO_MAPPED = [
+  {
+    id: "never_used_smokeless_tobacco",
+    name: "Never used smokeless tobacco",
+  },
+  {
+    name: "Former smokeless tobacco user",
+    id: "former_smokeless_tobacco_user",
+  },
+  {
+    id: "currently_uses_moist_powdered_tobacco",
+    name: "Currently uses moist powdered tobacco",
+  },
+  {
+    id: "not_tolerated",
+    name: "Not tolerated",
+  },
+  {
+    id: "patient_refused",
+    name: "Patient refused",
+  },
+  {
+    id: "not_indicated",
+    name: "Not indicated",
+  },
+];
+
+export const RESIDE_IN_OR_HAVE_YOU_TRAVELED_FIELDS_MAPPED = [
+  {
+    title: "Have you had other close contact with an Ebola virus disease patient in health care facilities or community settings?",
+    switchName: 'knownHighRisk',
+    notesName: 'knownHighRiskNote',
+  },
+  {
+    title: "Have you had household contact with an Ebola virus disease patient?",
+    switchName: 'knownHighRisk',
+    notesName: 'knownHighRiskNote',
+  },
+  {
+    title: "Have you directly handled bats, rodents, or primates from Ebola endemic areas?",
+    switchName: 'knownHighRisk',
+    notesName: 'knownHighRiskNote',
+  },
+  {
+    title: "Have you had direct contact with a dead body in an Ebola-affected area without appropriate PPE?",
+    switchName: 'knownHighRisk',
+    notesName: 'knownHighRiskNote',
+  },
+  {
+    title: "Have you had percutaneous (e.g. needle stick) or mucous membrane exposure to blood or body fluids from an Ebola virus disease patient?",
+    switchName: 'knownHighRisk',
+    notesName: 'knownHighRiskNote',
+  },
+]
+
+export const SEX_PROTECTION_MAPPED = [
+  {
+    id: "always",
+    name: "Always",
+  },
+  {
+    id: "usually",
+    name: "Usually",
+  },
+  {
+    id: "no",
+    name: "No",
+  },
+];
+
+export const HAVE_YOU_RECENTLY_PLANNING_TO_TRAVEL_FIELDS_MAPPED = [
+  {
+    switchName: 'planningToTravel',
+    notesName: 'planningToTravelNote',
+    title: 'Do you have symptoms associated with Zika virus (fever, rash, joint pain, or conjunctivitis)?',
+  }
+]
+
+export const DO_YOU_EVER_USED_TOBACCO_NICOTINE_FIELDS = [
+  {
+    title: 'Do you or have you ever used e-cigarettes or vape?',
+    selectorOptions: CHILD_CARE_MAPPED,
+    selectorName: 'childCare',
+    notesName: 'childCareNote',
+  },
+  {
+    title: "Do you or have you ever used smokeless tobacco?",
+    selectorOptions: CHILD_CARE_MAPPED,
+    selectorName: 'childCare',
+    notesName: 'childCareNote',
+  }
+]
+
+export const PUBLIC_HEALTH_TRAVEL_MAPPED = [
+  {
+    switchName: 'knownHighRisk',
+    notesName: 'knownHighRiskNote',
+    title: HAVE_YOU_BEEN_TO_AN_AREA_KNOWN_HIGH_RISK,
+  },
+  {
+    switchName: 'onsetSymptomCase',
+    notesName: 'onsetSymptomCaseNote',
+    title: IN_THE_14_DAYS_BEFORE_SYMPTOM_ONSET_CASE_ILL,
+  },
+  {
+    switchName: 'onsetSymptomPerson',
+    notesName: 'onsetSymptomPersonNote',
+    title: IN_THE_14_DAYS_BEFORE_SYMPTOM_ONSET_PERSON_ILL,
+  },
+  {
+    switchName: 'resideInOrTravel',
+    notesName: 'resideInOrTravelNote',
+    title: RESIDE_IN_OR_HAVE_YOU_TRAVELED,
+    subFields: RESIDE_IN_OR_HAVE_YOU_TRAVELED_FIELDS_MAPPED
+  },
+  {
+    switchName: 'bloodBodyFluids',
+    notesName: 'bloodBodyFluidsNote',
+    title: HAVE_YOU_PROCESSED_BLOOD_BODY_FLUIDS,
+  },
+  {
+    switchName: 'planningToTravel',
+    notesName: 'planningToTravelNote',
+    title: HAVE_YOU_RECENTLY_PLANNING_TO_TRAVEL,
+    subFields: HAVE_YOU_RECENTLY_PLANNING_TO_TRAVEL_FIELDS_MAPPED
+  },
+]
+
+export const ADVANCED_DIRECTIVE_MAPPED = [
+  {
+    switchName: 'advanceDirective',
+    notesName: 'advanceDirectiveNote',
+    title: DO_YOU_HAVE_AN_ADVANCED_DIRECTIVE,
+  },
+  {
+    switchName: 'bloodTransfusion',
+    notesName: 'bloodTransfusionNote',
+    title: IS_BLOOD_TRANSFUSION_ACCEPTABLE_IN_AN_EMERGENCY,
+  }
+]
+
+export const HOME_AND_ENVIRONMENT_SWITCH_MAPPED = [
+  {
+    switchName: 'familyChanges',
+    notesName: 'familyChangesNote',
+    title: HAVE_THERE_BEEN_ANY_CHANGES_TO_YOUR_FAMILY,
+  },
+  {
+    switchName: 'havePets',
+    notesName: 'havePetsNote',
+    title: DO_YOU_HAVE_ANY_PETS,
+  },
+  {
+    switchName: 'carbonDetectors',
+    notesName: 'carbonDetectorsNote',
+    title: DO_YOU_HAVE_SMOKE_AND_CARBON_MONOXIDE,
+  },
+  {
+    switchName: 'smokeExposed',
+    notesName: 'smokeExposedNote',
+    title: ARE_YOU_PASSIVELY_EXPOSED_TO_SMOKE,
+  },
+  {
+    switchName: 'gunsInHome',
+    notesName: 'gunsInHomeNote',
+    title: ARE_THERE_ANY_GUNS_PRESENT_HOME,
+  },
+  {
+    switchName: 'insectRepellent',
+    notesName: 'insectRepellentNote',
+    title: DO_YOU_USE_INSECT_REPELLENT_ROUTINELY,
+  },
+  {
+    switchName: 'sunscreenUse',
+    notesName: 'sunscreenUseNote',
+    title: DO_YOU_USE_SUNSCREEN,
+  },
+]
+
+export const HOME_AND_ENVIRONMENT_SELECTOR_MAPPED = [
+  {
+    selectorOptions: CHILD_CARE_MAPPED,
+    selectorName: 'childCare',
+    notesName: 'childCareNote',
+    title: WHAT_TYPE_OF_CHILD_CARE_DO_YOU_USE,
+  },
+  {
+    selectorOptions: FLUORIDE_STATUS_MAPPED,
+    selectorName: 'fluorideStatus',
+    notesName: 'fluorideStatusNote',
+    title: WHAT_IS_FLUORIDE_STATUS_OF_YOUR_HOME,
+  },
+]
+
+export const LIFE_STYLE_MAPPED = [
+  {
+    switchName: 'wearHelmet',
+    title: DO_YOU_WEAR_HELMET,
+    notesName: 'wearHelmetNote',
+  },
+  {
+    switchName: 'seatBelt',
+    notesName: 'seatBeltNote',
+    title: DO_YOU_USE_SEAT_BELT,
+  }
+]
+
 export enum CONFIRMATION_MODAL_TYPE {
   DELETE = 'delete',
   CANCEL = 'cancel',
@@ -4178,3 +4650,11 @@ export const VACCINE_SITES_MAPPED = [
   { id: "left_flank", name: "Left Flank" },
   { id: "right_flank", name: "Right Flank" },
 ]
+
+export enum QuestionType {
+  SWITCH = 'switch',
+  SELECT= 'select',
+  INPUT = 'input',
+  DATE = 'date',
+  NUMBER = 'number'
+}

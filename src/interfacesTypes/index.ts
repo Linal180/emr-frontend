@@ -15,11 +15,11 @@ import { ATTACHMENT_TITLES, CONFIRMATION_MODAL_TYPE, ITEM_MODULE, UPFRONT_PAYMEN
 import {
   AddVaccineInput, AllDoctorPayload, Allergies, AppointmentsPayload, AppointmentStatus, Attachment, AttachmentPayload,
   AttachmentType, BillingPayload, CodeType, Copay, CreateAppointmentInput, CreateContactInput, CreateCptCodeInput, CreateCptFeeScheduleInput, CreateDoctorItemInput, CreateExternalAppointmentItemInput, CreateFeeScheduleInput, CreateIcdCodeInput, CreatePatientAllergyInput, CreatePatientItemInput, CreatePatientMedicationInput, CreatePracticeItemInput,
-  CreateProblemInput, CreateScheduleInput, CreateServiceInput, CreateStaffItemInput, Cvx, Doctor, DoctorPatient,
+  CreateProblemInput, CreateScheduleInput, CreateServiceInput, CreateStaffItemInput, Cvx, DependentQuestions, Doctor, DoctorPatient,
   FacilitiesPayload, FamilyHistory, FetchBillingClaimStatusesInput, FieldsInputs, FormElement, FormTabsInputs,
   IcdCodes, IcdCodesWithSnowMedCode, LabTests, LabTestsPayload, LoginUserInput, LoincCodePayload, Medications, Patient, PatientAllergies,
   PatientMedication, PatientPayload, PatientProblems, PatientProviderPayload, PatientsPayload, PatientVitals,
-  PermissionsPayload, PolicyEligibilityWithPatientPayload, Practice, PracticePayload, ReactionsPayload,
+  PermissionsPayload, PolicyEligibilityWithPatientPayload, Practice, PracticePayload, Questions, ReactionsPayload,
   ResponsePayloadResponse, RolesPayload, Schedule, SectionsInputs, ServicesPayload, Staff, SurgicalHistory,
   TriageNotes, TwoFactorInput, UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput,
   UpdateFacilityTimeZoneInput, User, UsersFormsElements, VerifyCodeInput
@@ -2301,6 +2301,30 @@ type FamilyRelativeArrayFields = {
   notes: string;
 }
 
+export type SocialSwitchCardPropsType = {
+  title: string;
+  notesName: string;
+  switchName: string;
+  isDependentQ?: boolean
+}
+
+export type SocialInputCardPropsType = {
+  title: string;
+  notesName: string;
+  inputName: string;
+  inputFieldType?: string
+  notStep?: boolean
+  isDependentQ?: boolean
+}
+
+export type SocialSelectorCardPropsType = {
+  title: string;
+  notesName: string;
+  selectorName: string;
+  selectorOptions: SelectorOption[];
+  isDependentQ?: boolean
+}
+
 export type FamilyHistoryFormType = {
   problem: SelectorOption;
   familyRelative: FamilyRelativeArrayFields[]
@@ -2348,4 +2372,14 @@ export type cptCodeFormProps = {
   id?: string;
   dispatcher?: Dispatch<cptCodeAction>
   handleClose: (open: boolean) => void
+}
+
+export type QuestionCardType = {
+  question: Questions
+}
+
+export type DependentQuestionCardType = {
+  question: DependentQuestions
+  QId: string,
+  value?: string | undefined
 }
