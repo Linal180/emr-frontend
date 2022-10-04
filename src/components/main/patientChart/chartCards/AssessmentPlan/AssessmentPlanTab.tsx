@@ -41,7 +41,7 @@ function AssessmentPlanTab({ shouldDisableEdit }: { shouldDisableEdit?: boolean 
                 }
 
                 const transformedPatientMedications = patientMedications?.map((patientMedication, subIndex) => {
-                  const { id: patientMedicationId, medication } = patientMedication || {}
+                  const { id: patientMedicationId, medication, isSigned: medicationSigned } = patientMedication || {}
                   const id = medication?.id || ''
                   const fullName = medication?.fullName
                   const medicationId = medication?.id || ''
@@ -57,12 +57,12 @@ function AssessmentPlanTab({ shouldDisableEdit }: { shouldDisableEdit?: boolean 
                     termType,
                     updatedAt,
                     patientMedicationId,
-                    isSigned: isSigned || false
+                    isSigned: medicationSigned || false
                   }
                 }) || []
 
                 const transformedPatientTests = labTests?.map((patientTest, subIndex) => {
-                  const { id: patientTestId, test } = patientTest || {}
+                  const { id: patientTestId, test, isSigned: labSigned } = patientTest || {}
                   const id = test?.id || ''
                   const component = test?.component
                   const testId = test?.id || ''
@@ -72,7 +72,7 @@ function AssessmentPlanTab({ shouldDisableEdit }: { shouldDisableEdit?: boolean 
                     component,
                     testId,
                     patientTestId,
-                    isSigned: isSigned || false
+                    isSigned: labSigned || false
                   }
                 }) || []
 

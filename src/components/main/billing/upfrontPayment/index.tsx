@@ -1,34 +1,35 @@
 //packages block
-import { useParams } from "react-router";
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { forwardRef, useCallback, useEffect, useImperativeHandle } from "react";
 import {
   Box, Button, Card, Grid, Table, TableBody, TableHead, TableRow, Typography
 } from "@material-ui/core";
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useState } from "react";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { useParams } from "react-router";
 import InputController from "../../../../controller";
 //components block
-import UpFrontPaymentType from "./UpFrontPaymentType";
+import { createUpFrontPaymentSchema } from "../../../../validationSchemas";
 import Alert from "../../../common/Alert";
 import Loader from "../../../common/Loader";
-import { createUpFrontPaymentSchema } from "../../../../validationSchemas";
+import UpFrontPaymentType from "./UpFrontPaymentType";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { GREY, } from "../../../../theme";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { renderTh, setRecord } from "../../../../utils";
-import { useTableStyles } from "../../../../styles/tableStyles";
-import { CreateUpFrontPayment, FormForwardRef, ParamsType, UpFrontPaymentProps } from "../../../../interfacesTypes";
-import { useCreateUpFrontPaymentMutation, useFetchUpFrontPaymentDetailsByAppointmentIdLazyQuery } from "../../../../generated/graphql";
 import {
-  ACTION, ADJUSTMENTS, AMOUNT, AMOUNT_TYPE, BALANCE, CHARGE_ENTRY, COLLECTED_AMOUNT, CPT_TEXT, DUE_AMOUNT, EXPECTED, NOTES, NOT_FOUND_EXCEPTION, PAID, 
-  PAYMENT, PAYMENT_TYPE, TOTAL_TEXT, TYPE, UPFRONT_INITIAL_VALUES, UPFRONT_PAYMENT_SUCCESS, UPFRONT_PAYMENT_TYPES, 
+  ADJUSTMENTS, AMOUNT_TYPE, BALANCE, CHARGE_ENTRY, COLLECTED_AMOUNT, CPT_TEXT, DUE_AMOUNT, EXPECTED, NOTES, NOT_FOUND_EXCEPTION, PAID,
+  PAYMENT, PAYMENT_TYPE, TOTAL_TEXT, UPFRONT_INITIAL_VALUES, UPFRONT_PAYMENT_SUCCESS, UPFRONT_PAYMENT_TYPES,
   USER_NOT_FOUND_EXCEPTION_MESSAGE
 } from "../../../../constants";
+import { Copay, OrderOfBenefitType, useCreateUpFrontPaymentMutation, useFetchPatientInsurancesLazyQuery, useFetchUpFrontPaymentDetailsByAppointmentIdLazyQuery } from "../../../../generated/graphql";
+import { CreateUpFrontPayment, FormForwardRef, ParamsType, UpFrontPaymentProps } from "../../../../interfacesTypes";
+import { useTableStyles } from "../../../../styles/tableStyles";
+import { GREY } from "../../../../theme";
+import { renderTh, setRecord } from "../../../../utils";
 
 const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProps>((
   { cptCodes, handleStep, shouldDisableEdit }, ref
 ): JSX.Element => {
   const classes = useTableStyles();
   const { appointmentId, id } = useParams<ParamsType>()
+  const [copays, setCopays] = useState<Copay[]>([])
   const methods = useForm<CreateUpFrontPayment>({
     defaultValues: {
       Additional: [{ ...UPFRONT_INITIAL_VALUES, paymentType: UPFRONT_PAYMENT_TYPES.Additional }],
@@ -55,6 +56,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
     const balanceAmount = Number(totalAmount) - Number(adjustments) - Number(paid)
 
     setValue('totalCharges', String(totalAmount))
+    setValue('cptCodesAmount', String(totalCptCodeAmount))
     setValue('expected', String(totalAmount))
     setValue('balance', String(balanceAmount))
   }, [Additional, Copay, Previous, adjustments, paid, setValue, totalCharge, totalCptCodeAmount])
@@ -143,9 +145,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
     } catch (error) { }
   }, [appointmentId, getUpFrontPaymentDetails])
 
-  useEffect(() => {
-    fetchUpFrontPayments()
-  }, [fetchUpFrontPayments])
+
 
   const onSubmit: SubmitHandler<CreateUpFrontPayment> = async (values) => {
     const { balance, expected, totalCharges } = values
@@ -153,7 +153,9 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
       return {
         ...upFrontPayment,
         amount: String(upFrontPayment.amount),
-        type: upFrontPayment.type.id
+        type: upFrontPayment.type.id,
+        copayType: upFrontPayment.copayType?.id,
+        dueAmount: upFrontPayment.dueAmount,
       }
     })
     await createUpFrontPayment({
@@ -174,6 +176,55 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
     handleStep && handleStep(4)
   }
 
+  const [fetchPatientInsurances] = useFetchPatientInsurancesLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+    variables: ({
+      id: id
+    }),
+
+    onCompleted(data) {
+      const { fetchPatientInsurances } = data || {}
+
+      if (fetchPatientInsurances) {
+        const { policies, response } = fetchPatientInsurances
+        if (response && response.status === 200) {
+          if (!shouldDisableEdit) {
+            const primaryInsurance = policies?.find((policyInfo) => policyInfo.orderOfBenefit === OrderOfBenefitType.Primary)
+            const secondaryInsurance = policies?.find((policyInfo) => policyInfo.orderOfBenefit === OrderOfBenefitType.Secondary)
+            const tertiaryInsurance = policies?.find((policyInfo) => policyInfo.orderOfBenefit === OrderOfBenefitType.Tertiary)
+
+            const insuranceInfo = primaryInsurance ? primaryInsurance : secondaryInsurance ? secondaryInsurance : tertiaryInsurance
+            const { copays } = insuranceInfo || {}
+            const { type, amount } = copays?.[0] || {}
+            setValue(`Copay.0.dueAmount`, amount as never)
+            setValue(`Copay.0.notes`, '' as never)
+            setValue(`Copay.0.copayType`, setRecord(type || '', type || '') as never)
+            setCopays(copays as Copay[])
+
+            trigger()
+          }
+        }
+      }
+    }
+  });
+
+  const getPatientInsurances = useCallback(() => {
+    try {
+      fetchPatientInsurances({
+        variables: {
+          id: id
+        }
+      })
+    } catch (error) { }
+  }, [fetchPatientInsurances, id])
+
+  useEffect(() => {
+    getPatientInsurances()
+    fetchUpFrontPayments()
+  }, [fetchUpFrontPayments, getPatientInsurances])
+
   useImperativeHandle(ref, () => ({
     submit() {
       handleSubmit(onSubmit)()
@@ -181,7 +232,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
   }));
 
   if (getUpFrontPaymentDetailsLoading) {
-    return <Loader loaderText="Fetching upFront Payments..." loading />
+    return <Loader loading loaderText="Fetching upFront Payments..." />
   }
 
 
@@ -210,7 +261,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
                     <TableHead>
                       <TableRow>
                         {renderTh(AMOUNT_TYPE)}
-                        {renderTh(DUE_AMOUNT)}
+                        {!!copays?.length && renderTh(DUE_AMOUNT)}
                         {renderTh(COLLECTED_AMOUNT)}
                         {renderTh(PAYMENT_TYPE)}
                         {renderTh(NOTES)}
@@ -219,15 +270,15 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
                     </TableHead>
 
                     <TableBody>
-                      <UpFrontPaymentType moduleName={UPFRONT_PAYMENT_TYPES.Copay} shouldDisableEdit={shouldDisableEdit} />
-                      <UpFrontPaymentType moduleName={UPFRONT_PAYMENT_TYPES.Additional} shouldDisableEdit={shouldDisableEdit} />
-                      <UpFrontPaymentType moduleName={UPFRONT_PAYMENT_TYPES.Previous} shouldDisableEdit={shouldDisableEdit} />
+                      {!!copays?.length && <UpFrontPaymentType moduleName={UPFRONT_PAYMENT_TYPES.Copay} shouldDisableEdit={shouldDisableEdit} copays={copays} />}
+                      <UpFrontPaymentType moduleName={UPFRONT_PAYMENT_TYPES.Additional} shouldDisableEdit={shouldDisableEdit} copays={copays} />
+                      <UpFrontPaymentType moduleName={UPFRONT_PAYMENT_TYPES.Previous} shouldDisableEdit={shouldDisableEdit} copays={copays} />
                     </TableBody>
                   </Table>
                 </Box>
               </Box>
 
-              <Box mt={3} px={3} pt={1} bgcolor={GREY} borderRadius={8}>
+              {cptCodes && <Box mt={3} px={3} pt={1} bgcolor={GREY} borderRadius={8}>
                 <Grid container>
                   <Grid item md={8} sm={12} xs={12}>
                     <Grid container spacing={0} direction="row">
@@ -287,9 +338,10 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
                             <InputController
                               fieldType="text"
                               controllerLabel={''}
-                              controllerName="cptAmount"
-                              disabled={shouldDisableEdit}
+                              controllerName="cptCodesAmount"
+                              disabled={true}
                               className="payment-input"
+                              defaultValue={String(totalCptCodeAmount)}
                             />
                           </Box>
                         </Box>
@@ -333,7 +385,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
                     </Grid>
                   </Grid>
                 </Grid>
-              </Box>
+              </Box>}
             </Box>
           </Card>
 

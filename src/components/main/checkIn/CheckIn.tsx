@@ -17,6 +17,7 @@ const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep, shou
   const { roles } = user || {}
   const isBillerUser = isBiller(roles);
 
+
   const { appointment, primaryInsurance } = appointmentState;
   const { appointmentType, provider, facility, reason, checkedInAt, selfCheckIn } = appointment ?? {}
   const { firstName, lastName } = provider ?? {}
@@ -26,6 +27,9 @@ const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep, shou
   const fullName = firstName && lastName ? `${firstName} ${lastName}` : N_A
 
   const getProceedBtnTitle = () => {
+    if(isBillerUser){
+      return TO_CHECKOUT
+    }
     switch (activeStep) {
       case 0:
         return START_CHECK_IN
@@ -61,7 +65,7 @@ const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep, shou
           <Button
             variant="contained" color="primary"
             endIcon={<Box width={20}><ChevronRight /></Box>}
-            onClick={() => isBillerUser ? handleStep(4) : handleProceed ? handleProceed(true) : handleStep(0, true)}>
+            onClick={() => handleProceed ? handleProceed(true) : isBillerUser ? handleStep(4) : handleStep(0, true)}>
             {getProceedBtnTitle()}
           </Button>
         </Box>

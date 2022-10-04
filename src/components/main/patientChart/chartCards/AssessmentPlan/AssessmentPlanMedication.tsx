@@ -281,7 +281,7 @@ function AssessmentPlanMedication({ index, problem, setAssessmentProblems, asses
         <Typography variant='h4'>{`${description} | ${code} `}</Typography>
       </Box>
 
-      {shouldDisableEdit && <Box display='flex' alignItems='center'>
+      {!shouldDisableEdit && <Box display='flex' alignItems='center'>
         <IconButton size='small' onClick={() => {
           dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: true })
         }}>
@@ -303,7 +303,7 @@ function AssessmentPlanMedication({ index, problem, setAssessmentProblems, asses
               <li className='li-hover'>
                 <Box py={1} display='flex' justifyContent='space-between' alignItems='center'>
                   <Typography>{fullName}</Typography>
-                  {shouldDisableEdit && <IconButton size='small' onClick={() => handleRemoveOrder(subIndex, true)}>
+                  {!shouldDisableEdit && <IconButton size='small' onClick={() => handleRemoveOrder(subIndex, true)}>
                     <CrossIcon />
                   </IconButton>}
                 </Box>
@@ -325,7 +325,7 @@ function AssessmentPlanMedication({ index, problem, setAssessmentProblems, asses
               <li className='li-hover'>
                 <Box py={1} display='flex' justifyContent='space-between' alignItems='center'>
                   <Typography>{component}</Typography>
-                  {shouldDisableEdit && <IconButton size='small' onClick={() => handleRemoveOrder(subIndex)}>
+                  {!shouldDisableEdit && <IconButton size='small' onClick={() => handleRemoveOrder(subIndex)}>
                     <CrossIcon />
                   </IconButton>}
                 </Box>

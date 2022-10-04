@@ -4,7 +4,7 @@ import { Reducer, useReducer } from 'react';
 import { useParams } from 'react-router';
 import { ASSESSMENT_PLAN } from '../../../../../constants';
 import { IcdCodesWithSnowMedCode, useAddPatientProblemMutation, useUpdatePatientProblemSignedMutation } from '../../../../../generated/graphql';
-import { AssessmentPlanProblemsProps, ParamsType } from '../../../../../interfacesTypes';
+import { AssessmentMedication, AssessmentPlanProblemsProps, ParamsType } from '../../../../../interfacesTypes';
 import { Action, ActionType, chartReducer, initialState, State } from '../../../../../reducers/chartReducer';
 import { useChartingStyles } from '../../../../../styles/chartingStyles';
 import Alert from '../../../../common/Alert';
@@ -132,7 +132,13 @@ function AssessmentPlanProblems({ fetchProblems, assessmentProblems: problems, s
     const transformedProblems = problems.map(problem => {
       return {
         ...problem,
-        isSigned: true
+        isSigned: true,
+        medications: problem?.medications?.map((medication) => {
+          return { ...medication, isSigned: true }
+        }) || [] as AssessmentMedication[],
+        tests: problem?.tests?.map((test) => {
+          return { ...test, isSigned: true }
+        }) || [],
       }
     })
 

@@ -1371,6 +1371,7 @@ export type CreateLabTestItemInput = {
   appointmentId?: Maybe<Scalars['String']>;
   collectedDate?: Maybe<Scalars['String']>;
   doctorId?: Maybe<Scalars['String']>;
+  isSigned?: Maybe<Scalars['Boolean']>;
   labName?: Maybe<Scalars['String']>;
   orderNumber?: Maybe<Scalars['String']>;
   patientId: Scalars['String'];
@@ -1492,6 +1493,7 @@ export type CreatePatientItemInput = {
 
 export type CreatePatientMedicationInput = {
   appointmentId?: Maybe<Scalars['String']>;
+  isSigned?: Maybe<Scalars['Boolean']>;
   medicationId?: Maybe<Scalars['String']>;
   noOfDays?: Maybe<Scalars['String']>;
   note?: Maybe<Scalars['String']>;
@@ -2707,6 +2709,7 @@ export type LabTests = {
   doctor?: Maybe<Doctor>;
   doctorId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  isSigned?: Maybe<Scalars['Boolean']>;
   labName?: Maybe<Scalars['String']>;
   labTestStatus: LabTestStatus;
   orderNumber?: Maybe<Scalars['String']>;
@@ -4179,6 +4182,7 @@ export type PatientMedication = {
   appointmentId?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  isSigned?: Maybe<Scalars['Boolean']>;
   medication?: Maybe<Medications>;
   medicationId?: Maybe<Scalars['String']>;
   noOfDays?: Maybe<Scalars['String']>;
@@ -6557,6 +6561,8 @@ export type UpFrontPaymentInput = {
 
 export type UpFrontPaymentInputType = {
   amount?: Maybe<Scalars['String']>;
+  copayType?: Maybe<Scalars['String']>;
+  dueAmount?: Maybe<Scalars['String']>;
   notes?: Maybe<Scalars['String']>;
   paymentType?: Maybe<Scalars['String']>;
   type?: Maybe<Scalars['String']>;
@@ -6573,7 +6579,9 @@ export type UpFrontPaymentType = {
   __typename?: 'UpFrontPaymentType';
   UpFrontPayment?: Maybe<UpFrontPayment>;
   amount?: Maybe<Scalars['String']>;
+  copayType?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
+  dueAmount?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   notes?: Maybe<Scalars['String']>;
   paymentType?: Maybe<Scalars['String']>;
@@ -6921,6 +6929,7 @@ export type UpdateLabTestItemInput = {
   collectedDate?: Maybe<Scalars['String']>;
   doctorId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  isSigned?: Maybe<Scalars['Boolean']>;
   labName?: Maybe<Scalars['String']>;
   orderNumber?: Maybe<Scalars['String']>;
   patientId?: Maybe<Scalars['String']>;
@@ -7054,6 +7063,7 @@ export type UpdatePatientItemInput = {
 export type UpdatePatientMedicationInput = {
   appointmentId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  isSigned?: Maybe<Scalars['Boolean']>;
   medicationId?: Maybe<Scalars['String']>;
   noOfDays?: Maybe<Scalars['String']>;
   note?: Maybe<Scalars['String']>;
@@ -8092,7 +8102,7 @@ export type FindAllPatientProblemsWithMedicationQueryVariables = Exact<{
 }>;
 
 
-export type FindAllPatientProblemsWithMedicationQuery = { __typename?: 'Query', findAllPatientProblem: { __typename?: 'PatientProblemsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null, page?: number | null } | null, patientProblems?: Array<{ __typename?: 'PatientProblems', id: string, problemType: ProblemType, forOrders?: boolean | null, isSigned?: boolean | null, problemSeverity: ProblemSeverity, problemStartDate?: string | null, note?: string | null, ICDCode?: { __typename: 'ICDCodes', id: string, code: string, description?: string | null } | null, patientMedications?: Array<{ __typename?: 'PatientMedication', id: string, medication?: { __typename?: 'Medications', id: string, fullName?: string | null, termType?: string | null, rxNumber?: string | null, createdAt?: string | null, updatedAt?: string | null } | null }> | null, labTests?: Array<{ __typename?: 'LabTests', id: string, test?: { __typename?: 'LoincCodes', id: string, component?: string | null } | null }> | null, snowMedCode?: { __typename?: 'SnoMedCodes', id: string, referencedComponentId?: string | null } | null } | null> | null } };
+export type FindAllPatientProblemsWithMedicationQuery = { __typename?: 'Query', findAllPatientProblem: { __typename?: 'PatientProblemsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null, page?: number | null } | null, patientProblems?: Array<{ __typename?: 'PatientProblems', id: string, problemType: ProblemType, forOrders?: boolean | null, isSigned?: boolean | null, problemSeverity: ProblemSeverity, problemStartDate?: string | null, note?: string | null, ICDCode?: { __typename: 'ICDCodes', id: string, code: string, description?: string | null } | null, patientMedications?: Array<{ __typename?: 'PatientMedication', id: string, isSigned?: boolean | null, medication?: { __typename?: 'Medications', id: string, fullName?: string | null, termType?: string | null, rxNumber?: string | null, createdAt?: string | null, updatedAt?: string | null } | null }> | null, labTests?: Array<{ __typename?: 'LabTests', id: string, isSigned?: boolean | null, test?: { __typename?: 'LoincCodes', id: string, component?: string | null } | null }> | null, snowMedCode?: { __typename?: 'SnoMedCodes', id: string, referencedComponentId?: string | null } | null } | null> | null } };
 
 export type GetPatientProblemQueryVariables = Exact<{
   getPatientProblem: GetPatientProblem;
@@ -13348,6 +13358,7 @@ export const FindAllPatientProblemsWithMedicationDocument = gql`
       }
       patientMedications {
         id
+        isSigned
         medication {
           id
           fullName
@@ -13359,6 +13370,7 @@ export const FindAllPatientProblemsWithMedicationDocument = gql`
       }
       labTests {
         id
+        isSigned
         test {
           id
           component

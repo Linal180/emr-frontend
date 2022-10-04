@@ -14,7 +14,7 @@ import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
 import { ATTACHMENT_TITLES, CONFIRMATION_MODAL_TYPE, ITEM_MODULE, UPFRONT_PAYMENT_TYPES } from "../constants";
 import {
   AddVaccineInput, AllDoctorPayload, Allergies, AppointmentsPayload, AppointmentStatus, Attachment, AttachmentPayload,
-  AttachmentType, BillingPayload, CodeType, CreateAppointmentInput, CreateContactInput, CreateCptCodeInput, CreateCptFeeScheduleInput, CreateDoctorItemInput, CreateExternalAppointmentItemInput, CreateFeeScheduleInput, CreateIcdCodeInput, CreatePatientAllergyInput, CreatePatientItemInput, CreatePatientMedicationInput, CreatePracticeItemInput,
+  AttachmentType, BillingPayload, CodeType, Copay, CreateAppointmentInput, CreateContactInput, CreateCptCodeInput, CreateCptFeeScheduleInput, CreateDoctorItemInput, CreateExternalAppointmentItemInput, CreateFeeScheduleInput, CreateIcdCodeInput, CreatePatientAllergyInput, CreatePatientItemInput, CreatePatientMedicationInput, CreatePracticeItemInput,
   CreateProblemInput, CreateScheduleInput, CreateServiceInput, CreateStaffItemInput, Cvx, Doctor, DoctorPatient,
   FacilitiesPayload, FamilyHistory, FetchBillingClaimStatusesInput, FieldsInputs, FormElement, FormTabsInputs,
   IcdCodes, IcdCodesWithSnowMedCode, LabTests, LabTestsPayload, LoginUserInput, LoincCodePayload, Medications, Patient, PatientAllergies,
@@ -366,6 +366,8 @@ export type UpFrontPaymentTypeProps = {
   amount: number
   type: SelectorOption
   notes: string
+  copayType?: SelectorOption
+  dueAmount?: string
 }
 
 export interface CodeTablesData {
@@ -940,6 +942,7 @@ export interface TableSelectorProps {
 export type UpFrontPaymentTypeCompProps = {
   moduleName: UPFRONT_PAYMENT_TYPES
   shouldDisableEdit?: boolean
+  copays?: Copay[]
 }
 
 export interface PolicyCardProps extends GeneralFormProps {
@@ -1026,6 +1029,7 @@ export type CreateUpFrontPayment = {
   [UPFRONT_PAYMENT_TYPES.Additional]: UpFrontPaymentTypeProps[]
   [UPFRONT_PAYMENT_TYPES.Previous]: UpFrontPaymentTypeProps[],
   totalCharges: string
+  cptCodesAmount: string
   expected: string
   balance: string
   paid: string
