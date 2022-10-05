@@ -149,7 +149,7 @@ const LabOrderComponent: FC<LabOrderInitialScreenProps> = ({ appointmentInfo, se
             filteredOptions={(testFieldValuesFields)?.map((testFieldValuesField) => {
               return testFieldValuesField.test
             })}
-            addEmpty
+            // addEmpty
           />
         </Grid>
       </Grid>
