@@ -7,7 +7,7 @@ import QuestionCard from "./QuestionCard";
 import Alert from "../../../../common/Alert";
 //constants
 import { getSocialHistoryFormValues } from "../../../../../utils";
-import { PAGE_LIMIT, QuestionType, SOCIAL_HISTORY_TEXT, SUBMIT } from "../../../../../constants";
+import { NEXT, PAGE_LIMIT, QuestionType, SOCIAL_HISTORY_TEXT, SUBMIT } from "../../../../../constants";
 import { ParamsType, SocialHistoryProps } from "../../../../../interfacesTypes";
 import { socialHistoryReducer, ActionType, State, initialState, Action } from "../../../../../reducers/socialHistoryReducer";
 import {
@@ -17,7 +17,7 @@ import {
 import TableLoader from "../../../../common/TableLoader";
 import CardComponent from "../../../../common/CardComponent";
 
-const SocialHistory: FC<SocialHistoryProps> = ({ shouldDisableEdit = false }): JSX.Element => {
+const SocialHistory: FC<SocialHistoryProps> = ({ shouldDisableEdit = false, handleStep }): JSX.Element => {
 
   const methods = useForm();
   const { id: patientId } = useParams<ParamsType>()
@@ -241,10 +241,19 @@ const SocialHistory: FC<SocialHistoryProps> = ({ shouldDisableEdit = false }): J
             {SOCIAL_HISTORY_TEXT}
           </Typography>
 
-          <Box display='flex' alignItems='center'>
+          <Box display='flex' alignItems='center' justifyContent="space-between">
             <Button type="submit" variant="contained" color="primary">
               {SUBMIT}
             </Button>
+            {handleStep && <Box ml={1}>
+              <Button
+                variant='contained'
+                color='secondary'
+                // size="large"
+                onClick={() => handleStep()}
+              >
+                {NEXT}
+              </Button></Box>}
           </Box>
         </Box>
 

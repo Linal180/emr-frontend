@@ -12,7 +12,7 @@ import NoDataFoundComponent from '../../../../common/NoDataFoundComponent';
 import AppointmentReasonModal from '../AppointmentReason/AppointmentReasonModal';
 import AssessmentPlanMedication from './AssessmentPlanMedication';
 
-function AssessmentPlanProblems({ fetchProblems, assessmentProblems: problems, setAssessmentProblems, shouldDisableEdit }: AssessmentPlanProblemsProps) {
+function AssessmentPlanProblems({ fetchProblems, assessmentProblems: problems, setAssessmentProblems, shouldDisableEdit, isSigned }: AssessmentPlanProblemsProps) {
   const classes = useChartingStyles()
   const { id: patientId, appointmentId } = useParams<ParamsType>()
   // const { control, setValue, watch } = useFormContext<AssessmentProblems>()
@@ -143,6 +143,7 @@ function AssessmentPlanProblems({ fetchProblems, assessmentProblems: problems, s
     })
 
     setAssessmentProblems(transformedProblems)
+    await fetchProblems()
 
     Alert.success('Diagnoses Ordered Successfully')
   }
@@ -158,7 +159,7 @@ function AssessmentPlanProblems({ fetchProblems, assessmentProblems: problems, s
             <Box display='flex' alignItems='center'>
               <Typography variant='h3'>{ASSESSMENT_PLAN}</Typography>
 
-              {!shouldDisableEdit && <Box ml={1} pb={1} display="flex" alignItems="center" justifyContent="flex-end">
+              {!(shouldDisableEdit || isSigned) && <Box ml={1} pb={1} display="flex" alignItems="center" justifyContent="flex-end">
                 <Button onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
                   <AddCircleOutline color='secondary' />
                   <Box ml={1} />
@@ -169,7 +170,7 @@ function AssessmentPlanProblems({ fetchProblems, assessmentProblems: problems, s
 
             <Box display='flex' alignItems='center'>
               <Box m={1}>
-                <Button variant='contained' color='secondary' disabled={addProblemLoading || !numberOfOrders} onClick={handleAssessment}>
+                <Button variant='contained' color='secondary' disabled={addProblemLoading || !numberOfOrders || isSigned} onClick={handleAssessment}>
                   {'Sign Orders'}
                   <Typography variant="body1" color="inherit">({numberOfOrders})</Typography>
                 </Button>
@@ -192,6 +193,7 @@ function AssessmentPlanProblems({ fetchProblems, assessmentProblems: problems, s
                   problem={problem}
                   assessmentProblems={problems}
                   setAssessmentProblems={setAssessmentProblems}
+                  isSigned={isSigned}
                 />
               </Box>
             </Card>

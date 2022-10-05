@@ -10,7 +10,6 @@ import {
 import { AuthContext } from "../../../context";
 import { CheckInComponentProps } from "../../../interfacesTypes";
 import { isBiller } from "../../../utils";
-import UpFrontPayment from "../billing/upfrontPayment";
 
 const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep, shouldDisableEdit, activeStep, handleProceed }) => {
   const { user } = useContext(AuthContext)
@@ -133,7 +132,7 @@ const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep, shou
 
       <Box p={2} />
 
-      {(activeStep || 0) === 0 && <UpFrontPayment handleStep={handleStep} shouldDisableEdit={shouldDisableEdit} />}
+      {/* {(activeStep || 0) === 0 && <UpFrontPayment handleStep={handleStep} shouldDisableEdit={shouldDisableEdit} />} */}
     </>
   )
 }

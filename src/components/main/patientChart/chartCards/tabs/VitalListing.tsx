@@ -128,7 +128,7 @@ const VitalTab: FC<VitalTabProps> = ({ shouldDisableEdit, handleStep }) => {
 
                       <Box p={1} />
 
-                      {handleStep && <Button variant='contained' color='secondary' onClick={()=>handleStep(3)} size="large">{NEXT}</Button>}
+                      {handleStep && <Button variant='contained' color='secondary' onClick={()=>handleStep()} size="large">{NEXT}</Button>}
                     </Box>
                   </Box>
                 </form>

@@ -1170,6 +1170,7 @@ export type AssessmentPlanProblemsProps = {
   assessmentProblems: AssessmentProblemType[]
   setAssessmentProblems: Function
   shouldDisableEdit?: boolean
+  isSigned?: boolean
 }
 
 export type AssessmentPlanMedicationProps = {
@@ -1178,6 +1179,7 @@ export type AssessmentPlanMedicationProps = {
   assessmentProblems: AssessmentProblemType[]
   setAssessmentProblems: Function
   shouldDisableEdit?: boolean
+  isSigned?: boolean
 }
 
 export interface LabOrdersSpecimenTypeInput {
@@ -2332,6 +2334,7 @@ export type FamilyHistoryFormType = {
 
 export type SocialHistoryProps = {
   shouldDisableEdit?: boolean
+  handleStep?: Function
 }
 
 

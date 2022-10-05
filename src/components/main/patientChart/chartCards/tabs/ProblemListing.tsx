@@ -163,7 +163,7 @@ const ProblemTab: FC<ProblemTabProps> = ({ shouldDisableEdit, handleStep }) => {
 
                   <Box p={1} />
 
-                  {handleStep && <Button variant='contained' color='secondary' size="large" onClick={() => handleStep(4)}>{NEXT}</Button>}
+                  {handleStep && <Button variant='contained' color='secondary' size="large" onClick={() => handleStep()}>{NEXT}</Button>}
                 </Box>
               </Box>
 
