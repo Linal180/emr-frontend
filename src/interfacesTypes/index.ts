@@ -533,6 +533,7 @@ export interface CustomInputControlProps extends IControlLabel {
   handleClearField?: (fieldName: any) => void;
   rows?: number;
   toLowerCase?: boolean
+  toUpperCase?: boolean
 }
 
 export interface TooltipData {
