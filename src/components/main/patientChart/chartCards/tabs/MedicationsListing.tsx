@@ -164,7 +164,7 @@ const MedicationTab: FC<MedicationTabProps> = ({ shouldDisableEdit, handleStep }
                     variant='contained'
                     color='secondary'
                     size="large"
-                    onClick={()=>handleStep(6)}
+                    onClick={()=>handleStep()}
                   >
                     {NEXT}
                   </Button>}

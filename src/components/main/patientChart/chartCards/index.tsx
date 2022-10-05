@@ -42,6 +42,7 @@ import { useChartingStyles } from "../../../../styles/chartingStyles";
 import { useExternalPatientStyles } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
 import { WHITE } from '../../../../theme';
 import { isAdmin, isOnlyDoctor } from "../../../../utils";
+import SocialHistory from "./socialHistory";
 
 
 const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appointmentInfo, fetchAppointment, labOrderHandler, isInTake }): JSX.Element => {
@@ -135,35 +136,38 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
   const getActiveComponent = (step: number | undefined) => {
     switch (step) {
       case 0:
-        return <AppointmentReason isInTake={true} handleStep={handleStep} shouldDisableEdit={shouldDisableEdit} />
+        return <AppointmentReason isInTake={true} handleStep={() => handleStep(1)} shouldDisableEdit={shouldDisableEdit} />
+      // case 1:
+      //   return <TriageNoteTab shouldDisableEdit={shouldDisableEdit} handleStep={handleStep} />
+
       case 1:
-        return <TriageNoteTab shouldDisableEdit={shouldDisableEdit} handleStep={handleStep} />
+        return <VitalTab shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(2)} />
 
       case 2:
-        return <VitalTab shouldDisableEdit={shouldDisableEdit} handleStep={handleStep} />
+        return <ProblemTab shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(3)} />
 
       case 3:
-        return <ProblemTab shouldDisableEdit={shouldDisableEdit} handleStep={handleStep} />
-
-      case 4:
         return <ChartContextProvider>
-          <AllergyTab shouldDisableEdit={shouldDisableEdit} handleStep={handleStep} />
+          <AllergyTab shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(4)} />
         </ChartContextProvider>
 
+      case 4:
+        return <MedicationTab shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(5)} />
+
       case 5:
-        return <MedicationTab shouldDisableEdit={shouldDisableEdit} handleStep={handleStep} />
+        return <FamilyHistory shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(6)} />
 
       case 6:
-        return <FamilyHistory shouldDisableEdit={shouldDisableEdit} handleStep={handleStep} />
+        return <SurgicalHistoryTab shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(7)} />
 
       case 7:
-        return <SurgicalHistoryTab shouldDisableEdit={shouldDisableEdit} handleStep={handleStep} />
+        return <SocialHistory shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(8)}/>
 
       case 8:
-        return <LabOrdersTable appointmentInfo={appointmentInfo} shouldDisableEdit={shouldDisableEdit} handleStep={handleStep} />
+        return <LabOrdersTable appointmentInfo={appointmentInfo} shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(9)} />
 
       case 9:
-        return <Vaccines shouldDisableEdit={shouldDisableEdit} handleStep={handleStep} />
+        return <Vaccines shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(10)} />
 
       case 10:
         return <AssessmentPlanTab shouldDisableEdit={shouldDisableEdit} />

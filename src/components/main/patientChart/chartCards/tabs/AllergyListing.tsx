@@ -166,7 +166,7 @@ const AllergyTab: FC<AllergyTabProps> = ({ shouldDisableEdit, handleStep }) => {
                     variant='contained'
                     color='secondary'
                     size="large"
-                    onClick={()=>handleStep(5)}
+                    onClick={()=>handleStep()}
                   >
                     {NEXT}
                   </Button>}

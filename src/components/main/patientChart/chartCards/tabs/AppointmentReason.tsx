@@ -115,7 +115,7 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
 
               <Box p={1} />
 
-              {isInTake ? <Button variant='contained' color='secondary' onClick={() => handleStep && handleStep(1)} size="large">{NEXT}</Button> :
+              {isInTake ? <Button variant='contained' color='secondary' onClick={() => handleStep && handleStep()} size="large">{NEXT}</Button> :
                 shouldShowCheckout ? <Button
                   variant='contained'
                   color='primary'

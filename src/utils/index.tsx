@@ -2053,9 +2053,9 @@ export const getCheckInStatus = (
     case 1:
       return { stage: 'With Front desk', stageColor: BLUE };
     case 2:
-      return { stage: 'Ready for Staff', stageColor: ORANGE_SIMPLE };
+      return { stage: 'Ready for Intake', stageColor: ORANGE_SIMPLE };
     case 3:
-      return { stage: 'Ready for Provider', stageColor: BLUE_SEVEN };
+      return { stage: 'Ready for Exam', stageColor: BLUE_SEVEN };
     case 4:
       return { stage: 'Ready for Checkout', stageColor: PURPLE_ONE };
     case 5:

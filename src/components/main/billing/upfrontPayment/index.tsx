@@ -70,7 +70,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
     },
 
     onCompleted() {
-      Alert.success(UPFRONT_PAYMENT_SUCCESS);
+      !cptCodes && Alert.success(UPFRONT_PAYMENT_SUCCESS);
     }
   });
 
@@ -203,7 +203,6 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
             setValue(`Copay.0.copayType`, setRecord(type || '', type || '') as never)
             setCopays(copays as Copay[])
 
-            trigger()
           }
         }
       }

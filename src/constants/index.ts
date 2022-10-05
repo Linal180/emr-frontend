@@ -3848,9 +3848,9 @@ export const PATIENT_CHARTING_MENU = [
   {
     title: "Reason For Visit",
   },
-  {
-    title: "Triage Notes",
-  },
+  // {
+  //   title: "Triage Notes",
+  // },
   {
     title: "Vitals",
   },
@@ -3868,6 +3868,9 @@ export const PATIENT_CHARTING_MENU = [
   },
   {
     title: "Surgical History",
+  },
+  {
+    title: "Social History",
   },
   {
     title: "Lab Orders",

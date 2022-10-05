@@ -242,7 +242,7 @@ const CheckInComponent = (): JSX.Element => {
   };
 
   const getStepContent = (step: number) => {
-    if (!shouldProceed) {
+    if (!shouldProceed && step !== 1) {
       return <ChecKInStep isCheckIn={false} />
     }
 
