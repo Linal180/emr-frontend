@@ -15,6 +15,7 @@ import UpFrontPaymentType from "./UpFrontPaymentType";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   ADJUSTMENTS, AMOUNT_TYPE, BALANCE, CHARGE_ENTRY, COLLECTED_AMOUNT, CPT_TEXT, DUE_AMOUNT, EXPECTED, NOTES, NOT_FOUND_EXCEPTION, PAID,
+  PAY,
   PAYMENT, PAYMENT_TYPE, TOTAL_TEXT, UPFRONT_INITIAL_VALUES, UPFRONT_PAYMENT_SUCCESS, UPFRONT_PAYMENT_TYPES,
   USER_NOT_FOUND_EXCEPTION_MESSAGE
 } from "../../../../constants";
@@ -385,6 +386,16 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
                   </Grid>
                 </Grid>
               </Box>}
+
+              <Box mt={3} display="flex" justifyContent="flex-end" alignItems="center">
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  size="large"
+                >
+                  {PAY}
+                </Button>
+              </Box>
             </Box>
           </Card>
 
