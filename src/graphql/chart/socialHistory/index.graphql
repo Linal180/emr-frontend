@@ -1,0 +1,116 @@
+query FindAllSections($findAllSectionsInput: FindAllSectionsInput!) {
+  findAllSections(findAllSectionsInput: $findAllSectionsInput) {
+    response {
+      status
+      message
+    }
+
+    pagination {
+      totalPages
+      page
+    }
+
+    sections {
+      id
+      name
+      specialId
+
+      questions {
+        id
+        title
+        note
+        value
+        questionType
+        specialId
+
+        options {
+          id
+          name
+        }
+
+        dependentQuestions {
+          id
+          title
+          note
+          value
+          answer
+          specialId
+          questionType
+
+          options {
+            id
+            name
+          }
+        }
+      }
+    }
+  }
+}
+
+mutation CreatePatientSocialHistory(
+  $createPatientSocialHistoryInput: CreatePatientSocialHistoryInput!
+) {
+  createPatientSocialHistory(
+    createPatientSocialHistoryInput: $createPatientSocialHistoryInput
+  ) {
+    response {
+      status
+      message
+    }
+
+    socialHistory {
+      id
+    }
+  }
+}
+
+query PatientSocialHistory(
+  $patientSocialHistoryInput: PatientSocialHistoryInput!
+) {
+  patientSocialHistory(patientSocialHistoryInput: $patientSocialHistoryInput) {
+    response {
+      status
+      message
+    }
+
+    socialHistory {
+      id
+      patientId
+
+      socialAnswer {
+        id
+        name
+        note
+        value
+        questionId
+
+        question {
+          questionType
+
+          options {
+            id
+            name
+          }
+        }
+
+        socialDependentAnswer {
+          id
+          name
+          note
+          value
+          parentId
+          dependentQuestionId
+
+          dependentQuestion {
+            questionType
+
+            options {
+              id
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+}

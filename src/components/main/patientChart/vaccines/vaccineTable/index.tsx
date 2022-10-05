@@ -149,7 +149,7 @@ const VaccinesTable: FC<VaccinesTableProps> = (props): JSX.Element => {
                     variant='contained'
                     color='secondary'
                     size="large"
-                    onClick={() => handleStep(10)}
+                    onClick={() => handleStep()}
                   >
                     {NEXT}
                   </Button>}

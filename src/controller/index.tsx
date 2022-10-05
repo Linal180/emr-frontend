@@ -17,6 +17,7 @@ const InputController: FC<CustomInputControlProps> = ({
   isRequired, controllerName, controllerLabel, fieldType, error, isPassword, endAdornment, onBlur,
   disabled, multiline, info, placeholder, className, isSearch, margin, clearable, handleClearField,
   notStep, isHelperText, autoFocus, isHtmlValidate, defaultValue, loading, onChange, rows, toLowerCase = false,
+  toUpperCase = false
 }): JSX.Element => {
   const classes = useFormStyles();
   const { control } = useFormContext();
@@ -33,12 +34,23 @@ const InputController: FC<CustomInputControlProps> = ({
       const e = {
         ...event,
         target: {
-          value: event?.target?.value?.toLocaleLowerCase()
+          value: event?.target?.value?.toLowerCase()
         }
       }
       onFieldChange(e)
       onChange && onChange(event.target.value)
-    } else {
+    }
+    else if (toUpperCase) {
+      const e = {
+        ...event,
+        target: {
+          value: event?.target?.value?.toUpperCase()
+        }
+      }
+      onFieldChange(e)
+      onChange && onChange(event.target.value)
+    }
+    else {
       onFieldChange(event)
       onChange && onChange(event.target.value)
     }
@@ -53,7 +65,7 @@ const InputController: FC<CustomInputControlProps> = ({
           defaultValue={defaultValue ? defaultValue : ''}
           render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
             const { onChange } = field;
-            
+
             return (
               <FormControl fullWidth margin={margin || "normal"} error={Boolean(invalid)}>
                 <InputLabel shrink htmlFor={controllerName} className={classes.detailTooltipBox}>

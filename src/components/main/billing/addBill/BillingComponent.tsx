@@ -599,7 +599,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
 
   const fetchIcdCode = async () => {
     try {
-      await fetchPatientProblems({ variables: { patientProblemInput: { paginationOptions: { limit: 50, page: 1 }, patientId: id } } })
+      await fetchPatientProblems({ variables: { patientProblemInput: { paginationOptions: { limit: 50, page: 1 }, patientId: id, appointmentId } } })
     } catch (error) { }
   }
 

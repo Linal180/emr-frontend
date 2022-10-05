@@ -19,6 +19,12 @@ import MedicationTab from './tabs/MedicationsListing';
 import ProblemTab from './tabs/ProblemListing';
 import TriageNoteTab from './tabs/TriageNotesListing';
 import VitalTab from './tabs/VitalListing';
+import StepperCard from "../../../common/StepperCard";
+import AssessmentPlanTab from "./AssessmentPlan/AssessmentPlanTab";
+import FamilyHistory from "./familyHistory";
+import AppointmentReason from "./tabs/AppointmentReason";
+import ReviewTab from "./tabs/ReviewTab";
+import SurgicalHistoryTab from "./surgicalHistory/SurgicalHistoryListing";
 // interfaces, graphql, constants block /styles
 import { HistoryIcon } from "../../../../assets/svgs";
 import {
@@ -26,7 +32,8 @@ import {
   CHART_TEXT, CONFIRMATION_MODAL_TYPE, DISCHARGE, DISCHARGE_PATIENT_DESCRIPTION, DONE_INTAKE, PATIENT_CHARTING_MENU, PATIENT_CHARTING_TABS,
   PATIENT_DISCHARGED, PATIENT_DISCHARGED_SUCCESS, PRINT_CHART, REASON_FOR_VISIT_OPTION,
   REVIEW_OPTION,
-  SIGN_OFF
+  SIGN_OFF,
+  TRIAGE_NOTE_OPTION
 } from "../../../../constants";
 import { AuthContext, ChartContextProvider } from '../../../../context';
 import { AppointmentStatus, useUpdateAppointmentStatusMutation } from "../../../../generated/graphql";
@@ -36,12 +43,8 @@ import { useChartingStyles } from "../../../../styles/chartingStyles";
 import { useExternalPatientStyles } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
 import { WHITE } from '../../../../theme';
 import { isAdmin, isOnlyDoctor } from "../../../../utils";
-import StepperCard from "../../../common/StepperCard";
-import AssessmentPlanTab from "./AssessmentPlan/AssessmentPlanTab";
-import FamilyHistory from "./familyHistory";
-import AppointmentReason from "./tabs/AppointmentReason";
-import ReviewTab from "./tabs/ReviewTab";
-import SurgicalHistoryTab from "./tabs/SurgicalHistoryListing";
+import SocialHistory from "./socialHistory";
+
 
 const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appointmentInfo, fetchAppointment, labOrderHandler, isInTake }): JSX.Element => {
   const classes = useChartingStyles();
@@ -134,35 +137,38 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
   const getActiveComponent = (step: number | undefined) => {
     switch (step) {
       case 0:
-        return <AppointmentReason isInTake={true} handleStep={handleStep} shouldDisableEdit={shouldDisableEdit} />
+        return <AppointmentReason shouldShowAdd isInTake={true} handleStep={() => handleStep(1)} shouldDisableEdit={shouldDisableEdit} />
+      // case 1:
+      //   return <TriageNoteTab shouldDisableEdit={shouldDisableEdit} handleStep={handleStep} />
+
       case 1:
-        return <TriageNoteTab shouldDisableEdit={shouldDisableEdit} handleStep={handleStep} />
+        return <VitalTab shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(2)} />
 
       case 2:
-        return <VitalTab shouldDisableEdit={shouldDisableEdit} handleStep={handleStep} />
+        return <ProblemTab shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(3)} />
 
       case 3:
-        return <ProblemTab shouldDisableEdit={shouldDisableEdit} handleStep={handleStep} />
-
-      case 4:
         return <ChartContextProvider>
-          <AllergyTab shouldDisableEdit={shouldDisableEdit} handleStep={handleStep} />
+          <AllergyTab shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(4)} />
         </ChartContextProvider>
 
+      case 4:
+        return <MedicationTab shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(5)} />
+
       case 5:
-        return <MedicationTab shouldDisableEdit={shouldDisableEdit} handleStep={handleStep} />
+        return <FamilyHistory shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(6)} />
 
       case 6:
-        return <FamilyHistory shouldDisableEdit={shouldDisableEdit} handleStep={handleStep} />
+        return <SurgicalHistoryTab shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(7)} />
 
       case 7:
-        return <SurgicalHistoryTab shouldDisableEdit={shouldDisableEdit} handleStep={handleStep} />
+        return <SocialHistory shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(8)} />
 
       case 8:
-        return <LabOrdersTable appointmentInfo={appointmentInfo} shouldDisableEdit={shouldDisableEdit} handleStep={handleStep} />
+        return <LabOrdersTable appointmentInfo={appointmentInfo} shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(9)} />
 
       case 9:
-        return <Vaccines shouldDisableEdit={shouldDisableEdit} handleStep={handleStep} />
+        return <Vaccines shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(10)} />
 
       case 10:
         return <AssessmentPlanTab shouldDisableEdit={shouldDisableEdit} />
@@ -213,7 +219,7 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
     }), ASSESSMENT_PLAN_OPTION] :
     [REVIEW_OPTION, ...PATIENT_CHARTING_TABS.map(stepData => {
       return { ...stepData, value: String(Number(stepData.value) + 1) }
-    }), ASSESSMENT_PLAN_OPTION] : PATIENT_CHARTING_TABS
+    }), ASSESSMENT_PLAN_OPTION] : [TRIAGE_NOTE_OPTION, ...PATIENT_CHARTING_TABS]
 
   const handleDischarge = () => {
     if (isInTake) {
@@ -323,15 +329,15 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
                   {appointmentId &&
                     <Box pt={0} borderRadius={8}>
                       <TabPanel value={"1"}>
-                        {isInTake ? <AppointmentReason isInTake={false} /> : <ReviewTab />}
+                        {isInTake ? <AppointmentReason isInTake={false} /> : <ReviewTab shouldShowAdd shouldDisableEdit={shouldDisableEdit} />}
                       </TabPanel>
                     </Box>}
 
-                  <Box pt={0} borderRadius={8}>
+                  {!appointmentId && <Box pt={0} borderRadius={8}>
                     <TabPanel value={appointmentId ? "2" : "1"}>
                       <TriageNoteTab shouldDisableEdit={shouldDisableEdit} />
                     </TabPanel>
-                  </Box>
+                  </Box>}
 
                   <Box pt={0} bgcolor={WHITE} borderRadius={8}>
                     <TabPanel value={appointmentId ? "3" : "2"}>

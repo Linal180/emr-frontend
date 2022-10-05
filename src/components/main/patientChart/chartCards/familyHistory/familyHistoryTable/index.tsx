@@ -134,7 +134,7 @@ const FamilyHistoryTable: FC<FamilyHistoryProps> = ({ shouldDisableEdit = false,
               variant='contained'
               color='secondary'
               size="large"
-              onClick={() => handleStep(7)}
+              onClick={() => handleStep()}
             >
               {NEXT}
             </Button>}

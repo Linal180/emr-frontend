@@ -54,7 +54,7 @@ export const getAddressByZipcode = async (zipCode: string): Promise<GetAddressRe
     return response
   }
   catch (err) {
-    console.log(err);
+   
   }
   response.message = 'Address not found';
   response.status = false;
@@ -102,7 +102,7 @@ export const verifyAddress = async (zipCode: string, city: string, state: string
     return response
   }
   catch (err) {
-    console.log(err);
+;
     return response
   }
 }
@@ -125,7 +125,7 @@ export const addressAutoComplete = async (search: string, selected: string): Pro
     }
     return data
   } catch (err) {
-    console.log('error => ', err);
+  
     const data = {
       status: false,
       message: 'Not found',
