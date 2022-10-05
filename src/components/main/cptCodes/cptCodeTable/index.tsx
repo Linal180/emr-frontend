@@ -2,7 +2,7 @@ import { Pagination } from '@material-ui/lab';
 import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer } from 'react'
 import { Box, Button, Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core'
 //components
-import ICD10Form from '../cptCodeForm';
+import CptCodeForm from '../cptCodeForm';
 import Alert from '../../../common/Alert';
 import Search from "../../../common/Search";
 import TableLoader from '../../../common/TableLoader';
@@ -215,11 +215,12 @@ const CptCodeTable: FC<IcdCodesTableProps> = (): JSX.Element => {
         setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
       />
 
-      <ICD10Form
+      <CptCodeForm
         id={itemId}
         open={isOpen}
         isEdit={!!itemId}
         handleClose={handleModalClose}
+        dispatcher={dispatch}
         fetch={() => fetchIcdCodes()}
       />
 

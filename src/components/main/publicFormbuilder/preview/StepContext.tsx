@@ -25,10 +25,10 @@ export const StepContext: FC<StepContextProps> = memo(({ sections, state, dispat
                   <Grid item md={parseColumnGrid(column)} xs={parseXmGrid(col)} key={`${id}-${fieldId}`}>
                     <InputController
                       item={field}
-                      facilityId={facilityId}
                       state={state}
-                      practiceId={practiceId}
                       dispatcher={dispatch}
+                      practiceId={practiceId}
+                      facilityId={facilityId}
                     />
                   </Grid>
                 )

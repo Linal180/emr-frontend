@@ -10,7 +10,7 @@ const TableLoader: FC<TableLoaderType> = ({ numberOfRows, numberOfColumns }): JS
     <Table aria-label="customized table">
       <TableBody>
         {new Array(numberOfRows).fill(1).map((_, index) => (
-          <TableRow key={`${index}-TableLoader`}>
+          <TableRow key={`${index}-TableLoader`} className="table-loader-row">
             {new Array(numberOfColumns).fill(2).map((_, childIndex) => (
               <TableCell key={`${index}-TableCell-${childIndex}`}>
                 <Skeleton />
