@@ -119,7 +119,7 @@ const VitalCard: FC<GeneralFormProps> = () => {
             </Box>
 
             <Box className='heartRate-measurement'>
-              <Typography variant="h2">{pulseRate ?? '- -'}
+              <Typography variant="h2">{pulseRate ? pulseRate : '--'}
                 <span className='measure-unit'>{HEART_RATE_UNIT}</span>
               </Typography>
 

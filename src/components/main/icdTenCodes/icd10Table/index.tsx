@@ -222,6 +222,7 @@ const IcdCodesTable: FC<IcdCodesTableProps> = (): JSX.Element => {
         isEdit={!!itemId}
         handleClose={handleModalClose}
         fetch={() => fetchIcdCodes()}
+        dispatcher={dispatch}
       />
 
       {totalPages > 1 && !loading && (

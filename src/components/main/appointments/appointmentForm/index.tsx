@@ -463,7 +463,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                     <Grid item md={12} sm={12} xs={12}>
                       <Typography variant='body1'>{TYPE}</Typography>
 
-                      <Box px={1} py={0.8} mt={1} mb={2} width='fit-content' display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+                      <Box px={1} py={0.8} mt={1} mb={2} width='fit-content' display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6} className={isEdit?"disable-icon" : ""}>
                         {appointmentTypes.map(type =>
                           <Box onClick={() => handleAppointmentType(type)}
                             className={type === appointmentType ? `${tableClasses.selectedBox} ${tableClasses.selectBox}` : tableClasses.selectBox}

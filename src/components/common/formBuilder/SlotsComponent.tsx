@@ -1,19 +1,19 @@
 //packages block
 import moment from 'moment'
-import { useCallback, useEffect, useState, } from 'react'
 import { useFormContext } from 'react-hook-form'
+import { useCallback, useEffect, useState, } from 'react'
 import { Box, colors, Typography } from '@material-ui/core'
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date'
 //components
-import ViewDataLoader from '../ViewDataLoader'
+import TableLoader from '../TableLoader';
 import NoSlotsComponent from '../NoSlotsComponent'
 import AppointmentDatePicker from '../../main/publicAppointments/appointmentForm/AppointmentDatePicker'
 //constants, graphql, utils, styles, interfaces
 import { AVAILABLE_SLOTS, DAYS, } from '../../../constants'
-import { getCurrentTimesFormbuilder, getStandardTime, } from '../../../utils'
-import { Slots, SlotsPayload, useGetSlotsLazyQuery } from '../../../generated/graphql'
-import { usePublicAppointmentStyles } from '../../../styles/publicAppointmentStyles'
 import { SlotsComponentProps } from '../../../interfacesTypes'
+import { getCurrentTimesFormbuilder, getStandardTime, } from '../../../utils'
+import { usePublicAppointmentStyles } from '../../../styles/publicAppointmentStyles'
+import { Slots, SlotsPayload, useGetSlotsLazyQuery } from '../../../generated/graphql'
 
 const SlotsComponent = ({ facilityId, state }: SlotsComponentProps) => {
   const [availableSlots, setAvailableSlots] = useState<SlotsPayload['slots']>([])
@@ -106,9 +106,9 @@ const SlotsComponent = ({ facilityId, state }: SlotsComponentProps) => {
             <Typography variant="h4">{AVAILABLE_SLOTS}</Typography>
           </Box>
 
-          {getSlotsLoading ? <ViewDataLoader rows={3} columns={6} hasMedia={false} /> : (
+          {getSlotsLoading ? <TableLoader numberOfColumns={2} numberOfRows={4} /> : (
             <ul className={classes.timeSlots}>
-              {!!availableSlots?.length ? availableSlots.map((slot: Slots, index: number) => {
+              {!!availableSlots?.length ? availableSlots?.map((slot: Slots, index: number) => {
                 const { startTime, endTime } = slot || {}
                 return (
                   <li key={index} onClick={() => handleSlot(slot)}>

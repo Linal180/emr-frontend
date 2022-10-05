@@ -10,7 +10,6 @@ import {
 import { AuthContext } from "../../../context";
 import { CheckInComponentProps } from "../../../interfacesTypes";
 import { isBiller } from "../../../utils";
-import UpFrontPayment from "../billing/upfrontPayment";
 
 const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep, shouldDisableEdit, activeStep, handleProceed }) => {
   const { user } = useContext(AuthContext)
@@ -27,7 +26,7 @@ const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep, shou
   const fullName = firstName && lastName ? `${firstName} ${lastName}` : N_A
 
   const getProceedBtnTitle = () => {
-    if(isBillerUser){
+    if (isBillerUser) {
       return TO_CHECKOUT
     }
     switch (activeStep) {
@@ -54,6 +53,19 @@ const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep, shou
     }
   }
 
+
+  const handleNextStep = () => {
+    if (activeStep === 0) {
+      return isBillerUser ? handleStep(4) : handleStep(0, true)
+    }
+
+    if (handleProceed) {
+      return handleProceed(true)
+    }
+
+    isBillerUser ? handleStep(4) : handleStep(0, true)
+  }
+
   return (
     <>
       <Card>
@@ -65,7 +77,7 @@ const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep, shou
           <Button
             variant="contained" color="primary"
             endIcon={<Box width={20}><ChevronRight /></Box>}
-            onClick={() => handleProceed ? handleProceed(true) : isBillerUser ? handleStep(4) : handleStep(0, true)}>
+            onClick={() => handleNextStep()}>
             {getProceedBtnTitle()}
           </Button>
         </Box>
@@ -133,7 +145,7 @@ const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep, shou
 
       <Box p={2} />
 
-      {(activeStep || 0) === 0 && <UpFrontPayment handleStep={handleStep} shouldDisableEdit={shouldDisableEdit} />}
+      {/* {(activeStep || 0) === 0 && <UpFrontPayment handleStep={handleStep} shouldDisableEdit={shouldDisableEdit} />} */}
     </>
   )
 }

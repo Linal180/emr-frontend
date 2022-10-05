@@ -157,7 +157,7 @@ const SurgicalHistoryTab: FC<SurgicalTabProps> = ({ shouldDisableEdit, handleSte
                 variant='contained'
                 color='secondary'
                 size="large"
-                onClick={() => handleStep(8)}
+                onClick={() => handleStep()}
               >
                 {NEXT}
               </Button>}

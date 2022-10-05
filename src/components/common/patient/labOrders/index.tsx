@@ -206,7 +206,7 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisabl
                       variant='contained'
                       color='secondary'
                       size="large"
-                      onClick={() => handleStep(9)}
+                      onClick={() => handleStep()}
                     >
                       {NEXT}
                     </Button>}

@@ -105,7 +105,7 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
             <Typography variant='h3'>{REASON_VISIT}</Typography>
 
             <Box display='flex' alignItems='center'>
-              {!shouldDisableEdit && !shouldShowAdd && <Button
+              {!shouldDisableEdit && shouldShowAdd && <Button
                 variant="contained"
                 color="primary"
                 onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}
@@ -115,7 +115,7 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
 
               <Box p={1} />
 
-              {isInTake ? <Button variant='contained' color='secondary' onClick={() => handleStep && handleStep(1)} size="large">{NEXT}</Button> :
+              {isInTake ? <Button variant='contained' color='secondary' onClick={() => handleStep && handleStep()} size="large">{NEXT}</Button> :
                 shouldShowCheckout ? <Button
                   variant='contained'
                   color='primary'
@@ -135,7 +135,7 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
               const { id, ICDCode } = value || {}
               return <Box display="flex" flexDirection="row" justifyContent="space-between">
                 <Typography variant='inherit'>{ICDCode?.description}</Typography>
-                {!shouldShowAdd && <IconButton onClick={() => id && onDeleteClick(id)}>
+                {!shouldDisableEdit && shouldShowAdd && <IconButton onClick={() => id && onDeleteClick(id)}>
                   <RemoveCircleOutline />
                 </IconButton>}
               </Box>

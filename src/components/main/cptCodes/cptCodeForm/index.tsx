@@ -5,9 +5,10 @@ import { Box, Button, Dialog, DialogActions, DialogTitle, Grid } from '@material
 //components
 import Alert from '../../../common/Alert';
 import InputController from '../../../../controller';
+import TableLoader from '../../../common/TableLoader';
 //interfaces, constants, schema, graphql
 import { CptCodeSchema } from '../../../../validationSchemas';
-import { ActionType } from '../../../../reducers/icdTenReducer';
+import { ActionType } from '../../../../reducers/cptCodeReducer';
 import { cptCodeFormProps, CptCodeFormType, SideDrawerCloseReason } from '../../../../interfacesTypes';
 import { ADD, CANCEL, CODE, CPT_CODE, DESCRIPTION, EDIT, SOMETHING_WENT_WRONG, SUBMIT } from '../../../../constants';
 import { useCreateCptCodeMutation, useGetCptCodeLazyQuery, useUpdateCptCodeMutation } from '../../../../generated/graphql';
@@ -15,7 +16,7 @@ import { useCreateCptCodeMutation, useGetCptCodeLazyQuery, useUpdateCptCodeMutat
 const CptForm: FC<cptCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, dispatcher }): JSX.Element => {
 
   const methods = useForm<CptCodeFormType>({ resolver: yupResolver(CptCodeSchema) });
-  const { handleSubmit, setValue, reset } = methods;
+  const { handleSubmit, setValue } = methods;
 
   const [createCptCode, { loading: createLoading }] = useCreateCptCodeMutation({
     onError: ({ message }) => {
@@ -27,7 +28,8 @@ const CptForm: FC<cptCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, d
       const { status, message } = response || {}
       const { id } = cptCode || {}
       if (id && status === 200) {
-        reset()
+        setValue('code', '')
+        setValue('shortDescription', '')
         message && Alert.success(message)
         fetch && fetch()
         handleClose(false)
@@ -64,7 +66,8 @@ const CptForm: FC<cptCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, d
       const { id } = cptCode || {}
       if (id && status === 200) {
         dispatcher && dispatcher({ type: ActionType.SET_ITEM_ID, itemId: '' })
-        reset()
+        setValue('code', '')
+        setValue('shortDescription', '')
         message && Alert.success(message)
         fetch && fetch()
         handleClose(false)
@@ -105,36 +108,44 @@ const CptForm: FC<cptCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, d
     }
   }
 
+  const cancelHandler = () => {
+    isEdit && dispatcher && dispatcher({ type: ActionType.SET_ITEM_ID, itemId: '' })
+    setValue('code', '')
+    setValue('shortDescription', '')
+    handleClose(false)
+  }
+
   const loading = createLoading || getLoading || updateLoading
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'sm'} fullWidth>
       <DialogTitle>{`${isEdit ? EDIT : ADD} ${CPT_CODE}`}</DialogTitle>
-      <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Box p={3}>
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <InputController controllerName='code' disabled={loading} controllerLabel={CODE} isRequired />
+      {loading ? <TableLoader numberOfColumns={1} numberOfRows={2} /> :
+        <FormProvider {...methods}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Box p={3}>
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <InputController controllerName='code' disabled={loading} controllerLabel={CODE} isRequired toUpperCase />
+                </Grid>
+                <Grid item xs={12}>
+                  <InputController controllerName='shortDescription' multiline disabled={loading} controllerLabel={DESCRIPTION} isRequired />
+                </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <InputController controllerName='shortDescription' multiline disabled={loading} controllerLabel={DESCRIPTION} isRequired />
-              </Grid>
-            </Grid>
-          </Box>
-
-          <DialogActions>
-            <Box display="flex" justifyContent="flex-end">
-              <Box mr={2}>
-                <Button variant='outlined' disabled={loading} onClick={() => handleClose(false)}>{CANCEL}</Button>
-              </Box>
-              <Box>
-                <Button type='submit' variant='contained' color='primary' disabled={loading}>{SUBMIT}</Button>
-              </Box>
             </Box>
-          </DialogActions>
-        </form>
-      </FormProvider>
+
+            <DialogActions>
+              <Box display="flex" justifyContent="flex-end">
+                <Box mr={2}>
+                  <Button variant='outlined' disabled={loading} onClick={cancelHandler}>{CANCEL}</Button>
+                </Box>
+                <Box>
+                  <Button type='submit' variant='contained' color='primary' disabled={loading}>{SUBMIT}</Button>
+                </Box>
+              </Box>
+            </DialogActions>
+          </form>
+        </FormProvider>}
     </Dialog>
   )
 }

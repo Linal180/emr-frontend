@@ -43,7 +43,7 @@ const SendSMSForm: FC = (): JSX.Element => {
 
   const templateHandler = (editor: SelectorOption) => {
     const { id } = editor || {}
-    setValue('message', id)
+    setValue('message', id , {shouldValidate:true})
   }
 
   return (

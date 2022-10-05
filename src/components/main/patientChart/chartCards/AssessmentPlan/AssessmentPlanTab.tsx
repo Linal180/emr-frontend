@@ -9,6 +9,7 @@ import AssessmentPlanProblems from './AssessmentPlanProblems'
 function AssessmentPlanTab({ shouldDisableEdit }: { shouldDisableEdit?: boolean }) {
   const { id: patientId, appointmentId } = useParams<ParamsType>()
   const [assessmentProblems, setAssessmentProblems] = useState<AssessmentProblemType[]>([])
+  const [isSigned, setIsSigned] = useState(false)
 
   const [findAllPatientProblems] = useFindAllPatientProblemsWithMedicationLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -48,6 +49,8 @@ function AssessmentPlanTab({ shouldDisableEdit }: { shouldDisableEdit?: boolean 
                   const rxNumber = medication?.rxNumber
                   const termType = medication?.termType
                   const updatedAt = medication?.updatedAt
+
+                  setIsSigned(medicationSigned || false)
 
                   return {
                     id,
@@ -114,7 +117,9 @@ function AssessmentPlanTab({ shouldDisableEdit }: { shouldDisableEdit?: boolean 
         fetchProblems={fetchProblems}
         assessmentProblems={assessmentProblems}
         setAssessmentProblems={setAssessmentProblems}
-        shouldDisableEdit={shouldDisableEdit} />
+        shouldDisableEdit={shouldDisableEdit}
+        isSigned={isSigned}
+      />
       <Box m={2} />
     </div >
   )

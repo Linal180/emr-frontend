@@ -2053,9 +2053,9 @@ export const getCheckInStatus = (
     case 1:
       return { stage: 'With Front desk', stageColor: BLUE };
     case 2:
-      return { stage: 'Ready for Staff', stageColor: ORANGE_SIMPLE };
+      return { stage: 'Ready for Intake', stageColor: ORANGE_SIMPLE };
     case 3:
-      return { stage: 'Ready for Provider', stageColor: BLUE_SEVEN };
+      return { stage: 'Ready for Exam', stageColor: BLUE_SEVEN };
     case 4:
       return { stage: 'Ready for Checkout', stageColor: PURPLE_ONE };
     case 5:
@@ -2404,4 +2404,84 @@ export const dateFormateForEmail = (dateTime: string) => {
   const date = moment(appointmentDateStr).format("DD-MM-YYYY")
   const time = moment(appointmentDateStr).format("hh:mm A")
   return { date: date, time: time }
+}
+
+const getSocialQsType = (type: string, value: any) => {
+  switch (type) {
+    case "boolean":
+      return `${value}`
+    case "object":
+
+      if (Object.prototype.hasOwnProperty.call(value, 'id')) {
+        return value?.id;
+      }
+      else {
+        return moment(value).format()
+      }
+
+    case "string":
+
+      return value;
+
+    default:
+      return ''
+  }
+}
+
+export const getSocialHistoryFormValues = (data: any) => {
+  const arr = []
+  for (const key in data) {
+    if (Object.prototype.hasOwnProperty.call(data, key)) {
+      const QKey = data[`${key}`]
+
+
+      const dependentQuestions = []
+
+      if (Object.prototype.hasOwnProperty.call(QKey, 'dependent')) {
+
+        const dependentQs = data[`${key}`]['dependent']
+
+        for (const key in dependentQs) {
+          if (Object.prototype.hasOwnProperty.call(dependentQs, key)) {
+            const dependentQKey = dependentQs[`${key}`]
+            if (Object.prototype.hasOwnProperty.call(dependentQKey, 'value')
+              && Object.prototype.hasOwnProperty.call(dependentQKey, 'note')
+            ) {
+
+              const value = dependentQKey['value']
+              const note = dependentQKey['note']
+              const str = value ?? ''
+              const type = typeof str;
+              const strValue = getSocialQsType(type, str);
+
+              dependentQuestions.push({
+                name: key,
+                value: strValue as string,
+                note: note as string
+              })
+            }
+          }
+        }
+      }
+
+      if (Object.prototype.hasOwnProperty.call(QKey, 'value')
+        && Object.prototype.hasOwnProperty.call(QKey, 'note')
+      ) {
+        const value = QKey['value']
+        const note = QKey['note']
+        const str = value ?? ''
+        const type = typeof str;
+        const strValue = getSocialQsType(type, str);
+        const newQuestions = dependentQuestions?.map((item) => ({ ...item, parentId: key }))
+
+        arr.push({
+          name: key,
+          value: strValue as string,
+          note: note as string,
+          socialDependentAnswer: newQuestions
+        })
+      }
+    }
+  }
+  return arr;
 }
