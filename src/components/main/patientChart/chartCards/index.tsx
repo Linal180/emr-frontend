@@ -32,7 +32,8 @@ import {
   CHART_TEXT, CONFIRMATION_MODAL_TYPE, DISCHARGE, DISCHARGE_PATIENT_DESCRIPTION, DONE_INTAKE, PATIENT_CHARTING_MENU, PATIENT_CHARTING_TABS,
   PATIENT_DISCHARGED, PATIENT_DISCHARGED_SUCCESS, PRINT_CHART, REASON_FOR_VISIT_OPTION,
   REVIEW_OPTION,
-  SIGN_OFF
+  SIGN_OFF,
+  TRIAGE_NOTE_OPTION
 } from "../../../../constants";
 import { AuthContext, ChartContextProvider } from '../../../../context';
 import { AppointmentStatus, useUpdateAppointmentStatusMutation } from "../../../../generated/graphql";
@@ -136,7 +137,7 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
   const getActiveComponent = (step: number | undefined) => {
     switch (step) {
       case 0:
-        return <AppointmentReason isInTake={true} handleStep={() => handleStep(1)} shouldDisableEdit={shouldDisableEdit} />
+        return <AppointmentReason shouldShowAdd isInTake={true} handleStep={() => handleStep(1)} shouldDisableEdit={shouldDisableEdit} />
       // case 1:
       //   return <TriageNoteTab shouldDisableEdit={shouldDisableEdit} handleStep={handleStep} />
 
@@ -161,7 +162,7 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
         return <SurgicalHistoryTab shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(7)} />
 
       case 7:
-        return <SocialHistory shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(8)}/>
+        return <SocialHistory shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(8)} />
 
       case 8:
         return <LabOrdersTable appointmentInfo={appointmentInfo} shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(9)} />
@@ -218,7 +219,7 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
     }), ASSESSMENT_PLAN_OPTION] :
     [REVIEW_OPTION, ...PATIENT_CHARTING_TABS.map(stepData => {
       return { ...stepData, value: String(Number(stepData.value) + 1) }
-    }), ASSESSMENT_PLAN_OPTION] : PATIENT_CHARTING_TABS
+    }), ASSESSMENT_PLAN_OPTION] : [TRIAGE_NOTE_OPTION, ...PATIENT_CHARTING_TABS]
 
   const handleDischarge = () => {
     if (isInTake) {
@@ -328,15 +329,15 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
                   {appointmentId &&
                     <Box pt={0} borderRadius={8}>
                       <TabPanel value={"1"}>
-                        {isInTake ? <AppointmentReason isInTake={false} /> : <ReviewTab />}
+                        {isInTake ? <AppointmentReason isInTake={false} /> : <ReviewTab shouldShowAdd shouldDisableEdit={shouldDisableEdit} />}
                       </TabPanel>
                     </Box>}
 
-                  <Box pt={0} borderRadius={8}>
+                  {!appointmentId && <Box pt={0} borderRadius={8}>
                     <TabPanel value={appointmentId ? "2" : "1"}>
                       <TriageNoteTab shouldDisableEdit={shouldDisableEdit} />
                     </TabPanel>
-                  </Box>
+                  </Box>}
 
                   <Box pt={0} bgcolor={WHITE} borderRadius={8}>
                     <TabPanel value={appointmentId ? "3" : "2"}>

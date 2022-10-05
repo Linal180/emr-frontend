@@ -14,7 +14,8 @@ import UpFrontPaymentType from "./UpFrontPaymentType";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
-  ADJUSTMENTS, AMOUNT_TYPE, BALANCE, CHARGE_ENTRY, COLLECTED_AMOUNT, CPT_TEXT, DUE_AMOUNT, EXPECTED, NOTES, NOT_FOUND_EXCEPTION, PAID,
+  ADJUSTMENTS, AMOUNT_TYPE, BALANCE, COLLECTED_AMOUNT, CPT_TEXT, DUE_AMOUNT, EXPECTED, NOTES, NOT_FOUND_EXCEPTION, PAID,
+  PAY,
   PAYMENT, PAYMENT_TYPE, TOTAL_TEXT, UPFRONT_INITIAL_VALUES, UPFRONT_PAYMENT_SUCCESS, UPFRONT_PAYMENT_TYPES,
   USER_NOT_FOUND_EXCEPTION_MESSAGE
 } from "../../../../constants";
@@ -39,7 +40,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
     resolver: yupResolver(createUpFrontPaymentSchema)
   })
 
-  const { watch, setValue, handleSubmit, trigger } = methods
+  const { watch, setValue, handleSubmit } = methods
   const { Additional, Copay, Previous, adjustments, paid } = watch()
   const upFrontPayments = [...Additional, ...Copay, ...Previous]
   const totalCharge = upFrontPayments.reduce((acc, upFrontPayment) => {
@@ -68,10 +69,6 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
         :
         Alert.error(message)
     },
-
-    onCompleted() {
-      !cptCodes && Alert.success(UPFRONT_PAYMENT_SUCCESS);
-    }
   });
 
   const [getUpFrontPaymentDetails, { loading: getUpFrontPaymentDetailsLoading }] = useFetchUpFrontPaymentDetailsByAppointmentIdLazyQuery({
@@ -130,7 +127,6 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
           setValue(`${value.paymentType as UPFRONT_PAYMENT_TYPES}.${index}.paymentType`, value?.paymentType as never)
         })
 
-        trigger()
       }
     },
   });
@@ -225,15 +221,15 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
   }, [fetchUpFrontPayments, getPatientInsurances])
 
   useImperativeHandle(ref, () => ({
-    submit() {
-      handleSubmit(onSubmit)()
+    async submit() {
+      await handleSubmit(onSubmit)()
+
     }
   }));
 
   if (getUpFrontPaymentDetailsLoading) {
     return <Loader loading loaderText="Fetching upFront Payments..." />
   }
-
 
   return (
     <>
@@ -243,15 +239,6 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
             <Box pb={3} px={2}>
               <Box py={3} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
                 <Typography variant="h4">{PAYMENT}</Typography>
-
-                {!shouldDisableEdit && <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => handleSubmit(onSubmit)()}
-                  disabled={createUpFrontPaymentLoading}
-                >
-                  {CHARGE_ENTRY}
-                </Button>}
               </Box>
 
               <Box className={classes.mainTableContainer}>
@@ -385,99 +372,23 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
                   </Grid>
                 </Grid>
               </Box>}
+
+              {!shouldDisableEdit && <Box mt={3} display="flex" justifyContent="flex-end" alignItems="center">
+                <Button
+                  variant="contained"
+                  size="large"
+                  color="secondary"
+                  onClick={async() => {
+                    await handleSubmit(onSubmit)()
+                    Alert.success(UPFRONT_PAYMENT_SUCCESS)
+                  }}
+                  disabled={createUpFrontPaymentLoading}
+                >
+                  {PAY}
+                </Button>
+              </Box>}
             </Box>
           </Card>
-
-          {/* <Box p={2} />
-
-          {cptCodes && <Card>
-            <Box px={3} pt={1} bgcolor={GREEN} borderRadius={8}>
-              <Grid container>
-                <Grid item md={8} sm={12} xs={12}>
-                  <Grid container spacing={2} direction="row">
-                    <Grid item md={4} sm={6} xs={12}>
-                      <Box color={WHITE} display="flex" alignItems="center">
-                        <Typography variant="h5">{TOTAL_CHARGES}</Typography>
-
-                        <Box ml={1} width={150}>
-                          <InputController
-                            fieldType="text"
-                            controllerLabel={''}
-                            controllerName="totalCharges"
-                            disabled={shouldDisableEdit}
-                          />
-                        </Box>
-                      </Box>
-                    </Grid>
-
-                    <Grid item md={4} sm={6} xs={12}>
-                      <Box color={WHITE} display="flex" alignItems="center">
-                        <Typography variant="h5">{EXPECTED} :</Typography>
-
-                        <Box ml={1} width={150}>
-                          <InputController
-                            fieldType="text"
-                            controllerLabel={''}
-                            controllerName="expected"
-                            disabled={shouldDisableEdit}
-                          />
-                        </Box>
-                      </Box>
-                    </Grid>
-
-                    <Grid item md={4} sm={6} xs={12}>
-                      <Box color={WHITE} display="flex" alignItems="center">
-                        <Typography variant="h5">{ADJUSTMENTS} :</Typography>
-
-                        <Box ml={1} width={150}>
-                          <InputController
-                            fieldType="text"
-                            controllerLabel={''}
-                            controllerName="adjustments"
-                            disabled={shouldDisableEdit}
-                          />
-                        </Box>
-                      </Box>
-                    </Grid>
-                  </Grid>
-                </Grid>
-
-                <Grid item md={4} sm={12} xs={12}>
-                  <Grid container spacing={2} direction="row">
-                    <Grid item md={6} sm={6} xs={12}>
-                      <Box color={WHITE} display="flex" alignItems="center">
-                        <Typography variant="h5">{PAID} :</Typography>
-
-                        <Box ml={1} width={150}>
-                          <InputController
-                            fieldType="text"
-                            controllerLabel={''}
-                            controllerName="paid"
-                            disabled={shouldDisableEdit}
-                          />
-                        </Box>
-                      </Box>
-                    </Grid>
-
-                    <Grid item md={6} sm={6} xs={12}>
-                      <Box color={WHITE} display="flex" alignItems="center">
-                        <Typography variant="h5">{BALANCE} :</Typography>
-
-                        <Box ml={1} width={150}>
-                          <InputController
-                            fieldType="text"
-                            controllerLabel={''}
-                            controllerName="balance"
-                            disabled={shouldDisableEdit}
-                          />
-                        </Box>
-                      </Box>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Box>
-          </Card> */}
         </form>
       </FormProvider>
 

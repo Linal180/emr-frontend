@@ -154,6 +154,7 @@ export type ReviewTabProps = {
   shouldShowAdd?: boolean
   shouldShowCheckout?: boolean
   handleStepChange?: Function
+  shouldDisableEdit?: boolean
 }
 
 export type AppointmentReasonProps = {

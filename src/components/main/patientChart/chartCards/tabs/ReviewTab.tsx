@@ -6,8 +6,9 @@ import { PatientVitals, useGetPatientChartingReviewLazyQuery } from '../../../..
 import { ParamsType, PatientChartingReview, ReviewTabProps } from '../../../../../interfacesTypes'
 import { useChartingStyles } from '../../../../../styles/chartingStyles'
 import AppointmentReason from './AppointmentReason'
+import TriageNoteTab from './TriageNotesListing'
 
-function ReviewTab({ shouldShowAdd, shouldShowCheckout, handleStepChange }: ReviewTabProps) {
+function ReviewTab({ shouldShowAdd, shouldShowCheckout, handleStepChange, shouldDisableEdit }: ReviewTabProps) {
   const classes = useChartingStyles()
   const { id: patientId, appointmentId } = useParams<ParamsType>()
   const [patientChartingReview, setPatientChartingReview] = useState<PatientChartingReview | null>(null)
@@ -64,7 +65,11 @@ function ReviewTab({ shouldShowAdd, shouldShowCheckout, handleStepChange }: Revi
 
   return (
     <div>
-      <AppointmentReason shouldShowAdd shouldShowCheckout={shouldShowCheckout} handleStepChange={handleStepChange} />
+      <AppointmentReason shouldShowAdd shouldShowCheckout={shouldShowCheckout} handleStepChange={handleStepChange} shouldDisableEdit={shouldShowCheckout || shouldDisableEdit}/>
+
+      <Box mt={1} />
+
+      {!shouldShowCheckout && <TriageNoteTab shouldDisableEdit={shouldDisableEdit} />}
 
       <Box m={2} />
 
