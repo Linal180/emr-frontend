@@ -69,10 +69,6 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
         :
         Alert.error(message)
     },
-
-    onCompleted() {
-      !cptCodes && Alert.success(UPFRONT_PAYMENT_SUCCESS);
-    }
   });
 
   const [getUpFrontPaymentDetails, { loading: getUpFrontPaymentDetailsLoading }] = useFetchUpFrontPaymentDetailsByAppointmentIdLazyQuery({
@@ -225,15 +221,15 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
   }, [fetchUpFrontPayments, getPatientInsurances])
 
   useImperativeHandle(ref, () => ({
-    submit() {
-      handleSubmit(onSubmit)()
+    async submit() {
+      await handleSubmit(onSubmit)()
+
     }
   }));
 
   if (getUpFrontPaymentDetailsLoading) {
     return <Loader loading loaderText="Fetching upFront Payments..." />
   }
-
 
   return (
     <>

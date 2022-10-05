@@ -3783,12 +3783,13 @@ export const CLAIM_SUCCESS_MESSAGES = [
   "Claim Created Successfully"
 ]
 
+export const TRIAGE_NOTE_OPTION = {
+  icon: TriageIcon,
+  title: "Triage Notes",
+  value: "1",
+}
+
 export const PATIENT_CHARTING_TABS = [
-  {
-    icon: TriageIcon,
-    title: "Triage Notes",
-    value: "1",
-  },
   {
     icon: VitalsIcon,
     title: "Vitals",
@@ -4656,7 +4657,7 @@ export const VACCINE_SITES_MAPPED = [
 
 export enum QuestionType {
   SWITCH = 'switch',
-  SELECT= 'select',
+  SELECT = 'select',
   INPUT = 'input',
   DATE = 'date',
   NUMBER = 'number'
