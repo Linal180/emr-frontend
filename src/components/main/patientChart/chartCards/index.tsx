@@ -30,7 +30,8 @@ import { HistoryIcon } from "../../../../assets/svgs";
 import {
   ASSESSMENT_PLAN_OPTION,
   CHART_TEXT, CONFIRMATION_MODAL_TYPE, DISCHARGE, DISCHARGE_PATIENT_DESCRIPTION, DONE_INTAKE, PATIENT_CHARTING_MENU, PATIENT_CHARTING_TABS,
-  PATIENT_DISCHARGED, PATIENT_DISCHARGED_SUCCESS, PRINT_CHART, REASON_FOR_VISIT_OPTION,
+  PATIENT_DISCHARGED, PATIENT_DISCHARGED_SUCCESS, PATIENT_HISTORY_OPTION, PRINT_CHART, REASON_FOR_VISIT_OPTION,
+  REVIEW_OF_SYSTEM_OPTION,
   REVIEW_OPTION,
   SIGN_OFF,
   TRIAGE_NOTE_OPTION
@@ -44,6 +45,8 @@ import { useExternalPatientStyles } from '../../../../styles/publicAppointmentSt
 import { WHITE } from '../../../../theme';
 import { isAdmin, isOnlyDoctor } from "../../../../utils";
 import SocialHistory from "./socialHistory";
+import PatientHistory from "./patientHistoryIllness";
+import ReviewOfSystem from "./reviewOfSystem";
 
 
 const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appointmentInfo, fetchAppointment, labOrderHandler, isInTake }): JSX.Element => {
@@ -216,10 +219,10 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
   const chartingStepsToMap = appointmentId ? isInTake ?
     [REASON_FOR_VISIT_OPTION, ...transformedPatientChartingSteps.map(stepData => {
       return { ...stepData, value: String(Number(stepData.value) + 1) }
-    }), ASSESSMENT_PLAN_OPTION] :
+    }), ASSESSMENT_PLAN_OPTION, PATIENT_HISTORY_OPTION, REVIEW_OF_SYSTEM_OPTION] :
     [REVIEW_OPTION, ...PATIENT_CHARTING_TABS.map(stepData => {
       return { ...stepData, value: String(Number(stepData.value) + 1) }
-    }), ASSESSMENT_PLAN_OPTION] : [TRIAGE_NOTE_OPTION, ...PATIENT_CHARTING_TABS]
+    }), ASSESSMENT_PLAN_OPTION, PATIENT_HISTORY_OPTION, REVIEW_OF_SYSTEM_OPTION] : [TRIAGE_NOTE_OPTION, ...PATIENT_CHARTING_TABS]
 
   const handleDischarge = () => {
     if (isInTake) {
@@ -398,6 +401,18 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
                   {appointmentId && <Box pt={0} bgcolor={WHITE} borderRadius={8}>
                     <TabPanel value={appointmentId ? isInTake ? "11" : "10" : "9"}>
                       <AssessmentPlanTab shouldDisableEdit={shouldDisableEdit} />
+                    </TabPanel>
+                  </Box>}
+
+                  {appointmentId && <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                    <TabPanel value={appointmentId ? isInTake ? "12" : "11" : "10"}>
+                      <PatientHistory shouldDisableEdit={shouldDisableEdit} />
+                    </TabPanel>
+                  </Box>}
+
+                  {appointmentId && <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                    <TabPanel value={appointmentId ? isInTake ? "13" : "12" : "11"}>
+                      <ReviewOfSystem shouldDisableEdit={shouldDisableEdit} />
                     </TabPanel>
                   </Box>}
                 </Box> : getActiveComponent(activeStep)}

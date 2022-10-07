@@ -1,0 +1,144 @@
+query PatientChartingTemplates($findAllTemplatesInput: FindAllTemplatesInput!) {
+  patientChartingTemplates(findAllTemplatesInput: $findAllTemplatesInput) {
+    response {
+      status
+      message
+    }
+
+    pagination {
+      totalPages
+      page
+    }
+
+    templates {
+      id
+      name
+    }
+  }
+}
+
+query GetPatientChartingTemplate($templateId: String!) {
+  getPatientChartingTemplate(templateId: $templateId) {
+    response {
+      status
+      message
+    }
+
+    template {
+      id
+      sections {
+        id
+        name
+
+        questions {
+          id
+          title
+
+          answers {
+            id
+            questionType
+            name
+            answerType
+            options {
+              id
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+mutation CreatePatientIllnessHistory(
+  $createPatientIllnessHistoryInput: CreatePatientIllnessHistoryInput!
+) {
+  createPatientIllnessHistory(
+    createPatientIllnessHistoryInput: $createPatientIllnessHistoryInput
+  ) {
+    response {
+      status
+      message
+    }
+
+    patientIllnessHistory {
+      id
+    }
+  }
+}
+
+query PatientIllnessHistory(
+  $patientIllnessHistoryInput: PatientIllnessHistoryInput!
+) {
+  patientIllnessHistory(
+    patientIllnessHistoryInput: $patientIllnessHistoryInput
+  ) {
+    response {
+      status
+      message
+    }
+
+    patientIllnessHistory {
+      id
+      patientId
+      appointmentId
+
+      answers {
+        id
+        value
+        answerId
+
+        answer {
+          questionType
+        }
+      }
+    }
+  }
+}
+
+
+mutation CreateReviewOfSystemHistory(
+  $createReviewOfSystemInput: CreateReviewOfSystemInput!
+) {
+  createReviewOfSystem(
+    createReviewOfSystemInput: $createReviewOfSystemInput
+  ) {
+    response {
+      status
+      message
+    }
+
+    reviewOfSystem {
+      id
+    }
+  }
+}
+
+query ReviewOfSystem(
+  $reviewOfSystemInput: ReviewOfSystemInput!
+) {
+  reviewOfSystem(
+    reviewOfSystemInput: $reviewOfSystemInput
+  ) {
+    response {
+      status
+      message
+    }
+
+    reviewOfSystem {
+      id
+      patientId
+      appointmentId
+
+      answers {
+        id
+        value
+        answerId
+
+        answer {
+          questionType
+        }
+      }
+    }
+  }
+}

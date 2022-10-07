@@ -19,7 +19,7 @@ import {
   FacilitiesPayload, FamilyHistory, FetchBillingClaimStatusesInput, FieldsInputs, FormElement, FormTabsInputs,
   IcdCodes, IcdCodesWithSnowMedCode, LabTests, LabTestsPayload, LoginUserInput, LoincCodePayload, Medications, Patient, PatientAllergies,
   PatientMedication, PatientPayload, PatientProblems, PatientProviderPayload, PatientsPayload, PatientVitals,
-  PermissionsPayload, PolicyEligibilityWithPatientPayload, Practice, PracticePayload, Questions, ReactionsPayload,
+  PermissionsPayload, PolicyEligibilityWithPatientPayload, Practice, PracticePayload, QuestionAnswers, Questions, ReactionsPayload,
   ResponsePayloadResponse, RolesPayload, Schedule, SectionsInputs, ServicesPayload, Staff, SurgicalHistory,
   TriageNotes, TwoFactorInput, UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput,
   UpdateFacilityTimeZoneInput, User, UsersFormsElements, VerifyCodeInput
@@ -422,6 +422,10 @@ export interface FacilitySelectorProps extends SelectorProps {
   patientId?: string;
   filteredOptions?: SelectorOption[]
   placeHolder?: string
+}
+
+export type ChartingTemplateSelectorProps = SelectorProps & {
+  templateType?: string
 }
 
 
@@ -2339,6 +2343,11 @@ export type SocialHistoryProps = {
   handleStep?: Function
 }
 
+export type PatientHistoryProps = {
+  shouldDisableEdit?: boolean
+  handleStep?: Function
+}
+
 
 export type LatestVitalCardProps = {
   patientId: string
@@ -2387,4 +2396,9 @@ export type DependentQuestionCardType = {
   question: DependentQuestions
   QId: string,
   value?: string | undefined
+}
+
+export type AnswerChipsProps = {
+  answers: QuestionAnswers[]
+  colors: string[]
 }
