@@ -89,6 +89,7 @@ query PatientIllnessHistory(
         answerId
 
         answer {
+          name
           questionType
         }
       }
@@ -96,13 +97,10 @@ query PatientIllnessHistory(
   }
 }
 
-
 mutation CreateReviewOfSystemHistory(
   $createReviewOfSystemInput: CreateReviewOfSystemInput!
 ) {
-  createReviewOfSystem(
-    createReviewOfSystemInput: $createReviewOfSystemInput
-  ) {
+  createReviewOfSystem(createReviewOfSystemInput: $createReviewOfSystemInput) {
     response {
       status
       message
@@ -114,12 +112,8 @@ mutation CreateReviewOfSystemHistory(
   }
 }
 
-query ReviewOfSystem(
-  $reviewOfSystemInput: ReviewOfSystemInput!
-) {
-  reviewOfSystem(
-    reviewOfSystemInput: $reviewOfSystemInput
-  ) {
+query ReviewOfSystem($reviewOfSystemInput: ReviewOfSystemInput!) {
+  reviewOfSystem(reviewOfSystemInput: $reviewOfSystemInput) {
     response {
       status
       message
@@ -136,6 +130,7 @@ query ReviewOfSystem(
         answerId
 
         answer {
+          name
           questionType
         }
       }

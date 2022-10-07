@@ -1,8 +1,8 @@
 import { Box, Card, colors, Typography } from '@material-ui/core'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
-import { ASSESSMENT_PLAN, EIGHT_PAGE_LIMIT, FOLLOWUP } from '../../../constants'
-import { useFindAllPatientProblemsWithMedicationLazyQuery } from '../../../generated/graphql'
+import { ASSESSMENT_PLAN, EIGHT_PAGE_LIMIT, FOLLOWUP, PATIENT_HISTORY_ILLNESS_TEXT, REVIEW_OF_SYSTEM_TEXT } from '../../../constants'
+import { PatientIllnessHistoryPayload, ReviewOfSystemPayload, useFindAllPatientProblemsWithMedicationLazyQuery, usePatientIllnessHistoryLazyQuery, useReviewOfSystemLazyQuery } from '../../../generated/graphql'
 import { AssessmentProblemType, ParamsType } from '../../../interfacesTypes'
 import { useChartingStyles } from '../../../styles/chartingStyles'
 import ReviewTab from '../patientChart/chartCards/tabs/ReviewTab'
@@ -10,6 +10,8 @@ import ReviewTab from '../patientChart/chartCards/tabs/ReviewTab'
 function SignOff({ handleStepChange }: { handleStepChange: Function }) {
   const { id: patientId, appointmentId } = useParams<ParamsType>()
   const [assessmentProblems, setAssessmentProblems] = useState<AssessmentProblemType[]>([])
+  const [reviewOfSystem, setReviewOfSystem] = useState<ReviewOfSystemPayload['reviewOfSystem']>(null)
+  const [patientIllnessHistory, setPatientIllnessHistory] = useState<PatientIllnessHistoryPayload['patientIllnessHistory']>(null)
 
   const [findAllPatientProblems] = useFindAllPatientProblemsWithMedicationLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -109,6 +111,63 @@ function SignOff({ handleStepChange }: { handleStepChange: Function }) {
     patientId && fetchProblems()
   }, [fetchProblems, patientId])
 
+  const [patientReviewOfSystem] = useReviewOfSystemLazyQuery({
+    onCompleted: (data) => {
+      const { reviewOfSystem: dataResponse } = data || {}
+      const { response, reviewOfSystem } = dataResponse || {}
+      const { status } = response || {}
+
+      if (status === 200) {
+        setReviewOfSystem(reviewOfSystem as ReviewOfSystemPayload['reviewOfSystem'])
+
+      }
+    },
+    onError: () => { }
+  })
+
+  const fetchPatientReviewOfSystem = useCallback(async () => {
+    appointmentId && await patientReviewOfSystem({
+      variables: {
+        reviewOfSystemInput: {
+          appointmentId: appointmentId
+        }
+      }
+    })
+
+  }, [patientReviewOfSystem, appointmentId])
+
+  useEffect(() => {
+    fetchPatientReviewOfSystem()
+  }, [fetchPatientReviewOfSystem])
+
+  const [getPatientIllnessHistory] = usePatientIllnessHistoryLazyQuery({
+    onCompleted: (data) => {
+      const { patientIllnessHistory: dataResponse } = data || {}
+      const { response, patientIllnessHistory } = dataResponse || {}
+      const { status } = response || {}
+
+      if (status === 200) {
+        setPatientIllnessHistory(patientIllnessHistory as PatientIllnessHistoryPayload['patientIllnessHistory'])
+      }
+    },
+    onError: () => { }
+  })
+
+  const fetchPatientIllnessHistory = useCallback(async () => {
+    appointmentId && await getPatientIllnessHistory({
+      variables: {
+        patientIllnessHistoryInput: {
+          appointmentId: appointmentId
+        }
+      }
+    })
+
+  }, [getPatientIllnessHistory, appointmentId])
+
+  useEffect(() => {
+    fetchPatientIllnessHistory()
+  }, [fetchPatientIllnessHistory])
+
   const classes = useChartingStyles()
   return (
     <div>
@@ -119,8 +178,6 @@ function SignOff({ handleStepChange }: { handleStepChange: Function }) {
           <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" borderBottom={`1px solid ${colors.grey[300]}`}>
             <Typography variant='h3'>{ASSESSMENT_PLAN}</Typography>
           </Box>
-
-
 
           <Box p={2}>
             {assessmentProblems.map(problem => {
@@ -164,6 +221,57 @@ function SignOff({ handleStepChange }: { handleStepChange: Function }) {
                     </Box>
                   )
                 }))}
+              </>
+            })}
+          </Box>
+        </Box>
+      </Card>
+      <Box m={3} />
+      <Card>
+        <Box pb={2} className={classes.cardBox}>
+          <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" borderBottom={`1px solid ${colors.grey[300]}`}>
+            <Typography variant='h3'>{PATIENT_HISTORY_ILLNESS_TEXT}</Typography>
+          </Box>
+
+          <Box p={2}>
+            {patientIllnessHistory?.answers?.map(answerInfo => {
+              const { answer, value } = answerInfo || {}
+              const { name } = answer || {}
+
+              return <>
+                <Box display='flex' justifyContent='space-between' alignItems='center' flexWrap='wrap'>
+                  <Box>
+                    {!value ? <Typography variant='inherit'>{name}</Typography> :
+                      <Box display="flex" flexDirection="row"><Typography>{`${name?.split("fill")[0]} ${value} `}</Typography> &nbsp;<Typography>{name?.split("fill")[1]}</Typography></Box>
+                    }
+                  </Box>
+                </Box>
+              </>
+            })}
+          </Box>
+        </Box>
+      </Card>
+      <Box m={3} />
+      <Card>
+        <Box pb={2} className={classes.cardBox}>
+          <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" borderBottom={`1px solid ${colors.grey[300]}`}>
+            <Typography variant='h3'>{REVIEW_OF_SYSTEM_TEXT}</Typography>
+          </Box>
+
+          <Box p={2}>
+            {reviewOfSystem?.answers?.map(answerInfo => {
+              const { answer, value } = answerInfo || {}
+              const { name, } = answer || {}
+
+              return <>
+                <Box display='flex' justifyContent='space-between' alignItems='center' flexWrap='wrap'>
+                  <Box>
+                    {!value ? <Typography variant='inherit'>{name}</Typography> :
+                      <Box display="flex" flexDirection="row"><Typography>{`${name?.split("fill")[0]} ${value} `}</Typography>&nbsp;<Typography>{name?.split("fill")[1]}</Typography></Box>
+                    }
+
+                  </Box>
+                </Box>
               </>
             })}
           </Box>
