@@ -8451,7 +8451,7 @@ export type PatientIllnessHistoryQueryVariables = Exact<{
 }>;
 
 
-export type PatientIllnessHistoryQuery = { __typename?: 'Query', patientIllnessHistory: { __typename?: 'PatientIllnessHistoryPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, patientIllnessHistory?: { __typename?: 'PatientIllnessHistory', id: string, patientId?: string | null, appointmentId?: string | null, answers?: Array<{ __typename?: 'AnswerResponses', id: string, value?: string | null, answerId?: string | null, answer?: { __typename?: 'QuestionAnswers', questionType?: string | null } | null }> | null } | null } };
+export type PatientIllnessHistoryQuery = { __typename?: 'Query', patientIllnessHistory: { __typename?: 'PatientIllnessHistoryPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, patientIllnessHistory?: { __typename?: 'PatientIllnessHistory', id: string, patientId?: string | null, appointmentId?: string | null, answers?: Array<{ __typename?: 'AnswerResponses', id: string, value?: string | null, answerId?: string | null, answer?: { __typename?: 'QuestionAnswers', name?: string | null, questionType?: string | null } | null }> | null } | null } };
 
 export type CreateReviewOfSystemHistoryMutationVariables = Exact<{
   createReviewOfSystemInput: CreateReviewOfSystemInput;
@@ -8465,7 +8465,7 @@ export type ReviewOfSystemQueryVariables = Exact<{
 }>;
 
 
-export type ReviewOfSystemQuery = { __typename?: 'Query', reviewOfSystem: { __typename?: 'ReviewOfSystemPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, reviewOfSystem?: { __typename?: 'ReviewOfSystem', id: string, patientId?: string | null, appointmentId?: string | null, answers?: Array<{ __typename?: 'AnswerResponses', id: string, value?: string | null, answerId?: string | null, answer?: { __typename?: 'QuestionAnswers', questionType?: string | null } | null }> | null } | null } };
+export type ReviewOfSystemQuery = { __typename?: 'Query', reviewOfSystem: { __typename?: 'ReviewOfSystemPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, reviewOfSystem?: { __typename?: 'ReviewOfSystem', id: string, patientId?: string | null, appointmentId?: string | null, answers?: Array<{ __typename?: 'AnswerResponses', id: string, value?: string | null, answerId?: string | null, answer?: { __typename?: 'QuestionAnswers', name?: string | null, questionType?: string | null } | null }> | null } | null } };
 
 export type FindAllPatientProblemsQueryVariables = Exact<{
   patientProblemInput: PatientProblemInput;
@@ -13832,6 +13832,7 @@ export const PatientIllnessHistoryDocument = gql`
         value
         answerId
         answer {
+          name
           questionType
         }
       }
@@ -13922,6 +13923,7 @@ export const ReviewOfSystemDocument = gql`
         value
         answerId
         answer {
+          name
           questionType
         }
       }
