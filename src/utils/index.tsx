@@ -41,7 +41,7 @@ import {
   ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, UserForms,
   AttachmentType, AttachmentsPayload, UsersPayload, UnitType, PracticeType, SchedulesPayload,
   WeightType, ClaimStatus, AllCptCodePayload, AllModifiersPayload, FeeSchedule, CptFeeSchedule,
-  AllCptFeeSchedulesPayload, Taxonomy, TaxonomyPayload, FindAllNdcPayload, FindAllMvxPayload,
+  AllCptFeeSchedulesPayload, Taxonomy, TaxonomyPayload, FindAllNdcPayload, FindAllMvxPayload, FindAllQuestionTemplatesPayload,
 } from "../generated/graphql";
 
 export const handleLogout = () => {
@@ -706,6 +706,24 @@ export const renderAppointments = (appointments: AppointmentsPayload['appointmen
         data.push({
           id,
           name: `${appointmentType?.name.trim() ?? ''} ${convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm A')}`.trim()
+        })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderChartingTemplates = (chartingTemplates: FindAllQuestionTemplatesPayload['templates']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!chartingTemplates) {
+    for (let chartingTemplate of chartingTemplates) {
+      if (chartingTemplate) {
+        const { id, name } = chartingTemplate;
+        data.push({
+          id,
+          name
         })
       }
     }

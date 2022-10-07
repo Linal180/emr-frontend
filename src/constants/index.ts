@@ -558,6 +558,8 @@ export const ALLERGY_TEXT = "Allergy";
 export const CARE_PLAN_TEXT = "Care Plan";
 export const MEDICATIONS_TEXT = "Medications";
 export const SOCIAL_HISTORY_TEXT = "Social History";
+export const PATIENT_HISTORY_ILLNESS_TEXT = "History of Patient Illness";
+export const REVIEW_OF_SYSTEM_TEXT = "Review of Systems";
 export const FAMILY_HISTORY_TEXT = "Family History";
 export const SURGICAL_HISTORY_TEXT = "Surgical History";
 export const MEDICAL_HISTORY_TEXT = "Past Medical History";
@@ -1084,6 +1086,8 @@ export const NO_DATA_FOUND = "No data found";
 export const RECORD_VITALS = "Record Vitals";
 export const BACK_TO_HOME = "Return to Home";
 export const APPOINTMENT_TEXT = "Appointment";
+export const HPI_TEMPLATES = "HPI Templates";
+export const ROS_TEMPLATES = "ROS Templates";
 export const LAB_RESULTS_TEXT = "Lab Results";
 export const BILLING_STATUS = "Billing Status";
 export const VISIT_REASON = "Reason for visit";
@@ -2665,6 +2669,11 @@ export enum ITEM_MODULE {
   taxonomies = 'taxonomies',
 }
 
+export enum TemplateType {
+  HPI = 'hpi',
+  REVIEW_OF_SYSTEM = 'reviewOfSystem'
+}
+
 export enum TABLE_SELECTOR_MODULES {
   icdCodes = 'IcdCodes',
   cptCode = 'CPTCode',
@@ -3843,6 +3852,18 @@ export const ASSESSMENT_PLAN_OPTION = {
   icon: AssessmentPlanIcon,
   title: "Assessment & Plan",
   value: "10",
+}
+
+export const PATIENT_HISTORY_OPTION = {
+  icon: AssessmentPlanIcon,
+  title: "HPI",
+  value: "11",
+}
+
+export const REVIEW_OF_SYSTEM_OPTION = {
+  icon: AssessmentPlanIcon,
+  title: "ROS",
+  value: "12",
 }
 
 export const PATIENT_CHARTING_MENU = [
