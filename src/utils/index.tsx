@@ -343,25 +343,25 @@ export const getDocumentDateFromTimestamps = (date: string) =>
   moment(new Date(parseInt(date)), 'x').format(`YYYY-MM-DD`)
 
 export const dateDifference = (startingDate: string) => {
-  let startDate = new Date(startingDate)
-  let now = new Date();
-  if (startDate > now) {
+  let startDate = moment(startingDate, 'MM-DD-YYYY')
+  let now = moment();
+  if (startDate.isAfter(now)) {
     let swap = startDate;
     startDate = now;
     now = swap;
   }
 
-  let startYear = startDate.getFullYear();
+  let startYear = startDate.year()
   let february = (startYear % 4 === 0 && startYear % 100 !== 0) || startYear % 400 === 0 ? 29 : 28;
   let daysInMonth = [31, february, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-  let yearDiff = now.getFullYear() - startYear;
-  let monthDiff = now.getMonth() - startDate.getMonth();
+  let yearDiff = now.year() - startYear;
+  let monthDiff = now.month() - startDate.month();
   if (monthDiff < 0) {
     yearDiff--;
     monthDiff += 12;
   }
-  let dayDiff = now.getDate() - startDate.getDate();
+  let dayDiff = now.date() - startDate.date();
   if (dayDiff < 0) {
     if (monthDiff > 0) {
       monthDiff--;
@@ -369,7 +369,7 @@ export const dateDifference = (startingDate: string) => {
       yearDiff--;
       monthDiff = 11;
     }
-    dayDiff += daysInMonth[startDate.getMonth()];
+    dayDiff += daysInMonth[startDate.month()];
   }
 
   let newYears = yearDiff;

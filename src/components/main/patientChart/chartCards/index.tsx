@@ -61,7 +61,7 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
   const [modulesToPrint, setModulesToPrint] = useState<string[]>([])
   const [isChartPdfModalOpen, setIsChartPdfModalOpen] = useState<boolean>(false)
   const [openDelete, setOpenDelete] = useState<boolean>(false)
-  const [stepArray, setStepArray] = useState<number[]>([])
+  const [stepArray, setStepArray] = useState<number[]>([0])
   const [{ activeStep, tabValue }, dispatch] =
     useReducer<Reducer<State, Action>>(patientReducer, initialState)
 

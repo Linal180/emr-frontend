@@ -14,6 +14,7 @@ export interface State {
   drawerOpened: boolean
   labTestIds: string[]
   labTestsToEdit: LabTests[]
+  shouldRefetch: boolean
 }
 
 export const initialState: State = {
@@ -29,7 +30,8 @@ export const initialState: State = {
   orderNum: '',
   drawerOpened: false,
   labTestIds: [],
-  labTestsToEdit: []
+  labTestsToEdit: [],
+  shouldRefetch: false
 }
 
 export enum ActionType {
@@ -45,7 +47,8 @@ export enum ActionType {
   SET_ORDER_NUM = 'setOrderNum',
   SET_DRAWER_OPENED = 'setDrawerOpened',
   SET_LAB_TEST_IDS = 'setLabTestIds',
-  SET_LAB_TESTS_TO_EDIT = 'setLabTestsToEdit'
+  SET_LAB_TESTS_TO_EDIT = 'setLabTestsToEdit',
+  SET_SHOULD_REFETCH = "setShouldRefetch"
 }
 
 export type Action =
@@ -62,6 +65,7 @@ export type Action =
   | { type: ActionType.SET_DRAWER_OPENED, drawerOpened: boolean }
   | { type: ActionType.SET_LAB_TEST_IDS, labTestIds: string[] }
   | { type: ActionType.SET_LAB_TESTS_TO_EDIT, labTestsToEdit: LabTests[] }
+  | { type: ActionType.SET_SHOULD_REFETCH, shouldRefetch: boolean }
 
 
 export const labReducer = (state: State, action: Action): State => {
@@ -142,6 +146,12 @@ export const labReducer = (state: State, action: Action): State => {
       return {
         ...state,
         labTestsToEdit: action.labTestsToEdit
+      }
+
+    case ActionType.SET_SHOULD_REFETCH:
+      return {
+        ...state,
+        shouldRefetch: action.shouldRefetch
       }
   }
 };

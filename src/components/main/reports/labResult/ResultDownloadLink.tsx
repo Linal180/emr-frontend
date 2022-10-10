@@ -6,7 +6,7 @@ import { DownloadIcon } from "../../../../assets/svgs";
 import { LabTestsPayload, useFindLabResultInfoLazyQuery } from "../../../../generated/graphql";
 import ResultDoc from "./ResultDoc";
 
-const ResultDownloadLink = ({ orderNumber }: { orderNumber: string }) => {
+const ResultDownloadLink = ({ orderNumber, shouldRefetch, setShouldRefetch }: { orderNumber: string, shouldRefetch?: boolean, setShouldRefetch?: Function }) => {
   const [labTest, setLabTest] = useState<LabTestsPayload['labTests']>()
 
   const { patient } = labTest?.[0] || {};
@@ -46,6 +46,16 @@ const ResultDownloadLink = ({ orderNumber }: { orderNumber: string }) => {
   useEffect(() => {
     orderNumber && fetchLabTests()
   }, [fetchLabTests, orderNumber])
+
+  useEffect(() => {
+    if (shouldRefetch) {
+      fetchLabTests()
+      setShouldRefetch && setShouldRefetch(false)
+
+    }
+  }, [fetchLabTests, setShouldRefetch, shouldRefetch])
+
+
   return (
     <PDFDownloadLink document={<ResultDoc labTest={labTest} attachmentUrl={url} />} fileName={`lab_orders_${orderNumber}_${moment(new Date()).format('DD_MM_YYYY_hh_mm_A')}`}>
       {({ loading }) =>

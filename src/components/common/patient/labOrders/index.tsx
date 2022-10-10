@@ -21,12 +21,12 @@ import {
   ORDER_NUM, RESULTS, RESULTS_ENTERED, STATUS, TESTS, USER_NOT_FOUND_EXCEPTION_MESSAGE
 } from "../../../../constants";
 import {
-  LabTestPayload, LabTests, LabTestsPayload, LabTestStatus, useFindAllLabTestLazyQuery, useUpdateLabTestMutation
+  LabTestPayload, LabTests, LabTestsPayload, LabTestStatus, useFindAllLabTestLazyQuery, useUpdateLabTestsByOrderNumMutation
 } from "../../../../generated/graphql";
 import { LabOrderInput, LabOrdersTableProps, ParamsType, SelectorOption } from "../../../../interfacesTypes";
 import { Action, ActionType, initialState, labReducer, State } from "../../../../reducers/labReducer";
-import { useTableStyles } from "../../../../styles/tableStyles";
 import { useChartingStyles } from '../../../../styles/chartingStyles';
+import { useTableStyles } from "../../../../styles/tableStyles";
 import { appointmentStatus, convertDateFromUnix, formatValue, renderTh } from "../../../../utils";
 import LabTestModal from "../../../main/reports/labResultsListing/LabTestModal";
 
@@ -34,7 +34,7 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisabl
   const classes = useTableStyles();
   const chartingClasses = useChartingStyles();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(labReducer, initialState)
-  const { isStickerModalOpen, labOrders, page, pages, searchQuery, stickerOrder, isEdit, drawerOpened, labTestIds, labTestsToEdit, orderNum } = state
+  const { isStickerModalOpen, labOrders, page, pages, searchQuery, stickerOrder, isEdit, drawerOpened, labTestsToEdit, orderNum, shouldRefetch } = state
 
   const { textColor } = appointmentStatus('' || '')
   const { id, appointmentId } = useParams<ParamsType>()
@@ -127,7 +127,7 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisabl
     dispatch({ type: ActionType.SET_PAGE, page: 1 })
   }
 
-  const [updateLabTest] = useUpdateLabTestMutation({
+  const [updateLabTest] = useUpdateLabTestsByOrderNumMutation({
     onError({ message }) {
       message === NOT_FOUND_EXCEPTION ?
         Alert.error(USER_NOT_FOUND_EXCEPTION_MESSAGE)
@@ -140,19 +140,16 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisabl
     }
   });
 
-  const onSelectStatus = (statusValue: string) => {
-    labTestIds.map(async (labTestId) => {
-      await updateLabTest({
-        variables: {
-          updateLabTestInput: {
-            updateLabTestItemInput: {
-              id: labTestId,
-              status: statusValue as LabTestStatus
-            },
-          }
-        },
-      });
-    })
+  const onSelectStatus = async (statusValue: string) => {
+    await updateLabTest({
+      variables: {
+        updateLabTestItemInput: {
+          patientId: id,
+          orderNumber: orderNum,
+          status: statusValue as LabTestStatus
+        }
+      },
+    });
 
     dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
     dispatch({ type: ActionType.SET_ORDER_NUM, orderNum: '' })
@@ -165,6 +162,7 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisabl
     fetchLabTests()
     dispatch({ type: ActionType.SET_ORDER_NUM, orderNum: '' })
     dispatch({ type: ActionType.SET_LAB_TESTS_TO_EDIT, labTestsToEdit: [] })
+    dispatch({ type: ActionType.SET_SHOULD_REFETCH, shouldRefetch: true })
   }
   const handleLabOrderEdit = (orderNumber: string, labOrder: LabTests[]) => {
     dispatch({ type: ActionType.SET_LAB_TESTS_TO_EDIT, labTestsToEdit: labOrder })
@@ -307,7 +305,11 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisabl
                                   </Box>
                               </IconButton> */}
 
-                                <ResultDownloadLink orderNumber={orderNumber || ''} />
+                                <ResultDownloadLink
+                                  orderNumber={orderNumber || ''}
+                                  shouldRefetch={shouldRefetch}
+                                  setShouldRefetch={() => dispatch({ type: ActionType.SET_SHOULD_REFETCH, shouldRefetch: false })}
+                                />
 
                                 <Box>
                                   <IconButton size='small' onClick={() => {

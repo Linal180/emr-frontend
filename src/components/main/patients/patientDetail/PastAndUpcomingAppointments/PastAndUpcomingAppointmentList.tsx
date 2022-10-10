@@ -149,7 +149,7 @@ const PastAndUpcomingAppointmentList: FC<PastAndUpcomingAppointmentListProps> = 
                   >{CHECK_IN}</Button>
                 }
 
-                {checkedInAt && <Button
+                {!isCancelled && checkedInAt && <Button
                   type="submit"
                   variant="contained"
                   className="blue-button-New"

@@ -294,7 +294,9 @@ const ResultDoc = ({ labTest, attachmentUrl }: { labTest: LabTestsPayload['labTe
               </View>
 
               <View style={[styles.bgLightGrey]}>
-                <Text style={styles.fieldTitle3}>{diagnoses?.map((diagnose, i) => `${diagnose?.code} ${i !== (diagnoses.length - 1) ? '|' : ''} `)}</Text>
+                <Text style={styles.fieldTitle3}>{
+                  diagnoses?.length ? diagnoses?.map((diagnose, i) => `${diagnose?.code} ${i !== (diagnoses.length - 1) ? '|' : ''} `) : <Text>{N_A}</Text>
+                }</Text>
               </View>
             </View>
           </View>
