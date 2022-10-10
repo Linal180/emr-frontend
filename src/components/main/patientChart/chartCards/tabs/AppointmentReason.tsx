@@ -2,7 +2,7 @@ import { Box, Button, Card, colors, IconButton, Typography } from '@material-ui/
 import { ChevronRight, RemoveCircleOutline } from '@material-ui/icons'
 import { Reducer, useCallback, useEffect, useReducer } from 'react'
 import { useParams } from 'react-router'
-import { ADD, APPOINTMENT_REASON_DELETED, DELETE_REASON_DESCRIPTION, EIGHT_PAGE_LIMIT, NEXT, REASON, REASON_VISIT, TO_CHECKOUT } from '../../../../../constants'
+import { ADD, APPOINTMENT_REASON_DELETED, DELETE_REASON_DESCRIPTION, NEXT, REACTION_PAGE_LIMIT, REASON, REASON_VISIT, TO_CHECKOUT } from '../../../../../constants'
 import { PatientProblemsPayload, useFindAllPatientProblemsLazyQuery, useRemovePatientProblemMutation } from '../../../../../generated/graphql'
 import { AppointmentReasonProps, ParamsType } from '../../../../../interfacesTypes'
 import { Action, ActionType, chartReducer, initialState, State } from '../../../../../reducers/chartReducer'
@@ -52,7 +52,7 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
     try {
       await findAllPatientProblems({
         variables: {
-          patientProblemInput: { patientId, appointmentId, paginationOptions: { page, limit: EIGHT_PAGE_LIMIT } }
+          patientProblemInput: { patientId, appointmentId, paginationOptions: { page, limit: REACTION_PAGE_LIMIT } }
         },
       })
     } catch (error) { }

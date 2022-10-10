@@ -40,7 +40,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
     resolver: yupResolver(createUpFrontPaymentSchema)
   })
 
-  const { watch, setValue, handleSubmit } = methods
+  const { watch, setValue, handleSubmit, trigger } = methods
   const { Additional, Copay, Previous, adjustments, paid } = watch()
   const upFrontPayments = [...Additional, ...Copay, ...Previous]
   const totalCharge = upFrontPayments.reduce((acc, upFrontPayment) => {
@@ -274,7 +274,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
 
                           <Box ml={1} width={150}>
                             <InputController
-                              fieldType="text"
+                              fieldType="number"
                               controllerLabel={''}
                               controllerName="totalCharges"
                               disabled={shouldDisableEdit}
@@ -290,7 +290,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
 
                           <Box ml={1} width={150}>
                             <InputController
-                              fieldType="text"
+                              fieldType="number"
                               controllerLabel={''}
                               controllerName="expected"
                               disabled={shouldDisableEdit}
@@ -306,7 +306,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
 
                           <Box ml={1} width={150}>
                             <InputController
-                              fieldType="text"
+                              fieldType="number"
                               controllerLabel={''}
                               controllerName="adjustments"
                               disabled={shouldDisableEdit}
@@ -322,7 +322,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
 
                           <Box ml={1} width={150}>
                             <InputController
-                              fieldType="text"
+                              fieldType="number"
                               controllerLabel={''}
                               controllerName="cptCodesAmount"
                               disabled={true}
@@ -343,7 +343,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
 
                           <Box ml={1} width={150}>
                             <InputController
-                              fieldType="text"
+                              fieldType="number"
                               controllerLabel={''}
                               controllerName="paid"
                               disabled={shouldDisableEdit}
@@ -359,7 +359,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
 
                           <Box ml={1} width={150}>
                             <InputController
-                              fieldType="text"
+                              fieldType="number"
                               controllerLabel={''}
                               controllerName="balance"
                               disabled={shouldDisableEdit}
@@ -380,7 +380,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
                   color="secondary"
                   onClick={async() => {
                     await handleSubmit(onSubmit)()
-                    Alert.success(UPFRONT_PAYMENT_SUCCESS)
+                    await trigger() && Alert.success(UPFRONT_PAYMENT_SUCCESS)
                   }}
                   disabled={createUpFrontPaymentLoading}
                 >

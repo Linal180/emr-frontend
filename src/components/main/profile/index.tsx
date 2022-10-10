@@ -63,7 +63,7 @@ const ProfileComponent = (): JSX.Element => {
     },
     resolver: yupResolver(profileSchema)
   });
-  const { handleSubmit, setValue, reset } = methods;
+  const { handleSubmit, setValue, reset, trigger } = methods;
 
   const [getDoctor, { loading: getDoctorLoading }] = useGetDoctorUserLazyQuery({
     fetchPolicy: "network-only",
@@ -184,6 +184,7 @@ const ProfileComponent = (): JSX.Element => {
     userType === SYSTEM_ROLES.Doctor ?
       doctorPreview() : staffPreview()
     mediaDispatch({ type: mediaActionType.SET_IS_EDIT, isEdit: !isEdit })
+    trigger()
   }
 
   const setAttachment = useCallback(async () => {
