@@ -1,5 +1,6 @@
 import { Box, Button, Card, colors, Typography } from '@material-ui/core';
 import { AddCircleOutline } from '@material-ui/icons';
+import moment from 'moment';
 import { Reducer, useReducer } from 'react';
 import { useParams } from 'react-router';
 import { ASSESSMENT_PLAN } from '../../../../../constants';
@@ -89,7 +90,8 @@ function AssessmentPlanProblems({ fetchProblems, assessmentProblems: problems, s
           appointmentId,
           snowMedCodeId: item.snoMedCode?.id || '',
           forOrders: true,
-          isSigned: false
+          isSigned: false,
+          problemStartDate: moment().format("MM-DD-YYYY")
         }
       }
     })

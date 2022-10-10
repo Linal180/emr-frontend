@@ -521,6 +521,7 @@ export const FACILITY_BILLING_INFO = "Facility BIling Information";
 export const ENABLE = "Enable";
 export const VITALS_TEXT = "Vitals";
 export const TRIAGE_NOTES = "Triage Notes";
+export const NO_NOTES_ADDED = "No Notes Added";
 export const TO_CHART = "To Chart";
 export const SAVE_TEXT = "Save";
 export const HCFA_1500_FORM = "HCFA - 1500 Form"

@@ -5,7 +5,7 @@ import {
   MEDICATIONS, NOTES, NO_DRUG_ALLERGIES_RECORDED, ONSET_DATE, PHONE, NO_ENVIRONMENTAL_ALLERGIES_RECORDED, START_STOP,
   NO_FOOD_ALLERGIES_RECORDED, ONSET, ONSET_AGE_TEXT, PROBLEM_TEXT, SIG, PROCEDURE_TEXT, RELATIVE, TEMPERATURE_TEXT,
   RESPIRATORY_RATE_TEXT, SEVERITY_REACTIONS, SURGERY_DATE, SURGICAL_HISTORY_TEXT, TRIAGE_NOTES, VITALS_TEXT,
-  PATIENT_ID, NO_SURGICAL_PROCEDURE_RECORDED, EXPRESS_HEALTHCARE_URL,
+  PATIENT_ID, NO_SURGICAL_PROCEDURE_RECORDED, EXPRESS_HEALTHCARE_URL, NO_NOTES_ADDED,
 } from "../../../../../constants";
 import { AllergyType, Genderidentity, ProblemType } from "../../../../../generated/graphql";
 import { PatientChartingInfo } from "../../../../../interfacesTypes";
@@ -298,11 +298,10 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                 {/* 11.1-row */}
                 <View style={[styles.tableRow, styles.borderStyle,]}>
                   <View style={[styles.w100]}>
-                    <Text style={[styles.fieldTitle2,]}>{NOTES}</Text>
                     {triageNotes?.length ? triageNotes?.map((triageNote) => {
                       const { notes } = triageNote || {}
                       return <Text style={styles.fieldText}>{notes || ''}</Text>
-                    }) : <Text style={[styles.fieldTitle]}> </Text>}
+                    }) : <Text style={[styles.fieldTitle]}>{NO_NOTES_ADDED}</Text>}
                   </View>
 
                   {/* spacing-row */}
