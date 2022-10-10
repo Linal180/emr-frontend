@@ -287,13 +287,15 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
     </Box>
   </>
 
+  const patientAge = dob ? dateDifference(dob || '') : renderMissing()
+
   const renderAge = () =>
     <Box display="flex" className={classes.profileInfoItem}>
       <Box display='flex' alignItems='center'>
         <ProfileUserIcon />
 
         <Box color={BLACK_THREE}>
-          <Typography variant="body1">{getPatientLoading ? renderLoading('') : dob ? dateDifference(dob || '') : renderMissing()}</Typography>
+          <Typography variant="body1">{getPatientLoading ? renderLoading('') : patientAge}</Typography>
         </Box>
       </Box>
     </Box>
