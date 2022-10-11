@@ -122,6 +122,11 @@ const CptCodeTable: FC<IcdCodesTableProps> = (): JSX.Element => {
     dispatch({ type: ActionType.SET_PAGE, page: 1 })
   }
 
+  const addHandler = () => {
+    dispatch({ type: ActionType.SET_SYSTEMATIC, systematic: false })
+    dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })
+  }
+
   return (
     <>
       <Grid container spacing={3}>
@@ -133,7 +138,7 @@ const CptCodeTable: FC<IcdCodesTableProps> = (): JSX.Element => {
               <Button
                 variant='contained' color='primary'
                 startIcon={<Box width={20}><AddWhiteIcon /></Box>}
-                onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
+                onClick={addHandler}>
                 {ADD_NEW_TEXT}
               </Button>}
           </Box>

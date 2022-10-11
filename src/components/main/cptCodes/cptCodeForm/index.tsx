@@ -14,7 +14,6 @@ import { ADD, CANCEL, CODE, CPT_CODE, DESCRIPTION, EDIT, PRIORITY, SOMETHING_WEN
 import { useCreateCptCodeMutation, useGetCptCodeLazyQuery, useUpdateCptCodeMutation } from '../../../../generated/graphql';
 
 const CptForm: FC<cptCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, dispatcher, systematic }): JSX.Element => {
-
   const methods = useForm<CptCodeFormType>({ resolver: yupResolver(CptCodeSchema) });
   const { handleSubmit, setValue, } = methods;
 
