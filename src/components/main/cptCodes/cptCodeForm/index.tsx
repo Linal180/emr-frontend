@@ -1,4 +1,4 @@
-import { FC, Fragment, useCallback, useEffect } from 'react';
+import { FC, useCallback, useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { Box, Button, Dialog, DialogActions, DialogTitle, Grid } from '@material-ui/core';
@@ -16,7 +16,7 @@ import { useCreateCptCodeMutation, useGetCptCodeLazyQuery, useUpdateCptCodeMutat
 const CptForm: FC<cptCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, dispatcher, systematic }): JSX.Element => {
 
   const methods = useForm<CptCodeFormType>({ resolver: yupResolver(CptCodeSchema) });
-  const { handleSubmit, setValue } = methods;
+  const { handleSubmit, setValue, } = methods;
 
   const [createCptCode, { loading: createLoading }] = useCreateCptCodeMutation({
     onError: ({ message }) => {
@@ -50,7 +50,10 @@ const CptForm: FC<cptCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, d
         const { code, shortDescription, priority } = cptCode;
         setValue('code', code)
         shortDescription && setValue('shortDescription', shortDescription)
-        priority && setValue('priority', `${priority}`)
+        if (priority) {
+          const strPriority = priority?.toString()
+          setValue('priority', strPriority)
+        }
       } else {
         Alert.error(SOMETHING_WENT_WRONG)
       }
@@ -130,17 +133,23 @@ const CptForm: FC<cptCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, d
           <form onSubmit={handleSubmit(onSubmit)}>
             <Box p={3}>
               <Grid container spacing={3}>
-                {!systematic && <Fragment>
-                  <Grid item xs={12}>
-                    <InputController controllerName='code' disabled={loading} controllerLabel={CODE} isRequired toUpperCase />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <InputController controllerName='shortDescription' multiline disabled={loading} controllerLabel={DESCRIPTION} isRequired />
-                  </Grid>
-                </Fragment>}
 
                 <Grid item xs={12}>
-                  <InputController controllerName='priority' disabled={loading} controllerLabel={PRIORITY} isRequired fieldType='number' notStep />
+                  <InputController controllerName='code' disabled={loading || systematic} controllerLabel={CODE} isRequired toUpperCase />
+                </Grid>
+                <Grid item xs={12}>
+                  <InputController controllerName='shortDescription' multiline disabled={loading || systematic} controllerLabel={DESCRIPTION} isRequired />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <InputController
+                    notStep
+                    isRequired
+                    fieldType='number'
+                    disabled={loading}
+                    controllerName='priority'
+                    controllerLabel={PRIORITY}
+                  />
                 </Grid>
               </Grid>
             </Box>
