@@ -14,7 +14,7 @@ import { ADD, CANCEL, CODE, DESCRIPTION, EDIT, ICD_TEN, PRIORITY, SOMETHING_WENT
 import { useCreateIcdCodeMutation, useGetIcdCodeLazyQuery, useUpdateIcdCodeMutation } from '../../../../generated/graphql';
 
 
-const ICD10Form: FC<ICD10FormProps> = ({ open, fetch, isEdit, id, handleClose, dispatcher, systematic, searchItem, handleReload }): JSX.Element => {
+const ICD10Form: FC<ICD10FormProps> = ({ open, fetch, isEdit, id, handleClose, dispatcher, systematic = false, searchItem, handleReload }): JSX.Element => {
 
   const methods = useForm<ICD10FormType>({ resolver: yupResolver(ICDCodeSchema) });
   const { handleSubmit, setValue } = methods;

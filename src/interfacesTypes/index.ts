@@ -2378,7 +2378,7 @@ export type ICD10FormProps = {
   id?: string;
   dispatcher?: Dispatch<IcdCodeAction>
   handleClose: (open: boolean) => void
-  systematic: boolean
+  systematic?: boolean
   searchItem?: string
   handleReload?: Function
 }
