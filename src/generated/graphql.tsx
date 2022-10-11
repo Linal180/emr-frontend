@@ -614,6 +614,7 @@ export type CptCodes = {
   description?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   longDescription?: Maybe<Scalars['String']>;
+  priority?: Maybe<Scalars['Int']>;
   shortDescription?: Maybe<Scalars['String']>;
   systematic?: Maybe<Scalars['Boolean']>;
   updatedAt?: Maybe<Scalars['String']>;
@@ -1128,6 +1129,7 @@ export type CreateCptCodeInput = {
   code?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   longDescription?: Maybe<Scalars['String']>;
+  priority?: Maybe<Scalars['Int']>;
   shortDescription?: Maybe<Scalars['String']>;
 };
 
@@ -7042,6 +7044,7 @@ export type UpdateCptCodeInput = {
   description?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   longDescription?: Maybe<Scalars['String']>;
+  priority?: Maybe<Scalars['Int']>;
   shortDescription?: Maybe<Scalars['String']>;
 };
 
@@ -8717,14 +8720,14 @@ export type FindAllCptCodesQueryVariables = Exact<{
 }>;
 
 
-export type FindAllCptCodesQuery = { __typename?: 'Query', findAllCptCodes: { __typename?: 'AllCPTCodePayload', cptCodes?: Array<{ __typename?: 'CPTCodes', id: string, code?: string | null, description?: string | null, longDescription?: string | null, shortDescription?: string | null, systematic?: boolean | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
+export type FindAllCptCodesQuery = { __typename?: 'Query', findAllCptCodes: { __typename?: 'AllCPTCodePayload', cptCodes?: Array<{ __typename?: 'CPTCodes', id: string, code?: string | null, description?: string | null, longDescription?: string | null, shortDescription?: string | null, systematic?: boolean | null, priority?: number | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
 
 export type GetCptCodeQueryVariables = Exact<{
   getCPTCodeInput: GetCptCodeInput;
 }>;
 
 
-export type GetCptCodeQuery = { __typename?: 'Query', getCPTCode: { __typename?: 'CPTCodePayload', cptCode?: { __typename?: 'CPTCodes', id: string, code?: string | null, description?: string | null, longDescription?: string | null, shortDescription?: string | null } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
+export type GetCptCodeQuery = { __typename?: 'Query', getCPTCode: { __typename?: 'CPTCodePayload', cptCode?: { __typename?: 'CPTCodes', id: string, code?: string | null, description?: string | null, longDescription?: string | null, shortDescription?: string | null, priority?: number | null } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
 
 export type CreateCptCodeMutationVariables = Exact<{
   createCPTCodeInput: CreateCptCodeInput;
@@ -15644,6 +15647,7 @@ export const FindAllCptCodesDocument = gql`
       longDescription
       shortDescription
       systematic
+      priority
     }
     pagination {
       page
@@ -15694,6 +15698,7 @@ export const GetCptCodeDocument = gql`
       description
       longDescription
       shortDescription
+      priority
     }
     response {
       error

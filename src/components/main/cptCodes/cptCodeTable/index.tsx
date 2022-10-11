@@ -17,7 +17,7 @@ import { cptCodeReducer, Action, ActionType, State, initialState } from '../../.
 import { AllCptCodePayload, useFindAllCptCodesLazyQuery, useRemoveCptCodeMutation } from '../../../../generated/graphql';
 import {
   ACTIONS, ADD_NEW_TEXT, CODE, CPT_CODE, CPT_CODES, DASHES, DELETE_CPT_CODE_DESCRIPTION, DESCRIPTION, EIGHT_PAGE_LIMIT,
-  PAGE_LIMIT
+  PAGE_LIMIT, PRIORITY
 } from '../../../../constants';
 
 const CptCodeTable: FC<IcdCodesTableProps> = (): JSX.Element => {
@@ -25,7 +25,7 @@ const CptCodeTable: FC<IcdCodesTableProps> = (): JSX.Element => {
   const classes = useTableStyles()
 
   const [state, dispatch] = useReducer<Reducer<State, Action>>(cptCodeReducer, initialState);
-  const { isOpen, page, data, totalPages, openDelete, delId, itemId, searchQuery } = state;
+  const { isOpen, page, data, totalPages, openDelete, delId, itemId, searchQuery, systematic } = state;
 
   const [fetchAllIcdCodes, { loading, error }] = useFindAllCptCodesLazyQuery({
     onCompleted: (data) => {
@@ -110,7 +110,8 @@ const CptCodeTable: FC<IcdCodesTableProps> = (): JSX.Element => {
     })
   }
 
-  const handleEdit = (id: string) => {
+  const handleEdit = (id: string, systematic: boolean) => {
+    dispatch({ type: ActionType.SET_SYSTEMATIC, systematic })
     dispatch({ type: ActionType.SET_ITEM_ID, itemId: id })
     dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })
   };
@@ -149,6 +150,7 @@ const CptCodeTable: FC<IcdCodesTableProps> = (): JSX.Element => {
                   <TableRow>
                     {renderTh(CODE)}
                     {renderTh(DESCRIPTION)}
+                    {renderTh(PRIORITY)}
                     {renderTh(ACTIONS)}
                   </TableRow>
                 </TableHead>
@@ -161,22 +163,27 @@ const CptCodeTable: FC<IcdCodesTableProps> = (): JSX.Element => {
                   </TableRow>
                 ) : <TableBody>
                   {data?.map((icdCode) => {
-                    const { id, code, shortDescription, systematic } = icdCode ?? {}
+                    const { id, code, shortDescription, systematic, priority } = icdCode ?? {}
                     return (
                       <TableRow>
                         <TableCell scope="row">
-                          <Typography>{code || DASHES}</Typography>
+                          <Typography>{code ?? DASHES}</Typography>
                         </TableCell>
 
                         <TableCell scope="row">
-                          <Typography>{shortDescription || DASHES}</Typography>
+                          <Typography>{shortDescription ?? DASHES}</Typography>
                         </TableCell>
+
+                        <TableCell scope="row">
+                          <Typography>{priority ?? DASHES}</Typography>
+                        </TableCell>
+
 
                         {<TableCell scope="row">
                           <Box display='flex' alignItems='center'>
 
-                            <Box className={`${classes.iconsBackground} ${systematic ? 'disable-icon' : ''}`}>
-                              <Button onClick={() => id && handleEdit(id)}>
+                            <Box className={`${classes.iconsBackground}`}>
+                              <Button onClick={() => id && handleEdit(id, systematic as boolean)}>
                                 <EditOutlinedIcon />
                               </Button>
                             </Box>
@@ -215,14 +222,15 @@ const CptCodeTable: FC<IcdCodesTableProps> = (): JSX.Element => {
         setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
       />
 
-      <CptCodeForm
+      {isOpen && <CptCodeForm
         id={itemId}
         open={isOpen}
         isEdit={!!itemId}
         handleClose={handleModalClose}
         dispatcher={dispatch}
         fetch={() => fetchIcdCodes()}
-      />
+        systematic={systematic}
+      />}
 
       {totalPages > 1 && !loading && (
         <Box display="flex" justifyContent="flex-end" p={3}>
