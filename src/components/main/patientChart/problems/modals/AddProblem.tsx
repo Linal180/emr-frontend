@@ -65,7 +65,6 @@ const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
   });
 
   const handleICDSearch = useCallback(async (tabName: string, query: string, page?: number) => {
-    debugger
     try {
       const queryString = tabName === tabs[1] ? 'corona' : query
 

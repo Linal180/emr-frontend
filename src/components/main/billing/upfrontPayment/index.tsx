@@ -40,8 +40,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
     resolver: yupResolver(createUpFrontPaymentSchema(copays))
   })
 
-  const { watch, setValue, handleSubmit, trigger, formState } = methods
-  console.log("formState", formState)
+  const { watch, setValue, handleSubmit, trigger } = methods
   const { Additional, Copay, Previous, adjustments, paid } = watch()
   const upFrontPayments = [...Additional, ...Copay, ...Previous]
   const totalCharge = upFrontPayments.reduce((acc, upFrontPayment) => {
@@ -187,7 +186,6 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
 
     onCompleted(data) {
       const { fetchPatientInsurances } = data || {}
-      debugger
       if (fetchPatientInsurances) {
         const { policies, response } = fetchPatientInsurances
         if (response && response.status === 200) {
@@ -201,7 +199,6 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
           setValue(`Copay.0.dueAmount`, amount as never)
           setValue(`Copay.0.notes`, '' as never)
           setValue(`Copay.0.copayType`, setRecord(type || '', type || '') as never)
-          console.log("copays in ", copays)
           setCopays(copays as Copay[])
 
         }
@@ -235,7 +232,6 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
     return <Loader loading loaderText="Fetching upFront Payments..." />
   }
 
-  console.log("copays", copays)
 
   return (
     <>
