@@ -1688,6 +1688,7 @@ export interface RolesTableProps {
 
 export interface AddModalProps {
   newAllergy?: string;
+  newProblem?: string
   allergyType?: string;
   isOpen?: boolean;
   isEdit?: boolean;
@@ -2378,6 +2379,8 @@ export type ICD10FormProps = {
   dispatcher?: Dispatch<IcdCodeAction>
   handleClose: (open: boolean) => void
   systematic: boolean
+  searchItem?: string
+  handleReload?: Function
 }
 
 export type cptCodeFormProps = {

@@ -13,7 +13,8 @@ import { ICD10FormProps, ICD10FormType, SideDrawerCloseReason } from '../../../.
 import { ADD, CANCEL, CODE, DESCRIPTION, EDIT, ICD_TEN, PRIORITY, SOMETHING_WENT_WRONG, SUBMIT } from '../../../../constants';
 import { useCreateIcdCodeMutation, useGetIcdCodeLazyQuery, useUpdateIcdCodeMutation } from '../../../../generated/graphql';
 
-const ICD10Form: FC<ICD10FormProps> = ({ open, fetch, isEdit, id, handleClose, dispatcher, systematic }): JSX.Element => {
+
+const ICD10Form: FC<ICD10FormProps> = ({ open, fetch, isEdit, id, handleClose, dispatcher, systematic, searchItem, handleReload }): JSX.Element => {
 
   const methods = useForm<ICD10FormType>({ resolver: yupResolver(ICDCodeSchema) });
   const { handleSubmit, setValue } = methods;
@@ -33,6 +34,7 @@ const ICD10Form: FC<ICD10FormProps> = ({ open, fetch, isEdit, id, handleClose, d
         setValue('description', '')
         message && Alert.success(message)
         fetch && fetch()
+        handleReload && handleReload(icdCode)
         handleClose(false)
       }
       else {
@@ -122,6 +124,10 @@ const ICD10Form: FC<ICD10FormProps> = ({ open, fetch, isEdit, id, handleClose, d
     setValue('description', '')
     handleClose(false)
   }
+
+  useEffect(() => {
+    searchItem && setValue('code', searchItem)
+  }, [searchItem, setValue])
 
 
   const loading = createLoading || getLoading || updateLoading
