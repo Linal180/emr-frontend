@@ -36,9 +36,9 @@ import {
   NO_SPACE_AT_BOTH_ENDS_REGEX, NO_SPECIAL_CHAR_ERROR_MESSAGE, NO_SPECIAL_CHAR_REGEX, NO_NUMBER_ERROR_MESSAGE,
   INVALID_DEA_DATE_ERROR_MESSAGE, INVALID_EXPIRATION_DATE_ERROR_MESSAGE, SUFFIX_REGEX, MESSAGE, PATIENT_PAYMENT_TYPE,
   FEE_SCHEDULE, INVALID_BILL_FEE_MESSAGE, INVALID_UNIT_MESSAGE, BILLED_AMOUNT, UNIT, INVALID_AMOUNT_MESSAGE,
-  PAYMENT_TYPE, APPOINTMENT_PAYMENT_TYPE, LAST_FOUR_DIGIT, PROBLEM_TEXT, FAMILY_RELATIVE, RELATIVE, MANUFACTURER_TEXT, NDC_TEXT, ROUTE, SITE_TEXT, UNITS, ADMINISTRATION_DATE, CODE, UPFRONT_PAYMENT_TYPES, STOP_DATE, NO_SPACE_REGEX,
+  PAYMENT_TYPE, APPOINTMENT_PAYMENT_TYPE, LAST_FOUR_DIGIT, PROBLEM_TEXT, FAMILY_RELATIVE, RELATIVE, MANUFACTURER_TEXT, NDC_TEXT, ROUTE, SITE_TEXT, UNITS, ADMINISTRATION_DATE, CODE, UPFRONT_PAYMENT_TYPES, STOP_DATE, NO_SPACE_REGEX, STATUS,
 } from "../constants";
-import { PatientPaymentType } from "../generated/graphql";
+import { PatientPaymentType, ProblemType } from "../generated/graphql";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
   return yup.string()
@@ -697,10 +697,11 @@ export const patientProblemSchema = yup.object({
 })
 
 export const patientMedicationSchema = yup.object({
+  status: yup.string(),
   startDate: yup.string().test('', DATE_VALIDATION_MESSAGE,
     value => new Date(value || '') <= new Date()),
-  stopDate: yup.string().test('', invalidMessage(STOP_DATE), (value, { parent: { startDate } }) =>
-    !value ? !!value : dateValidation(value, startDate))
+  stopDate: yup.string().test('', invalidMessage(STOP_DATE), (value, { parent: { startDate, status} }) =>
+  status === ProblemType.Historic ?  (!value ? !!value : dateValidation(value, startDate)) : true)
 })
 
 export const patientSurgicalHistorySchema = yup.object({
