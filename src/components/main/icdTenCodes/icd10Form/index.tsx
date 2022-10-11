@@ -10,10 +10,11 @@ import TableLoader from '../../../common/TableLoader';
 import { ICDCodeSchema } from '../../../../validationSchemas';
 import { ActionType } from '../../../../reducers/icdTenReducer';
 import { ICD10FormProps, ICD10FormType, SideDrawerCloseReason } from '../../../../interfacesTypes';
-import { ADD, CANCEL, CODE, DESCRIPTION, EDIT, ICD_TEN, SOMETHING_WENT_WRONG, SUBMIT } from '../../../../constants';
+import { ADD, CANCEL, CODE, DESCRIPTION, EDIT, ICD_TEN, PRIORITY, SOMETHING_WENT_WRONG, SUBMIT } from '../../../../constants';
 import { useCreateIcdCodeMutation, useGetIcdCodeLazyQuery, useUpdateIcdCodeMutation } from '../../../../generated/graphql';
 
-const ICD10Form: FC<ICD10FormProps> = ({ open, fetch, isEdit, id, handleClose, dispatcher, searchItem, handleReload }): JSX.Element => {
+
+const ICD10Form: FC<ICD10FormProps> = ({ open, fetch, isEdit, id, handleClose, dispatcher, systematic = false, searchItem, handleReload }): JSX.Element => {
 
   const methods = useForm<ICD10FormType>({ resolver: yupResolver(ICDCodeSchema) });
   const { handleSubmit, setValue } = methods;
@@ -29,6 +30,7 @@ const ICD10Form: FC<ICD10FormProps> = ({ open, fetch, isEdit, id, handleClose, d
       const { id } = icdCode || {}
       if (id && status === 200) {
         setValue('code', '')
+        setValue('priority', '')
         setValue('description', '')
         message && Alert.success(message)
         fetch && fetch()
@@ -47,9 +49,13 @@ const ICD10Form: FC<ICD10FormProps> = ({ open, fetch, isEdit, id, handleClose, d
       const { icdCode, response } = getIcdCode || {}
       const { status } = response || {}
       if (status === 200 && icdCode) {
-        const { code, description } = icdCode;
+        const { code, description, priority } = icdCode;
         setValue('code', code)
         description && setValue('description', description)
+        if (priority) {
+          const strPriority = priority?.toString()
+          setValue('priority', strPriority)
+        }
       } else {
         Alert.error(SOMETHING_WENT_WRONG)
       }
@@ -68,6 +74,7 @@ const ICD10Form: FC<ICD10FormProps> = ({ open, fetch, isEdit, id, handleClose, d
       if (id && status === 200) {
         dispatcher && dispatcher({ type: ActionType.SET_ITEM_ID, itemId: '' })
         setValue('code', '')
+        setValue('priority', '')
         setValue('description', '')
         message && Alert.success(message)
         fetch && fetch()
@@ -83,12 +90,13 @@ const ICD10Form: FC<ICD10FormProps> = ({ open, fetch, isEdit, id, handleClose, d
   })
 
   const onSubmit: SubmitHandler<ICD10FormType> = async (values) => {
-    const { code, description } = values;
+    const { code, description, priority: strPriority } = values;
+    const priority = parseInt(strPriority)
     try {
       if (isEdit && id) {
-        await updateIcdCode({ variables: { updateIcdCodeInput: { id, code, description } } })
+        await updateIcdCode({ variables: { updateIcdCodeInput: { id, code, description, priority } } })
       } else {
-        await createIcdCode({ variables: { createIcdCodeInput: { code, description } } })
+        await createIcdCode({ variables: { createIcdCodeInput: { code, description, priority } } })
       }
     } catch (error) { }
   }
@@ -112,6 +120,7 @@ const ICD10Form: FC<ICD10FormProps> = ({ open, fetch, isEdit, id, handleClose, d
   const cancelHandler = () => {
     dispatcher && dispatcher({ type: ActionType.SET_ITEM_ID, itemId: '' })
     setValue('code', '')
+    setValue('priority', '')
     setValue('description', '')
     handleClose(false)
   }
@@ -132,10 +141,21 @@ const ICD10Form: FC<ICD10FormProps> = ({ open, fetch, isEdit, id, handleClose, d
             <Box p={3}>
               <Grid container spacing={3}>
                 <Grid item xs={12}>
-                  <InputController controllerName='code' disabled={loading} controllerLabel={CODE} isRequired toUpperCase />
+                  <InputController controllerName='code' disabled={loading || systematic} controllerLabel={CODE} isRequired toUpperCase />
                 </Grid>
                 <Grid item xs={12}>
-                  <InputController controllerName='description' multiline disabled={loading} controllerLabel={DESCRIPTION} isRequired />
+                  <InputController controllerName='description' multiline disabled={loading || systematic} controllerLabel={DESCRIPTION} isRequired />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <InputController
+                    notStep
+                    isRequired
+                    fieldType='number'
+                    disabled={loading}
+                    controllerName='priority'
+                    controllerLabel={PRIORITY}
+                  />
                 </Grid>
               </Grid>
             </Box>

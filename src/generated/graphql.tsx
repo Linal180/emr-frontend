@@ -1369,6 +1369,7 @@ export type CreateFormInput = {
 export type CreateIcdCodeInput = {
   code: Scalars['String'];
   description?: Maybe<Scalars['String']>;
+  priority?: Maybe<Scalars['Int']>;
   version?: Maybe<Scalars['String']>;
 };
 
@@ -2625,6 +2626,7 @@ export type IcdCodes = {
   createdAt?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  priority?: Maybe<Scalars['Int']>;
   systematic?: Maybe<Scalars['Boolean']>;
   updatedAt?: Maybe<Scalars['String']>;
   version?: Maybe<Scalars['String']>;
@@ -2636,6 +2638,7 @@ export type IcdCodesWithSnowMedCode = {
   createdAt?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  priority?: Maybe<Scalars['Int']>;
   snoMedCode?: Maybe<SnoMedCodes>;
   systematic?: Maybe<Scalars['Boolean']>;
   updatedAt?: Maybe<Scalars['String']>;
@@ -7251,6 +7254,7 @@ export type UpdateIcdCodeInput = {
   code?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  priority?: Maybe<Scalars['Int']>;
   version?: Maybe<Scalars['String']>;
 };
 
@@ -8720,14 +8724,14 @@ export type FindAllCptCodesQueryVariables = Exact<{
 }>;
 
 
-export type FindAllCptCodesQuery = { __typename?: 'Query', findAllCptCodes: { __typename?: 'AllCPTCodePayload', cptCodes?: Array<{ __typename?: 'CPTCodes', id: string, code?: string | null, description?: string | null, longDescription?: string | null, shortDescription?: string | null, systematic?: boolean | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
+export type FindAllCptCodesQuery = { __typename?: 'Query', findAllCptCodes: { __typename?: 'AllCPTCodePayload', cptCodes?: Array<{ __typename?: 'CPTCodes', id: string, code?: string | null, description?: string | null, longDescription?: string | null, shortDescription?: string | null, systematic?: boolean | null, priority?: number | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
 
 export type GetCptCodeQueryVariables = Exact<{
   getCPTCodeInput: GetCptCodeInput;
 }>;
 
 
-export type GetCptCodeQuery = { __typename?: 'Query', getCPTCode: { __typename?: 'CPTCodePayload', cptCode?: { __typename?: 'CPTCodes', id: string, code?: string | null, description?: string | null, longDescription?: string | null, shortDescription?: string | null } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
+export type GetCptCodeQuery = { __typename?: 'Query', getCPTCode: { __typename?: 'CPTCodePayload', cptCode?: { __typename?: 'CPTCodes', id: string, code?: string | null, description?: string | null, longDescription?: string | null, shortDescription?: string | null, priority?: number | null } | null, response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null } };
 
 export type CreateCptCodeMutationVariables = Exact<{
   createCPTCodeInput: CreateCptCodeInput;
@@ -9038,14 +9042,14 @@ export type FindAllIcdCodesQueryVariables = Exact<{
 }>;
 
 
-export type FindAllIcdCodesQuery = { __typename?: 'Query', findAllIcdCodes: { __typename?: 'FindAllIcdCodesPayload', icdCodes?: Array<{ __typename?: 'ICDCodes', id: string, code: string, description?: string | null, systematic?: boolean | null } | null> | null, response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
+export type FindAllIcdCodesQuery = { __typename?: 'Query', findAllIcdCodes: { __typename?: 'FindAllIcdCodesPayload', icdCodes?: Array<{ __typename?: 'ICDCodes', id: string, code: string, description?: string | null, systematic?: boolean | null, priority?: number | null } | null> | null, response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
 
 export type GetIcdCodeQueryVariables = Exact<{
   getIcdCodeInput: GetIcdCodeInput;
 }>;
 
 
-export type GetIcdCodeQuery = { __typename?: 'Query', getIcdCode: { __typename?: 'IcdCodePayload', icdCode?: { __typename?: 'ICDCodes', id: string, code: string, description?: string | null } | null, response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null } };
+export type GetIcdCodeQuery = { __typename?: 'Query', getIcdCode: { __typename?: 'IcdCodePayload', icdCode?: { __typename?: 'ICDCodes', id: string, code: string, description?: string | null, priority?: number | null } | null, response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null } };
 
 export type CreateIcdCodeMutationVariables = Exact<{
   createIcdCodeInput: CreateIcdCodeInput;
@@ -15648,6 +15652,7 @@ export const FindAllCptCodesDocument = gql`
       longDescription
       shortDescription
       systematic
+      priority
     }
     pagination {
       page
@@ -15698,6 +15703,7 @@ export const GetCptCodeDocument = gql`
       description
       longDescription
       shortDescription
+      priority
     }
     response {
       error
@@ -17974,6 +17980,7 @@ export const FindAllIcdCodesDocument = gql`
       code
       description
       systematic
+      priority
     }
     response {
       status
@@ -18021,6 +18028,7 @@ export const GetIcdCodeDocument = gql`
       id
       code
       description
+      priority
     }
     response {
       status
