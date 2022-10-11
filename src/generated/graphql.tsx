@@ -9049,7 +9049,7 @@ export type CreateIcdCodeMutationVariables = Exact<{
 }>;
 
 
-export type CreateIcdCodeMutation = { __typename?: 'Mutation', createIcdCode: { __typename?: 'IcdCodePayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, icdCode?: { __typename?: 'ICDCodes', id: string } | null } };
+export type CreateIcdCodeMutation = { __typename?: 'Mutation', createIcdCode: { __typename?: 'IcdCodePayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, icdCode?: { __typename?: 'ICDCodes', id: string, code: string, description?: string | null } | null } };
 
 export type UpdateIcdCodeMutationVariables = Exact<{
   updateIcdCodeInput: UpdateIcdCodeInput;
@@ -9425,7 +9425,7 @@ export type SearchIcdCodesQueryVariables = Exact<{
 }>;
 
 
-export type SearchIcdCodesQuery = { __typename?: 'Query', searchIcdCodes: { __typename?: 'IcdCodesPayload', icdCodes?: Array<{ __typename?: 'ICDCodesWithSnowMedCode', id: string, code: string, description?: string | null, snoMedCode?: { __typename?: 'SnoMedCodes', id: string, referencedComponentId?: string | null } | null } | null> | null } };
+export type SearchIcdCodesQuery = { __typename?: 'Query', searchIcdCodes: { __typename?: 'IcdCodesPayload', icdCodes?: Array<{ __typename?: 'ICDCodesWithSnowMedCode', id: string, code: string, description?: string | null, snoMedCode?: { __typename?: 'SnoMedCodes', id: string, referencedComponentId?: string | null } | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null } | null } };
 
 export type FetchIcdCodesQueryVariables = Exact<{
   searchIcdCodesInput: SearchIcdCodesInput;
@@ -18062,6 +18062,8 @@ export const CreateIcdCodeDocument = gql`
     }
     icdCode {
       id
+      code
+      description
     }
   }
 }
@@ -21098,6 +21100,9 @@ export const SearchIcdCodesDocument = gql`
         id
         referencedComponentId
       }
+    }
+    pagination {
+      totalPages
     }
   }
 }

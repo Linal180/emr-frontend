@@ -1,5 +1,6 @@
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
-import JsBarcode from "jsbarcode";
+import QRCode from 'qrcode'
+import { useEffect, useState } from "react";
 import Logo from "../../../../assets/images/aimed-logo.png";
 import {
   ADDRESS, ATTENDING, CLIA_ID_NUMBER, COLLECTED_DATE, COMMENT, DIAGNOSES, DOB_TEXT, FACILITY,
@@ -147,9 +148,13 @@ const styles = StyleSheet.create({
 
 
 const ResultDoc = ({ labTest, attachmentUrl }: { labTest: LabTestsPayload['labTests'], attachmentUrl?: string | null }) => {
-  const canvas = document.createElement('canvas');
-  JsBarcode(canvas, `${process.env.REACT_APP_URL}${LAB_RESULTS_INFO}/${labTest?.[0]?.orderNumber}`);
-  const barcode = canvas.toDataURL();
+  const [qrCodeUrl, setQrCodeUrl] = useState('')
+
+  useEffect(() => {
+    QRCode.toDataURL(`${process.env.REACT_APP_URL}${LAB_RESULTS_INFO}/${labTest?.[0]?.orderNumber}`, function (err, uri) {
+      setQrCodeUrl(uri)
+    });
+  }, [labTest])
 
   const { patient, primaryProvider, collectedDate, receivedDate } = labTest?.[0] || {}
   const { firstName, lastName, dob, gender, patientRecord, contacts, facility } = patient || {}
@@ -394,7 +399,7 @@ const ResultDoc = ({ labTest, attachmentUrl }: { labTest: LabTestsPayload['labTe
             </View>
           </View>
 
-          <Image src={barcode} />
+          <Image src={qrCodeUrl} style={[styles.w20, styles.mt15]}/>
         </View>
       </Page>
     </Document>
