@@ -614,6 +614,7 @@ export type CptCodes = {
   description?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   longDescription?: Maybe<Scalars['String']>;
+  priority?: Maybe<Scalars['Int']>;
   shortDescription?: Maybe<Scalars['String']>;
   systematic?: Maybe<Scalars['Boolean']>;
   updatedAt?: Maybe<Scalars['String']>;
@@ -1128,6 +1129,7 @@ export type CreateCptCodeInput = {
   code?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   longDescription?: Maybe<Scalars['String']>;
+  priority?: Maybe<Scalars['Int']>;
   shortDescription?: Maybe<Scalars['String']>;
 };
 
@@ -7042,6 +7044,7 @@ export type UpdateCptCodeInput = {
   description?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   longDescription?: Maybe<Scalars['String']>;
+  priority?: Maybe<Scalars['Int']>;
   shortDescription?: Maybe<Scalars['String']>;
 };
 
@@ -8290,7 +8293,7 @@ export type FetchUpFrontPaymentDetailsByAppointmentIdQueryVariables = Exact<{
 }>;
 
 
-export type FetchUpFrontPaymentDetailsByAppointmentIdQuery = { __typename?: 'Query', fetchUpFrontPaymentDetailsByAppointmentId: { __typename?: 'UpFrontPaymentPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, upFrontPayment: { __typename?: 'UpFrontPayment', id: string, totalCharges?: string | null, paid?: string | null, adjustments?: string | null, balance?: string | null, expected?: string | null, UpFrontPaymentTypes?: Array<{ __typename?: 'UpFrontPaymentType', id: string, paymentType?: string | null, amount?: string | null, type?: string | null, notes?: string | null }> | null } } };
+export type FetchUpFrontPaymentDetailsByAppointmentIdQuery = { __typename?: 'Query', fetchUpFrontPaymentDetailsByAppointmentId: { __typename?: 'UpFrontPaymentPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, upFrontPayment: { __typename?: 'UpFrontPayment', id: string, totalCharges?: string | null, paid?: string | null, adjustments?: string | null, balance?: string | null, expected?: string | null, UpFrontPaymentTypes?: Array<{ __typename?: 'UpFrontPaymentType', id: string, paymentType?: string | null, amount?: string | null, type?: string | null, notes?: string | null, copayType?: string | null }> | null } } };
 
 export type FindAllPatientAllergiesQueryVariables = Exact<{
   patientAllergyInput: PatientAllergyInput;
@@ -12639,6 +12642,7 @@ export const FetchUpFrontPaymentDetailsByAppointmentIdDocument = gql`
         amount
         type
         notes
+        copayType
       }
     }
   }

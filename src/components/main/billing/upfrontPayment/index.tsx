@@ -37,10 +37,11 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
       Copay: [{ ...UPFRONT_INITIAL_VALUES, paymentType: UPFRONT_PAYMENT_TYPES.Copay }],
       Previous: [{ ...UPFRONT_INITIAL_VALUES, paymentType: UPFRONT_PAYMENT_TYPES.Previous }],
     },
-    resolver: yupResolver(createUpFrontPaymentSchema)
+    resolver: yupResolver(createUpFrontPaymentSchema(copays))
   })
 
-  const { watch, setValue, handleSubmit, trigger } = methods
+  const { watch, setValue, handleSubmit, trigger, formState } = methods
+  console.log("formState", formState)
   const { Additional, Copay, Previous, adjustments, paid } = watch()
   const upFrontPayments = [...Additional, ...Copay, ...Previous]
   const totalCharge = upFrontPayments.reduce((acc, upFrontPayment) => {
@@ -93,12 +94,13 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
         setValue('paid', paid || '')
 
         const transformedUpFrontPayments = UpFrontPaymentTypes?.map((UpFrontPaymentType) => {
-          const { amount, notes, paymentType, type } = UpFrontPaymentType
+          const { amount, notes, paymentType, type, copayType } = UpFrontPaymentType
           return {
             amount: Number(amount),
             notes,
             paymentType,
-            type: setRecord(type || '', type || '')
+            type: setRecord(type || '', type || ''),
+            copayType: setRecord(copayType || '', copayType || ''),
           }
         }) || []
 
@@ -111,6 +113,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
           setValue(`${value.paymentType as UPFRONT_PAYMENT_TYPES}.${index}.notes`, value?.notes as never)
           setValue(`${value.paymentType as UPFRONT_PAYMENT_TYPES}.${index}.type`, value?.type as never)
           setValue(`${value.paymentType as UPFRONT_PAYMENT_TYPES}.${index}.paymentType`, value?.paymentType as never)
+          setValue(`${value.paymentType as UPFRONT_PAYMENT_TYPES}.${index}.copayType`, value?.copayType as never)
         })
 
         copay?.forEach((value, index) => {
@@ -118,6 +121,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
           setValue(`${value.paymentType as UPFRONT_PAYMENT_TYPES}.${index}.notes`, value?.notes as never)
           setValue(`${value.paymentType as UPFRONT_PAYMENT_TYPES}.${index}.type`, value?.type as never)
           setValue(`${value.paymentType as UPFRONT_PAYMENT_TYPES}.${index}.paymentType`, value?.paymentType as never)
+          setValue(`${value.paymentType as UPFRONT_PAYMENT_TYPES}.${index}.copayType`, value?.copayType as never)
         })
 
         previous?.forEach((value, index) => {
@@ -125,6 +129,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
           setValue(`${value.paymentType as UPFRONT_PAYMENT_TYPES}.${index}.notes`, value?.notes as never)
           setValue(`${value.paymentType as UPFRONT_PAYMENT_TYPES}.${index}.type`, value?.type as never)
           setValue(`${value.paymentType as UPFRONT_PAYMENT_TYPES}.${index}.paymentType`, value?.paymentType as never)
+          setValue(`${value.paymentType as UPFRONT_PAYMENT_TYPES}.${index}.copayType`, value?.copayType as never)
         })
 
       }
@@ -182,32 +187,32 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
 
     onCompleted(data) {
       const { fetchPatientInsurances } = data || {}
-
+      debugger
       if (fetchPatientInsurances) {
         const { policies, response } = fetchPatientInsurances
         if (response && response.status === 200) {
-          if (!shouldDisableEdit) {
-            const primaryInsurance = policies?.find((policyInfo) => policyInfo.orderOfBenefit === OrderOfBenefitType.Primary)
-            const secondaryInsurance = policies?.find((policyInfo) => policyInfo.orderOfBenefit === OrderOfBenefitType.Secondary)
-            const tertiaryInsurance = policies?.find((policyInfo) => policyInfo.orderOfBenefit === OrderOfBenefitType.Tertiary)
+          const primaryInsurance = policies?.find((policyInfo) => policyInfo.orderOfBenefit === OrderOfBenefitType.Primary)
+          const secondaryInsurance = policies?.find((policyInfo) => policyInfo.orderOfBenefit === OrderOfBenefitType.Secondary)
+          const tertiaryInsurance = policies?.find((policyInfo) => policyInfo.orderOfBenefit === OrderOfBenefitType.Tertiary)
 
-            const insuranceInfo = primaryInsurance ? primaryInsurance : secondaryInsurance ? secondaryInsurance : tertiaryInsurance
-            const { copays } = insuranceInfo || {}
-            const { type, amount } = copays?.[0] || {}
-            setValue(`Copay.0.dueAmount`, amount as never)
-            setValue(`Copay.0.notes`, '' as never)
-            setValue(`Copay.0.copayType`, setRecord(type || '', type || '') as never)
-            setCopays(copays as Copay[])
+          const insuranceInfo = primaryInsurance ? primaryInsurance : secondaryInsurance ? secondaryInsurance : tertiaryInsurance
+          const { copays } = insuranceInfo || {}
+          const { type, amount } = copays?.[0] || {}
+          setValue(`Copay.0.dueAmount`, amount as never)
+          setValue(`Copay.0.notes`, '' as never)
+          setValue(`Copay.0.copayType`, setRecord(type || '', type || '') as never)
+          console.log("copays in ", copays)
+          setCopays(copays as Copay[])
 
-          }
         }
       }
     }
   });
 
-  const getPatientInsurances = useCallback(() => {
+  const getPatientInsurances = useCallback(async () => {
     try {
-      fetchPatientInsurances({
+
+      await fetchPatientInsurances({
         variables: {
           id: id
         }
@@ -223,13 +228,14 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
   useImperativeHandle(ref, () => ({
     async submit() {
       await handleSubmit(onSubmit)()
-
     }
   }));
 
   if (getUpFrontPaymentDetailsLoading) {
     return <Loader loading loaderText="Fetching upFront Payments..." />
   }
+
+  console.log("copays", copays)
 
   return (
     <>
@@ -378,7 +384,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
                   variant="contained"
                   size="large"
                   color="secondary"
-                  onClick={async() => {
+                  onClick={async () => {
                     await handleSubmit(onSubmit)()
                     await trigger() && Alert.success(UPFRONT_PAYMENT_SUCCESS)
                   }}

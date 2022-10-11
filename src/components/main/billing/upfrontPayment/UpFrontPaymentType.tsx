@@ -37,7 +37,7 @@ const UpFrontPaymentType: FC<UpFrontPaymentTypeCompProps> = ({ moduleName, shoul
   //   appendUpFrontPaymentTypes({ ...UPFRONT_INITIAL_VALUES, paymentType: moduleName })
   // }
 
-  const isCopay = moduleName === UPFRONT_PAYMENT_TYPES.Copay
+  const isCopay = moduleName === UPFRONT_PAYMENT_TYPES.Copay || moduleName === UPFRONT_PAYMENT_TYPES.Additional
 
   const { amount } = copays?.find((copay) => copay.type === (copayType?.id || '')) || {}
 
@@ -65,12 +65,13 @@ const UpFrontPaymentType: FC<UpFrontPaymentTypeCompProps> = ({ moduleName, shoul
                     options={MAPPED_COPAY_TYPE}
                     name={`${moduleName}.${index}.copayType`}
                     onSelect={(copayValue: SelectorOption) => handleCopay(copayValue)}
+                    disabled={shouldDisableEdit}
                   />
                 </Box>}
               </Box>
             </TableCell>
             {copays?.length && < TableCell scope="row">
-              {isCopay && <Box pl={2} display='flex' alignItems='center' borderRadius={4} height={48} bgcolor={GREY}>
+              {moduleName === UPFRONT_PAYMENT_TYPES.Copay && <Box pl={2} display='flex' alignItems='center' borderRadius={4} height={48} bgcolor={GREY}>
                 <Typography variant="body1" color="inherit">{amount || '0.0'}</Typography>
               </Box>}
             </TableCell>}
