@@ -1688,6 +1688,7 @@ export interface RolesTableProps {
 
 export interface AddModalProps {
   newAllergy?: string;
+  newProblem?: string
   allergyType?: string;
   isOpen?: boolean;
   isEdit?: boolean;
@@ -2367,8 +2368,8 @@ export type IcdCodesTableProps = {
 
 }
 
-export type ICD10FormType = CreateIcdCodeInput;
-export type CptCodeFormType = Pick<CreateCptCodeInput, 'code' | 'shortDescription'>;
+export type ICD10FormType = Pick<CreateIcdCodeInput, 'code' | 'description'> & { priority: string };
+export type CptCodeFormType = Pick<CreateCptCodeInput, 'code' | 'shortDescription'> & { priority: string };
 
 export type ICD10FormProps = {
   open: boolean;
@@ -2377,6 +2378,9 @@ export type ICD10FormProps = {
   id?: string;
   dispatcher?: Dispatch<IcdCodeAction>
   handleClose: (open: boolean) => void
+  systematic?: boolean
+  searchItem?: string
+  handleReload?: Function
 }
 
 export type cptCodeFormProps = {
@@ -2386,6 +2390,7 @@ export type cptCodeFormProps = {
   id?: string;
   dispatcher?: Dispatch<cptCodeAction>
   handleClose: (open: boolean) => void
+  systematic: boolean
 }
 
 export type QuestionCardType = {
