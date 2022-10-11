@@ -1,18 +1,17 @@
-query FindAllIcdCodes($findAllIcdCodesInput: FindAllIcdCodesInput!){
-  findAllIcdCodes(findAllIcdCodesInput: $findAllIcdCodesInput){
-
+query FindAllIcdCodes($findAllIcdCodesInput: FindAllIcdCodesInput!) {
+  findAllIcdCodes(findAllIcdCodesInput: $findAllIcdCodesInput) {
     icdCodes {
       id
       code
       description
       systematic
     }
-    
+
     response {
       status
       message
     }
-    
+
     pagination {
       page
       totalPages
@@ -20,14 +19,14 @@ query FindAllIcdCodes($findAllIcdCodesInput: FindAllIcdCodesInput!){
   }
 }
 
-query GetIcdCode($getIcdCodeInput: GetIcdCodeInput!){
-  getIcdCode(getIcdCodeInput: $getIcdCodeInput){
+query GetIcdCode($getIcdCodeInput: GetIcdCodeInput!) {
+  getIcdCode(getIcdCodeInput: $getIcdCodeInput) {
     icdCode {
       id
       code
       description
     }
-    
+
     response {
       status
       message
@@ -36,8 +35,7 @@ query GetIcdCode($getIcdCodeInput: GetIcdCodeInput!){
 }
 
 mutation CreateIcdCode($createIcdCodeInput: CreateIcdCodeInput!) {
-  createIcdCode(createIcdCodeInput: $createIcdCodeInput){
-
+  createIcdCode(createIcdCodeInput: $createIcdCodeInput) {
     response {
       status
       message
@@ -45,13 +43,14 @@ mutation CreateIcdCode($createIcdCodeInput: CreateIcdCodeInput!) {
 
     icdCode {
       id
+      code
+      description
     }
   }
 }
 
 mutation UpdateIcdCode($updateIcdCodeInput: UpdateIcdCodeInput!) {
-  updateIcdCode(updateIcdCodeInput: $updateIcdCodeInput){
-    
+  updateIcdCode(updateIcdCodeInput: $updateIcdCodeInput) {
     response {
       status
       message
@@ -64,8 +63,7 @@ mutation UpdateIcdCode($updateIcdCodeInput: UpdateIcdCodeInput!) {
 }
 
 mutation RemoveIcdCode($removeIcdCodeInput: RemoveIcdCodeInput!) {
-  removeIcdCode(removeIcdCodeInput: $removeIcdCodeInput){
-    
+  removeIcdCode(removeIcdCodeInput: $removeIcdCodeInput) {
     response {
       status
       message
