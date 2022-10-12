@@ -112,7 +112,7 @@ function AssessmentPlanTab({ shouldDisableEdit }: { shouldDisableEdit?: boolean 
   }, [fetchProblems, patientId])
 
   return (
-    <div>
+    <>
       <AssessmentPlanProblems
         fetchProblems={fetchProblems}
         assessmentProblems={assessmentProblems}
@@ -121,7 +121,7 @@ function AssessmentPlanTab({ shouldDisableEdit }: { shouldDisableEdit?: boolean 
         isSigned={isSigned}
       />
       <Box m={2} />
-    </div >
+    </>
   )
 }
 

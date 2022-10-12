@@ -1,26 +1,40 @@
-import { Grid, makeStyles, Typography } from '@material-ui/core';
+import { Box, colors, makeStyles, Typography } from '@material-ui/core';
 import { FC, useMemo } from 'react';
 //component
+import AnswerChips from './AnswerChips';
 //constants, interfaces
 import { SectionQuestions } from '../../../../../generated/graphql';
-import { BLUE_ELEVEN, GREEN_ONE, PINK } from '../../../../../theme';
-import AnswerChips from './AnswerChips';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     flexWrap: 'wrap',
     '& > *': {
-      margin: theme.spacing(0.5),
+      margin: theme.spacing(1),
+    },
+    '& .MuiChip-root': {
+      height: '30px !important',
+      borderRadius: '4px !important',
+      '& .MuiAutocomplete-inputRoot, .MuiOutlinedInput-root': {
+        height: '26px !important',
+        marginTop: 9,
+        backgroundColor: '#F3F4F6',
+        borderRadius: '4px !important',
+        paddingTop: '0px !important',
+      },
     },
     "& .MuiChip-label": {
       whiteSpace: "normal",
       textOverflow: "clip",
       textAlign: "center",
       fontSize: 16,
+      fontWeight: '500',
+      display: "flex",
+      alignItems: "center",
+      padding: '0px 10px 0px 5px',
     },
-    padding: 10,
+    padding: '10 0',
   },
 }));
 
@@ -53,28 +67,28 @@ const QuestionCard: FC<{ question: SectionQuestions }> = ({ question }): JSX.Ele
   }, [answers])
 
   return (
-    <Grid spacing={3} style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid black" }}>
-      <Grid md={4}>
+    <Box>
+      <Box pb={2} mb={2} borderBottom={`1px solid ${colors.grey[300]}`}>
         <Typography variant='h6'>{title}</Typography>
-      </Grid>
+      </Box>
 
-      <Grid md={8}>
-        <div className={classes.root}>
-          <AnswerChips
-            answers={normalAnswers}
-            colors={[GREEN_ONE, 'rgba(140,169,0,0.2)']}
-          />
-          <AnswerChips
-            answers={neutralAnswers}
-            colors={[BLUE_ELEVEN, `rgba(0,115,176,0.16)`]}
-          />
-          <AnswerChips
-            answers={abnormalAnswers}
-            colors={[PINK, `rgba(204,0,29,0.1)`]}
-          />
-        </div>
-      </Grid>
-    </Grid>
+      <Box className={classes.root}>
+        <AnswerChips
+          answers={normalAnswers}
+          colors={['#03CC83', 'rgba(3,204,131,0.4)']}
+        />
+
+        <AnswerChips
+          answers={neutralAnswers}
+          colors={['#204ECF', `rgba(32,78,207,0.4)`]}
+        />
+
+        <AnswerChips
+          answers={abnormalAnswers}
+          colors={['#DD1010', `rgba(221,16,16,0.4)`]}
+        />
+      </Box>
+    </Box>
   )
 }
 

@@ -7,6 +7,7 @@ query FindAllCptCodes($findAllCptCodesInput: FindAllCPTCodesInput!) {
       longDescription
       shortDescription
       systematic
+      priority
     }
 
     pagination {
@@ -30,6 +31,7 @@ query getCPTCode($getCPTCodeInput: GetCPTCodeInput!) {
       description
       longDescription
       shortDescription
+      priority
     }
 
     response {

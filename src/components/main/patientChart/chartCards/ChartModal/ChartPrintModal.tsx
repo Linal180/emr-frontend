@@ -30,7 +30,7 @@ const ChartPrintModal: FC<ChartPrintModalProps> = ({ isOpen, handleClose, module
         const { getPatientChartingInfo } = data;
 
         if (getPatientChartingInfo) {
-          const { response, patientAllergies, patientInfo, 
+          const { response, patientAllergies, patientInfo,
             patientMedications, patientProblems, patientVitals, surgicalHistories, triageNotes, familyHistories } = getPatientChartingInfo
 
           if (response) {
@@ -38,8 +38,10 @@ const ChartPrintModal: FC<ChartPrintModalProps> = ({ isOpen, handleClose, module
 
             if (status && status === 200) {
               chartDispatch({
-                type: ChartActionType.SET_PATIENT_CHARTING_INFO, patientChartingInfo: { patientAllergies, patientInfo, patientMedications, 
-                  patientProblems, patientVitals, surgicalHistories, triageNotes, familyHistories } as PatientChartingInfo
+                type: ChartActionType.SET_PATIENT_CHARTING_INFO, patientChartingInfo: {
+                  patientAllergies, patientInfo, patientMedications,
+                  patientProblems, patientVitals, surgicalHistories, triageNotes, familyHistories
+                } as PatientChartingInfo
               })
             }
           }

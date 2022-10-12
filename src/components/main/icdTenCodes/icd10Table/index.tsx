@@ -17,7 +17,7 @@ import { icd10Reducer, Action, ActionType, State, initialState } from '../../../
 import { FindAllIcdCodesPayload, useFindAllIcdCodesLazyQuery, useRemoveIcdCodeMutation } from '../../../../generated/graphql';
 import {
   ACTIONS, ADD_NEW_TEXT, CODE, DASHES, DELETE_ICD_10_DESCRIPTION, DESCRIPTION, EIGHT_PAGE_LIMIT, ICD_TEN,
-  ICD_TEN_CODE, PAGE_LIMIT
+  ICD_TEN_CODE, PAGE_LIMIT, PRIORITY
 } from '../../../../constants';
 
 const IcdCodesTable: FC<IcdCodesTableProps> = (): JSX.Element => {
@@ -25,7 +25,7 @@ const IcdCodesTable: FC<IcdCodesTableProps> = (): JSX.Element => {
   const classes = useTableStyles()
 
   const [state, dispatch] = useReducer<Reducer<State, Action>>(icd10Reducer, initialState);
-  const { isOpen, page, data, totalPages, openDelete, delId, itemId, searchQuery } = state;
+  const { isOpen, page, data, totalPages, openDelete, delId, itemId, searchQuery, systematic } = state;
 
   const [fetchAllIcdCodes, { loading, error }] = useFindAllIcdCodesLazyQuery({
     onCompleted: (data) => {
@@ -110,7 +110,8 @@ const IcdCodesTable: FC<IcdCodesTableProps> = (): JSX.Element => {
     })
   }
 
-  const handleEdit = (id: string) => {
+  const handleEdit = (id: string, systematic: boolean) => {
+    dispatch({ type: ActionType.SET_SYSTEMATIC, systematic })
     dispatch({ type: ActionType.SET_ITEM_ID, itemId: id })
     dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })
   };
@@ -119,6 +120,11 @@ const IcdCodesTable: FC<IcdCodesTableProps> = (): JSX.Element => {
     dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
     dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
     dispatch({ type: ActionType.SET_PAGE, page: 1 })
+  }
+
+  const addHandler = () => {
+    dispatch({ type: ActionType.SET_SYSTEMATIC, systematic: false })
+    dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })
   }
 
   return (
@@ -132,7 +138,7 @@ const IcdCodesTable: FC<IcdCodesTableProps> = (): JSX.Element => {
               <Button
                 variant='contained' color='primary'
                 startIcon={<Box width={20}><AddWhiteIcon /></Box>}
-                onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
+                onClick={addHandler}>
                 {ADD_NEW_TEXT}
               </Button>}
           </Box>
@@ -149,6 +155,7 @@ const IcdCodesTable: FC<IcdCodesTableProps> = (): JSX.Element => {
                   <TableRow>
                     {renderTh(CODE)}
                     {renderTh(DESCRIPTION)}
+                    {renderTh(PRIORITY)}
                     {renderTh(ACTIONS)}
                   </TableRow>
                 </TableHead>
@@ -161,7 +168,7 @@ const IcdCodesTable: FC<IcdCodesTableProps> = (): JSX.Element => {
                   </TableRow>
                 ) : <TableBody>
                   {data?.map((icdCode) => {
-                    const { id, code, description, systematic } = icdCode ?? {}
+                    const { id, code, description, systematic, priority } = icdCode ?? {}
 
                     return (
                       <TableRow>
@@ -173,11 +180,15 @@ const IcdCodesTable: FC<IcdCodesTableProps> = (): JSX.Element => {
                           <Typography>{description || DASHES}</Typography>
                         </TableCell>
 
+                        <TableCell scope="row">
+                          <Typography>{priority ?? DASHES}</Typography>
+                        </TableCell>
+
                         {<TableCell scope="row">
                           <Box display='flex' alignItems='center'>
 
-                            <Box className={`${classes.iconsBackground} ${systematic ? 'disable-icon' : ''}`}>
-                              <Button onClick={() => id && handleEdit(id)}>
+                            <Box className={`${classes.iconsBackground}`}>
+                              <Button onClick={() => id && handleEdit(id, systematic as boolean)}>
                                 <EditOutlinedIcon />
                               </Button>
                             </Box>
@@ -223,6 +234,7 @@ const IcdCodesTable: FC<IcdCodesTableProps> = (): JSX.Element => {
         handleClose={handleModalClose}
         fetch={() => fetchIcdCodes()}
         dispatcher={dispatch}
+        systematic={systematic}
       />
 
       {totalPages > 1 && !loading && (

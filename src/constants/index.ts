@@ -820,6 +820,7 @@ export const DATE = "Date";
 export const TEST = "Test";
 export const TYPE = "Type";
 export const CODE = "Code";
+export const PRIORITY = "Priority";
 export const SR_NO = "SR #";
 export const TRUE = "TRUE";
 export const TEXT = "text";
@@ -3843,28 +3844,28 @@ export const REASON_FOR_VISIT_OPTION = {
   value: "1",
 }
 
-export const REVIEW_OPTION = {
-  icon: ReasonForVisit,
-  title: "Review",
+// export const ASSESSMENT_PLAN_OPTION = {
+//   icon: AssessmentPlanIcon,
+//   title: "Assessment & Plan",
+//   value: "10",
+// }
+
+// export const PATIENT_HISTORY_OPTION = {
+//   icon: AssessmentPlanIcon,
+//   title: "HPI",
+//   value: "11",
+// }
+
+// export const REVIEW_OF_SYSTEM_OPTION = {
+//   icon: AssessmentPlanIcon,
+//   title: "ROS",
+//   value: "12",
+// }
+
+export const EXAM_OPTION = {
+  icon: AssessmentPlanIcon,
+  title: "Exam",
   value: "1",
-}
-
-export const ASSESSMENT_PLAN_OPTION = {
-  icon: AssessmentPlanIcon,
-  title: "Assessment & Plan",
-  value: "10",
-}
-
-export const PATIENT_HISTORY_OPTION = {
-  icon: AssessmentPlanIcon,
-  title: "HPI",
-  value: "11",
-}
-
-export const REVIEW_OF_SYSTEM_OPTION = {
-  icon: AssessmentPlanIcon,
-  title: "ROS",
-  value: "12",
 }
 
 export const PATIENT_CHARTING_MENU = [
@@ -3918,6 +3919,25 @@ export const HISTORY_CHARTING_TABS = [
   {
     title: "Surgical History",
     value: "3",
+  },
+]
+
+export const EXAM_TABS = [
+  {
+    title: "Review",
+    value: "1",
+  },
+  {
+    title: "HPI",
+    value: "2",
+  },
+  {
+    title: "ROS",
+    value: "3",
+  },
+  {
+    title: "Assessment & Plan",
+    value: "4",
   },
 ]
 

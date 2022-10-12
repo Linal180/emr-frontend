@@ -90,6 +90,7 @@ export interface State {
   patientTriageNotes: TriageNotesPayload['triageNotes'],
   triageNoteId: string
   isTriageNote: boolean;
+  shouldRefetchLatestVitals: boolean
 }
 
 export const initialState: State = {
@@ -174,7 +175,8 @@ export const initialState: State = {
   patientEmail: '',
   patientTriageNotes: [],
   triageNoteId: '',
-  isTriageNote: false
+  isTriageNote: false,
+  shouldRefetchLatestVitals: false
 }
 
 export enum ActionType {
@@ -258,6 +260,7 @@ export enum ActionType {
   SET_PATIENT_TRIAGE_NOTES = 'setPatientTriageNotes',
   SET_TRIAGE_NOTE_ID = "setTriageNoteId",
   SET_IS_TRIAGE_NOTE = "setIsTriageNote",
+  SET_SHOULD_REFETCH_LATEST_VITALS = "setShouldRefetchLatestVitals"
 }
 
 export type Action =
@@ -341,6 +344,7 @@ export type Action =
   | { type: ActionType.SET_PATIENT_TRIAGE_NOTES; patientTriageNotes: TriageNotesPayload['triageNotes'] }
   | { type: ActionType.SET_TRIAGE_NOTE_ID; triageNoteId: string }
   | { type: ActionType.SET_IS_TRIAGE_NOTE; isTriageNote: boolean }
+  | { type: ActionType.SET_SHOULD_REFETCH_LATEST_VITALS; shouldRefetchLatestVitals: boolean }
 
 export const patientReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -823,5 +827,10 @@ export const patientReducer = (state: State, action: Action): State => {
         isTriageNote: action.isTriageNote
       }
 
+    case ActionType.SET_SHOULD_REFETCH_LATEST_VITALS:
+      return {
+        ...state,
+        shouldRefetchLatestVitals: action.shouldRefetchLatestVitals
+      }
   }
 };
