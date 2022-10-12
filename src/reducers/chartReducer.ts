@@ -36,6 +36,7 @@ export interface State {
   problemIndex: number | null;
   medicationIndex: number | null;
   testIndex: number | null;
+  isIcdFormOpen: boolean
 }
 
 export const initialState: State = {
@@ -69,7 +70,8 @@ export const initialState: State = {
   patientChartingInfo: null,
   problemIndex: null,
   medicationIndex: null,
-  testIndex: null
+  testIndex: null,
+  isIcdFormOpen: false
 }
 
 export enum ActionType {
@@ -103,7 +105,8 @@ export enum ActionType {
   SET_PATIENT_CHARTING_INFO = "setPatientChartingInfo",
   SET_PROBLEM_INDEX = 'setProblemIndex',
   SET_MEDICATION_INDEX = 'setMedicationIndex',
-  SET_TEST_INDEX = 'setTestIndex'
+  SET_TEST_INDEX = 'setTestIndex',
+  SET_ICD_FORM_OPEN = 'setICDFormOpen'
 }
 
 export type Action =
@@ -138,6 +141,7 @@ export type Action =
   | { type: ActionType.SET_PROBLEM_INDEX, problemIndex: number | null }
   | { type: ActionType.SET_MEDICATION_INDEX, medicationIndex: number | null }
   | { type: ActionType.SET_TEST_INDEX, testIndex: number | null }
+  | { type: ActionType.SET_ICD_FORM_OPEN, isIcdFormOpen: boolean }
 
 
 export const chartReducer = (state: State, action: Action): State => {
@@ -326,6 +330,12 @@ export const chartReducer = (state: State, action: Action): State => {
       return {
         ...state,
         testIndex: action.testIndex
+      }
+
+    case ActionType.SET_ICD_FORM_OPEN:
+      return {
+        ...state,
+        isIcdFormOpen: action.isIcdFormOpen
       }
   }
 };

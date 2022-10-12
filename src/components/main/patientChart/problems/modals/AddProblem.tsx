@@ -1,33 +1,35 @@
 // packages block
-import { FC, Reducer, useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import {
-  Box, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton, InputBase, Typography
+  Box, Button, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton, InputBase, Typography
 } from "@material-ui/core";
+import { Add as AddIcon } from '@material-ui/icons';
+import { FC, Reducer, useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 // components block
+import ICD10Form from "../../../icdTenCodes/icd10Form";
 import ProblemModal from "./ProblemModal";
 // constants, interfaces, utils block 
-import { GRAY_SIX, GREY_SEVEN } from "../../../../../theme";
 import { NoDataIcon, SearchIcon } from "../../../../../assets/svgs";
-import { AddAllergyModalProps } from "../../../../../interfacesTypes";
-import { useChartingStyles } from "../../../../../styles/chartingStyles";
-import {
-  Action, ActionType, chartReducer, initialState, State
-} from "../../../../../reducers/chartReducer";
 import {
   ADD_PROBLEM, ICD_10, INITIAL_PAGE_LIMIT, NO_RECORDS, SEARCH_FOR_PROBLEMS, SNOMED, TYPE
 } from "../../../../../constants";
 import {
-  IcdCodesPayload, IcdCodesWithSnowMedCode, useSearchIcdCodesLazyQuery
+  IcdCodes, IcdCodesWithSnowMedCode, useSearchIcdCodesLazyQuery
 } from "../../../../../generated/graphql";
+import { AddAllergyModalProps } from "../../../../../interfacesTypes";
+import {
+  Action, ActionType, chartReducer, initialState, State
+} from "../../../../../reducers/chartReducer";
+import { useChartingStyles } from "../../../../../styles/chartingStyles";
+import { GRAY_SIX, GREY_SEVEN } from "../../../../../theme";
 
 const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose, fetch }) => {
   const tabs = useMemo(() => {
     return ['Common Terms', 'Covid Terms']
   }, [])
-
+  const observer = useRef<any>();
   const chartingClasses = useChartingStyles()
   const [tab, setTab] = useState<string>(!!tabs ? tabs[0] : '');
-  const [{ isSubModalOpen, selectedItem, searchQuery, searchedData }, dispatch] =
+  const [{ isSubModalOpen, selectedItem, searchQuery, searchedData, newRecord, isIcdFormOpen, page, totalPages }, dispatch] =
     useReducer<Reducer<State, Action>>(chartReducer, initialState)
 
   const closeSearchMenu = () => {
@@ -48,18 +50,21 @@ const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
         const { searchIcdCodes } = data;
 
         if (searchIcdCodes) {
-          const { icdCodes } = searchIcdCodes
+          const { icdCodes, pagination } = searchIcdCodes
+
+          const { totalPages } = pagination || {}
+          dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: totalPages || 0 })
 
           icdCodes && dispatch({
             type: ActionType.SET_SEARCHED_DATA,
-            searchedData: icdCodes as IcdCodesPayload['icdCodes']
+            searchedData: [...(searchedData || []), ...(icdCodes || [])] as IcdCodesWithSnowMedCode[]
           })
         }
       }
     }
   });
 
-  const handleICDSearch = useCallback(async (tabName: string, query: string) => {
+  const handleICDSearch = useCallback(async (tabName: string, query: string, page?: number) => {
     try {
       const queryString = tabName === tabs[1] ? 'corona' : query
 
@@ -67,7 +72,7 @@ const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
         variables: {
           searchIcdCodesInput: {
             searchTerm: queryString,
-            paginationOptions: { page: 1, limit: INITIAL_PAGE_LIMIT }
+            paginationOptions: { page: page || 1, limit: INITIAL_PAGE_LIMIT }
           }
         }
       })
@@ -115,46 +120,104 @@ const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
     </Box>
   );
 
+  const handleNewProblem = useCallback(() => {
+    dispatch({ type: ActionType.SET_NEW_RECORD, newRecord: searchQuery })
+    dispatch({ type: ActionType.SET_ICD_FORM_OPEN, isIcdFormOpen: true })
+  }, [searchQuery])
+
+  const lastElementRef = useCallback(
+    (node) => {
+      if (searchIcdCodesLoading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && page <= totalPages) {
+          dispatch({ type: ActionType.SET_PAGE, page: page + 1 })
+          handleICDSearch(tab, searchQuery, page + 1)
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [searchIcdCodesLoading, page, totalPages, handleICDSearch, tab, searchQuery]
+  );
+
   const renderSearchData = useCallback(() => {
     return (
-      <Box maxHeight={280} minHeight={280} className="overflowY-auto" display="flex"
-        flexDirection="column" alignItems="flex-start"
-      >
-        {!!searchIcdCodesLoading ?
-          <Box alignSelf="center">
-            <CircularProgress size={25} color="inherit" disableShrink />
-          </Box>
-          :
-          (searchedData && searchedData.length > 0 ?
-            searchedData?.map(item => {
-              const { code, description, snoMedCode } = item as IcdCodesWithSnowMedCode || {}
-              const { referencedComponentId } = snoMedCode || {}
+      <>
+        <Box maxHeight={280} minHeight={280} className="overflowY-auto" display="flex"
+          flexDirection="column" alignItems="flex-start"
+        >
+          {searchedData && searchedData.length > 0 ?
+            <>
+              {searchedData?.map((item, i) => {
+                const { code, description, snoMedCode } = item as IcdCodesWithSnowMedCode || {}
+                const { referencedComponentId } = snoMedCode || {}
 
-              return (
-                <Box key={`${code} | ${description} | ${snoMedCode?.id}`} my={0.2} className={chartingClasses.hoverClass}
-                  onClick={() => item && handleOpenForm(item as IcdCodesWithSnowMedCode)}
-                >
-                  <Box display="flex" flexDirection="column" px={2}>
-                    <Typography variant='body1'>{description}</Typography>
+                if (i === searchedData.length - 1) {
+                  return (
+                    <div key={`${code} | ${description} | ${snoMedCode?.id}`} className={chartingClasses.hoverClass}
+                      onClick={() => item && handleOpenForm(item as IcdCodesWithSnowMedCode)}
+                      ref={lastElementRef}
+                      style={{ marginTop: 1, marginBottom: 1 }}
+                    >
+                      <Box display="flex" flexDirection="column" px={2}>
+                        <Typography variant='body1'>{description}</Typography>
 
-                    <Typography variant='caption'>
-                      {referencedComponentId ? `${SNOMED}: ${referencedComponentId} | ${ICD_10}: ${code}` : `ICD-10: ${code}`}
-                    </Typography>
-                  </Box>
+                        <Typography variant='caption'>
+                          {referencedComponentId ? `${SNOMED}: ${referencedComponentId} | ${ICD_10}: ${code}` : `ICD-10: ${code}`}
+                        </Typography>
+                      </Box>
+                    </div>
+                  )
+                }
 
-                </Box>
-              )
-            }) : <Box color={GREY_SEVEN} margin='auto' textAlign='center'>
+                return (
+                  <>
+                    <Box key={`${code} | ${description} | ${snoMedCode?.id}`} my={0.2} className={chartingClasses.hoverClass}
+                      onClick={() => item && handleOpenForm(item as IcdCodesWithSnowMedCode)}
+                    >
+                      <Box display="flex" flexDirection="column" px={2}>
+                        <Typography variant='body1'>{description}</Typography>
+
+                        <Typography variant='caption'>
+                          {referencedComponentId ? `${SNOMED}: ${referencedComponentId} | ${ICD_10}: ${code}` : `ICD-10: ${code}`}
+                        </Typography>
+                      </Box>
+
+                    </Box>
+
+                  </>
+                )
+              })}
+
+            </> : <Box color={GREY_SEVEN} margin='auto' textAlign='center'>
               <NoDataIcon />
               <Typography variant="h6">{NO_RECORDS}</Typography>
 
               <Box p={1} />
-            </Box>)
-        }
-      </Box>
-    )
-  }, [chartingClasses.hoverClass, searchIcdCodesLoading, searchedData])
 
+              {searchQuery.length > 2 &&
+                <Button type="submit" size='small' variant='contained' color='primary'
+                  onClick={handleNewProblem}
+                  startIcon={<AddIcon />}
+                >
+                  {ADD_PROBLEM}
+                </Button>}
+            </Box>}
+
+          {!!searchIcdCodesLoading &&
+            <Box alignSelf="center">
+              <CircularProgress size={25} color="inherit" disableShrink />
+            </Box>}
+
+        </Box>
+      </>
+    )
+  }, [chartingClasses.hoverClass, handleNewProblem, lastElementRef, searchIcdCodesLoading, searchQuery.length, searchedData])
+
+  const handleNewProblemAdd = (problem: IcdCodes) => {
+    dispatch({ type: ActionType.SET_SELECTED_ITEM, selectedItem: problem })
+    dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: true })
+  }
 
   return (
     <Dialog fullWidth maxWidth="sm" open={isOpen} onClose={handleModalClose}>
@@ -193,6 +256,15 @@ const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
         isOpen={isSubModalOpen}
         handleClose={closeSearchMenu}
       />}
+
+      <ICD10Form
+        open={isIcdFormOpen}
+        searchItem={newRecord}
+        isEdit={false}
+        handleClose={() => dispatch({ type: ActionType.SET_ICD_FORM_OPEN, isIcdFormOpen: false })}
+        fetch={() => { }}
+        handleReload={(item: IcdCodes) => handleNewProblemAdd(item)}
+      />
     </Dialog>
   )
 }
