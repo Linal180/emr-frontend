@@ -2085,6 +2085,7 @@ export type VitalTabProps = {
   shouldDisableEdit?: boolean
   isInTake?: boolean
   handleStep?: Function
+  setShouldRefetch?: Function
 }
 
 export type ProblemTabProps = VitalTabProps & {}
@@ -2352,6 +2353,8 @@ export type PatientHistoryProps = {
 
 export type LatestVitalCardProps = {
   patientId: string
+  shouldRefetch?: boolean
+  setShouldRefetch?: Function
 }
 
 export type VaccinesProps = {

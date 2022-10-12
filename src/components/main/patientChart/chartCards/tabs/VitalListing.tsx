@@ -19,7 +19,7 @@ import { ADD_NEW_TEXT, NEXT, PAGE_LIMIT, VITALS_TEXT, VITAL_LIST_PAGE_LIMIT } fr
 import { PatientVitalsPayload, useFindAllPatientVitalsLazyQuery } from "../../../../../generated/graphql";
 import { Action, initialState, patientReducer, State, ActionType } from "../../../../../reducers/patientReducer";
 
-const VitalTab: FC<VitalTabProps> = ({ shouldDisableEdit, handleStep }) => {
+const VitalTab: FC<VitalTabProps> = ({ shouldDisableEdit, handleStep, setShouldRefetch }) => {
   const classes = useChartingStyles()
   const { id } = useParams<ParamsType>()
   const vitalClasses = usePatientVitalListingStyles()
@@ -128,7 +128,7 @@ const VitalTab: FC<VitalTabProps> = ({ shouldDisableEdit, handleStep }) => {
 
                       <Box p={1} />
 
-                      {handleStep && <Button variant='contained' color='secondary' onClick={()=>handleStep()} size="large">{NEXT}</Button>}
+                      {handleStep && <Button variant='contained' color='secondary' onClick={() => handleStep()} size="large">{NEXT}</Button>}
                     </Box>
                   </Box>
                 </form>
@@ -160,7 +160,10 @@ const VitalTab: FC<VitalTabProps> = ({ shouldDisableEdit, handleStep }) => {
 
           {openVital && <AddVitals
             dispatcher={dispatch}
-            fetchPatientAllVitals={fetchPatientAllVitals}
+            fetchPatientAllVitals={() => {
+              fetchPatientAllVitals()
+              setShouldRefetch &&  setShouldRefetch()
+            }}
             patientStates={patientStates}
             handleClose={handleClose}
             isEdit={!!vitalToEdit}

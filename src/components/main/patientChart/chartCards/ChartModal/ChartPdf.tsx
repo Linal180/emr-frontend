@@ -35,6 +35,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: '12px',
   },
+  fieldTitle3: {
+    padding: '2px 5px',
+    fontWeight: 'bold',
+    fontSize: '12px',
+  },
   fieldText: {
     padding: '2px 5px',
     wordBreak: 'break-all !important',
@@ -309,7 +314,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                     {triageNotes?.length ? triageNotes?.map((triageNote) => {
                       const { notes } = triageNote || {}
                       return <Text style={styles.fieldText}>{notes || ''}</Text>
-                    }) : <Text style={[styles.fieldTitle]}>{NO_NOTES_ADDED}</Text>}
+                    }) : <Text style={[styles.fieldTitle3]}>{NO_NOTES_ADDED}</Text>}
                   </View>
 
                   {/* spacing-row */}
