@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@material-ui/core";
+import { Box, Button, Card, Typography } from "@material-ui/core";
 import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
@@ -76,7 +76,7 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
           const { questionType } = answer || {}
           if (questionType === QuestionType.SELECT) {
             setValue(`${answerId}.select`, true)
-            setValue(`${answerId}.value`, {id: "able", name: "able"})
+            setValue(`${answerId}.value`, { id: "able", name: "able" })
             return
           }
           setValue(`${answerId}.select`, true)
@@ -159,10 +159,10 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
   const { sections } = template || {}
 
   return (
-    <>
+    <Card>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Box mx={3}>
+          <Box p={3}>
             <ChartingTemplateSelector
               label={ROS_TEMPLATES}
               name="hpiTemplates"
@@ -173,7 +173,7 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
           </Box>
           {sections?.length && <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
 
-            <Typography variant='h3'>
+            <Typography variant='h4'>
               {REVIEW_OF_SYSTEM_TEXT}
             </Typography>
 
@@ -192,7 +192,7 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
             </Box>
           </Box>}
 
-          <Box maxHeight="calc(100vh - 200px)" className="overflowY-auto">
+          <Box maxHeight="calc(100vh - 260px)" className="overflowY-auto">
             {sections?.map((section) => {
               const { id, name, questions } = section || {}
               return (
@@ -211,9 +211,7 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
           </Box>
         </form>
       </FormProvider>
-    </>
-
-
+    </Card>
   )
 }
 
