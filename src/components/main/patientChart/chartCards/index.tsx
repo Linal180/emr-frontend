@@ -24,6 +24,10 @@ import MedicationTab from './tabs/MedicationsListing';
 import ProblemTab from './tabs/ProblemListing';
 import TriageNoteTab from './tabs/TriageNotesListing';
 import VitalTab from './tabs/VitalListing';
+import PatientHistory from "./patientHistoryIllness";
+import ReviewOfSystem from "./reviewOfSystem";
+import SocialHistory from "./socialHistory";
+import ExamTab from "./tabs/ExamTab";
 // interfaces, graphql, constants block /styles
 import { HistoryIcon } from "../../../../assets/svgs";
 import {
@@ -39,11 +43,6 @@ import { useChartingStyles } from "../../../../styles/chartingStyles";
 import { useExternalPatientStyles } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
 import { WHITE } from '../../../../theme';
 import { isAdmin, isOnlyDoctor } from "../../../../utils";
-import PatientHistory from "./patientHistoryIllness";
-import ReviewOfSystem from "./reviewOfSystem";
-import SocialHistory from "./socialHistory";
-import ExamTab from "./tabs/ExamTab";
-
 
 const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appointmentInfo, fetchAppointment, labOrderHandler, isInTake }): JSX.Element => {
   const classes = useChartingStyles();
@@ -58,7 +57,7 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
   const [isChartPdfModalOpen, setIsChartPdfModalOpen] = useState<boolean>(false)
   const [openDelete, setOpenDelete] = useState<boolean>(false)
   const [stepArray, setStepArray] = useState<number[]>([0])
-  const [{ activeStep, tabValue }, dispatch] =
+  const [{ activeStep, tabValue, shouldRefetchLatestVitals }, dispatch] =
     useReducer<Reducer<State, Action>>(patientReducer, initialState)
 
   const handleChange = (_: ChangeEvent<{}>, newValue: string) =>
@@ -141,7 +140,8 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
       //   return <TriageNoteTab shouldDisableEdit={shouldDisableEdit} handleStep={handleStep} />
 
       case 1:
-        return <VitalTab shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(2)} />
+        return <VitalTab shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(2)}
+          setShouldRefetch={() => dispatch({ type: ActionType.SET_SHOULD_REFETCH_LATEST_VITALS, shouldRefetchLatestVitals: true })} />
 
       case 2:
         return <ProblemTab shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(3)} />
@@ -234,7 +234,11 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
   return (
     <>
       <Box className="card-box-shadow" mb={3}>
-        <LatestVitalCard patientId={id} />
+        <LatestVitalCard
+          patientId={id}
+          setShouldRefetch={() => dispatch({ type: ActionType.SET_SHOULD_REFETCH_LATEST_VITALS, shouldRefetchLatestVitals: false })}
+          shouldRefetch={shouldRefetchLatestVitals}
+        />
         <Box mt={3} />
       </Box>
 
@@ -341,7 +345,8 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
 
                   <Box pt={0} bgcolor={WHITE} borderRadius={8}>
                     <TabPanel value={appointmentId ? "3" : "2"}>
-                      <VitalTab shouldDisableEdit={shouldDisableEdit} />
+                      <VitalTab shouldDisableEdit={shouldDisableEdit}
+                        setShouldRefetch={() => dispatch({ type: ActionType.SET_SHOULD_REFETCH_LATEST_VITALS, shouldRefetchLatestVitals: true })} />
                     </TabPanel>
                   </Box>
 

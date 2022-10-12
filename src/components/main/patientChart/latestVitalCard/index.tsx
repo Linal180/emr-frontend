@@ -7,7 +7,7 @@ import { useProfileDetailsStyles } from '../../../../styles/profileDetails'
 import { LESS_INFO, MORE_INFO, PATIENT_VITAL_TEXT, VITAL_LABELS } from '../../../../constants'
 import { PatientVitalPayload, useGetPatientLatestVitalLazyQuery } from '../../../../generated/graphql'
 
-const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId }): JSX.Element => {
+const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId, shouldRefetch, setShouldRefetch }): JSX.Element => {
 
   const classes = useProfileDetailsStyles();
   const [vital, setVital] = useState<PatientVitalPayload['patientVital']>();
@@ -47,6 +47,13 @@ const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId }): JSX.Element =
   useEffect(() => {
     patientId && fetchLatestVital()
   }, [patientId, fetchLatestVital])
+
+  useEffect(() => {
+    if (shouldRefetch) {
+      fetchLatestVital()
+      setShouldRefetch && setShouldRefetch(false)
+    }
+  }, [fetchLatestVital, setShouldRefetch, shouldRefetch])
 
 
   return (
