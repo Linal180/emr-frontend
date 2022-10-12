@@ -51,6 +51,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  alignCenter: {
+    alignItems: 'center',
+    border: '1px solid red',
+  },
+  rowView: {
+    display: "flex",
+    flexDirection: "row"
+  },
   borderStyle: {
     borderStyle: 'solid',
   },
@@ -794,18 +802,13 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
               {/* 12.1-row */}
               <View style={[styles.tableRow, styles.borderStyle,]}>
                 <View style={[styles.w40]}>
-                  <Text style={[styles.fieldTitle2,]}>{PROBLEM_TEXT}</Text>
+                  <Text style={[styles.fieldTitle2]}>{PROBLEM_TEXT}</Text>
 
                   {/* spacing-row */}
                   <View style={styles.tableRow}>
                     <View style={{ height: '10px' }}>
                     </View>
                   </View>
-
-                  {familyHistories?.length ? familyHistories?.map((familyHistory) => {
-                    const { name } = familyHistory || {}
-                    return <Text style={styles.fieldText}>{name}</Text>
-                  }) : <Text style={[styles.fieldTitle]}> </Text>}
                 </View>
 
                 <View style={[styles.w20]}>
@@ -816,12 +819,6 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                     <View style={{ height: '10px' }}>
                     </View>
                   </View>
-
-                  {familyHistories?.length ? familyHistories?.map((familyHistory) => {
-                    const { familyHistoryRelatives } = familyHistory || {}
-                    const { relativeName } = familyHistoryRelatives?.[0] || {}
-                    return <Text style={styles.fieldText}>{relativeName}</Text>
-                  }) : <Text style={[styles.fieldTitle]}> </Text>}
                 </View>
 
                 <View style={[styles.w20]}>
@@ -832,12 +829,6 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                     <View style={{ height: '10px' }}>
                     </View>
                   </View>
-
-                  {familyHistories?.length ? familyHistories?.map((familyHistory) => {
-                    const { familyHistoryRelatives } = familyHistory || {}
-                    const { onsetAge } = familyHistoryRelatives?.[0] || {}
-                    return <Text style={styles.fieldText}>{onsetAge}</Text>
-                  }) : <Text style={[styles.fieldTitle]}> </Text>}
                 </View>
 
                 <View style={[styles.w20]}>
@@ -848,13 +839,30 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                     <View style={{ height: '10px' }}>
                     </View>
                   </View>
-
-                  {familyHistories?.length ? familyHistories?.map((familyHistory) => {
-                    const { familyHistoryRelatives } = familyHistory || {}
-                    const { notes } = familyHistoryRelatives?.[0] || {}
-                    return <Text style={styles.fieldText}>{notes}</Text>
-                  }) : <Text style={[styles.fieldTitle]}> </Text>}
                 </View>
+              </View>
+
+              <View >
+                {
+                  familyHistories?.map((history) => {
+                    const { name, familyHistoryRelatives } = history || {}
+                    return (
+                      <>
+                        {familyHistoryRelatives?.map((family, index) => {
+                          const { notes, onsetAge, relativeName } = family || {}
+                          return (
+                            <View style={[styles.rowView]}>
+                              {index === 0 ? <View style={[styles.w40]}><Text style={[styles.fieldText]}>{name}</Text></View> : <View style={[styles.w40]}></View>}
+                              <View style={[styles.w20]}><Text style={[styles.fieldText]}>{formatValue(relativeName || '')}</Text></View>
+                              <View style={[styles.w20]}><Text style={[styles.fieldText]}>{onsetAge}</Text></View>
+                              <View style={[styles.w20]}><Text style={[styles.fieldText]}>{notes}</Text></View>
+                            </View>
+                          )
+                        })}
+                      </>
+                    )
+                  })
+                }
               </View>
 
               {/* spacing-row */}
