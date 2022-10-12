@@ -9,6 +9,7 @@ export interface State {
   totalPages: number;
   openDelete: boolean;
   searchQuery: string;
+  systematic: boolean;
 }
 
 
@@ -20,7 +21,8 @@ export const initialState: State = {
   totalPages: 0,
   openDelete: false,
   isOpen: false,
-  searchQuery: ''
+  searchQuery: '',
+  systematic: false
 }
 
 export enum ActionType {
@@ -31,7 +33,8 @@ export enum ActionType {
   SET_TOTAL_PAGES = 'setTotalPages',
   SET_OPEN_DELETE = 'SET_OPEN_DELETE',
   SET_SEARCH_QUERY = 'SET_SEARCH_QUERY',
-  SET_ITEM_ID = 'SET_ITEM_ID'
+  SET_ITEM_ID = 'SET_ITEM_ID',
+  SET_SYSTEMATIC = 'SET_SYSTEMATIC'
 }
 
 export type Action =
@@ -41,6 +44,7 @@ export type Action =
   { type: ActionType.SET_IS_OPEN; isOpen: boolean } |
   { type: ActionType.SET_TOTAL_PAGES; totalPages: number } |
   { type: ActionType.SET_OPEN_DELETE, openDelete: boolean } |
+  { type: ActionType.SET_SYSTEMATIC, systematic: boolean; } |
   { type: ActionType.SET_SEARCH_QUERY, searchQuery: string; } |
   { type: ActionType.SET_DATA; data: FindAllIcdCodesPayload['icdCodes'] }
 
@@ -92,6 +96,12 @@ export const icd10Reducer = (state: State, action: Action): State => {
       return {
         ...state,
         searchQuery: action.searchQuery
+      }
+
+    case ActionType.SET_SYSTEMATIC:
+      return {
+        ...state,
+        systematic: action.systematic
       }
   }
 }

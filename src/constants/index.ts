@@ -820,6 +820,7 @@ export const DATE = "Date";
 export const TEST = "Test";
 export const TYPE = "Type";
 export const CODE = "Code";
+export const PRIORITY = "Priority";
 export const SR_NO = "SR #";
 export const TRUE = "TRUE";
 export const TEXT = "text";

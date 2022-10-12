@@ -421,6 +421,7 @@ query FetchUpFrontPaymentDetailsByAppointmentId($appointmentId: String!) {
         amount
         type
         notes
+        copayType
       }
     }
   }
