@@ -2370,6 +2370,7 @@ export type IcdCodesTableProps = {
 
 export type ICD10FormType = Pick<CreateIcdCodeInput, 'code' | 'description'> & { priority: string };
 export type CptCodeFormType = Pick<CreateCptCodeInput, 'code' | 'shortDescription'> & { priority: string };
+export type NdcCodeFormType = { code: string, description: string };
 
 export type ICD10FormProps = {
   open: boolean;
@@ -2391,6 +2392,16 @@ export type cptCodeFormProps = {
   dispatcher?: Dispatch<cptCodeAction>
   handleClose: (open: boolean) => void
   systematic: boolean
+}
+
+
+export type NdcCodeFormProps = {
+  open: boolean;
+  isEdit: boolean;
+  fetch?: Function;
+  id?: string;
+  dispatcher?: Dispatch<cptCodeAction>
+  handleClose: (open: boolean) => void
 }
 
 export type QuestionCardType = {
