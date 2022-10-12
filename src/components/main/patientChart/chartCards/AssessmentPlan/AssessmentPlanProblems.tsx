@@ -151,32 +151,28 @@ function AssessmentPlanProblems({ fetchProblems, assessmentProblems: problems, s
   }
 
   return (
-    <div>
+    <>
       <Card>
-        <Box pb={2} className={classes.cardBox}>
-          <Box
-            px={2} py={1} display='flex' justifyContent='space-between' alignItems='center'
-            flexWrap='wrap' borderBottom={`1px solid ${colors.grey[300]}`}
-          >
-            <Box display='flex' alignItems='center'>
-              <Typography variant='h3'>{ASSESSMENT_PLAN}</Typography>
+        <Box pb={2} className={classes.cardBox} px={2} py={1} display='flex' justifyContent='space-between' alignItems='center'
+          flexWrap='wrap' borderBottom={`1px solid ${colors.grey[300]}`}>
+          <Box display='flex' alignItems='center'>
+            <Typography variant='h3'>{ASSESSMENT_PLAN}</Typography>
 
-              {!(shouldDisableEdit || isSigned) && <Box ml={1} pb={1} display="flex" alignItems="center" justifyContent="flex-end">
-                <Button onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
-                  <AddCircleOutline color='secondary' />
-                  <Box ml={1} />
-                  <Typography color="secondary">{'DIAGNOSIS & ORDERS'}</Typography>
-                </Button>
-              </Box>}
-            </Box>
+            {!(shouldDisableEdit || isSigned) && <Box ml={1} display="flex" alignItems="center" justifyContent="flex-end">
+              <Button onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}>
+                <AddCircleOutline color='secondary' />
+                <Box ml={1} />
+                <Typography color="secondary">{'DIAGNOSIS & ORDERS'}</Typography>
+              </Button>
+            </Box>}
+          </Box>
 
-            <Box display='flex' alignItems='center'>
-              <Box m={1}>
-                <Button variant='contained' color='secondary' disabled={addProblemLoading || !numberOfOrders || isSigned} onClick={handleAssessment}>
-                  {'Sign Orders'}
-                  <Typography variant="body1" color="inherit">({numberOfOrders})</Typography>
-                </Button>
-              </Box>
+          <Box display='flex' alignItems='center'>
+            <Box m={1}>
+              <Button variant='contained' color='secondary' disabled={addProblemLoading || !numberOfOrders || isSigned} onClick={handleAssessment}>
+                {'Sign Orders'}
+                <Typography variant="body1" color="inherit">({numberOfOrders})</Typography>
+              </Button>
             </Box>
           </Box>
         </Box>
@@ -218,7 +214,7 @@ function AssessmentPlanProblems({ fetchProblems, assessmentProblems: problems, s
           handleAdd={(item: IcdCodesWithSnowMedCode) => handleProblemAdd(item)}
           searchPlaceholder="Search..."
         />}
-    </div>
+    </>
   )
 }
 

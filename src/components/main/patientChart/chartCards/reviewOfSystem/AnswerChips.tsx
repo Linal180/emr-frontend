@@ -9,7 +9,7 @@ import Selector from '../../../../common/Selector'
 
 function AnswerChips({ answers, colors }: AnswerChipsProps) {
   const methods = useFormContext()
-  const [firstColor, secondColor] = colors || []
+  const [firstColor] = colors || []
   const { setValue, watch } = methods
   const answerValues = watch()
 
@@ -77,11 +77,12 @@ function AnswerChips({ answers, colors }: AnswerChipsProps) {
               label={getTransformedName(answer)}
               clickable
               style={{
-                background: answerValues[id]?.select ? firstColor : secondColor,
-                border: answerValues[id]?.select ? '1px solid black' : '',
+                background: answerValues[id]?.select ? firstColor : 'white',
+                border: `1.5px solid ${firstColor}`,
                 display: "flex",
                 alignItems: "center",
-                height: 50
+                height: 50,
+                color: answerValues[id]?.select ? 'white' : firstColor
               }}
             />
           )
