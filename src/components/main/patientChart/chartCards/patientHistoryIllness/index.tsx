@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@material-ui/core";
+import { Box, Button, Card, Typography } from "@material-ui/core";
 import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
@@ -6,7 +6,9 @@ import { useParams } from "react-router-dom";
 import Alert from "../../../../common/Alert";
 //constants
 import { HPI_TEMPLATES, NEXT, PATIENT_HISTORY_ILLNESS_TEXT, QuestionType, SUBMIT, TemplateType } from "../../../../../constants";
-import { useCreatePatientIllnessHistoryMutation, useGetPatientChartingTemplateLazyQuery, usePatientIllnessHistoryLazyQuery } from '../../../../../generated/graphql';
+import {
+  useCreatePatientIllnessHistoryMutation, useGetPatientChartingTemplateLazyQuery, usePatientIllnessHistoryLazyQuery
+} from '../../../../../generated/graphql';
 import { ParamsType, PatientHistoryProps, SelectorOption } from "../../../../../interfacesTypes";
 import { Action, ActionType, initialState, patientHistoryReducer, State } from "../../../../../reducers/patientHistoryReducer";
 import CardComponent from "../../../../common/CardComponent";
@@ -40,7 +42,6 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
       Alert.error(message)
     }
   })
-
 
   const [findPatientChartingTemplate, { loading: findPatientChartingTemplateLoading }] = useGetPatientChartingTemplateLazyQuery({
 
@@ -152,7 +153,6 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
 
   const loading = findPatientChartingTemplateLoading || createLoading || getLoading;
 
-
   if (loading) {
     return <TableLoader numberOfColumns={1} numberOfRows={10} />
   }
@@ -160,10 +160,10 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
   const { sections } = template || {}
 
   return (
-    <>
+    <Card>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Box mx={3}>
+          <Box p={3}>
             <ChartingTemplateSelector
               label={HPI_TEMPLATES}
               name="hpiTemplates"
@@ -174,7 +174,7 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
           </Box>
           {sections?.length && <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
 
-            <Typography variant='h3'>
+            <Typography variant='h4'>
               {PATIENT_HISTORY_ILLNESS_TEXT}
             </Typography>
 
@@ -186,7 +186,6 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
                 <Button
                   variant='contained'
                   color='secondary'
-                  // size="large"
                   onClick={() => handleStep()}
                 >
                   {NEXT}
@@ -194,7 +193,7 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
             </Box>
           </Box>}
 
-          <Box maxHeight="calc(100vh - 200px)" className="overflowY-auto">
+          <Box maxHeight="calc(100vh - 260px)" className="overflowY-auto">
             {sections?.map((section) => {
               const { id, name, questions } = section || {}
               return (
@@ -213,9 +212,7 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
           </Box>
         </form>
       </FormProvider>
-    </>
-
-
+    </Card>
   )
 }
 

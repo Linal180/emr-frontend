@@ -22,19 +22,18 @@ import AppointmentReason from "./tabs/AppointmentReason";
 import HistoryTab from './tabs/HistoryTab';
 import MedicationTab from './tabs/MedicationsListing';
 import ProblemTab from './tabs/ProblemListing';
-import ReviewTab from "./tabs/ReviewTab";
 import TriageNoteTab from './tabs/TriageNotesListing';
 import VitalTab from './tabs/VitalListing';
+import PatientHistory from "./patientHistoryIllness";
+import ReviewOfSystem from "./reviewOfSystem";
+import SocialHistory from "./socialHistory";
+import ExamTab from "./tabs/ExamTab";
 // interfaces, graphql, constants block /styles
 import { HistoryIcon } from "../../../../assets/svgs";
 import {
-  ASSESSMENT_PLAN_OPTION,
-  CHART_TEXT, CONFIRMATION_MODAL_TYPE, DISCHARGE, DISCHARGE_PATIENT_DESCRIPTION, DONE_INTAKE, PATIENT_CHARTING_MENU, PATIENT_CHARTING_TABS,
-  PATIENT_DISCHARGED, PATIENT_DISCHARGED_SUCCESS, PATIENT_HISTORY_OPTION, PRINT_CHART, REASON_FOR_VISIT_OPTION,
-  REVIEW_OF_SYSTEM_OPTION,
-  REVIEW_OPTION,
-  SIGN_OFF,
-  TRIAGE_NOTE_OPTION
+  CHART_TEXT, CONFIRMATION_MODAL_TYPE, DISCHARGE, DISCHARGE_PATIENT_DESCRIPTION, DONE_INTAKE, EXAM_OPTION, 
+  PATIENT_CHARTING_MENU, PATIENT_CHARTING_TABS, PATIENT_DISCHARGED, PATIENT_DISCHARGED_SUCCESS, TRIAGE_NOTE_OPTION,
+  PRINT_CHART, REASON_FOR_VISIT_OPTION, SIGN_OFF, 
 } from "../../../../constants";
 import { AuthContext, ChartContextProvider } from '../../../../context';
 import { AppointmentStatus, useUpdateAppointmentStatusMutation } from "../../../../generated/graphql";
@@ -44,10 +43,6 @@ import { useChartingStyles } from "../../../../styles/chartingStyles";
 import { useExternalPatientStyles } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
 import { WHITE } from '../../../../theme';
 import { isAdmin, isOnlyDoctor } from "../../../../utils";
-import PatientHistory from "./patientHistoryIllness";
-import ReviewOfSystem from "./reviewOfSystem";
-import SocialHistory from "./socialHistory";
-
 
 const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appointmentInfo, fetchAppointment, labOrderHandler, isInTake }): JSX.Element => {
   const classes = useChartingStyles();
@@ -220,10 +215,10 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
   const chartingStepsToMap = appointmentId ? isInTake ?
     [REASON_FOR_VISIT_OPTION, ...transformedPatientChartingSteps.map(stepData => {
       return { ...stepData, value: String(Number(stepData.value) + 1) }
-    }), ASSESSMENT_PLAN_OPTION, PATIENT_HISTORY_OPTION, REVIEW_OF_SYSTEM_OPTION] :
-    [REVIEW_OPTION, ...PATIENT_CHARTING_TABS.map(stepData => {
+    })] :
+    [EXAM_OPTION, ...PATIENT_CHARTING_TABS.map(stepData => {
       return { ...stepData, value: String(Number(stepData.value) + 1) }
-    }), ASSESSMENT_PLAN_OPTION, PATIENT_HISTORY_OPTION, REVIEW_OF_SYSTEM_OPTION] : [TRIAGE_NOTE_OPTION, ...PATIENT_CHARTING_TABS]
+    })] : [TRIAGE_NOTE_OPTION, ...PATIENT_CHARTING_TABS]
 
   const handleDischarge = () => {
     if (isInTake) {
@@ -337,7 +332,8 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
                   {appointmentId &&
                     <Box pt={0} borderRadius={8}>
                       <TabPanel value={"1"}>
-                        {isInTake ? <AppointmentReason isInTake={false} /> : <ReviewTab shouldShowAdd shouldDisableEdit={shouldDisableEdit} />}
+                        {/* {isInTake ? <AppointmentReason isInTake={false} /> : <ReviewTab shouldShowAdd shouldDisableEdit={shouldDisableEdit} />} */}
+                        <ExamTab />
                       </TabPanel>
                     </Box>}
 
