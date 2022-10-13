@@ -12,7 +12,7 @@ import { MvxSelectorProps, SelectorOption } from "../../../interfacesTypes";
 import { FindAllMvxPayload, useFindAllMvxLazyQuery } from "../../../generated/graphql";
 
 const MvxSelector: FC<MvxSelectorProps> = ({
-  name, label, disabled, isRequired, addEmpty, onSelect, filteredOptions, placeHolder, cvxCodeId
+  name, label, disabled, isRequired, addEmpty, onSelect, filteredOptions, placeHolder, mvxCode
 }): JSX.Element => {
 
   const { control } = useFormContext()
@@ -42,16 +42,16 @@ const MvxSelector: FC<MvxSelectorProps> = ({
     try {
       const pageInputs = { paginationOptions: { page: 1, limit: DROPDOWN_PAGE_LIMIT } }
       await findAllMvxCodes({
-        variables: { findAllMvxInput: { ...pageInputs, searchQuery, cvxId: cvxCodeId } }
+        variables: { findAllMvxInput: { ...pageInputs, searchQuery, mvxCode: mvxCode } }
       })
     } catch (error) { }
-  }, [findAllMvxCodes, searchQuery, cvxCodeId])
+  }, [findAllMvxCodes, searchQuery, mvxCode])
 
   useEffect(() => {
-    if ((!searchQuery.length || searchQuery.length > 2) && cvxCodeId) {
+    if ((!searchQuery.length || searchQuery.length > 2) && mvxCode) {
       fetchAllMvxCodes()
     }
-  }, [searchQuery, fetchAllMvxCodes, cvxCodeId]);
+  }, [searchQuery, fetchAllMvxCodes, mvxCode]);
 
   const filterOptions = (options: SelectorOption[]) => {
     if (filteredOptions) {

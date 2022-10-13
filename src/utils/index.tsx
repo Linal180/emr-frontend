@@ -863,9 +863,9 @@ export const renderNdcs = (ndcCodes: FindAllNdcPayload['ndcs']) => {
   if (!!ndcCodes) {
     for (let item of ndcCodes) {
       if (item) {
-        const { id, ndcCode, cvxDescription } = item;
+        const { id, code, description } = item;
 
-        cvxDescription && data.push({ id, name: ndcCode ? `${ndcCode} | ${cvxDescription}` : cvxDescription })
+        code && data.push({ id, name: description ? `${code} | ${description}` : code })
       }
     }
   }

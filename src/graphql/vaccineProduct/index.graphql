@@ -1,0 +1,34 @@
+query SearchAllVaccineProducts(
+  $findAllVaccineProductsInput: FindAllVaccineProductsInput!
+) {
+  findAllVaccineProducts(
+    findAllVaccineProductsInput: $findAllVaccineProductsInput
+  ) {
+    response {
+      status
+      error
+      message
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+
+    vaccineProducts {
+      id
+      name
+      cvxCode
+
+      cvx {
+        name
+        shortDescription
+      }
+
+      mvx {
+        mvxCode
+        manufacturerName
+      }
+    }
+  }
+}

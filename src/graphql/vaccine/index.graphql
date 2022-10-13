@@ -64,7 +64,11 @@ query FindAllVaccines($findAllVaccinesInput: FindAllVaccinesInput!) {
       vaccineProduct {
         id
         name
-        cvxCode
+        cvx  {
+          cvxCode
+          name
+          shortDescription
+        }
       }
 
       ndc {

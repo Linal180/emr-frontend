@@ -22,7 +22,7 @@ import {
   PermissionsPayload, PolicyEligibilityWithPatientPayload, Practice, PracticePayload, QuestionAnswers, Questions, ReactionsPayload,
   ResponsePayloadResponse, RolesPayload, Schedule, SectionsInputs, ServicesPayload, Staff, SurgicalHistory,
   TriageNotes, TwoFactorInput, UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput,
-  UpdateFacilityTimeZoneInput, User, UsersFormsElements, VerifyCodeInput
+  UpdateFacilityTimeZoneInput, User, UsersFormsElements, VaccineProduct, VerifyCodeInput
 } from "../generated/graphql";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
 import { Action as BillingAction, State as BillingState } from "../reducers/billingReducer";
@@ -439,7 +439,7 @@ export interface NdcSelectorProps extends SelectorProps {
 export interface MvxSelectorProps extends SelectorProps {
   filteredOptions?: SelectorOption[]
   placeHolder?: string;
-  cvxCodeId: string
+  mvxCode: string
 }
 
 export interface PracticeSelectorProps extends SelectorProps {
@@ -1706,7 +1706,7 @@ export type VaccineModalProps = {
   isOpen?: boolean;
   isEdit?: boolean;
   recordId?: string;
-  item?: Cvx;
+  item?: VaccineProduct;
   dispatcher: Dispatch<VaccineAction>;
   fetch: () => void;
   handleClose?: () => void

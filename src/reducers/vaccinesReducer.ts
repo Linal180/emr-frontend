@@ -1,4 +1,4 @@
-import { Cvx, FindAllCvxPayload, FindAllVaccinesPayload } from "../generated/graphql";
+import { FindAllVaccineProductsPayload, FindAllVaccinesPayload, VaccineProduct } from "../generated/graphql";
 
 export interface State {
   page: number;
@@ -9,8 +9,8 @@ export interface State {
   openDelete: boolean;
   isSubModalOpen: boolean;
   data: FindAllVaccinesPayload['vaccines']
-  selectedItem: Cvx | undefined;
-  searchedData: FindAllCvxPayload['cvxs'];
+  selectedItem: VaccineProduct | undefined;
+  searchedData: FindAllVaccineProductsPayload['vaccineProducts'];
   searchQuery: string;
   isFormOpen: HTMLElement | null;
 }
@@ -55,9 +55,9 @@ export type Action =
   { type: ActionType.SET_SEARCH_QUERY, searchQuery: string; } |
   { type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: boolean } |
   { type: ActionType.SET_IS_FORM_OPEN, isFormOpen: HTMLElement | null } |
-  { type: ActionType.SET_SELECTED_ITEM, selectedItem: Cvx | undefined } |
+  { type: ActionType.SET_SELECTED_ITEM, selectedItem: VaccineProduct | undefined } |
   { type: ActionType.SET_DATA; data: FindAllVaccinesPayload['vaccines'] } |
-  { type: ActionType.SET_SEARCHED_DATA, searchedData: FindAllCvxPayload['cvxs'] }
+  { type: ActionType.SET_SEARCHED_DATA, searchedData: FindAllVaccineProductsPayload['vaccineProducts'] }
 
 
 export const vaccinesReducer = (state: State, action: Action): State => {
