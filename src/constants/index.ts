@@ -841,6 +841,7 @@ export const VALUE = "Value";
 export const VISIT = "Visit";
 export const ISSUES = "Issues";
 export const PRINT_PATIENT_CHART = "Print Patient Chart"
+export const PRINT_MEDICATION_RECORD = "Print Medication Record"
 export const LAB_TEST_STICKERS = "Lab Test Stickers";
 export const ALLOWED = "Allowed";
 export const PT_PAID = "Pt Paid";

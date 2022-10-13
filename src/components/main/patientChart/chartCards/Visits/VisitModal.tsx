@@ -6,18 +6,19 @@ import { FC, useCallback, useEffect, useState } from "react";
 import VisitModalPdf from "./VisitModalPdf";
 // interfaces/types block, theme, svgs and constants
 import { useParams } from "react-router";
-import { CLOSE, EIGHT_PAGE_LIMIT, PRINT_PATIENT_CHART } from "../../../../../constants";
-import { PatientIllnessHistoryPayload, ReviewOfSystemPayload, useFindAllPatientProblemsWithMedicationLazyQuery, useGetPatientChartingReviewLazyQuery, usePatientIllnessHistoryLazyQuery, useReviewOfSystemLazyQuery } from "../../../../../generated/graphql";
+import { CLOSE, EIGHT_PAGE_LIMIT, PRINT_MEDICATION_RECORD, VITAL_LIST_PAGE_LIMIT } from "../../../../../constants";
+import { PatientIllnessHistoryPayload, ReviewOfSystemPayload, TriageNotesPayload, useFindAllPatientProblemsWithMedicationLazyQuery, useFindAllPatientTriageNotesLazyQuery, useGetPatientChartingReviewLazyQuery, usePatientIllnessHistoryLazyQuery, useReviewOfSystemLazyQuery } from "../../../../../generated/graphql";
 import { AssessmentProblemType, ParamsType, PatientChartingReview, VisitModalProps } from "../../../../../interfacesTypes";
 import Loader from "../../../../common/Loader";
 
-const VisitModal: FC<VisitModalProps> = ({ isOpen, handleClose, appointmentId }): JSX.Element => {
+const VisitModal: FC<VisitModalProps> = ({ isOpen, handleClose, appointmentInfo }): JSX.Element => {
   const { id: patientId } = useParams<ParamsType>()
   const [assessmentProblems, setAssessmentProblems] = useState<AssessmentProblemType[]>([])
   const [reviewOfSystem, setReviewOfSystem] = useState<ReviewOfSystemPayload['reviewOfSystem']>(null)
   const [patientIllnessHistory, setPatientIllnessHistory] = useState<PatientIllnessHistoryPayload['patientIllnessHistory']>(null)
   const [patientChartingReview, setPatientChartingReview] = useState<PatientChartingReview | null>(null)
-
+  const [triageNotes, setTriageNotes] = useState<TriageNotesPayload['triageNotes']>(null)
+  const { id: appointmentId } = appointmentInfo || {}
   const [findAllPatientProblems, { loading: findAllPatientProblemsLoading }] = useFindAllPatientProblemsWithMedicationLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
@@ -208,14 +209,57 @@ const VisitModal: FC<VisitModalProps> = ({ isOpen, handleClose, appointmentId })
 
   }, [getPatientIllnessHistory, appointmentId])
 
+  const [getPatientTriageNotes, { loading: triageNotesLoading }] = useFindAllPatientTriageNotesLazyQuery({
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+
+    onError() {
+      setTriageNotes([])
+    },
+
+    onCompleted(data) {
+      if (data) {
+        const { findAllPatientTriageNotes } = data;
+
+        if (findAllPatientTriageNotes) {
+          const { response, triageNotes } = findAllPatientTriageNotes
+
+          if (response) {
+            const { status } = response
+
+            if (triageNotes && status && status === 200) {
+
+              triageNotes?.length && setTriageNotes(triageNotes as TriageNotesPayload['triageNotes'])
+            }
+          }
+        }
+      }
+    }
+  })
+
+  const fetchPatientAllTriageNotes = useCallback(async () => {
+    try {
+      await getPatientTriageNotes({
+        variables: {
+          patientTriageNoteInput: {
+            patientId: patientId,
+            appointmentId: appointmentId,
+            paginationOptions: { page: 1, limit: VITAL_LIST_PAGE_LIMIT }
+          }
+        },
+      })
+    } catch (error) { }
+  }, [appointmentId, getPatientTriageNotes, patientId])
+
   useEffect(() => {
     fetchPatientIllnessHistory()
     fetchPatientReviewOfSystem()
     fetchPatientChartingView()
     fetchProblems()
-  }, [fetchPatientChartingView, fetchPatientIllnessHistory, fetchPatientReviewOfSystem, fetchProblems])
+    fetchPatientAllTriageNotes()
+  }, [fetchPatientAllTriageNotes, fetchPatientChartingView, fetchPatientIllnessHistory, fetchPatientReviewOfSystem, fetchProblems])
 
-  const loading = getPatientIllnessHistoryLoading || getPatientChartingReviewLoading || patientReviewOfSystemLoading || findAllPatientProblemsLoading
+  const loading = getPatientIllnessHistoryLoading || getPatientChartingReviewLoading || patientReviewOfSystemLoading || findAllPatientProblemsLoading || triageNotesLoading
 
   if (loading) {
     return <Loader loaderText='Loading Medication record Info...' loading />
@@ -230,7 +274,7 @@ const VisitModal: FC<VisitModalProps> = ({ isOpen, handleClose, appointmentId })
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
-      <DialogTitle id="alert-dialog-title">{PRINT_PATIENT_CHART}</DialogTitle>
+      <DialogTitle id="alert-dialog-title">{PRINT_MEDICATION_RECORD}</DialogTitle>
 
       <DialogContent>
         <Box className="dialogBg">
@@ -240,6 +284,8 @@ const VisitModal: FC<VisitModalProps> = ({ isOpen, handleClose, appointmentId })
               patientChartingReview={patientChartingReview}
               patientIllnessHistory={patientIllnessHistory}
               reviewOfSystem={reviewOfSystem}
+              triageNotes={triageNotes}
+              appointmentInfo={appointmentInfo}
             />
           </PDFViewer>
         </Box>

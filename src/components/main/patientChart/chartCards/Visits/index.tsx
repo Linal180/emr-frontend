@@ -4,7 +4,7 @@ import { ChangeEvent, Reducer, useCallback, useEffect, useReducer } from 'react'
 import { useParams } from 'react-router';
 import { EyeIcon } from '../../../../../assets/svgs';
 import { ACTION, DATE, FACILITY, PAGE_LIMIT, TYPE } from '../../../../../constants';
-import { AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery } from '../../../../../generated/graphql';
+import { AppointmentPayload, AppointmentsPayload, useFindAllAppointmentVisitsLazyQuery } from '../../../../../generated/graphql';
 import { ParamsType } from '../../../../../interfacesTypes';
 import { Action, ActionType, appointmentReducer, initialState, State } from '../../../../../reducers/appointmentReducer';
 import { useTableStyles } from '../../../../../styles/tableStyles';
@@ -17,13 +17,13 @@ function VisitsTab() {
   const classes = useTableStyles();
   const { id: patientId } = useParams<ParamsType>()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
-  const { page, totalPages, appointments, openPatientModal, appointmentId } = state
+  const { page, totalPages, appointments, openPatientModal, appointment } = state
 
   const handleChange = (_: ChangeEvent<unknown>, value: number) => dispatch({
     type: ActionType.SET_PAGE, page: value
   });
 
-  const [findAllAppointments, { loading, error }] = useFindAllAppointmentsLazyQuery({
+  const [findAllAppointments, { loading, error }] = useFindAllAppointmentVisitsLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -76,8 +76,8 @@ function VisitsTab() {
     fetchAppointments()
   }, [fetchAppointments])
 
-  const handleVisitModalOpen = (appointmentId: string) => {
-    dispatch({ type: ActionType.SET_APPOINTMENT_ID, appointmentId })
+  const handleVisitModalOpen = (appointment: AppointmentPayload['appointment']) => {
+    dispatch({ type: ActionType.SET_APPOINTMENT, appointment })
     dispatch({ type: ActionType.SET_OPEN_PATIENT_MODAL, openPatientModal: true })
   }
 
@@ -125,7 +125,7 @@ function VisitsTab() {
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                           <Box>
-                            <IconButton size='small' onClick={() => id && handleVisitModalOpen(id)}>
+                            <IconButton size='small' onClick={() => id && handleVisitModalOpen(appointment)}>
                               <EyeIcon />
                             </IconButton>
                           </Box>
@@ -148,7 +148,7 @@ function VisitsTab() {
 
       {
         openPatientModal && <VisitModal
-          appointmentId={appointmentId}
+          appointmentInfo={appointment}
           handleClose={() => dispatch({ type: ActionType.SET_OPEN_PATIENT_MODAL, openPatientModal: false })}
           isOpen={openPatientModal}
         />

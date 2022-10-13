@@ -58,6 +58,104 @@ query FindAllAppointments($appointmentInput: AppointmentInput!) {
   }
 }
 
+query FindAllAppointmentVisits($appointmentInput: AppointmentInput!) {
+  findAllAppointments(appointmentInput: $appointmentInput) {
+    response {
+      error
+      status
+      message
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+
+    appointments {
+      id
+      status
+      scheduleEndDateTime
+      scheduleStartDateTime
+      appointmentDate
+      token
+      reason
+      primaryInsurance
+      billingStatus
+      checkInActiveStep
+      appointmentCreateType
+
+      provider {
+        id
+        firstName
+        lastName
+      }
+
+      patient {
+        firstName
+        lastName
+        middleName
+        ssn
+        dob
+        email
+        genderIdentity
+        patientRecord
+        race
+        ethnicity
+        language
+
+        contacts {
+          name
+          relationship
+          contactType
+          primaryContact
+          phone
+          address
+          address2
+          zipCode
+          city
+          state
+          mobile
+        }
+
+        facility {
+          name
+
+          practice {
+            name
+
+            attachments {
+              url
+            }
+          }
+
+          contacts {
+            primaryContact
+            phone
+            address
+            address2
+            zipCode
+            city
+            state
+          }
+        }
+      }
+
+      facility {
+        id
+        name
+      }
+
+      appointmentType {
+        id
+        name
+        price
+        color
+        duration
+      }
+    }
+  }
+}
+
 query GetAppointment($getAppointment: GetAppointment!) {
   getAppointment(getAppointment: $getAppointment) {
     response {
@@ -143,7 +241,9 @@ mutation CreateAppointment($createAppointmentInput: CreateAppointmentInput!) {
   }
 }
 
-mutation SendAppointmentReminder($appointmentReminderInput: AppointmentReminderInput!) {
+mutation SendAppointmentReminder(
+  $appointmentReminderInput: AppointmentReminderInput!
+) {
   sendAppointmentReminder(appointmentReminderInput: $appointmentReminderInput) {
     response {
       error
@@ -412,14 +512,11 @@ mutation UpdateAppointmentBillingStatus(
   updateAppointmentBillingStatus(
     updateAppointmentBillingStatusInput: $updateAppointmentBillingStatusInput
   ) {
-
     response {
       status
     }
-
   }
 }
-
 
 query GetPublicAppointment($getAppointmentWithToken: GetAppointmentWithToken!) {
   getAppointmentWithToken(getAppointmentWithToken: $getAppointmentWithToken) {

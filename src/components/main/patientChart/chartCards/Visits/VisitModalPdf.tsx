@@ -1,10 +1,14 @@
-import React from 'react'
-import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
-import { VisitModalPdfProps } from '../../../../../interfacesTypes';
-import { 
-  ALLERGIES_TEXT, ASSESSMENT_PLAN, DIAGNOSES, FOLLOWUP, HISTORY_OF_PATIENT_ILLNESS, INTAKE, MEDICATIONS, 
-  REASON_FOR_VISIT, REVIEW_OF_SYSTEM_TEXT, VITALS_TEXT, 
+import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
+import {
+  ALLERGIES_TEXT, APPOINTMENT_DATE, ASSESSMENT_PLAN, DASHES, DIAGNOSES, DOB_TEXT, EXPRESS_HEALTHCARE_URL, FACILITY, FOLLOWUP, HISTORY_OF_PATIENT_ILLNESS, INTAKE, LAB_ORDER, MEDICATIONS,
+  NO_DATA_FOUND,
+  PATIENT_ID,
+  PHONE,
+  REASON_FOR_VISIT, REVIEW_OF_SYSTEM_TEXT, SEX, TRIAGE_NOTES, VITALS_TEXT
 } from '../../../../../constants';
+import { Genderidentity, PatientVitals } from '../../../../../generated/graphql';
+import { VisitModalPdfProps } from '../../../../../interfacesTypes';
+import { calculateAge, formatAddress, formatPhone, formatValue, getAppointmentDateWithDay, getStandardTime } from '../../../../../utils';
 
 // Create styles
 const styles = StyleSheet.create({
@@ -73,13 +77,112 @@ const styles = StyleSheet.create({
   ml20: {
     marginLeft: '20px',
   },
+  w20: {
+    width: '20%',
+  },
+  fieldTitleHeader: {
+    padding: '0px 5px',
+    textTransform: 'uppercase',
+    fontWeight: 'bold',
+    fontSize: '14px',
+  },
+  w40: {
+    width: '40%',
+  },
+  fieldRow2: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+  },
+  logoImage: {
+    // width: '100px',
+    margin: '0px 10px',
+    maxWidth: '100%',
+    maxHeight: '90px',
+    objectFit: 'contain',
+    overflow: 'hidden',
+  },
 });
 
-function VisitModalPdf({ assessmentProblems, patientChartingReview, patientIllnessHistory, reviewOfSystem }: VisitModalPdfProps) {
+function VisitModalPdf({ assessmentProblems, patientChartingReview, patientIllnessHistory, reviewOfSystem, triageNotes, appointmentInfo }: VisitModalPdfProps) {
+  const { patientAllergies, patientMedications, patientProblems, patientVitals, } = patientChartingReview || {}
+  const { patient, id: appointmentId, scheduleStartDateTime, appointmentDate } = appointmentInfo || {}
+  const { firstName, lastName, dob, genderIdentity, patientRecord, facility } =
+    patient || {}
+  const { practice, contacts: facilityContacts } = facility || {}
+  const { phone, address, address2, city, state, zipCode } = facilityContacts?.find((facilityContact) => facilityContact?.primaryContact) || {}
+  const { name: practiceName, attachments } = practice || {}
+  const { url } = attachments?.[0] || {}
+
+  const latestPatientVitals = patientVitals?.sort((a, b) => Number(b?.createdAt || 0) - Number(a?.createdAt || 0))?.[0] || {}
+
   return (
     <Document>
       <Page style={styles.page} size="A3" wrap>
         <View style={styles.table}>
+          <View style={[styles.tableRow]}>
+            <View style={[styles.w20]}>
+              <Text style={[styles.fieldTitleHeader]}>{'PATIENT'}</Text>
+              <Text style={styles.fieldText}>{`${firstName} ${lastName}`}</Text>
+
+              <View style={styles.fieldRow3}>
+                <Text style={[styles.fieldTitle]}>{DOB_TEXT}</Text>
+                <Text style={styles.fieldText}>{dob}</Text>
+              </View>
+
+              <View style={styles.fieldRow3}>
+                <Text style={[styles.fieldTitle]}>{'AGE'}</Text>
+                <Text style={styles.fieldText}>{calculateAge(dob || '')}</Text>
+              </View>
+
+              <View style={styles.fieldRow3}>
+                <Text style={[styles.fieldTitle]}>{SEX}</Text>
+                <Text style={styles.fieldText}>{genderIdentity === Genderidentity.DeclineToSpecify ? 'None' : formatValue(genderIdentity || '')}</Text>
+              </View>
+
+              <View style={styles.fieldRow3}>
+                <Text style={[styles.fieldTitle]}>{PATIENT_ID}</Text>
+                <Text style={styles.fieldText}>{patientRecord}</Text>
+              </View>
+            </View>
+
+            <View style={[styles.w40, styles.fieldRow2,]}>
+              <Image
+                src={url ? url + '?noCache=randomString' : EXPRESS_HEALTHCARE_URL}
+                style={styles.logoImage}
+              />
+            </View>
+
+            <View style={[styles.w40]}>
+              <Text style={styles.fieldTitleHeader}>{FACILITY}</Text>
+              <Text style={styles.fieldText}>{practiceName}</Text>
+
+              <View style={styles.fieldRow3}>
+                <Text style={styles.fieldTitle}>{PHONE}</Text>
+                <Text style={styles.fieldText}>{formatPhone(phone)}</Text>
+              </View>
+
+              <Text style={styles.fieldText}>{address}</Text>
+              <Text style={styles.fieldText}>{formatAddress(address2, city, state, zipCode)}</Text>
+            </View>
+          </View>
+
+          <View style={styles.table}>
+            <View style={[styles.w100]}>
+              <View style={styles.fieldRow3}>
+                <Text style={styles.fieldTitle}>{APPOINTMENT_DATE}</Text>
+                <Text style={styles.fieldText}>{getAppointmentDateWithDay(appointmentDate || '', 'YYYY-MM-DD')}  {getStandardTime(scheduleStartDateTime || '')}</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* spacing-row */}
+          <View style={styles.tableRow}>
+            <View style={{ height: '20px' }}>
+            </View>
+          </View>
+
           {/* 1st-row */}
           <View style={styles.tableRow}>
             <View style={[styles.w100]}>
@@ -96,13 +199,64 @@ function VisitModalPdf({ assessmentProblems, patientChartingReview, patientIllne
           </View>
 
           {/* 1.1-row */}
-          <View style={[styles.tableRow, styles.ml10]}>
+          {patientProblems?.length ? patientProblems?.map(patientProblem => {
+            const { appointmentId: problemAppointmentId, ICDCode } = patientProblem || {}
+            if (problemAppointmentId === appointmentId) {
+              return (
+                <View style={[styles.tableRow, styles.ml10]}>
+                  <View style={[styles.w100]}>
+                    <View style={styles.fieldRow3}>
+                      <Text style={styles.fieldText}>{ICDCode?.description || DASHES}</Text>
+                    </View>
+                  </View>
+                </View>
+              )
+            }
+            return <Text></Text>
+          }) : <View style={[styles.w100]}>
+            <View style={styles.fieldRow3}>
+              <Text style={styles.fieldText}>{NO_DATA_FOUND}</Text>
+            </View>
+          </View>}
+
+          {/* spacing-row */}
+          <View style={styles.tableRow}>
+            <View style={{ height: '20px' }}>
+            </View>
+          </View>
+
+          {/* 1st-row */}
+          <View style={styles.tableRow}>
             <View style={[styles.w100]}>
-              <View style={styles.fieldRow3}>
-                <Text style={styles.fieldText}>{'Severe acute respiratory syndrome coronavirus 2 RNA'}</Text>
+              <View style={[styles.bgLightGrey, styles.borderStyle, styles.borderTopWidth, styles.borderBottomWidth]}>
+                <Text style={styles.fieldTitle2}>{TRIAGE_NOTES}</Text>
               </View>
             </View>
           </View>
+
+          {/* spacing-row */}
+          <View style={styles.tableRow}>
+            <View style={{ height: '10px' }}>
+            </View>
+          </View>
+
+          {/* 1.1-row */}
+          {triageNotes?.length ? triageNotes?.map(triageNote => {
+            const { notes } = triageNote || {}
+            return (
+              <View style={[styles.tableRow, styles.ml10]} >
+                <View style={[styles.w100]}>
+                  <View style={styles.fieldRow3}>
+                    <Text style={styles.fieldText}>{notes || DASHES}</Text>
+                  </View>
+                </View>
+              </View>
+            )
+          }) : <View style={[styles.w100]}>
+            <View style={styles.fieldRow3}>
+              <Text style={styles.fieldText}>{NO_DATA_FOUND}</Text>
+            </View>
+          </View>}
 
           {/* spacing-row */}
           <View style={styles.tableRow}>
@@ -141,17 +295,25 @@ function VisitModalPdf({ assessmentProblems, patientChartingReview, patientIllne
           </View>
 
           {/* 2.1-row */}
-          <View style={[styles.tableRow, styles.ml10]}>
-            <View style={[styles.w100]}>
-              <View style={styles.fieldRow3}>
-                <Text style={[styles.fieldText, styles.w200px]}>{'Patient Temperature'}</Text>
-                <Text style={[styles.fieldText, styles.colorGray, styles.ml10]}>{'--'}</Text>
-              </View>
-            </View>
-          </View>
+          {Object.keys(latestPatientVitals as PatientVitals).map(vital => {
+            if (['patientTemperature', 'systolicBloodPressure', 'diastolicBloodPressure', 'respiratoryRate', 'PatientBMI'].includes(vital)) {
+              return (
+                <View style={[styles.tableRow, styles.ml10]}>
+                  <View style={[styles.w100]}>
+                    <View style={styles.fieldRow3}>
+                      <Text style={[styles.fieldText, styles.w200px]}>{vital}</Text>
+                      <Text style={[styles.fieldText, styles.colorGray, styles.ml10]}>{(latestPatientVitals as PatientVitals)[vital as keyof PatientVitals] || DASHES}</Text>
+                    </View>
+                  </View>
+                </View>
+              )
+            }
 
+            return <Text></Text>
+          })
+          }
           {/* spacing-row */}
-          <View style={[styles.tableRow, styles.borderStyle, styles.borderBottomWidth]}>
+          < View style={[styles.tableRow, styles.borderStyle, styles.borderBottomWidth]} >
             <View style={{ height: '10px' }}>
             </View>
           </View>
@@ -177,13 +339,25 @@ function VisitModalPdf({ assessmentProblems, patientChartingReview, patientIllne
           </View>
 
           {/* 3.1-row */}
-          <View style={[styles.tableRow, styles.ml10]}>
-            <View style={[styles.w100]}>
+          {patientProblems?.length ?
+            patientProblems?.map(problem => {
+              const { ICDCode } = problem || {}
+              const { description } = ICDCode || {}
+              return (
+                <View style={[styles.tableRow, styles.ml10]}>
+                  <View style={[styles.w100]}>
+                    <View style={styles.fieldRow3}>
+                      <Text style={[styles.fieldText]}>{description || DASHES}</Text>
+                    </View>
+                  </View>
+                </View>
+              )
+            }) : <View style={[styles.w100]}>
               <View style={styles.fieldRow3}>
-                <Text style={[styles.fieldText, styles.w200px]}>{'Severe acute respiratory syndrome coronavirus 2 RNA'}</Text>
+                <Text style={styles.fieldText}>{NO_DATA_FOUND}</Text>
               </View>
             </View>
-          </View>
+          }
 
           {/* spacing-row */}
           <View style={[styles.tableRow, styles.borderStyle, styles.borderBottomWidth]}>
@@ -212,13 +386,24 @@ function VisitModalPdf({ assessmentProblems, patientChartingReview, patientIllne
           </View>
 
           {/* 4.1-row */}
-          <View style={[styles.tableRow, styles.ml10]}>
-            <View style={[styles.w100]}>
-              <View style={styles.fieldRow3}>
-                <Text style={[styles.fieldText, styles.w200px]}>{'0.05 ML brolucizumab-dbll 120 MG/ML Injection'}</Text>
+          {patientMedications?.length ? patientMedications?.map(patientMedication => {
+            const { medication } = patientMedication || {}
+            const { fullName } = medication || {}
+            return (
+              <View style={[styles.tableRow, styles.ml10]}>
+                <View style={[styles.w100]}>
+                  <View style={styles.fieldRow3}>
+                    <Text style={[styles.fieldText]}>{fullName || DASHES}</Text>
+                  </View>
+                </View>
               </View>
+            )
+          }) : <View style={[styles.w100]}>
+            <View style={styles.fieldRow3}>
+              <Text style={styles.fieldText}>{NO_DATA_FOUND}</Text>
             </View>
-          </View>
+          </View>}
+
 
           {/* spacing-row */}
           <View style={[styles.tableRow, styles.borderStyle, styles.borderBottomWidth]}>
@@ -247,13 +432,24 @@ function VisitModalPdf({ assessmentProblems, patientChartingReview, patientIllne
           </View>
 
           {/* 5.1-row */}
-          <View style={[styles.tableRow, styles.ml10]}>
-            <View style={[styles.w100]}>
-              <View style={styles.fieldRow3}>
-                <Text style={[styles.fieldText, styles.w200px]}>{'Aspartame and Phenylalanine'}</Text>
+          {patientAllergies?.length ? patientAllergies?.map(patientAllergy => {
+            const { allergy } = patientAllergy || {}
+            const { name } = allergy || {}
+            return (
+              <View style={[styles.tableRow, styles.ml10]}>
+                <View style={[styles.w100]}>
+                  <View style={styles.fieldRow3}>
+                    <Text style={[styles.fieldText, styles.w200px]}>{name || DASHES}</Text>
+                  </View>
+                </View>
               </View>
+            )
+          }) : <View style={[styles.w100]}>
+            <View style={styles.fieldRow3}>
+              <Text style={styles.fieldText}>{NO_DATA_FOUND}</Text>
             </View>
-          </View>
+          </View>}
+
 
           {/* spacing-row */}
           <View style={[styles.tableRow]}>
@@ -277,39 +473,86 @@ function VisitModalPdf({ assessmentProblems, patientChartingReview, patientIllne
           </View>
 
           {/* 6th-row */}
-          <View style={[styles.tableRow, styles.ml10]}>
-            <View style={[styles.w100]}>
-              <View style={[styles.fieldRow3,]}>
-                <Text style={styles.fieldTitle}>{'Severe acute  respiratory syndrome coronavirus 2 RNA | 124041100000107'}</Text>
-              </View>
-            </View>
-          </View>
+          {assessmentProblems?.length ? assessmentProblems?.map((assessmentProblem) => {
+            const { icdCodes, medications, tests } = assessmentProblem || {}
+            const { code, description } = icdCodes || {}
+            return (
+              <>
+                <View style={[styles.tableRow, styles.ml10]}>
+                  <View style={[styles.w100]}>
+                    <View style={[styles.fieldRow3,]}>
+                      <Text style={styles.fieldTitle}>{`${description} | ${code} `}</Text>
+                    </View>
+                  </View>
+                </View>
 
-          {/* spacing-row */}
-          <View style={styles.tableRow}>
-            <View style={{ height: '5px' }}>
-            </View>
-          </View>
+                {/* spacing-row */}
+                <View style={styles.tableRow}>
+                  <View style={{ height: '5px' }}>
+                  </View>
+                </View>
 
-          {/* 6.1-row */}
-          <View style={[styles.tableRow, styles.ml10]}>
-            <View style={[styles.w100]}>
-              <View style={[styles.fieldRow3, styles.ml15]}>
-                <Text style={[styles.fieldText, styles.w200px]}>{'Medications'}</Text>
-              </View>
+                {/* 6.1-row */}
+                <View style={[styles.tableRow, styles.ml10]}>
+                  <View style={[styles.w100]}>
+                    <View style={[styles.fieldRow3, styles.ml15]}>
+                      <Text style={[styles.fieldText, styles.w200px]}>{'Medications'}</Text>
+                    </View>
 
-              <View style={[styles.fieldRow3, styles.ml20]}>
-                <Text style={[styles.fieldText, styles.colorGray]}>
-                  0.05 ML Quidel solona SARS-CoV2
-                </Text>
-              </View>
+                    {
+                      medications?.map(medication => {
+                        const { fullName } = medication || {}
+                        return (
+                          <View style={[styles.fieldRow3, styles.ml20]}>
+                            <Text style={[styles.fieldText, styles.colorGray]}>
+                              {fullName}
+                            </Text>
+                          </View>
+                        )
+                      })
+                    }
+                  </View>
+                </View>
+
+                <View style={[styles.tableRow]}>
+                  <View style={{ height: '10px' }}>
+                  </View>
+                </View>
+
+                {/* 6.1-row */}
+                <View style={[styles.tableRow, styles.ml10]}>
+                  <View style={[styles.w100]}>
+                    <View style={[styles.fieldRow3, styles.ml15]}>
+                      <Text style={[styles.fieldText, styles.w200px]}>{LAB_ORDER}</Text>
+                    </View>
+
+                    {
+                      tests?.map(test => {
+                        const { component } = test || {}
+                        return (
+                          <View style={[styles.fieldRow3, styles.ml20]}>
+                            <Text style={[styles.fieldText, styles.colorGray]}>
+                              {component}
+                            </Text>
+                          </View>
+                        )
+                      })
+                    }
+                  </View>
+                </View>
+              </>
+            )
+          }) : <View style={[styles.w100]}>
+            <View style={styles.fieldRow3}>
+              <Text style={styles.fieldText}>{NO_DATA_FOUND}</Text>
             </View>
-          </View>
+          </View>}
 
           <View style={[styles.tableRow]}>
             <View style={{ height: '20px' }}>
             </View>
           </View>
+
 
           {/* 7th-row */}
           <View style={styles.tableRow}>
@@ -327,13 +570,26 @@ function VisitModalPdf({ assessmentProblems, patientChartingReview, patientIllne
           </View>
 
           {/* 7.1-row */}
-          <View style={[styles.tableRow, styles.ml10]}>
-            <View style={[styles.w100]}>
-              <View style={styles.fieldRow3}>
-                <Text style={styles.fieldText}>{'patient DOES have separate bedroom and bathroom for patient'}</Text>
+          {patientIllnessHistory?.answers?.length ? patientIllnessHistory?.answers?.map(answerInfo => {
+            const { answer, value } = answerInfo || {}
+            const { name } = answer || {}
+            const [first, second] = name?.split('fill') || []
+
+            return (
+              <View style={[styles.tableRow, styles.ml10]}>
+                <View style={[styles.w100]}>
+                  <View style={styles.fieldRow3}>
+                    <Text style={styles.fieldText}>{`${first} ${value || ''} ${second || ''}`}</Text>
+                  </View>
+                </View>
               </View>
+            )
+          }) : <View style={[styles.w100]}>
+            <View style={styles.fieldRow3}>
+              <Text style={styles.fieldText}>{NO_DATA_FOUND}</Text>
             </View>
-          </View>
+          </View>}
+
 
           {/* spacing-row */}
           <View style={styles.tableRow}>
@@ -357,13 +613,25 @@ function VisitModalPdf({ assessmentProblems, patientChartingReview, patientIllne
           </View>
 
           {/* 8.1-row */}
-          <View style={[styles.tableRow, styles.ml10]}>
-            <View style={[styles.w100]}>
-              <View style={styles.fieldRow3}>
-                <Text style={styles.fieldText}>{'patient DOES have separate bedroom and bathroom for patient'}</Text>
+          {reviewOfSystem?.answers?.length ? reviewOfSystem?.answers?.map(answerInfo => {
+            const { answer, value } = answerInfo || {}
+            const { name } = answer || {}
+            const [first, second] = name?.split('fill') || []
+
+            return (
+              <View style={[styles.tableRow, styles.ml10]}>
+                <View style={[styles.w100]}>
+                  <View style={styles.fieldRow3}>
+                    <Text style={styles.fieldText}>{`${first} ${value || ''} ${second || ''}`}</Text>
+                  </View>
+                </View>
               </View>
+            )
+          }) : <View style={[styles.w100]}>
+            <View style={styles.fieldRow3}>
+              <Text style={styles.fieldText}>{NO_DATA_FOUND}</Text>
             </View>
-          </View>
+          </View>}
 
           {/* spacing-row */}
           <View style={styles.tableRow}>
@@ -390,7 +658,7 @@ function VisitModalPdf({ assessmentProblems, patientChartingReview, patientIllne
           <View style={[styles.tableRow, styles.ml10]}>
             <View style={[styles.w100]}>
               <View style={styles.fieldRow3}>
-                <Text style={styles.fieldText}>{'patient will return to the office as needed.'}</Text>
+                <Text style={styles.fieldText}>{'Patient will return to the office as needed.'}</Text>
               </View>
             </View>
           </View>
