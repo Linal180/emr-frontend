@@ -3844,6 +3844,12 @@ export const REASON_FOR_VISIT_OPTION = {
   value: "1",
 }
 
+export const VISIT_OPTION = {
+  icon: ReasonForVisit,
+  title: "Visits",
+  value: "9",
+}
+
 // export const ASSESSMENT_PLAN_OPTION = {
 //   icon: AssessmentPlanIcon,
 //   title: "Assessment & Plan",

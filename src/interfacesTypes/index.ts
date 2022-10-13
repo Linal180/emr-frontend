@@ -18,9 +18,10 @@ import {
   CreateProblemInput, CreateScheduleInput, CreateServiceInput, CreateStaffItemInput, Cvx, DependentQuestions, Doctor, DoctorPatient,
   FacilitiesPayload, FamilyHistory, FetchBillingClaimStatusesInput, FieldsInputs, FormElement, FormTabsInputs,
   IcdCodes, IcdCodesWithSnowMedCode, LabTests, LabTestsPayload, LoginUserInput, LoincCodePayload, Medications, Patient, PatientAllergies,
+  PatientIllnessHistoryPayload,
   PatientMedication, PatientPayload, PatientProblems, PatientProviderPayload, PatientsPayload, PatientVitals,
   PermissionsPayload, PolicyEligibilityWithPatientPayload, Practice, PracticePayload, QuestionAnswers, Questions, ReactionsPayload,
-  ResponsePayloadResponse, RolesPayload, Schedule, SectionsInputs, ServicesPayload, Staff, SurgicalHistory,
+  ResponsePayloadResponse, ReviewOfSystemPayload, RolesPayload, Schedule, SectionsInputs, ServicesPayload, Staff, SurgicalHistory,
   TriageNotes, TwoFactorInput, UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput,
   UpdateFacilityTimeZoneInput, User, UsersFormsElements, VerifyCodeInput
 } from "../generated/graphql";
@@ -876,6 +877,17 @@ export type ChartSelectionViewerProps = ViewerProps & {
 
 export type ChartPrintModalProps = ViewerProps & {
   modulesToPrint: string[]
+}
+
+export type VisitModalProps = ViewerProps & {
+  appointmentId: string
+}
+
+export type VisitModalPdfProps = {
+  assessmentProblems: AssessmentProblemType[]
+  reviewOfSystem: ReviewOfSystemPayload['reviewOfSystem']
+  patientIllnessHistory: PatientIllnessHistoryPayload['patientIllnessHistory']
+  patientChartingReview: PatientChartingReview | null
 }
 
 export type LabModalProps = ViewerProps & {

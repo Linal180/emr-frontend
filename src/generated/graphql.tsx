@@ -314,6 +314,7 @@ export type AppointmentInput = {
   appointmentStatus?: Maybe<Scalars['String']>;
   appointmentTypeId?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
+  isCheckedIn?: Maybe<Scalars['Boolean']>;
   paginationOptions: PaginationInput;
   patientId?: Maybe<Scalars['String']>;
   practiceId?: Maybe<Scalars['String']>;
@@ -6861,6 +6862,7 @@ export type UpComingAppointmentsInput = {
   appointmentStatus?: Maybe<Scalars['String']>;
   appointmentTypeId?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
+  isCheckedIn?: Maybe<Scalars['Boolean']>;
   paginationOptions: PaginationInput;
   patientId?: Maybe<Scalars['String']>;
   practiceId?: Maybe<Scalars['String']>;
