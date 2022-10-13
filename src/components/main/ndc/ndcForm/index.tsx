@@ -7,25 +7,25 @@ import Alert from '../../../common/Alert';
 import InputController from '../../../../controller';
 import TableLoader from '../../../common/TableLoader';
 //interfaces, constants, schema, graphql
-import { CptCodeSchema } from '../../../../validationSchemas';
+import { NdcCodeSchema } from '../../../../validationSchemas';
 import { ActionType } from '../../../../reducers/cptCodeReducer';
 import { NdcCodeFormProps, NdcCodeFormType, SideDrawerCloseReason } from '../../../../interfacesTypes';
 import { ADD, CANCEL, CODE, CPT_CODE, DESCRIPTION, EDIT, SOMETHING_WENT_WRONG, SUBMIT } from '../../../../constants';
-import { useCreateCptCodeMutation, useGetCptCodeLazyQuery, useUpdateCptCodeMutation } from '../../../../generated/graphql';
+import { useCreateNdcCodeMutation, useGetNdcCodeLazyQuery, useUpdateNdcCodeMutation } from '../../../../generated/graphql';
 
 const NdcForm: FC<NdcCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, dispatcher }): JSX.Element => {
-  const methods = useForm<NdcCodeFormType>({ resolver: yupResolver(CptCodeSchema) });
+  const methods = useForm<NdcCodeFormType>({ resolver: yupResolver(NdcCodeSchema) });
   const { handleSubmit, setValue, } = methods;
 
-  const [createCptCode, { loading: createLoading }] = useCreateCptCodeMutation({
+  const [createNdcCode, { loading: createLoading }] = useCreateNdcCodeMutation({
     onError: ({ message }) => {
       Alert.error(message)
     },
     onCompleted: (data) => {
-      const { createCPTCode } = data;
-      const { cptCode, response } = createCPTCode || {}
+      const { createNdcCode } = data;
+      const { ndcCode, response } = createNdcCode || {}
       const { status, message } = response || {}
-      const { id } = cptCode || {}
+      const { id } = ndcCode || {}
       if (id && status === 200) {
         setValue('code', '')
         setValue('description', '')
@@ -39,15 +39,15 @@ const NdcForm: FC<NdcCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, d
     }
   })
 
-  const [getCptCode, { loading: getLoading }] = useGetCptCodeLazyQuery({
+  const [getNdcCode, { loading: getLoading }] = useGetNdcCodeLazyQuery({
     onCompleted: (data) => {
-      const { getCPTCode } = data || {}
-      const { cptCode, response } = getCPTCode || {}
+      const { getNdcCode } = data || {}
+      const { ndcCode, response } = getNdcCode || {}
       const { status } = response || {}
-      if (status === 200 && cptCode) {
-        const { code, shortDescription } = cptCode;
+      if (status === 200 && ndcCode) {
+        const { code, description } = ndcCode;
         code && setValue('code', code)
-        shortDescription && setValue('description', shortDescription)
+        description && setValue('description', description)
       } else {
         Alert.error(SOMETHING_WENT_WRONG)
       }
@@ -57,12 +57,12 @@ const NdcForm: FC<NdcCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, d
     }
   })
 
-  const [updateCptCode, { loading: updateLoading }] = useUpdateCptCodeMutation({
+  const [updateNdcCode, { loading: updateLoading }] = useUpdateNdcCodeMutation({
     onCompleted: (data) => {
-      const { updateCPTCode } = data;
-      const { cptCode, response } = updateCPTCode || {}
+      const { updateNdcCode } = data;
+      const { ndcCode, response } = updateNdcCode || {}
       const { status, message } = response || {}
-      const { id } = cptCode || {}
+      const { id } = ndcCode || {}
       if (id && status === 200) {
         dispatcher && dispatcher({ type: ActionType.SET_ITEM_ID, itemId: '' })
         setValue('code', '')
@@ -84,18 +84,18 @@ const NdcForm: FC<NdcCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, d
     const { code, description } = values;
     try {
       if (isEdit && id) {
-        await updateCptCode({ variables: { updateCPTCodeInput: { id, code, description } } })
+        await updateNdcCode({ variables: { updateNdcCodeInput: { id, code, description } } })
       } else {
-        await createCptCode({ variables: { createCPTCodeInput: { code, description } } })
+        await createNdcCode({ variables: { createNdcCodeInput: { code, description } } })
       }
     } catch (error) { }
   }
 
   const fetchIcdCode = useCallback(async () => {
     try {
-      await getCptCode({ variables: { getCPTCodeInput: { id: id || '' } } })
+      id && await getNdcCode({ variables: { getNdcCodeInput: { id } } })
     } catch (error) { }
-  }, [id, getCptCode])
+  }, [id, getNdcCode])
 
   useEffect(() => {
     isEdit && id && fetchIcdCode()
@@ -129,7 +129,7 @@ const NdcForm: FC<NdcCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, d
                   <InputController controllerName='code' disabled={loading} controllerLabel={CODE} isRequired toUpperCase />
                 </Grid>
                 <Grid item xs={12}>
-                  <InputController controllerName='description' multiline disabled={loading} controllerLabel={DESCRIPTION} isRequired />
+                  <InputController controllerName='description' multiline disabled={loading} controllerLabel={DESCRIPTION} />
                 </Grid>
 
               </Grid>

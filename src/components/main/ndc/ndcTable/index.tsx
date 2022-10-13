@@ -3,24 +3,25 @@ import { ChangeEvent, FC, Fragment, Reducer, useCallback, useEffect, useReducer 
 import { Box, Button, Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core';
 //components
 import NdcCodeForm from '../ndcForm'
+import Alert from '../../../common/Alert';
 import Search from '../../../common/Search';
 import TableLoader from '../../../common/TableLoader';
 import ConfirmationModal from '../../../common/ConfirmationModal';
 import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
 //constants, styles, svgs
-import { renderTh } from '../../../../utils';
+import { getPageNumber, isLast, renderTh } from '../../../../utils';
 import { useTableStyles } from '../../../../styles/tableStyles';
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from '../../../../assets/svgs';
 import { State, Action, ActionType, initialState, ndcCodeReducer } from '../../../../reducers/ndcCodeReducer';
 import { ACTIONS, ADD_NEW_TEXT, CODE, DASHES, DELETE_NDC_CODE_DESCRIPTION, DESCRIPTION, EIGHT_PAGE_LIMIT, NDC_TEXT, PAGE_LIMIT } from '../../../../constants';
-import { FindAllNdcPayload, useFindAllNdcLazyQuery } from '../../../../generated/graphql';
+import { FindAllNdcPayload, useFindAllNdcLazyQuery, useRemoveNdcCodeMutation } from '../../../../generated/graphql';
 
 
 const NdcTable: FC = (): JSX.Element => {
 
   const classes = useTableStyles();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(ndcCodeReducer, initialState);
-  const { searchQuery, data, openDelete, isOpen, itemId, page, totalPages } = state;
+  const { searchQuery, data, openDelete, isOpen, itemId, page, totalPages, delId } = state;
 
   const [findAllNdcCodes, { loading, error }] = useFindAllNdcLazyQuery({
     onCompleted: (data) => {
@@ -42,6 +43,31 @@ const NdcTable: FC = (): JSX.Element => {
       dispatch({ type: ActionType.SET_DATA, data: [] });
       dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 });
     }
+  })
+
+  const [removeCptCode, { loading: delLoading }] = useRemoveNdcCodeMutation({
+    onCompleted: async (resData) => {
+      const { removeNdcCode: { response } } = resData;
+
+      if (response) {
+        const { status, message } = response
+
+        if (status && status === 200) {
+          message && Alert.success(message);
+          dispatch({ type: ActionType.SET_DEL_ID, delId: '' })
+          dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
+
+          if (!!data && (data.length > 1 || isLast(data?.length, page))) {
+            await fetchAllNdcCodes()
+          } else {
+            dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, isLast?.length || 0) })
+          }
+        }
+      }
+    },
+    onError({ message }) {
+      Alert.error(message)
+    },
   })
 
   const search = (query: string) => {
@@ -67,9 +93,9 @@ const NdcTable: FC = (): JSX.Element => {
   };
 
   const handleDelete = async () => {
-    // delId && await removeCptCode({
-    //   variables: { removeCPTCodeInput: { id: delId } }
-    // })
+    delId && await removeCptCode({
+      variables: { removeNdcCodeInput: { id: delId } }
+    })
   }
 
   const handleModalClose = () => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: !isOpen });
@@ -89,8 +115,6 @@ const NdcTable: FC = (): JSX.Element => {
     fetchAllNdcCodes()
   }, [fetchAllNdcCodes])
 
-
-  const delLoading = false
 
   return (
     <Fragment>
@@ -187,7 +211,7 @@ const NdcTable: FC = (): JSX.Element => {
         isEdit={!!itemId}
         handleClose={handleModalClose}
         dispatcher={dispatch}
-      // fetch={() => fetchIcdCodes()}
+        fetch={() => fetchAllNdcCodes()}
       />}
 
       {totalPages > 1 && !loading && (

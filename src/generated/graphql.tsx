@@ -9370,6 +9370,34 @@ export type FindAllNdcQueryVariables = Exact<{
 
 export type FindAllNdcQuery = { __typename?: 'Query', findAllNdc: { __typename?: 'FindAllNdcPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, ndcs?: Array<{ __typename?: 'NDC', id: string, code?: string | null, description?: string | null }> | null } };
 
+export type GetNdcCodeQueryVariables = Exact<{
+  getNdcCodeInput: GetNdcCodeInput;
+}>;
+
+
+export type GetNdcCodeQuery = { __typename?: 'Query', getNdcCode: { __typename?: 'NdcPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, ndcCode?: { __typename?: 'NDC', id: string, code?: string | null, description?: string | null } | null } };
+
+export type CreateNdcCodeMutationVariables = Exact<{
+  createNdcCodeInput: CreateNdcCodeInput;
+}>;
+
+
+export type CreateNdcCodeMutation = { __typename?: 'Mutation', createNdcCode: { __typename?: 'NdcPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, ndcCode?: { __typename?: 'NDC', id: string } | null } };
+
+export type UpdateNdcCodeMutationVariables = Exact<{
+  updateNdcCodeInput: UpdateNdcCodeInput;
+}>;
+
+
+export type UpdateNdcCodeMutation = { __typename?: 'Mutation', updateNdcCode: { __typename?: 'NdcPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, ndcCode?: { __typename?: 'NDC', id: string } | null } };
+
+export type RemoveNdcCodeMutationVariables = Exact<{
+  removeNdcCodeInput: RemoveNdcCodeInput;
+}>;
+
+
+export type RemoveNdcCodeMutation = { __typename?: 'Mutation', removeNdcCode: { __typename?: 'NdcPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, ndcCode?: { __typename?: 'NDC', id: string } | null } };
+
 export type FindAllPatientQueryVariables = Exact<{
   patientInput: PatientInput;
 }>;
@@ -20024,6 +20052,170 @@ export function useFindAllNdcLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type FindAllNdcQueryHookResult = ReturnType<typeof useFindAllNdcQuery>;
 export type FindAllNdcLazyQueryHookResult = ReturnType<typeof useFindAllNdcLazyQuery>;
 export type FindAllNdcQueryResult = Apollo.QueryResult<FindAllNdcQuery, FindAllNdcQueryVariables>;
+export const GetNdcCodeDocument = gql`
+    query GetNdcCode($getNdcCodeInput: GetNdcCodeInput!) {
+  getNdcCode(getNdcCodeInput: $getNdcCodeInput) {
+    response {
+      status
+      error
+      message
+    }
+    ndcCode {
+      id
+      code
+      description
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetNdcCodeQuery__
+ *
+ * To run a query within a React component, call `useGetNdcCodeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetNdcCodeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetNdcCodeQuery({
+ *   variables: {
+ *      getNdcCodeInput: // value for 'getNdcCodeInput'
+ *   },
+ * });
+ */
+export function useGetNdcCodeQuery(baseOptions: Apollo.QueryHookOptions<GetNdcCodeQuery, GetNdcCodeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetNdcCodeQuery, GetNdcCodeQueryVariables>(GetNdcCodeDocument, options);
+      }
+export function useGetNdcCodeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetNdcCodeQuery, GetNdcCodeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetNdcCodeQuery, GetNdcCodeQueryVariables>(GetNdcCodeDocument, options);
+        }
+export type GetNdcCodeQueryHookResult = ReturnType<typeof useGetNdcCodeQuery>;
+export type GetNdcCodeLazyQueryHookResult = ReturnType<typeof useGetNdcCodeLazyQuery>;
+export type GetNdcCodeQueryResult = Apollo.QueryResult<GetNdcCodeQuery, GetNdcCodeQueryVariables>;
+export const CreateNdcCodeDocument = gql`
+    mutation CreateNdcCode($createNdcCodeInput: CreateNdcCodeInput!) {
+  createNdcCode(createNdcCodeInput: $createNdcCodeInput) {
+    response {
+      status
+      error
+      message
+    }
+    ndcCode {
+      id
+    }
+  }
+}
+    `;
+export type CreateNdcCodeMutationFn = Apollo.MutationFunction<CreateNdcCodeMutation, CreateNdcCodeMutationVariables>;
+
+/**
+ * __useCreateNdcCodeMutation__
+ *
+ * To run a mutation, you first call `useCreateNdcCodeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateNdcCodeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createNdcCodeMutation, { data, loading, error }] = useCreateNdcCodeMutation({
+ *   variables: {
+ *      createNdcCodeInput: // value for 'createNdcCodeInput'
+ *   },
+ * });
+ */
+export function useCreateNdcCodeMutation(baseOptions?: Apollo.MutationHookOptions<CreateNdcCodeMutation, CreateNdcCodeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateNdcCodeMutation, CreateNdcCodeMutationVariables>(CreateNdcCodeDocument, options);
+      }
+export type CreateNdcCodeMutationHookResult = ReturnType<typeof useCreateNdcCodeMutation>;
+export type CreateNdcCodeMutationResult = Apollo.MutationResult<CreateNdcCodeMutation>;
+export type CreateNdcCodeMutationOptions = Apollo.BaseMutationOptions<CreateNdcCodeMutation, CreateNdcCodeMutationVariables>;
+export const UpdateNdcCodeDocument = gql`
+    mutation UpdateNdcCode($updateNdcCodeInput: UpdateNdcCodeInput!) {
+  updateNdcCode(updateNdcCodeInput: $updateNdcCodeInput) {
+    response {
+      status
+      error
+      message
+    }
+    ndcCode {
+      id
+    }
+  }
+}
+    `;
+export type UpdateNdcCodeMutationFn = Apollo.MutationFunction<UpdateNdcCodeMutation, UpdateNdcCodeMutationVariables>;
+
+/**
+ * __useUpdateNdcCodeMutation__
+ *
+ * To run a mutation, you first call `useUpdateNdcCodeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateNdcCodeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateNdcCodeMutation, { data, loading, error }] = useUpdateNdcCodeMutation({
+ *   variables: {
+ *      updateNdcCodeInput: // value for 'updateNdcCodeInput'
+ *   },
+ * });
+ */
+export function useUpdateNdcCodeMutation(baseOptions?: Apollo.MutationHookOptions<UpdateNdcCodeMutation, UpdateNdcCodeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateNdcCodeMutation, UpdateNdcCodeMutationVariables>(UpdateNdcCodeDocument, options);
+      }
+export type UpdateNdcCodeMutationHookResult = ReturnType<typeof useUpdateNdcCodeMutation>;
+export type UpdateNdcCodeMutationResult = Apollo.MutationResult<UpdateNdcCodeMutation>;
+export type UpdateNdcCodeMutationOptions = Apollo.BaseMutationOptions<UpdateNdcCodeMutation, UpdateNdcCodeMutationVariables>;
+export const RemoveNdcCodeDocument = gql`
+    mutation RemoveNdcCode($removeNdcCodeInput: RemoveNdcCodeInput!) {
+  removeNdcCode(removeNdcCodeInput: $removeNdcCodeInput) {
+    response {
+      status
+      error
+      message
+    }
+    ndcCode {
+      id
+    }
+  }
+}
+    `;
+export type RemoveNdcCodeMutationFn = Apollo.MutationFunction<RemoveNdcCodeMutation, RemoveNdcCodeMutationVariables>;
+
+/**
+ * __useRemoveNdcCodeMutation__
+ *
+ * To run a mutation, you first call `useRemoveNdcCodeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveNdcCodeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeNdcCodeMutation, { data, loading, error }] = useRemoveNdcCodeMutation({
+ *   variables: {
+ *      removeNdcCodeInput: // value for 'removeNdcCodeInput'
+ *   },
+ * });
+ */
+export function useRemoveNdcCodeMutation(baseOptions?: Apollo.MutationHookOptions<RemoveNdcCodeMutation, RemoveNdcCodeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveNdcCodeMutation, RemoveNdcCodeMutationVariables>(RemoveNdcCodeDocument, options);
+      }
+export type RemoveNdcCodeMutationHookResult = ReturnType<typeof useRemoveNdcCodeMutation>;
+export type RemoveNdcCodeMutationResult = Apollo.MutationResult<RemoveNdcCodeMutation>;
+export type RemoveNdcCodeMutationOptions = Apollo.BaseMutationOptions<RemoveNdcCodeMutation, RemoveNdcCodeMutationVariables>;
 export const FindAllPatientDocument = gql`
     query FindAllPatient($patientInput: PatientInput!) {
   findAllPatient(patientInput: $patientInput) {
