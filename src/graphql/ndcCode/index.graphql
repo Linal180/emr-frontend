@@ -1,0 +1,81 @@
+query FindAllNdc($findAllNdcInput: FindAllNdcInput!) {
+  findAllNdc(findAllNdcInput: $findAllNdcInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+
+    ndcs {
+      id
+      code
+      description
+    }
+  }
+}
+
+
+query GetNdcCode($getNdcCodeInput: GetNdcCodeInput!) {
+  getNdcCode(getNdcCodeInput: $getNdcCodeInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    ndcCode {
+      id
+      code
+      description
+    }
+  }
+}
+
+# mutations
+
+mutation CreateNdcCode($createNdcCodeInput: CreateNdcCodeInput!) {
+  createNdcCode(createNdcCodeInput: $createNdcCodeInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    ndcCode {
+      id
+    }
+  }
+}
+
+mutation UpdateNdcCode($updateNdcCodeInput: UpdateNdcCodeInput!) {
+  updateNdcCode(updateNdcCodeInput: $updateNdcCodeInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    ndcCode {
+      id
+    }
+  }
+}
+
+mutation RemoveNdcCode($removeNdcCodeInput: RemoveNdcCodeInput!) {
+  removeNdcCode(removeNdcCodeInput: $removeNdcCodeInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    ndcCode {
+      id
+    }
+  }
+}

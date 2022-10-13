@@ -52,6 +52,8 @@ export const NO_SPACE_AT_BOTH_ENDS_REGEX = /^[^\s]+(\s+[^\s]+)*$/;
 export const MAMMOGRAPHY_CERT_NUMBER_REGEX = /^[A-Z]{3}-[A-Z]{2}-\d{6}$/;
 export const BANK_ACCOUNT_REGEX = /^([0-9]{11})|([0-9]{2}-[0-9]{3}-[0-9]{6})$/;
 export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
+export const NDC_REGEX = /^(?:\d{4}-\d{4}-\d{2}|\d{5}-(?:\d{3}-\d{2}|\d{4}-\d{1,2}))$/;
+export const MVX_CODE_REGEX = /^([A-Z]{2}|[A-Z]{3})$/;
 
 // system roles
 export enum SYSTEM_ROLES {
@@ -546,6 +548,7 @@ export const ADMINISTRATION_DATE = "Administration Date";
 export const ADMINISTER_BY = "Administer By";
 export const SITE_TEXT = "Site";
 export const NDC_TEXT = "NDC";
+export const MVX_TEXT = "MVX";
 export const VIS_GIVEN_TEXT = "VIS Given";
 export const DATE_ON_VIS = "Date on VIS";
 export const LOT_NO_TEXT = "Lot #";
@@ -664,6 +667,10 @@ export const FACILITY_SCHEDULE = "Facility Schedule";
 export const FACILITY_REGISTRATION = "Facility Registration";
 export const FACILITY_SCHEDULE_DESCRIPTION =
   "Set timings of facility and manage slots";
+export const NDC_DESCRIPTION =
+  "Create and edit National Drug Code (NDC) inventory for your practice";
+export const MVX_DESCRIPTION =
+  "Create and edit MVX inventory for your practice";
 export const CLINICAL_TEXT = "Clinical";
 export const FORM_BUILDER = "Form Builder";
 export const AUDIT_LOG = "Audit Log";
@@ -1590,6 +1597,7 @@ export const DELETE_REASON_DESCRIPTION = "Confirm to delete appointment reason";
 export const DELETE_VACCINE_DESCRIPTION = "Confirm to delete vaccine";
 export const DELETE_ICD_10_DESCRIPTION = "Confirm to delete icd-10";
 export const DELETE_CPT_CODE_DESCRIPTION = "Confirm to delete CPT code";
+export const DELETE_NDC_CODE_DESCRIPTION = "Confirm to delete NDC code";
 export const DELETE_ALLERGY_DESCRIPTION = "Confirm to delete allergy";
 export const CHOOSE_YOUR_PAYMENT_METHOD = "Choose your Payment Method";
 export const NEXT_SCHEDULED_APPOINTMENT = "Next Scheduled Appointment";
@@ -1746,6 +1754,8 @@ export const PATIENT_APPOINTMENT_CANCEL = `${PUBLIC_APPOINTMENT_ROUTE}/appointme
 export const INSURANCE_ELIGIBILITY_ROUTE = `/insurance-eligibility`;
 export const ICD_10_ROUTE = `/icd-10`;
 export const CPT_CODE_ROUTE = `/cpt-code`;
+export const NDC_ROUTE = `/ndc-code`;
+export const MVX_ROUTE = `/mvx-code`;
 
 // Facility Routes
 export const BILLING_PROFILE_ROUTE = "billing-profile";
@@ -2787,15 +2797,20 @@ export const INVENTORY_ITEMS = [
     link: ICD_10_ROUTE,
     desc: ICD_TEN_DESCRIPTION,
   },
-  // {
-  //   name: ICT_NINE,
-  //   link: "/",
-  //   desc: ICT_NINE_DESCRIPTION,
-  // },
   {
     name: CPT_CODES,
     link: CPT_CODE_ROUTE,
     desc: CPT_CODES_DESCRIPTION,
+  },
+  {
+    name: NDC_TEXT,
+    link: NDC_ROUTE,
+    desc: NDC_DESCRIPTION,
+  },
+  {
+    name: MVX_TEXT,
+    link: MVX_ROUTE,
+    desc: MVX_DESCRIPTION,
   },
   // {
   //   name: MEDICINES,
@@ -2808,9 +2823,9 @@ export const INVENTORY_ITEMS = [
   //   desc: TESTS_DESCRIPTION,
   // },
   // {
-  //   name: VACCINES,
+  //   name: ICT_NINE,
   //   link: "/",
-  //   desc: VACCINES_DESCRIPTION,
+  //   desc: ICT_NINE_DESCRIPTION,
   // },
 ];
 
@@ -4713,3 +4728,19 @@ export enum QuestionType {
   DATE = 'date',
   NUMBER = 'number'
 }
+
+export enum STATUS_ENUM {
+  ACTIVE = "Active",
+  IN_ACTIVE = "Inactive",
+}
+
+export const STATUS_MAPPED = [
+  {
+    id: STATUS_ENUM.ACTIVE,
+    name: STATUS_ENUM.ACTIVE
+  },
+  {
+    id: STATUS_ENUM.IN_ACTIVE,
+    name: STATUS_ENUM.IN_ACTIVE
+  }
+]

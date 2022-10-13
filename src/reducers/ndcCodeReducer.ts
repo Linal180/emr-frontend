@@ -1,19 +1,17 @@
-import { FindAllVaccineProductsPayload, FindAllVaccinesPayload, VaccineProduct } from "../generated/graphql";
+import { FindAllNdcPayload } from "../generated/graphql";
 
 export interface State {
   page: number;
   delId: string;
   itemId: string;
   isOpen: boolean;
+  data: FindAllNdcPayload['ndcs']
   totalPages: number;
   openDelete: boolean;
-  isSubModalOpen: boolean;
-  data: FindAllVaccinesPayload['vaccines']
-  selectedItem: VaccineProduct | undefined;
-  searchedData: FindAllVaccineProductsPayload['vaccineProducts'];
   searchQuery: string;
-  isFormOpen: HTMLElement | null;
+  systematic: boolean;
 }
+
 
 export const initialState: State = {
   page: 1,
@@ -21,13 +19,10 @@ export const initialState: State = {
   delId: '',
   itemId: '',
   totalPages: 0,
+  openDelete: false,
   isOpen: false,
   searchQuery: '',
-  searchedData: [],
-  isFormOpen: null,
-  openDelete: false,
-  isSubModalOpen: false,
-  selectedItem: undefined,
+  systematic: false
 }
 
 export enum ActionType {
@@ -35,14 +30,11 @@ export enum ActionType {
   SET_DATA = 'setData',
   SET_IS_OPEN = 'setIsOpen',
   SET_DEL_ID = 'SET_DEL_ID',
-  SET_ITEM_ID = 'SET_ITEM_ID',
   SET_TOTAL_PAGES = 'setTotalPages',
   SET_OPEN_DELETE = 'SET_OPEN_DELETE',
-  SET_IS_FORM_OPEN = 'SET_IS_FORM_OPEN',
   SET_SEARCH_QUERY = 'SET_SEARCH_QUERY',
-  SET_SELECTED_ITEM = 'SET_SELECTED_ITEM',
-  SET_SEARCHED_DATA = 'SET_SEARCHED_DATA',
-  SET_IS_SUB_MODAL_OPEN = 'SET_IS_SUB_MODAL_OPEN',
+  SET_ITEM_ID = 'SET_ITEM_ID',
+  SET_SYSTEMATIC = 'SET_SYSTEMATIC'
 }
 
 export type Action =
@@ -52,19 +44,12 @@ export type Action =
   { type: ActionType.SET_IS_OPEN; isOpen: boolean } |
   { type: ActionType.SET_TOTAL_PAGES; totalPages: number } |
   { type: ActionType.SET_OPEN_DELETE, openDelete: boolean } |
+  { type: ActionType.SET_SYSTEMATIC, systematic: boolean; } |
   { type: ActionType.SET_SEARCH_QUERY, searchQuery: string; } |
-  { type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: boolean } |
-  { type: ActionType.SET_IS_FORM_OPEN, isFormOpen: HTMLElement | null } |
-  { type: ActionType.SET_SELECTED_ITEM, selectedItem: VaccineProduct | undefined } |
-  { type: ActionType.SET_DATA; data: FindAllVaccinesPayload['vaccines'] } |
-  { type: ActionType.SET_SEARCHED_DATA, searchedData: FindAllVaccineProductsPayload['vaccineProducts'] }
+  { type: ActionType.SET_DATA; data: FindAllNdcPayload['ndcs'] }
 
-
-export const vaccinesReducer = (state: State, action: Action): State => {
-  const { type } = action
-
-  switch (type) {
-
+export const ndcCodeReducer = (state: State, action: Action): State => {
+  switch (action.type) {
     case ActionType.SET_PAGE:
       return {
         ...state,
@@ -101,28 +86,10 @@ export const vaccinesReducer = (state: State, action: Action): State => {
         delId: action.delId
       }
 
-    case ActionType.SET_IS_SUB_MODAL_OPEN:
-      return {
-        ...state,
-        isSubModalOpen: action.isSubModalOpen
-      }
-
     case ActionType.SET_ITEM_ID:
       return {
         ...state,
         itemId: action.itemId
-      }
-
-    case ActionType.SET_SELECTED_ITEM:
-      return {
-        ...state,
-        selectedItem: action.selectedItem
-      }
-
-    case ActionType.SET_SEARCHED_DATA:
-      return {
-        ...state,
-        searchedData: action.searchedData
       }
 
     case ActionType.SET_SEARCH_QUERY:
@@ -131,10 +98,10 @@ export const vaccinesReducer = (state: State, action: Action): State => {
         searchQuery: action.searchQuery
       }
 
-    case ActionType.SET_IS_FORM_OPEN:
+    case ActionType.SET_SYSTEMATIC:
       return {
         ...state,
-        isFormOpen: action.isFormOpen
+        systematic: action.systematic
       }
   }
 }
