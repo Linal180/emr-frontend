@@ -91,6 +91,7 @@ import { ICDTenCodes } from "../pages/main/icd10";
 import { CptCodes } from "../pages/main/cptCode";
 import { LabResultDetail } from "../pages/main/reports/labResultDetail";
 import { NDC } from "../pages/main/ndc";
+import { MVXCodeComponent } from "../pages/main/mvx";
 // constants, contexts and utils
 import { AuthContext } from "../context";
 import { isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin } from "../utils";
@@ -108,7 +109,7 @@ import {
   PUBLIC_FORM_BUILDER_FAIL_ROUTE, PUBLIC_FORM_BUILDER_ROUTE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, RESET_PASSWORD_ROUTE,
   ROLES_ROUTE, ROOT_ROUTE, SETTINGS_ROUTE, SET_PASSWORD_ROUTE, SIGNATURE_ROUTE, SLOT_CONFIRMATION, STAFF_ROUTE,
   LAB_RESULTS_INFO, SUPER_BILL_ROUTE, TWO_FA_AUTHENTICATION_ROUTE, CHART_ROUTE, SEND_SMS_ROUTE, ADD_TEST_SPECIMEN_ROUTE,
-  INSURANCE_ELIGIBILITY_ROUTE, ICD_10_ROUTE, CPT_CODE_ROUTE, NDC_ROUTE
+  INSURANCE_ELIGIBILITY_ROUTE, ICD_10_ROUTE, CPT_CODE_ROUTE, NDC_ROUTE, MVX_ROUTE
 } from "../constants";
 
 
@@ -218,6 +219,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={ICD_10_ROUTE} component={ICDTenCodes} />
       <PrivateRoute exact path={CPT_CODE_ROUTE} component={CptCodes} />
       <PrivateRoute exact path={NDC_ROUTE} component={NDC} />
+      <PrivateRoute exact path={MVX_ROUTE} component={MVXCodeComponent} />
 
       <PublicRoute path={MAINTENANCE_ROUTE} component={Maintenance} allow exact />
 

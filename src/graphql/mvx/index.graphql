@@ -20,3 +20,65 @@ query FindAllMvx($findAllMvxInput: FindAllMvxInput!) {
     }
   }
 }
+
+query GetMvxCode($getMvxCodeInput: GetMvxCodeInput!) {
+  getMvxCode(getMvxCodeInput: $getMvxCodeInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    mvxCode {
+      id
+      notes
+      mvxCode
+      mvxStatus
+      manufacturerName
+    }
+  }
+}
+
+# mutations
+
+mutation CreateMvxCode($createMvxCodeInput: CreateMvxCodeInput!) {
+  createMvxCode(createMvxCodeInput: $createMvxCodeInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    mvxCode {
+      id
+    }
+  }
+}
+
+mutation UpdateMvxCode($updateMvxCodeInput: UpdateMvxCodeInput!) {
+  updateMvxCode(updateMvxCodeInput: $updateMvxCodeInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    mvxCode {
+      id
+    }
+  }
+}
+
+mutation RemoveMvxCode($removeMvxCodeInput: RemoveMvxCodeInput!) {
+  removeMvxCode(removeMvxCodeInput: $removeMvxCodeInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    mvxCode {
+      id
+    }
+  }
+}

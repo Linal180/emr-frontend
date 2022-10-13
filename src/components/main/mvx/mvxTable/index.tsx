@@ -2,35 +2,36 @@ import { Pagination } from '@material-ui/lab';
 import { ChangeEvent, FC, Fragment, Reducer, useCallback, useEffect, useReducer } from 'react';
 import { Box, Button, Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core';
 //components
-import NdcCodeForm from '../ndcForm'
+import NdcCodeForm from '../mvxForm'
 import Alert from '../../../common/Alert';
 import Search from '../../../common/Search';
 import TableLoader from '../../../common/TableLoader';
 import ConfirmationModal from '../../../common/ConfirmationModal';
 import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
 //constants, styles, svgs
-import { useTableStyles } from '../../../../styles/tableStyles';
 import { getPageNumber, isLast, renderTh } from '../../../../utils';
+import { useTableStyles } from '../../../../styles/tableStyles';
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from '../../../../assets/svgs';
-import { State, Action, ActionType, initialState, ndcCodeReducer } from '../../../../reducers/ndcCodeReducer';
-import { FindAllNdcPayload, useFindAllNdcLazyQuery, useRemoveNdcCodeMutation } from '../../../../generated/graphql';
-import { ACTIONS, ADD_NEW_TEXT, CODE, DASHES, DELETE_NDC_CODE_DESCRIPTION, DESCRIPTION, EIGHT_PAGE_LIMIT, NDC_TEXT, PAGE_LIMIT } from '../../../../constants';
+import { State, Action, ActionType, initialState, mvxCodeReducer } from '../../../../reducers/mvxCodeReducer';
+import { FindAllMvxPayload, useFindAllMvxLazyQuery, useRemoveMvxCodeMutation } from '../../../../generated/graphql';
+import { ACTIONS, ADD_NEW_TEXT, CODE, DASHES, DELETE_NDC_CODE_DESCRIPTION, EIGHT_PAGE_LIMIT, MVX_TEXT, NAME, NDC_TEXT, NOTES, PAGE_LIMIT, STATUS } from '../../../../constants';
 
-const NdcTable: FC = (): JSX.Element => {
+
+const MvxTable: FC = (): JSX.Element => {
 
   const classes = useTableStyles();
-  const [state, dispatch] = useReducer<Reducer<State, Action>>(ndcCodeReducer, initialState);
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(mvxCodeReducer, initialState);
   const { searchQuery, data, openDelete, isOpen, itemId, page, totalPages, delId } = state;
 
-  const [findAllNdcCodes, { loading, error }] = useFindAllNdcLazyQuery({
+  const [findAllMvxCodes, { loading, error }] = useFindAllMvxLazyQuery({
     onCompleted: (data) => {
-      const { findAllNdc } = data || {}
-      const { ndcs, pagination, response } = findAllNdc || {}
+      const { findAllMvx } = data || {}
+      const { mvxs, pagination, response } = findAllMvx || {}
       const { status } = response || {}
       if (status === 200) {
         const { totalPages } = pagination || {}
-        if (!!ndcs?.length) {
-          dispatch({ type: ActionType.SET_DATA, data: ndcs as FindAllNdcPayload['ndcs'] })
+        if (!!mvxs?.length) {
+          dispatch({ type: ActionType.SET_DATA, data: mvxs as FindAllMvxPayload['mvxs'] })
           totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
         } else {
           dispatch({ type: ActionType.SET_DATA, data: [] });
@@ -44,9 +45,9 @@ const NdcTable: FC = (): JSX.Element => {
     }
   })
 
-  const [removeNdcCode, { loading: delLoading }] = useRemoveNdcCodeMutation({
+  const [removeMvxCode, { loading: delLoading }] = useRemoveMvxCodeMutation({
     onCompleted: async (resData) => {
-      const { removeNdcCode: { response } } = resData;
+      const { removeMvxCode: { response } } = resData;
 
       if (response) {
         const { status, message } = response
@@ -57,7 +58,7 @@ const NdcTable: FC = (): JSX.Element => {
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
           if (!!data && (data.length > 1 || isLast(data?.length, page))) {
-            await fetchAllNdcCodes()
+            await fetchAllMvxCodes()
           } else {
             dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, isLast?.length || 0) })
           }
@@ -92,8 +93,8 @@ const NdcTable: FC = (): JSX.Element => {
   };
 
   const handleDelete = async () => {
-    delId && await removeNdcCode({
-      variables: { removeNdcCodeInput: { id: delId } }
+    delId && await removeMvxCode({
+      variables: { removeMvxCodeInput: { id: delId } }
     })
   }
 
@@ -104,15 +105,15 @@ const NdcTable: FC = (): JSX.Element => {
   });
 
 
-  const fetchAllNdcCodes = useCallback(async () => {
+  const fetchAllMvxCodes = useCallback(async () => {
     try {
-      await findAllNdcCodes({ variables: { findAllNdcInput: { paginationOptions: { limit: PAGE_LIMIT, page } } } })
+      await findAllMvxCodes({ variables: { findAllMvxInput: { paginationOptions: { limit: PAGE_LIMIT, page } } } })
     } catch (error) { }
-  }, [findAllNdcCodes, page])
+  }, [findAllMvxCodes, page])
 
   useEffect(() => {
-    fetchAllNdcCodes()
-  }, [fetchAllNdcCodes])
+    fetchAllMvxCodes()
+  }, [fetchAllMvxCodes])
 
 
   return (
@@ -120,7 +121,7 @@ const NdcTable: FC = (): JSX.Element => {
       <Grid container spacing={3}>
         <Grid item md={12} sm={12} xs={12}>
           <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
-            <Typography variant='h3'>{NDC_TEXT}</Typography>
+            <Typography variant='h3'>{MVX_TEXT}</Typography>
             <Button
               variant='contained' color='primary'
               startIcon={<Box width={20}><AddWhiteIcon /></Box>}
@@ -140,7 +141,9 @@ const NdcTable: FC = (): JSX.Element => {
                 <TableHead>
                   <TableRow>
                     {renderTh(CODE)}
-                    {renderTh(DESCRIPTION)}
+                    {renderTh(NAME)}
+                    {renderTh(STATUS)}
+                    {renderTh(NOTES)}
                     {renderTh(ACTIONS)}
                   </TableRow>
                 </TableHead>
@@ -153,16 +156,25 @@ const NdcTable: FC = (): JSX.Element => {
                   </TableRow>
                 ) : <TableBody>
                   {data?.map((icdCode) => {
-                    const { id, code, description } = icdCode ?? {}
+                    const { id, manufacturerName, mvxCode, notes, mvxStatus } = icdCode ?? {}
                     return (
                       <TableRow>
                         <TableCell scope="row">
-                          <Typography>{code ?? DASHES}</Typography>
+                          <Typography>{mvxCode ?? DASHES}</Typography>
                         </TableCell>
 
                         <TableCell scope="row">
-                          <Typography>{description ?? DASHES}</Typography>
+                          <Typography>{manufacturerName ?? DASHES}</Typography>
                         </TableCell>
+
+                        <TableCell scope="row">
+                          <Typography>{mvxStatus ?? DASHES}</Typography>
+                        </TableCell>
+
+                        <TableCell scope="row">
+                          <Typography>{notes ?? DASHES}</Typography>
+                        </TableCell>
+
                         <TableCell scope="row">
                           <Box display='flex' alignItems='center'>
 
@@ -210,7 +222,7 @@ const NdcTable: FC = (): JSX.Element => {
         isEdit={!!itemId}
         handleClose={handleModalClose}
         dispatcher={dispatch}
-        fetch={() => fetchAllNdcCodes()}
+        fetch={() => fetchAllMvxCodes()}
       />}
 
       {totalPages > 1 && !loading && (
@@ -228,4 +240,4 @@ const NdcTable: FC = (): JSX.Element => {
   )
 }
 
-export default NdcTable
+export default MvxTable

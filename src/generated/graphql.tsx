@@ -1437,6 +1437,14 @@ export type CreateModifierInput = {
   name?: Maybe<Scalars['String']>;
 };
 
+export type CreateMvxCodeInput = {
+  manufacturerName: Scalars['String'];
+  mvxCode?: Maybe<Scalars['String']>;
+  mvxStatus?: Maybe<Scalars['String']>;
+  notes?: Maybe<Scalars['String']>;
+  updateDate?: Maybe<Scalars['String']>;
+};
+
 export type CreateNdcCodeInput = {
   code: Scalars['String'];
   description?: Maybe<Scalars['String']>;
@@ -2534,6 +2542,10 @@ export type GetModifierInput = {
   id: Scalars['String'];
 };
 
+export type GetMvxCodeInput = {
+  id: Scalars['String'];
+};
+
 export type GetNdcCodeInput = {
   id: Scalars['String'];
 };
@@ -3101,6 +3113,7 @@ export type Mutation = {
   createLiveClaimFeed: Array<LiveClaimFeed>;
   createLoincCode: LoincCodePayload;
   createModifier: ModifierPayload;
+  createMvxCode: MvxPayload;
   createNdcCode: NdcPayload;
   createPatient: PatientPayload;
   createPatientConsent: PatientConsentPayload;
@@ -3144,6 +3157,7 @@ export type Mutation = {
   removeLabTest: LabTestPayload;
   removeLabTestObservation: LabTestObservationPayload;
   removeModifier: ModifierPayload;
+  removeMvxCode: MvxPayload;
   removeNdcCode: NdcPayload;
   removePatient: PatientPayload;
   removePatientAllergy: PatientAllergyPayload;
@@ -3192,6 +3206,7 @@ export type Mutation = {
   updateLabTestsByOrderNum: LabTestsPayload;
   updateLoincCode: LoincCodePayload;
   updateModifier: ModifierPayload;
+  updateMvxCode: MvxPayload;
   updateNdcCode: NdcPayload;
   updatePassword: UserPayload;
   updatePatient: PatientPayload;
@@ -3411,6 +3426,11 @@ export type MutationCreateModifierArgs = {
 };
 
 
+export type MutationCreateMvxCodeArgs = {
+  createMvxCodeInput: CreateMvxCodeInput;
+};
+
+
 export type MutationCreateNdcCodeArgs = {
   createNdcCodeInput: CreateNdcCodeInput;
 };
@@ -3623,6 +3643,11 @@ export type MutationRemoveLabTestObservationArgs = {
 
 export type MutationRemoveModifierArgs = {
   removeModifierInput: RemoveModifierInput;
+};
+
+
+export type MutationRemoveMvxCodeArgs = {
+  removeMvxCodeInput: RemoveMvxCodeInput;
 };
 
 
@@ -3861,6 +3886,11 @@ export type MutationUpdateModifierArgs = {
 };
 
 
+export type MutationUpdateMvxCodeArgs = {
+  updateMvxCodeInput: UpdateMvxCodeInput;
+};
+
+
 export type MutationUpdateNdcCodeArgs = {
   updateNdcCodeInput: UpdateNdcCodeInput;
 };
@@ -3988,6 +4018,12 @@ export type MutationVerifyEmailArgs = {
 
 export type MutationVerifyOtpArgs = {
   verifyCodeInput: VerifyCodeInput;
+};
+
+export type MvxPayload = {
+  __typename?: 'MvxPayload';
+  mvxCode?: Maybe<Mvx>;
+  response?: Maybe<ResponsePayloadResponse>;
 };
 
 export type Ndc = {
@@ -5119,6 +5155,7 @@ export type Query = {
   getInsurance: InsurancePayload;
   getLabTest: LabTestPayload;
   getModifier: ModifierPayload;
+  getMvxCode: MvxPayload;
   getNdcCode: NdcPayload;
   getPatient: PatientPayload;
   getPatientAllergy: PatientAllergyPayload;
@@ -5658,6 +5695,11 @@ export type QueryGetModifierArgs = {
 };
 
 
+export type QueryGetMvxCodeArgs = {
+  getMvxCodeInput: GetMvxCodeInput;
+};
+
+
 export type QueryGetNdcCodeArgs = {
   getNdcCodeInput: GetNdcCodeInput;
 };
@@ -6050,6 +6092,10 @@ export type RemoveLabTestObservation = {
 };
 
 export type RemoveModifierInput = {
+  id: Scalars['String'];
+};
+
+export type RemoveMvxCodeInput = {
   id: Scalars['String'];
 };
 
@@ -7378,6 +7424,15 @@ export type UpdateModifierInput = {
   description?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   name?: Maybe<Scalars['String']>;
+};
+
+export type UpdateMvxCodeInput = {
+  id: Scalars['String'];
+  manufacturerName?: Maybe<Scalars['String']>;
+  mvxCode?: Maybe<Scalars['String']>;
+  mvxStatus?: Maybe<Scalars['String']>;
+  notes?: Maybe<Scalars['String']>;
+  updateDate?: Maybe<Scalars['String']>;
 };
 
 export type UpdateNdcCodeInput = {
@@ -9362,6 +9417,34 @@ export type FindAllMvxQueryVariables = Exact<{
 
 
 export type FindAllMvxQuery = { __typename?: 'Query', findAllMvx: { __typename?: 'FindAllMvxPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, mvxs?: Array<{ __typename?: 'MVX', id: string, notes?: string | null, mvxCode?: string | null, mvxStatus?: string | null, manufacturerName?: string | null }> | null } };
+
+export type GetMvxCodeQueryVariables = Exact<{
+  getMvxCodeInput: GetMvxCodeInput;
+}>;
+
+
+export type GetMvxCodeQuery = { __typename?: 'Query', getMvxCode: { __typename?: 'MvxPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, mvxCode?: { __typename?: 'MVX', id: string, notes?: string | null, mvxCode?: string | null, mvxStatus?: string | null, manufacturerName?: string | null } | null } };
+
+export type CreateMvxCodeMutationVariables = Exact<{
+  createMvxCodeInput: CreateMvxCodeInput;
+}>;
+
+
+export type CreateMvxCodeMutation = { __typename?: 'Mutation', createMvxCode: { __typename?: 'MvxPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, mvxCode?: { __typename?: 'MVX', id: string } | null } };
+
+export type UpdateMvxCodeMutationVariables = Exact<{
+  updateMvxCodeInput: UpdateMvxCodeInput;
+}>;
+
+
+export type UpdateMvxCodeMutation = { __typename?: 'Mutation', updateMvxCode: { __typename?: 'MvxPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, mvxCode?: { __typename?: 'MVX', id: string } | null } };
+
+export type RemoveMvxCodeMutationVariables = Exact<{
+  removeMvxCodeInput: RemoveMvxCodeInput;
+}>;
+
+
+export type RemoveMvxCodeMutation = { __typename?: 'Mutation', removeMvxCode: { __typename?: 'MvxPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, mvxCode?: { __typename?: 'MVX', id: string } | null } };
 
 export type FindAllNdcQueryVariables = Exact<{
   findAllNdcInput: FindAllNdcInput;
@@ -20004,6 +20087,172 @@ export function useFindAllMvxLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type FindAllMvxQueryHookResult = ReturnType<typeof useFindAllMvxQuery>;
 export type FindAllMvxLazyQueryHookResult = ReturnType<typeof useFindAllMvxLazyQuery>;
 export type FindAllMvxQueryResult = Apollo.QueryResult<FindAllMvxQuery, FindAllMvxQueryVariables>;
+export const GetMvxCodeDocument = gql`
+    query GetMvxCode($getMvxCodeInput: GetMvxCodeInput!) {
+  getMvxCode(getMvxCodeInput: $getMvxCodeInput) {
+    response {
+      status
+      error
+      message
+    }
+    mvxCode {
+      id
+      notes
+      mvxCode
+      mvxStatus
+      manufacturerName
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetMvxCodeQuery__
+ *
+ * To run a query within a React component, call `useGetMvxCodeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMvxCodeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMvxCodeQuery({
+ *   variables: {
+ *      getMvxCodeInput: // value for 'getMvxCodeInput'
+ *   },
+ * });
+ */
+export function useGetMvxCodeQuery(baseOptions: Apollo.QueryHookOptions<GetMvxCodeQuery, GetMvxCodeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMvxCodeQuery, GetMvxCodeQueryVariables>(GetMvxCodeDocument, options);
+      }
+export function useGetMvxCodeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMvxCodeQuery, GetMvxCodeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMvxCodeQuery, GetMvxCodeQueryVariables>(GetMvxCodeDocument, options);
+        }
+export type GetMvxCodeQueryHookResult = ReturnType<typeof useGetMvxCodeQuery>;
+export type GetMvxCodeLazyQueryHookResult = ReturnType<typeof useGetMvxCodeLazyQuery>;
+export type GetMvxCodeQueryResult = Apollo.QueryResult<GetMvxCodeQuery, GetMvxCodeQueryVariables>;
+export const CreateMvxCodeDocument = gql`
+    mutation CreateMvxCode($createMvxCodeInput: CreateMvxCodeInput!) {
+  createMvxCode(createMvxCodeInput: $createMvxCodeInput) {
+    response {
+      status
+      error
+      message
+    }
+    mvxCode {
+      id
+    }
+  }
+}
+    `;
+export type CreateMvxCodeMutationFn = Apollo.MutationFunction<CreateMvxCodeMutation, CreateMvxCodeMutationVariables>;
+
+/**
+ * __useCreateMvxCodeMutation__
+ *
+ * To run a mutation, you first call `useCreateMvxCodeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMvxCodeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMvxCodeMutation, { data, loading, error }] = useCreateMvxCodeMutation({
+ *   variables: {
+ *      createMvxCodeInput: // value for 'createMvxCodeInput'
+ *   },
+ * });
+ */
+export function useCreateMvxCodeMutation(baseOptions?: Apollo.MutationHookOptions<CreateMvxCodeMutation, CreateMvxCodeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateMvxCodeMutation, CreateMvxCodeMutationVariables>(CreateMvxCodeDocument, options);
+      }
+export type CreateMvxCodeMutationHookResult = ReturnType<typeof useCreateMvxCodeMutation>;
+export type CreateMvxCodeMutationResult = Apollo.MutationResult<CreateMvxCodeMutation>;
+export type CreateMvxCodeMutationOptions = Apollo.BaseMutationOptions<CreateMvxCodeMutation, CreateMvxCodeMutationVariables>;
+export const UpdateMvxCodeDocument = gql`
+    mutation UpdateMvxCode($updateMvxCodeInput: UpdateMvxCodeInput!) {
+  updateMvxCode(updateMvxCodeInput: $updateMvxCodeInput) {
+    response {
+      status
+      error
+      message
+    }
+    mvxCode {
+      id
+    }
+  }
+}
+    `;
+export type UpdateMvxCodeMutationFn = Apollo.MutationFunction<UpdateMvxCodeMutation, UpdateMvxCodeMutationVariables>;
+
+/**
+ * __useUpdateMvxCodeMutation__
+ *
+ * To run a mutation, you first call `useUpdateMvxCodeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateMvxCodeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateMvxCodeMutation, { data, loading, error }] = useUpdateMvxCodeMutation({
+ *   variables: {
+ *      updateMvxCodeInput: // value for 'updateMvxCodeInput'
+ *   },
+ * });
+ */
+export function useUpdateMvxCodeMutation(baseOptions?: Apollo.MutationHookOptions<UpdateMvxCodeMutation, UpdateMvxCodeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateMvxCodeMutation, UpdateMvxCodeMutationVariables>(UpdateMvxCodeDocument, options);
+      }
+export type UpdateMvxCodeMutationHookResult = ReturnType<typeof useUpdateMvxCodeMutation>;
+export type UpdateMvxCodeMutationResult = Apollo.MutationResult<UpdateMvxCodeMutation>;
+export type UpdateMvxCodeMutationOptions = Apollo.BaseMutationOptions<UpdateMvxCodeMutation, UpdateMvxCodeMutationVariables>;
+export const RemoveMvxCodeDocument = gql`
+    mutation RemoveMvxCode($removeMvxCodeInput: RemoveMvxCodeInput!) {
+  removeMvxCode(removeMvxCodeInput: $removeMvxCodeInput) {
+    response {
+      status
+      error
+      message
+    }
+    mvxCode {
+      id
+    }
+  }
+}
+    `;
+export type RemoveMvxCodeMutationFn = Apollo.MutationFunction<RemoveMvxCodeMutation, RemoveMvxCodeMutationVariables>;
+
+/**
+ * __useRemoveMvxCodeMutation__
+ *
+ * To run a mutation, you first call `useRemoveMvxCodeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveMvxCodeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeMvxCodeMutation, { data, loading, error }] = useRemoveMvxCodeMutation({
+ *   variables: {
+ *      removeMvxCodeInput: // value for 'removeMvxCodeInput'
+ *   },
+ * });
+ */
+export function useRemoveMvxCodeMutation(baseOptions?: Apollo.MutationHookOptions<RemoveMvxCodeMutation, RemoveMvxCodeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveMvxCodeMutation, RemoveMvxCodeMutationVariables>(RemoveMvxCodeDocument, options);
+      }
+export type RemoveMvxCodeMutationHookResult = ReturnType<typeof useRemoveMvxCodeMutation>;
+export type RemoveMvxCodeMutationResult = Apollo.MutationResult<RemoveMvxCodeMutation>;
+export type RemoveMvxCodeMutationOptions = Apollo.BaseMutationOptions<RemoveMvxCodeMutation, RemoveMvxCodeMutationVariables>;
 export const FindAllNdcDocument = gql`
     query FindAllNdc($findAllNdcInput: FindAllNdcInput!) {
   findAllNdc(findAllNdcInput: $findAllNdcInput) {

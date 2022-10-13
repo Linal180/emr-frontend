@@ -52,7 +52,8 @@ export const NO_SPACE_AT_BOTH_ENDS_REGEX = /^[^\s]+(\s+[^\s]+)*$/;
 export const MAMMOGRAPHY_CERT_NUMBER_REGEX = /^[A-Z]{3}-[A-Z]{2}-\d{6}$/;
 export const BANK_ACCOUNT_REGEX = /^([0-9]{11})|([0-9]{2}-[0-9]{3}-[0-9]{6})$/;
 export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
-export const NDC_REGEX  = /^(?:\d{4}-\d{4}-\d{2}|\d{5}-(?:\d{3}-\d{2}|\d{4}-\d{1,2}))$/;
+export const NDC_REGEX = /^(?:\d{4}-\d{4}-\d{2}|\d{5}-(?:\d{3}-\d{2}|\d{4}-\d{1,2}))$/;
+export const MVX_CODE_REGEX = /^([A-Z]{2}|[A-Z]{3})$/;
 
 // system roles
 export enum SYSTEM_ROLES {
@@ -545,6 +546,7 @@ export const ADMINISTRATION_DATE = "Administration Date";
 export const ADMINISTER_BY = "Administer By";
 export const SITE_TEXT = "Site";
 export const NDC_TEXT = "NDC";
+export const MVX_TEXT = "MVX";
 export const VIS_GIVEN_TEXT = "VIS Given";
 export const DATE_ON_VIS = "Date on VIS";
 export const LOT_NO_TEXT = "Lot #";
@@ -665,6 +667,8 @@ export const FACILITY_SCHEDULE_DESCRIPTION =
   "Set timings of facility and manage slots";
 export const NDC_DESCRIPTION =
   "Create and edit National Drug Code (NDC) inventory for your practice";
+export const MVX_DESCRIPTION =
+  "Create and edit MVX inventory for your practice";
 export const CLINICAL_TEXT = "Clinical";
 export const FORM_BUILDER = "Form Builder";
 export const AUDIT_LOG = "Audit Log";
@@ -1747,7 +1751,8 @@ export const PATIENT_APPOINTMENT_CANCEL = `${PUBLIC_APPOINTMENT_ROUTE}/appointme
 export const INSURANCE_ELIGIBILITY_ROUTE = `/insurance-eligibility`;
 export const ICD_10_ROUTE = `/icd-10`;
 export const CPT_CODE_ROUTE = `/cpt-code`;
-export const NDC_ROUTE = `/ndc`;
+export const NDC_ROUTE = `/ndc-code`;
+export const MVX_ROUTE = `/mvx-code`;
 
 // Facility Routes
 export const BILLING_PROFILE_ROUTE = "billing-profile";
@@ -2798,6 +2803,11 @@ export const INVENTORY_ITEMS = [
     name: NDC_TEXT,
     link: NDC_ROUTE,
     desc: NDC_DESCRIPTION,
+  },
+  {
+    name: MVX_TEXT,
+    link: MVX_ROUTE,
+    desc: MVX_DESCRIPTION,
   },
   // {
   //   name: MEDICINES,
@@ -4690,3 +4700,19 @@ export enum QuestionType {
   DATE = 'date',
   NUMBER = 'number'
 }
+
+export enum STATUS_ENUM {
+  ACTIVE = "Active",
+  IN_ACTIVE = "Inactive",
+}
+
+export const STATUS_MAPPED = [
+  {
+    id: STATUS_ENUM.ACTIVE,
+    name: STATUS_ENUM.ACTIVE
+  },
+  {
+    id: STATUS_ENUM.IN_ACTIVE,
+    name: STATUS_ENUM.IN_ACTIVE
+  }
+]

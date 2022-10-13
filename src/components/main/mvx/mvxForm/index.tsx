@@ -7,28 +7,35 @@ import Alert from '../../../common/Alert';
 import InputController from '../../../../controller';
 import TableLoader from '../../../common/TableLoader';
 //interfaces, constants, schema, graphql
-import { NdcCodeSchema } from '../../../../validationSchemas';
+import { MvxCodeSchema } from '../../../../validationSchemas';
 import { ActionType } from '../../../../reducers/cptCodeReducer';
-import { NdcCodeFormProps, NdcCodeFormType, SideDrawerCloseReason } from '../../../../interfacesTypes';
-import { ADD, CANCEL, CODE, DESCRIPTION, EDIT, NDC_TEXT, SOMETHING_WENT_WRONG, SUBMIT } from '../../../../constants';
-import { useCreateNdcCodeMutation, useGetNdcCodeLazyQuery, useUpdateNdcCodeMutation } from '../../../../generated/graphql';
+import { MvxCodeFormProps, MvxCodeFormType, SideDrawerCloseReason } from '../../../../interfacesTypes';
+import { ADD, CANCEL, CODE, EDIT, EMPTY_OPTION, MVX_TEXT, NAME, NOTE, SOMETHING_WENT_WRONG, STATUS, STATUS_MAPPED, SUBMIT } from '../../../../constants';
+import { useCreateMvxCodeMutation, useGetMvxCodeLazyQuery, useUpdateMvxCodeMutation } from '../../../../generated/graphql';
+import Selector from '../../../common/Selector';
 
-const NdcForm: FC<NdcCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, dispatcher }): JSX.Element => {
-  const methods = useForm<NdcCodeFormType>({ resolver: yupResolver(NdcCodeSchema) });
+const MvxForm: FC<MvxCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, dispatcher }): JSX.Element => {
+  const methods = useForm<MvxCodeFormType>({ resolver: yupResolver(MvxCodeSchema) });
   const { handleSubmit, setValue, } = methods;
 
-  const [createNdcCode, { loading: createLoading }] = useCreateNdcCodeMutation({
+  const resetForm = () => {
+    setValue('notes', '')
+    setValue('mvxCode', '')
+    setValue('manufacturerName', '')
+    setValue('mvxStatus', EMPTY_OPTION)
+  }
+
+  const [createMvxCode, { loading: createLoading }] = useCreateMvxCodeMutation({
     onError: ({ message }) => {
       Alert.error(message)
     },
     onCompleted: (data) => {
-      const { createNdcCode } = data;
-      const { ndcCode, response } = createNdcCode || {}
+      const { createMvxCode } = data;
+      const { mvxCode, response } = createMvxCode || {}
       const { status, message } = response || {}
-      const { id } = ndcCode || {}
+      const { id } = mvxCode || {}
       if (id && status === 200) {
-        setValue('code', '')
-        setValue('description', '')
+        resetForm()
         message && Alert.success(message)
         fetch && fetch()
         handleClose(false)
@@ -39,15 +46,17 @@ const NdcForm: FC<NdcCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, d
     }
   })
 
-  const [getNdcCode, { loading: getLoading }] = useGetNdcCodeLazyQuery({
+  const [getMvxCode, { loading: getLoading }] = useGetMvxCodeLazyQuery({
     onCompleted: (data) => {
-      const { getNdcCode } = data || {}
-      const { ndcCode, response } = getNdcCode || {}
+      const { getMvxCode } = data || {}
+      const { mvxCode, response } = getMvxCode || {}
       const { status } = response || {}
-      if (status === 200 && ndcCode) {
-        const { code, description } = ndcCode;
-        code && setValue('code', code)
-        description && setValue('description', description)
+      if (status === 200 && mvxCode) {
+        const { mvxCode: code, manufacturerName, notes, mvxStatus } = mvxCode;
+        code && setValue('mvxCode', code)
+        notes && setValue('notes', notes)
+        mvxStatus && setValue('mvxStatus', { id: mvxStatus, name: mvxStatus })
+        manufacturerName && setValue('manufacturerName', manufacturerName)
       } else {
         Alert.error(SOMETHING_WENT_WRONG)
       }
@@ -57,16 +66,15 @@ const NdcForm: FC<NdcCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, d
     }
   })
 
-  const [updateNdcCode, { loading: updateLoading }] = useUpdateNdcCodeMutation({
+  const [updateMvxCode, { loading: updateLoading }] = useUpdateMvxCodeMutation({
     onCompleted: (data) => {
-      const { updateNdcCode } = data;
-      const { ndcCode, response } = updateNdcCode || {}
+      const { updateMvxCode } = data;
+      const { mvxCode, response } = updateMvxCode || {}
       const { status, message } = response || {}
-      const { id } = ndcCode || {}
+      const { id } = mvxCode || {}
       if (id && status === 200) {
         dispatcher && dispatcher({ type: ActionType.SET_ITEM_ID, itemId: '' })
-        setValue('code', '')
-        setValue('description', '')
+        resetForm()
         message && Alert.success(message)
         fetch && fetch()
         handleClose(false)
@@ -80,22 +88,23 @@ const NdcForm: FC<NdcCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, d
     }
   })
 
-  const onSubmit: SubmitHandler<NdcCodeFormType> = async (values) => {
-    const { code, description } = values;
+  const onSubmit: SubmitHandler<MvxCodeFormType> = async (values) => {
+    const { manufacturerName, mvxStatus: status, mvxCode, notes } = values;
+    const { id: mvxStatus } = status
     try {
       if (isEdit && id) {
-        await updateNdcCode({ variables: { updateNdcCodeInput: { id, code, description } } })
+        await updateMvxCode({ variables: { updateMvxCodeInput: { id, manufacturerName, mvxCode, notes, mvxStatus } } })
       } else {
-        await createNdcCode({ variables: { createNdcCodeInput: { code, description } } })
+        await createMvxCode({ variables: { createMvxCodeInput: { manufacturerName, mvxCode, notes, mvxStatus } } })
       }
     } catch (error) { }
   }
 
   const fetchIcdCode = useCallback(async () => {
     try {
-      id && await getNdcCode({ variables: { getNdcCodeInput: { id } } })
+      id && await getMvxCode({ variables: { getMvxCodeInput: { id } } })
     } catch (error) { }
-  }, [id, getNdcCode])
+  }, [id, getMvxCode])
 
   useEffect(() => {
     isEdit && id && fetchIcdCode()
@@ -109,8 +118,7 @@ const NdcForm: FC<NdcCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, d
 
   const cancelHandler = () => {
     isEdit && dispatcher && dispatcher({ type: ActionType.SET_ITEM_ID, itemId: '' })
-    setValue('code', '')
-    setValue('description', '')
+    resetForm()
     handleClose(false)
   }
 
@@ -118,7 +126,7 @@ const NdcForm: FC<NdcCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, d
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'sm'} fullWidth>
-      <DialogTitle>{`${isEdit ? EDIT : ADD} ${NDC_TEXT}`}</DialogTitle>
+      <DialogTitle>{`${isEdit ? EDIT : ADD} ${MVX_TEXT}`}</DialogTitle>
       {loading ? <TableLoader numberOfColumns={1} numberOfRows={2} /> :
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -126,10 +134,19 @@ const NdcForm: FC<NdcCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, d
               <Grid container spacing={3}>
 
                 <Grid item xs={12}>
-                  <InputController controllerName='code' disabled={loading} controllerLabel={CODE} isRequired toUpperCase />
+                  <InputController controllerName='mvxCode' disabled={loading} controllerLabel={CODE} isRequired toUpperCase />
                 </Grid>
+
                 <Grid item xs={12}>
-                  <InputController controllerName='description' multiline disabled={loading} controllerLabel={DESCRIPTION} />
+                  <InputController controllerName='manufacturerName' disabled={loading} controllerLabel={NAME} isRequired />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Selector label={STATUS} name="mvxStatus" options={STATUS_MAPPED} addEmpty isRequired />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <InputController controllerName='notes' multiline disabled={loading} controllerLabel={NOTE} />
                 </Grid>
 
               </Grid>
@@ -151,4 +168,4 @@ const NdcForm: FC<NdcCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, d
   )
 }
 
-export default NdcForm
+export default MvxForm

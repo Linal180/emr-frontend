@@ -14,7 +14,7 @@ import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
 import { ATTACHMENT_TITLES, CONFIRMATION_MODAL_TYPE, ITEM_MODULE, UPFRONT_PAYMENT_TYPES } from "../constants";
 import {
   AddVaccineInput, AllDoctorPayload, Allergies, AppointmentsPayload, AppointmentStatus, Attachment, AttachmentPayload,
-  AttachmentType, BillingPayload, CodeType, Copay, CreateAppointmentInput, CreateContactInput, CreateCptCodeInput, CreateCptFeeScheduleInput, CreateDoctorItemInput, CreateExternalAppointmentItemInput, CreateFeeScheduleInput, CreateIcdCodeInput, CreatePatientAllergyInput, CreatePatientItemInput, CreatePatientMedicationInput, CreatePracticeItemInput,
+  AttachmentType, BillingPayload, CodeType, Copay, CreateAppointmentInput, CreateContactInput, CreateCptCodeInput, CreateCptFeeScheduleInput, CreateDoctorItemInput, CreateExternalAppointmentItemInput, CreateFeeScheduleInput, CreateIcdCodeInput, CreateMvxCodeInput, CreatePatientAllergyInput, CreatePatientItemInput, CreatePatientMedicationInput, CreatePracticeItemInput,
   CreateProblemInput, CreateScheduleInput, CreateServiceInput, CreateStaffItemInput, Cvx, DependentQuestions, Doctor, DoctorPatient,
   FacilitiesPayload, FamilyHistory, FetchBillingClaimStatusesInput, FieldsInputs, FormElement, FormTabsInputs,
   IcdCodes, IcdCodesWithSnowMedCode, LabTests, LabTestsPayload, LoginUserInput, LoincCodePayload, Medications, Patient, PatientAllergies,
@@ -45,6 +45,7 @@ import { Action as PracticeAction } from "../reducers/practiceReducer";
 import { Action as ScheduleAction, State as ScheduleState } from "../reducers/scheduleReducer";
 import { Action as VaccineAction } from "../reducers/vaccinesReducer";
 import { Action as NdcCodeAction } from "../reducers/ndcCodeReducer";
+import { Action as MvxCodeAction } from "../reducers/mvxCodeReducer";
 
 export type Order = 'ASC' | 'DESC';
 type Key = string | number | undefined;
@@ -2372,6 +2373,7 @@ export type IcdCodesTableProps = {
 export type ICD10FormType = Pick<CreateIcdCodeInput, 'code' | 'description'> & { priority: string };
 export type CptCodeFormType = Pick<CreateCptCodeInput, 'code' | 'shortDescription'> & { priority: string };
 export type NdcCodeFormType = { code: string, description: string };
+export type MvxCodeFormType = Pick<CreateMvxCodeInput, 'manufacturerName' | 'mvxCode' | 'notes'> & { mvxStatus: SelectorOption }
 
 export type ICD10FormProps = {
   open: boolean;
@@ -2402,6 +2404,15 @@ export type NdcCodeFormProps = {
   fetch?: Function;
   id?: string;
   dispatcher?: Dispatch<NdcCodeAction>
+  handleClose: (open: boolean) => void
+}
+
+export type MvxCodeFormProps = {
+  open: boolean;
+  isEdit: boolean;
+  fetch?: Function;
+  id?: string;
+  dispatcher?: Dispatch<MvxCodeAction>
   handleClose: (open: boolean) => void
 }
 
