@@ -251,13 +251,19 @@ const VisitModal: FC<VisitModalProps> = ({ isOpen, handleClose, appointmentInfo 
     } catch (error) { }
   }, [appointmentId, getPatientTriageNotes, patientId])
 
-  useEffect(() => {
-    fetchPatientIllnessHistory()
-    fetchPatientReviewOfSystem()
-    fetchPatientChartingView()
-    fetchProblems()
-    fetchPatientAllTriageNotes()
+  const fetchVisitData = useCallback(() => {
+    try {
+      fetchPatientIllnessHistory()
+      fetchPatientReviewOfSystem()
+      fetchPatientChartingView()
+      fetchProblems()
+      fetchPatientAllTriageNotes()
+    } catch (error) { }
   }, [fetchPatientAllTriageNotes, fetchPatientChartingView, fetchPatientIllnessHistory, fetchPatientReviewOfSystem, fetchProblems])
+
+  useEffect(() => {
+    fetchVisitData()
+  }, [fetchVisitData])
 
   const loading = getPatientIllnessHistoryLoading || getPatientChartingReviewLoading || patientReviewOfSystemLoading || findAllPatientProblemsLoading || triageNotesLoading
 

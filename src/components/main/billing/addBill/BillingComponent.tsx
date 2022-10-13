@@ -385,7 +385,6 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
 
     onCompleted(data) {
       const { findAppointmentInsuranceStatus } = data || {};
-      debugger
 
       if (findAppointmentInsuranceStatus) {
         const { insuranceStatus } = findAppointmentInsuranceStatus
@@ -588,16 +587,16 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
 
   const fetchDetail = useCallback(async () => {
     if (shouldDisableEdit) {
-      fetchBillingDetails()
+      await fetchBillingDetails()
     } else {
       await fetchPatientInsurances()
-      fetchAppointment()
-      fetchAllPatientsProviders()
-      fetchFacility()
-      fetchClaimNumber()
-      fetchPatientAppointment()
-      fetchBillingDetails()
-      findInsuranceStatus()
+      await fetchAppointment()
+      await fetchAllPatientsProviders()
+      await fetchFacility()
+      await fetchClaimNumber()
+      await fetchPatientAppointment()
+      await fetchBillingDetails()
+      await findInsuranceStatus()
     }
   }, [
     fetchBillingDetails, findInsuranceStatus, fetchPatientAppointment, fetchClaimNumber, fetchFacility,

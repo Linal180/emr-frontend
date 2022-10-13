@@ -73,22 +73,9 @@ query FindAllAppointmentVisits($appointmentInput: AppointmentInput!) {
 
     appointments {
       id
-      status
       scheduleEndDateTime
       scheduleStartDateTime
       appointmentDate
-      token
-      reason
-      primaryInsurance
-      billingStatus
-      checkInActiveStep
-      appointmentCreateType
-
-      provider {
-        id
-        firstName
-        lastName
-      }
 
       patient {
         firstName
@@ -140,16 +127,10 @@ query FindAllAppointmentVisits($appointmentInput: AppointmentInput!) {
         }
       }
 
-      facility {
-        id
-        name
-      }
-
       appointmentType {
         id
         name
         price
-        color
         duration
       }
     }

@@ -222,7 +222,6 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
     })] : [TRIAGE_NOTE_OPTION, ...[...PATIENT_CHARTING_TABS, VISIT_OPTION]]
 
   const handleDischarge = () => {
-    debugger
     if (isInTake) {
       labOrderHandler && labOrderHandler()
     } else {
