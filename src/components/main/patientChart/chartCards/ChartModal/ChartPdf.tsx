@@ -35,6 +35,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: '12px',
   },
+  fieldTitle3: {
+    padding: '2px 5px',
+    fontWeight: 'bold',
+    fontSize: '12px',
+  },
   fieldText: {
     padding: '2px 5px',
     wordBreak: 'break-all !important',
@@ -50,6 +55,14 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  alignCenter: {
+    alignItems: 'center',
+    border: '1px solid red',
+  },
+  rowView: {
+    display: "flex",
+    flexDirection: "row"
   },
   borderStyle: {
     borderStyle: 'solid',
@@ -301,7 +314,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                     {triageNotes?.length ? triageNotes?.map((triageNote) => {
                       const { notes } = triageNote || {}
                       return <Text style={styles.fieldText}>{notes || ''}</Text>
-                    }) : <Text style={[styles.fieldTitle]}>{NO_NOTES_ADDED}</Text>}
+                    }) : <Text style={[styles.fieldTitle3]}>{NO_NOTES_ADDED}</Text>}
                   </View>
 
                   {/* spacing-row */}
@@ -487,7 +500,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                     return (
                       <Text style={[styles.fieldText, styles.colorRed]}>{name}</Text>
                     )
-                  }) : <Text style={[styles.fieldTitle]}>{NO_DRUG_ALLERGIES_RECORDED}</Text>}
+                  }) : <Text style={[styles.fieldTitle3]}>{NO_DRUG_ALLERGIES_RECORDED}</Text>}
                 </View>
 
                 <View style={[styles.w30]}>
@@ -495,7 +508,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                   {drugAllergies?.length ? drugAllergies?.map((allergyValue) => {
                     const { allergySeverity } = allergyValue || {}
                     return (
-                      <Text style={[styles.fieldText, styles.colorRed]}>{allergySeverity}</Text>
+                      <Text style={[styles.fieldText, styles.colorRed]}>{formatValue(allergySeverity)}</Text>
                     )
                   }) : <Text style={[styles.fieldTitle]}> </Text>}
                 </View>
@@ -560,7 +573,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                   {foodAllergies?.length ? foodAllergies?.map((allergyValue) => {
                     const { allergyStartDate, allergyOnset } = allergyValue || {}
                     return (
-                      <Text style={[styles.fieldText, styles.colorRed]}>{allergyStartDate ? getFormatDateString(allergyStartDate, 'MM-DD-YYYY') : formatValue(allergyOnset)}</Text>
+                      <Text style={[styles.fieldText]}>{allergyStartDate ? getFormatDateString(allergyStartDate, 'MM-DD-YYYY') : formatValue(allergyOnset)}</Text>
                     )
                   }) : <Text style={[styles.fieldTitle]}> </Text>}
                 </View>
@@ -606,7 +619,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                   </View>
                 </View>
 
-                <View style={[styles.w20]}>
+                <View style={[styles.w30]}>
                   <Text style={[styles.fieldTitle2,]}>{SEVERITY_REACTIONS}</Text>
                   {environmentAllergies?.length ? environmentAllergies?.map((allergyValue) => {
                     const { allergySeverity } = allergyValue || {}
@@ -621,7 +634,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                   {environmentAllergies?.length ? environmentAllergies?.map((allergyValue) => {
                     const { allergyStartDate, allergyOnset } = allergyValue || {}
                     return (
-                      <Text style={[styles.fieldText, styles.colorRed]}>{allergyStartDate ? getFormatDateString(allergyStartDate, 'MM-DD-YYYY') : formatValue(allergyOnset)}</Text>
+                      <Text style={[styles.fieldText]}>{allergyStartDate ? getFormatDateString(allergyStartDate, 'MM-DD-YYYY') : formatValue(allergyOnset)}</Text>
                     )
                   }) : <Text style={[styles.fieldTitle]}> </Text>}
                 </View>
@@ -794,18 +807,13 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
               {/* 12.1-row */}
               <View style={[styles.tableRow, styles.borderStyle,]}>
                 <View style={[styles.w40]}>
-                  <Text style={[styles.fieldTitle2,]}>{PROBLEM_TEXT}</Text>
+                  <Text style={[styles.fieldTitle2]}>{PROBLEM_TEXT}</Text>
 
                   {/* spacing-row */}
                   <View style={styles.tableRow}>
                     <View style={{ height: '10px' }}>
                     </View>
                   </View>
-
-                  {familyHistories?.length ? familyHistories?.map((familyHistory) => {
-                    const { name } = familyHistory || {}
-                    return <Text style={styles.fieldText}>{name}</Text>
-                  }) : <Text style={[styles.fieldTitle]}> </Text>}
                 </View>
 
                 <View style={[styles.w20]}>
@@ -816,12 +824,6 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                     <View style={{ height: '10px' }}>
                     </View>
                   </View>
-
-                  {familyHistories?.length ? familyHistories?.map((familyHistory) => {
-                    const { familyHistoryRelatives } = familyHistory || {}
-                    const { relativeName } = familyHistoryRelatives?.[0] || {}
-                    return <Text style={styles.fieldText}>{relativeName}</Text>
-                  }) : <Text style={[styles.fieldTitle]}> </Text>}
                 </View>
 
                 <View style={[styles.w20]}>
@@ -832,12 +834,6 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                     <View style={{ height: '10px' }}>
                     </View>
                   </View>
-
-                  {familyHistories?.length ? familyHistories?.map((familyHistory) => {
-                    const { familyHistoryRelatives } = familyHistory || {}
-                    const { onsetAge } = familyHistoryRelatives?.[0] || {}
-                    return <Text style={styles.fieldText}>{onsetAge}</Text>
-                  }) : <Text style={[styles.fieldTitle]}> </Text>}
                 </View>
 
                 <View style={[styles.w20]}>
@@ -848,13 +844,30 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                     <View style={{ height: '10px' }}>
                     </View>
                   </View>
-
-                  {familyHistories?.length ? familyHistories?.map((familyHistory) => {
-                    const { familyHistoryRelatives } = familyHistory || {}
-                    const { notes } = familyHistoryRelatives?.[0] || {}
-                    return <Text style={styles.fieldText}>{notes}</Text>
-                  }) : <Text style={[styles.fieldTitle]}> </Text>}
                 </View>
+              </View>
+
+              <View >
+                {
+                  familyHistories?.map((history) => {
+                    const { name, familyHistoryRelatives } = history || {}
+                    return (
+                      <>
+                        {familyHistoryRelatives?.map((family, index) => {
+                          const { notes, onsetAge, relativeName } = family || {}
+                          return (
+                            <View style={[styles.rowView]}>
+                              {index === 0 ? <View style={[styles.w40]}><Text style={[styles.fieldText]}>{name}</Text></View> : <View style={[styles.w40]}></View>}
+                              <View style={[styles.w20]}><Text style={[styles.fieldText]}>{formatValue(relativeName || '')}</Text></View>
+                              <View style={[styles.w20]}><Text style={[styles.fieldText]}>{onsetAge}</Text></View>
+                              <View style={[styles.w20]}><Text style={[styles.fieldText]}>{notes}</Text></View>
+                            </View>
+                          )
+                        })}
+                      </>
+                    )
+                  })
+                }
               </View>
 
               {/* spacing-row */}

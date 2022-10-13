@@ -191,6 +191,8 @@ export const ADD_COLUMNS_TEXT = "Add Columns";
 export const FORM_EMBED_TITLE = "Embed your form builder";
 export const FORM_NOT_PUBLISHED = "Form is not published";
 export const CONTACT_SUPPORT_TEAM = "Please Contact support team";
+export const REASON_FOR_VISIT = "Reason For Visit";
+export const HISTORY_OF_PATIENT_ILLNESS = "History of Patient Illness";
 export const CSS_CLASSES = "CSS Classes";
 export const PLACEHOLDER = "Placeholder";
 export const DROP_ITEM_TEXT = "Drop items here";
@@ -846,6 +848,7 @@ export const VALUE = "Value";
 export const VISIT = "Visit";
 export const ISSUES = "Issues";
 export const PRINT_PATIENT_CHART = "Print Patient Chart"
+export const PRINT_MEDICATION_RECORD = "Print Medication Record"
 export const LAB_TEST_STICKERS = "Lab Test Stickers";
 export const ALLOWED = "Allowed";
 export const PT_PAID = "Pt Paid";
@@ -3859,28 +3862,34 @@ export const REASON_FOR_VISIT_OPTION = {
   value: "1",
 }
 
-export const REVIEW_OPTION = {
+export const VISIT_OPTION = {
   icon: ReasonForVisit,
-  title: "Review",
+  title: "Visits",
+  value: "9",
+}
+
+// export const ASSESSMENT_PLAN_OPTION = {
+//   icon: AssessmentPlanIcon,
+//   title: "Assessment & Plan",
+//   value: "10",
+// }
+
+// export const PATIENT_HISTORY_OPTION = {
+//   icon: AssessmentPlanIcon,
+//   title: "HPI",
+//   value: "11",
+// }
+
+// export const REVIEW_OF_SYSTEM_OPTION = {
+//   icon: AssessmentPlanIcon,
+//   title: "ROS",
+//   value: "12",
+// }
+
+export const EXAM_OPTION = {
+  icon: AssessmentPlanIcon,
+  title: "Exam",
   value: "1",
-}
-
-export const ASSESSMENT_PLAN_OPTION = {
-  icon: AssessmentPlanIcon,
-  title: "Assessment & Plan",
-  value: "10",
-}
-
-export const PATIENT_HISTORY_OPTION = {
-  icon: AssessmentPlanIcon,
-  title: "HPI",
-  value: "11",
-}
-
-export const REVIEW_OF_SYSTEM_OPTION = {
-  icon: AssessmentPlanIcon,
-  title: "ROS",
-  value: "12",
 }
 
 export const PATIENT_CHARTING_MENU = [
@@ -3934,6 +3943,25 @@ export const HISTORY_CHARTING_TABS = [
   {
     title: "Surgical History",
     value: "3",
+  },
+]
+
+export const EXAM_TABS = [
+  {
+    title: "Review",
+    value: "1",
+  },
+  {
+    title: "HPI",
+    value: "2",
+  },
+  {
+    title: "ROS",
+    value: "3",
+  },
+  {
+    title: "Assessment & Plan",
+    value: "4",
   },
 ]
 

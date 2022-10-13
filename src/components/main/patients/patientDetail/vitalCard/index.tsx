@@ -7,7 +7,7 @@ import { BloodPressureIcon, HeartRateIcon } from "../../../../../assets/svgs";
 import AreaChartComponent from "../charts";
 // constants, history, styling block
 import {
-  BLOOD_PRESSURE_TEXT, BLOOD_PRESSURE_UNIT, HEART_RATE_TEXT, HEART_RATE_UNIT, LAST_READING_TEXT, N_A
+  BLOOD_PRESSURE_TEXT, BLOOD_PRESSURE_UNIT, DASHES, HEART_RATE_TEXT, HEART_RATE_UNIT, LAST_READING_TEXT, N_A
 } from "../../../../../constants";
 import { PatientVitalPayload, useFindAllPatientVitalsLazyQuery } from "../../../../../generated/graphql";
 import { GeneralFormProps, ParamsType } from "../../../../../interfacesTypes";
@@ -87,7 +87,7 @@ const VitalCard: FC<GeneralFormProps> = () => {
             </Box>
 
             <Box className='bloodPressure-measurement'>
-              <Typography variant="h2">{systolicBloodPressure ? `${systolicBloodPressure} / ${diastolicBloodPressure}` : N_A}
+              <Typography variant="h2">{systolicBloodPressure ? `${systolicBloodPressure} / ${diastolicBloodPressure}` : DASHES}
                 <span className='measure-unit'>{BLOOD_PRESSURE_UNIT}</span>
               </Typography>
 

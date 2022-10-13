@@ -9,32 +9,31 @@ import Alert from "../../../common/Alert";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import Loader from "../../../common/Loader";
 import LabOrdersTable from "../../../common/patient/labOrders";
+import StepperCard from "../../../common/StepperCard";
 import LatestVitalCard from "../latestVitalCard";
 import Vaccines from '../vaccines';
+import AssessmentPlanTab from "./AssessmentPlan/AssessmentPlanTab";
 import ChartPrintModal from "./ChartModal/ChartPrintModal";
 import ChartSelectionModal from './ChartModal/ChartSelectionModal';
+import FamilyHistory from "./familyHistory";
+import SurgicalHistoryTab from "./surgicalHistory/SurgicalHistoryListing";
 import AllergyTab from './tabs/AllergyListing';
+import AppointmentReason from "./tabs/AppointmentReason";
 import HistoryTab from './tabs/HistoryTab';
 import MedicationTab from './tabs/MedicationsListing';
 import ProblemTab from './tabs/ProblemListing';
 import TriageNoteTab from './tabs/TriageNotesListing';
 import VitalTab from './tabs/VitalListing';
-import StepperCard from "../../../common/StepperCard";
-import AssessmentPlanTab from "./AssessmentPlan/AssessmentPlanTab";
-import FamilyHistory from "./familyHistory";
-import AppointmentReason from "./tabs/AppointmentReason";
-import ReviewTab from "./tabs/ReviewTab";
-import SurgicalHistoryTab from "./surgicalHistory/SurgicalHistoryListing";
+import PatientHistory from "./patientHistoryIllness";
+import ReviewOfSystem from "./reviewOfSystem";
+import SocialHistory from "./socialHistory";
+import ExamTab from "./tabs/ExamTab";
 // interfaces, graphql, constants block /styles
 import { HistoryIcon } from "../../../../assets/svgs";
 import {
-  ASSESSMENT_PLAN_OPTION,
-  CHART_TEXT, CONFIRMATION_MODAL_TYPE, DISCHARGE, DISCHARGE_PATIENT_DESCRIPTION, DONE_INTAKE, PATIENT_CHARTING_MENU, PATIENT_CHARTING_TABS,
-  PATIENT_DISCHARGED, PATIENT_DISCHARGED_SUCCESS, PATIENT_HISTORY_OPTION, PRINT_CHART, REASON_FOR_VISIT_OPTION,
-  REVIEW_OF_SYSTEM_OPTION,
-  REVIEW_OPTION,
-  SIGN_OFF,
-  TRIAGE_NOTE_OPTION
+  CHART_TEXT, CONFIRMATION_MODAL_TYPE, DISCHARGE, DISCHARGE_PATIENT_DESCRIPTION, DONE_INTAKE, EXAM_OPTION,
+  PATIENT_CHARTING_MENU, PATIENT_CHARTING_TABS, PATIENT_DISCHARGED, PATIENT_DISCHARGED_SUCCESS, TRIAGE_NOTE_OPTION,
+  PRINT_CHART, REASON_FOR_VISIT_OPTION, SIGN_OFF, VISIT_OPTION,
 } from "../../../../constants";
 import { AuthContext, ChartContextProvider } from '../../../../context';
 import { AppointmentStatus, useUpdateAppointmentStatusMutation } from "../../../../generated/graphql";
@@ -44,10 +43,7 @@ import { useChartingStyles } from "../../../../styles/chartingStyles";
 import { useExternalPatientStyles } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
 import { WHITE } from '../../../../theme';
 import { isAdmin, isOnlyDoctor } from "../../../../utils";
-import SocialHistory from "./socialHistory";
-import PatientHistory from "./patientHistoryIllness";
-import ReviewOfSystem from "./reviewOfSystem";
-
+import VisitsTab from "./Visits";
 
 const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appointmentInfo, fetchAppointment, labOrderHandler, isInTake }): JSX.Element => {
   const classes = useChartingStyles();
@@ -62,7 +58,7 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
   const [isChartPdfModalOpen, setIsChartPdfModalOpen] = useState<boolean>(false)
   const [openDelete, setOpenDelete] = useState<boolean>(false)
   const [stepArray, setStepArray] = useState<number[]>([0])
-  const [{ activeStep, tabValue }, dispatch] =
+  const [{ activeStep, tabValue, shouldRefetchLatestVitals }, dispatch] =
     useReducer<Reducer<State, Action>>(patientReducer, initialState)
 
   const handleChange = (_: ChangeEvent<{}>, newValue: string) =>
@@ -145,7 +141,8 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
       //   return <TriageNoteTab shouldDisableEdit={shouldDisableEdit} handleStep={handleStep} />
 
       case 1:
-        return <VitalTab shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(2)} />
+        return <VitalTab shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(2)}
+          setShouldRefetch={() => dispatch({ type: ActionType.SET_SHOULD_REFETCH_LATEST_VITALS, shouldRefetchLatestVitals: true })} />
 
       case 2:
         return <ProblemTab shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(3)} />
@@ -219,10 +216,10 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
   const chartingStepsToMap = appointmentId ? isInTake ?
     [REASON_FOR_VISIT_OPTION, ...transformedPatientChartingSteps.map(stepData => {
       return { ...stepData, value: String(Number(stepData.value) + 1) }
-    }), ASSESSMENT_PLAN_OPTION, PATIENT_HISTORY_OPTION, REVIEW_OF_SYSTEM_OPTION] :
-    [REVIEW_OPTION, ...PATIENT_CHARTING_TABS.map(stepData => {
+    })] :
+    [EXAM_OPTION, ...PATIENT_CHARTING_TABS.map(stepData => {
       return { ...stepData, value: String(Number(stepData.value) + 1) }
-    }), ASSESSMENT_PLAN_OPTION, PATIENT_HISTORY_OPTION, REVIEW_OF_SYSTEM_OPTION] : [TRIAGE_NOTE_OPTION, ...PATIENT_CHARTING_TABS]
+    })] : [TRIAGE_NOTE_OPTION, ...[...PATIENT_CHARTING_TABS, VISIT_OPTION]]
 
   const handleDischarge = () => {
     if (isInTake) {
@@ -231,14 +228,17 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
       if (isAdminUser || isDoctorUser) {
         setOpenDelete(true)
       }
-      labOrderHandler && labOrderHandler()
     }
   }
 
   return (
     <>
       <Box className="card-box-shadow" mb={3}>
-        <LatestVitalCard patientId={id} />
+        <LatestVitalCard
+          patientId={id}
+          setShouldRefetch={() => dispatch({ type: ActionType.SET_SHOULD_REFETCH_LATEST_VITALS, shouldRefetchLatestVitals: false })}
+          shouldRefetch={shouldRefetchLatestVitals}
+        />
         <Box mt={3} />
       </Box>
 
@@ -332,7 +332,8 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
                   {appointmentId &&
                     <Box pt={0} borderRadius={8}>
                       <TabPanel value={"1"}>
-                        {isInTake ? <AppointmentReason isInTake={false} /> : <ReviewTab shouldShowAdd shouldDisableEdit={shouldDisableEdit} />}
+                        {/* {isInTake ? <AppointmentReason isInTake={false} /> : <ReviewTab shouldShowAdd shouldDisableEdit={shouldDisableEdit} />} */}
+                        <ExamTab />
                       </TabPanel>
                     </Box>}
 
@@ -344,7 +345,8 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
 
                   <Box pt={0} bgcolor={WHITE} borderRadius={8}>
                     <TabPanel value={appointmentId ? "3" : "2"}>
-                      <VitalTab shouldDisableEdit={shouldDisableEdit} />
+                      <VitalTab shouldDisableEdit={shouldDisableEdit}
+                        setShouldRefetch={() => dispatch({ type: ActionType.SET_SHOULD_REFETCH_LATEST_VITALS, shouldRefetchLatestVitals: true })} />
                     </TabPanel>
                   </Box>
 
@@ -397,6 +399,12 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
                       <Vaccines shouldDisableEdit={shouldDisableEdit} />
                     </TabPanel>
                   </Box>
+
+                  {!appointmentId && <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                    <TabPanel value={appointmentId ? isInTake ? "11" : "10" : "9"}>
+                      <VisitsTab />
+                    </TabPanel>
+                  </Box>}
 
                   {appointmentId && <Box pt={0} bgcolor={WHITE} borderRadius={8}>
                     <TabPanel value={appointmentId ? isInTake ? "11" : "10" : "9"}>

@@ -7,7 +7,7 @@ import { useProfileDetailsStyles } from '../../../../styles/profileDetails'
 import { LESS_INFO, MORE_INFO, PATIENT_VITAL_TEXT, VITAL_LABELS } from '../../../../constants'
 import { PatientVitalPayload, useGetPatientLatestVitalLazyQuery } from '../../../../generated/graphql'
 
-const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId }): JSX.Element => {
+const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId, shouldRefetch, setShouldRefetch }): JSX.Element => {
 
   const classes = useProfileDetailsStyles();
   const [vital, setVital] = useState<PatientVitalPayload['patientVital']>();
@@ -48,6 +48,13 @@ const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId }): JSX.Element =
     patientId && fetchLatestVital()
   }, [patientId, fetchLatestVital])
 
+  useEffect(() => {
+    if (shouldRefetch) {
+      fetchLatestVital()
+      setShouldRefetch && setShouldRefetch(false)
+    }
+  }, [fetchLatestVital, setShouldRefetch, shouldRefetch])
+
 
   return (
     <Card>
@@ -71,7 +78,7 @@ const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId }): JSX.Element =
             <Box className={classes.profileInfoHeading}>{VITAL_LABELS.patientTemperature}</Box>
 
             {loading ? renderLoading('') : <Box className={classes.profileInfoItem}>
-              <Typography variant="body1">{patientTemperature || '---'}</Typography>
+              <Typography variant="body1">{patientTemperature || '--'}</Typography>
             </Box>}
           </Box>
 
@@ -79,7 +86,7 @@ const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId }): JSX.Element =
             <Box className={classes.profileInfoHeading}>{VITAL_LABELS.bloodPressure}</Box>
 
             {loading ? renderLoading('') : <Box className={classes.profileInfoItem}>
-              <Typography variant="body1">{`${systolicBloodPressure || '---'} / ${diastolicBloodPressure || '--'}`}</Typography>
+              <Typography variant="body1">{`${systolicBloodPressure || '--'} / ${diastolicBloodPressure || '--'}`}</Typography>
             </Box>}
           </Box>
 

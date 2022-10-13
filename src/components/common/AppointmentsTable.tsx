@@ -35,7 +35,7 @@ import {
 import {
   appointmentStatus, AppointmentStatusStateMachine, canUpdateAppointmentStatus, checkPermission,
   convertDateFromUnix, getAppointmentStatus, getCheckInStatus, getISOTime, getPageNumber,
-  hasEncounter, isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, getAppointmentDateWithDay,
+  hasEncounter, isOnlyDoctor, isPracticeAdmin, isSuperAdmin, getAppointmentDateWithDay,
   isUserAdmin, renderTh, setRecord, sortingArray, isLast, getStandardTime, getStandardTimeDuration,
 } from "../../utils";
 import {
@@ -63,7 +63,6 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   const { id: providerId } = currentUser || {}
   const isSuper = isSuperAdmin(roles);
   const isPracticeUser = isPracticeAdmin(roles);
-  const isFacility = isFacilityAdmin(roles)
 
   const { id: facilityId, practiceId } = facility || {}
   const canDelete = checkPermission(userPermissions, USER_PERMISSIONS.removeAppointment)
@@ -358,12 +357,8 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
   const deleteAppointmentHandler = (scheduleStartDateTime: string, id: string) => {
     if (id) {
-      if (isSuper || isPracticeUser || isFacility) {
-        return onDeleteClick(id)
-      }
-
       if (isSuper) {
-        onDeleteClick(id || '')
+        onDeleteClick(id)
       } else {
         const remainingTime = moment(getISOTime(scheduleStartDateTime || ''))
 

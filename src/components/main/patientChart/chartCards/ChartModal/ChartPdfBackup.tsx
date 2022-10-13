@@ -39,6 +39,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: '10px',
   },
+  fieldTitle3: {
+    padding: '2px 5px',
+    fontWeight: 'bold',
+    fontSize: '12px',
+  },
   fieldText: {
     padding: '2px 5px',
     wordBreak: 'break-all !important',
@@ -531,7 +536,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                     return (
                       <Text style={styles.fieldText}>{name}</Text>
                     )
-                  }) : <Text style={[styles.fieldTitle]}>{NO_DRUG_ALLERGIES_RECORDED}</Text>}
+                  }) : <Text style={[styles.fieldTitle3]}>{NO_DRUG_ALLERGIES_RECORDED}</Text>}
                 </View>
 
                 <View style={[styles.w30]}>
@@ -574,7 +579,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                     return (
                       <Text style={styles.fieldText}>{name}</Text>
                     )
-                  }) : <Text style={[styles.fieldTitle]}>{NO_FOOD_ALLERGIES_RECORDED}</Text>}
+                  }) : <Text style={[styles.fieldTitle3]}>{NO_FOOD_ALLERGIES_RECORDED}</Text>}
                 </View>
 
                 <View style={[styles.w30]}>
@@ -617,7 +622,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                     return (
                       <Text style={styles.fieldText}>{name}</Text>
                     )
-                  }) : <Text style={[styles.fieldTitle]}>{NO_ENVIRONMENTAL_ALLERGIES_RECORDED}</Text>}
+                  }) : <Text style={[styles.fieldTitle3]}>{NO_ENVIRONMENTAL_ALLERGIES_RECORDED}</Text>}
                 </View>
 
                 <View style={[styles.w30]}>

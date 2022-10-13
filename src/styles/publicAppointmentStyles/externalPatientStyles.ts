@@ -192,7 +192,7 @@ export const useExternalPatientStyles = makeStyles({
     alignItems: 'flex-start',
     "& .MuiFormControlLabel-label": {
       fontSize: 14,
-      paddingTop: 7,
+      // paddingTop: 6,
     },
 
     "& .MuiCheckbox-root .MuiIconButton-label:before":{
