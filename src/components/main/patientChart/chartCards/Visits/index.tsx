@@ -65,7 +65,7 @@ function VisitsTab() {
           appointmentInput: {
             paginationOptions: { page: page, limit: PAGE_LIMIT },
             patientId: patientId,
-            // isCheckedIn: true
+            isCheckedIn: true
           }
         }
       })
