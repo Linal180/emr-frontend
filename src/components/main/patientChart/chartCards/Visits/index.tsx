@@ -11,12 +11,13 @@ import { useTableStyles } from '../../../../../styles/tableStyles';
 import { getAppointmentDateWithDay, getStandardTime, renderTh } from '../../../../../utils';
 import NoDataFoundComponent from '../../../../common/NoDataFoundComponent';
 import TableLoader from '../../../../common/TableLoader';
+import VisitModal from './VisitModal';
 
 function VisitsTab() {
   const classes = useTableStyles();
   const { id: patientId } = useParams<ParamsType>()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
-  const { page, totalPages, appointments } = state
+  const { page, totalPages, appointments, openPatientModal, appointmentId } = state
 
   const handleChange = (_: ChangeEvent<unknown>, value: number) => dispatch({
     type: ActionType.SET_PAGE, page: value
@@ -64,7 +65,7 @@ function VisitsTab() {
           appointmentInput: {
             paginationOptions: { page: page, limit: PAGE_LIMIT },
             patientId: patientId,
-            isCheckedIn: true
+            // isCheckedIn: true
           }
         }
       })
@@ -74,6 +75,11 @@ function VisitsTab() {
   useEffect(() => {
     fetchAppointments()
   }, [fetchAppointments])
+
+  const handleVisitModalOpen = (appointmentId: string) => {
+    dispatch({ type: ActionType.SET_APPOINTMENT_ID, appointmentId })
+    dispatch({ type: ActionType.SET_OPEN_PATIENT_MODAL, openPatientModal: true })
+  }
 
   return (
     <div>
@@ -119,7 +125,7 @@ function VisitsTab() {
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                           <Box>
-                            <IconButton size='small' >
+                            <IconButton size='small' onClick={() => id && handleVisitModalOpen(id)}>
                               <EyeIcon />
                             </IconButton>
                           </Box>
@@ -139,6 +145,14 @@ function VisitsTab() {
           }
         </Box>
       </Box>
+
+      {
+        openPatientModal && <VisitModal
+          appointmentId={appointmentId}
+          handleClose={() => dispatch({ type: ActionType.SET_OPEN_PATIENT_MODAL, openPatientModal: false })}
+          isOpen={openPatientModal}
+        />
+      }
 
       {totalPages > 1 && (
         <Box display="flex" justifyContent="flex-end" p={3}>
