@@ -1,0 +1,21 @@
+
+query FindAllNdc($findAllNdcInput: FindAllNdcInput!) {
+  findAllNdc(findAllNdcInput: $findAllNdcInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+
+    ndcs {
+      id
+      code
+      description
+    }
+  }
+}

@@ -1,6 +1,8 @@
-import { FC, Fragment, Reducer, useReducer } from 'react';
+import { Pagination } from '@material-ui/lab';
+import { ChangeEvent, FC, Fragment, Reducer, useCallback, useEffect, useReducer } from 'react';
 import { Box, Button, Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core';
 //components
+import NdcCodeForm from '../ndcForm'
 import Search from '../../../common/Search';
 import TableLoader from '../../../common/TableLoader';
 import ConfirmationModal from '../../../common/ConfirmationModal';
@@ -10,14 +12,37 @@ import { renderTh } from '../../../../utils';
 import { useTableStyles } from '../../../../styles/tableStyles';
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from '../../../../assets/svgs';
 import { State, Action, ActionType, initialState, ndcCodeReducer } from '../../../../reducers/ndcCodeReducer';
-import { ACTIONS, ADD_NEW_TEXT, CODE, DASHES, DELETE_NDC_CODE_DESCRIPTION, DESCRIPTION, EIGHT_PAGE_LIMIT, NDC_TEXT } from '../../../../constants';
+import { ACTIONS, ADD_NEW_TEXT, CODE, DASHES, DELETE_NDC_CODE_DESCRIPTION, DESCRIPTION, EIGHT_PAGE_LIMIT, NDC_TEXT, PAGE_LIMIT } from '../../../../constants';
+import { FindAllNdcPayload, useFindAllNdcLazyQuery } from '../../../../generated/graphql';
 
 
 const NdcTable: FC = (): JSX.Element => {
 
   const classes = useTableStyles();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(ndcCodeReducer, initialState);
-  const { searchQuery, data, openDelete } = state
+  const { searchQuery, data, openDelete, isOpen, itemId, page, totalPages } = state;
+
+  const [findAllNdcCodes, { loading, error }] = useFindAllNdcLazyQuery({
+    onCompleted: (data) => {
+      const { findAllNdc } = data || {}
+      const { ndcs, pagination, response } = findAllNdc || {}
+      const { status } = response || {}
+      if (status === 200) {
+        const { totalPages } = pagination || {}
+        if (!!ndcs?.length) {
+          dispatch({ type: ActionType.SET_DATA, data: ndcs as FindAllNdcPayload['ndcs'] })
+          totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
+        } else {
+          dispatch({ type: ActionType.SET_DATA, data: [] });
+          dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 });
+        }
+      }
+    },
+    onError: () => {
+      dispatch({ type: ActionType.SET_DATA, data: [] });
+      dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 });
+    }
+  })
 
   const search = (query: string) => {
     dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
@@ -36,7 +61,6 @@ const NdcTable: FC = (): JSX.Element => {
     }
   };
 
-
   const handleEdit = (id: string) => {
     dispatch({ type: ActionType.SET_ITEM_ID, itemId: id })
     dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })
@@ -48,8 +72,24 @@ const NdcTable: FC = (): JSX.Element => {
     // })
   }
 
-  const loading = false;
-  const error = ""
+  const handleModalClose = () => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: !isOpen });
+
+  const onPageChange = (_: ChangeEvent<unknown>, value: number) => dispatch({
+    type: ActionType.SET_PAGE, page: value
+  });
+
+
+  const fetchAllNdcCodes = useCallback(async () => {
+    try {
+      await findAllNdcCodes({ variables: { findAllNdcInput: { paginationOptions: { limit: PAGE_LIMIT, page } } } })
+    } catch (error) { }
+  }, [findAllNdcCodes, page])
+
+  useEffect(() => {
+    fetchAllNdcCodes()
+  }, [fetchAllNdcCodes])
+
+
   const delLoading = false
 
   return (
@@ -90,7 +130,7 @@ const NdcTable: FC = (): JSX.Element => {
                   </TableRow>
                 ) : <TableBody>
                   {data?.map((icdCode) => {
-                    const { id, code, shortDescription, systematic, priority } = icdCode ?? {}
+                    const { id, code, description } = icdCode ?? {}
                     return (
                       <TableRow>
                         <TableCell scope="row">
@@ -98,15 +138,9 @@ const NdcTable: FC = (): JSX.Element => {
                         </TableCell>
 
                         <TableCell scope="row">
-                          <Typography>{shortDescription ?? DASHES}</Typography>
+                          <Typography>{description ?? DASHES}</Typography>
                         </TableCell>
-
                         <TableCell scope="row">
-                          <Typography>{priority ?? DASHES}</Typography>
-                        </TableCell>
-
-
-                        {<TableCell scope="row">
                           <Box display='flex' alignItems='center'>
 
                             <Box className={`${classes.iconsBackground}`}>
@@ -115,14 +149,13 @@ const NdcTable: FC = (): JSX.Element => {
                               </Button>
                             </Box>
 
-                            <Box className={`${classes.iconsBackground} ${systematic ? 'disable-icon' : ''}`}>
+                            <Box className={`${classes.iconsBackground}`}>
                               <Button onClick={() => id && onDeleteClick(id)}>
                                 <TrashOutlinedSmallIcon />
                               </Button>
                             </Box>
                           </Box>
                         </TableCell>
-                        }
                       </TableRow>
                     )
                   })}
@@ -139,6 +172,7 @@ const NdcTable: FC = (): JSX.Element => {
           </Box>
         </Grid>
       </Grid>
+
       <ConfirmationModal
         title={NDC_TEXT}
         isOpen={openDelete}
@@ -147,7 +181,26 @@ const NdcTable: FC = (): JSX.Element => {
         handleDelete={handleDelete}
         setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
       />
+      {isOpen && <NdcCodeForm
+        id={itemId}
+        open={isOpen}
+        isEdit={!!itemId}
+        handleClose={handleModalClose}
+        dispatcher={dispatch}
+      // fetch={() => fetchIcdCodes()}
+      />}
 
+      {totalPages > 1 && !loading && (
+        <Box display="flex" justifyContent="flex-end" p={3}>
+          <Pagination
+            count={totalPages}
+            shape="rounded"
+            variant="outlined"
+            page={page}
+            onChange={onPageChange}
+          />
+        </Box>
+      )}
     </Fragment>
   )
 }

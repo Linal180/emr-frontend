@@ -1,11 +1,11 @@
-import { AllCptCodePayload } from "../generated/graphql";
+import { FindAllNdcPayload } from "../generated/graphql";
 
 export interface State {
   page: number;
   delId: string;
   itemId: string;
   isOpen: boolean;
-  data: AllCptCodePayload['cptCodes']
+  data: FindAllNdcPayload['ndcs']
   totalPages: number;
   openDelete: boolean;
   searchQuery: string;
@@ -46,7 +46,7 @@ export type Action =
   { type: ActionType.SET_OPEN_DELETE, openDelete: boolean } |
   { type: ActionType.SET_SYSTEMATIC, systematic: boolean; } |
   { type: ActionType.SET_SEARCH_QUERY, searchQuery: string; } |
-  { type: ActionType.SET_DATA; data: AllCptCodePayload['cptCodes'] }
+  { type: ActionType.SET_DATA; data: FindAllNdcPayload['ndcs'] }
 
 export const ndcCodeReducer = (state: State, action: Action): State => {
   switch (action.type) {

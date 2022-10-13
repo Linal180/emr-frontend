@@ -44,6 +44,7 @@ import { Action as PatientAction, State as PatientState } from "../reducers/pati
 import { Action as PracticeAction } from "../reducers/practiceReducer";
 import { Action as ScheduleAction, State as ScheduleState } from "../reducers/scheduleReducer";
 import { Action as VaccineAction } from "../reducers/vaccinesReducer";
+import { Action as NdcCodeAction } from "../reducers/ndcCodeReducer";
 
 export type Order = 'ASC' | 'DESC';
 type Key = string | number | undefined;
@@ -2400,7 +2401,7 @@ export type NdcCodeFormProps = {
   isEdit: boolean;
   fetch?: Function;
   id?: string;
-  dispatcher?: Dispatch<cptCodeAction>
+  dispatcher?: Dispatch<NdcCodeAction>
   handleClose: (open: boolean) => void
 }
 

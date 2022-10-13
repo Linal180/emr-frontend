@@ -1,0 +1,22 @@
+query FindAllMvx($findAllMvxInput: FindAllMvxInput!) {
+  findAllMvx(findAllMvxInput: $findAllMvxInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+
+    mvxs {
+      id
+      notes
+      mvxCode
+      mvxStatus
+      manufacturerName
+    }
+  }
+}

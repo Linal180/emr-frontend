@@ -1,70 +1,3 @@
-query FindAllCvx($findAllCvxInput: FindAllCvxInput!) {
-  findAllCvx(findAllCvxInput: $findAllCvxInput) {
-    response {
-      status
-      error
-      message
-    }
-
-    pagination {
-      page
-      totalPages
-    }
-
-    cvxs {
-      id
-      name
-      cvxCode
-      shortDescription
-    }
-  }
-}
-
-query FindAllMvx($findAllMvxInput: FindAllMvxInput!) {
-  findAllMvx(findAllMvxInput: $findAllMvxInput) {
-    response {
-      status
-      error
-      message
-    }
-
-    pagination {
-      page
-      totalPages
-    }
-
-    mvxs {
-      id
-      mvxCode
-      cvxCode
-      mvxStatus
-      manufacturerName
-    }
-  }
-}
-
-query FindAllNdc($findAllNdcInput: FindAllNdcInput!) {
-  findAllNdc(findAllNdcInput: $findAllNdcInput) {
-    response {
-      status
-      error
-      message
-    }
-
-    pagination {
-      page
-      totalPages
-    }
-
-    ndcs {
-      id
-      ndcCode
-      mvxName
-      cvxDescription
-    }
-  }
-}
-
 query GetVaccine($getVaccineInput: GetVaccineInput!) {
   getVaccine(getVaccineInput: $getVaccineInput) {
     response {
@@ -75,7 +8,7 @@ query GetVaccine($getVaccineInput: GetVaccineInput!) {
 
     vaccine {
       id
-      cvxId
+      vaccineProductId
       administrationDate
       amount
       units
@@ -97,8 +30,8 @@ query GetVaccine($getVaccineInput: GetVaccineInput!) {
 
       ndc {
         id
-        ndcCode
-        cvxDescription
+        code
+        description
       }
     }
   }
@@ -114,7 +47,7 @@ query FindAllVaccines($findAllVaccinesInput: FindAllVaccinesInput!) {
 
     vaccines {
       id
-      cvxId
+      vaccineProductId
       administrationDate
       amount
       units
@@ -128,16 +61,15 @@ query FindAllVaccines($findAllVaccinesInput: FindAllVaccinesInput!) {
       lotNo
       administerBy
 
-      cvx {
+      vaccineProduct {
         id
         name
         cvxCode
-        shortDescription
       }
 
       ndc {
         id
-        ndcCode
+        code
       }
 
       mvx {
