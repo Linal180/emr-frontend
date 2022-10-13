@@ -13,15 +13,15 @@ import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
 // constants, reducers, graphql block
 import { ATTACHMENT_TITLES, CONFIRMATION_MODAL_TYPE, ITEM_MODULE, UPFRONT_PAYMENT_TYPES } from "../constants";
 import {
-  AddVaccineInput, AllDoctorPayload, Allergies, AppointmentsPayload, AppointmentStatus, Attachment, AttachmentPayload,
+  AddVaccineInput, AllDoctorPayload, Allergies, AppointmentPayload, AppointmentsPayload, AppointmentStatus, Attachment, AttachmentPayload,
   AttachmentType, BillingPayload, CodeType, Copay, CreateAppointmentInput, CreateContactInput, CreateCptCodeInput, CreateCptFeeScheduleInput, CreateDoctorItemInput, CreateExternalAppointmentItemInput, CreateFeeScheduleInput, CreateIcdCodeInput, CreatePatientAllergyInput, CreatePatientItemInput, CreatePatientMedicationInput, CreatePracticeItemInput,
   CreateProblemInput, CreateScheduleInput, CreateServiceInput, CreateStaffItemInput, Cvx, DependentQuestions, Doctor, DoctorPatient,
   FacilitiesPayload, FamilyHistory, FetchBillingClaimStatusesInput, FieldsInputs, FormElement, FormTabsInputs,
   IcdCodes, IcdCodesWithSnowMedCode, LabTests, LabTestsPayload, LoginUserInput, LoincCodePayload, Medications, Patient, PatientAllergies,
+  PatientIllnessHistoryPayload,
   PatientMedication, PatientPayload, PatientProblems, PatientProviderPayload, PatientsPayload, PatientVitals,
   PermissionsPayload, PolicyEligibilityWithPatientPayload, Practice, PracticePayload, QuestionAnswers, Questions, ReactionsPayload,
-  ResponsePayloadResponse, RolesPayload, Schedule, SectionsInputs, ServicesPayload, Staff, SurgicalHistory,
-  TriageNotes, TwoFactorInput, UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput,
+  ResponsePayloadResponse, ReviewOfSystemPayload, RolesPayload, Schedule, SectionsInputs, ServicesPayload, Staff, SurgicalHistory, TriageNotes, TriageNotesPayload, TwoFactorInput, UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput,
   UpdateFacilityTimeZoneInput, User, UsersFormsElements, VerifyCodeInput
 } from "../generated/graphql";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
@@ -876,6 +876,19 @@ export type ChartSelectionViewerProps = ViewerProps & {
 
 export type ChartPrintModalProps = ViewerProps & {
   modulesToPrint: string[]
+}
+
+export type VisitModalProps = ViewerProps & {
+  appointmentInfo: AppointmentPayload['appointment']
+}
+
+export type VisitModalPdfProps = {
+  assessmentProblems: AssessmentProblemType[]
+  reviewOfSystem: ReviewOfSystemPayload['reviewOfSystem']
+  patientIllnessHistory: PatientIllnessHistoryPayload['patientIllnessHistory']
+  patientChartingReview: PatientChartingReview | null
+  triageNotes: TriageNotesPayload['triageNotes']
+  appointmentInfo: AppointmentPayload['appointment']
 }
 
 export type LabModalProps = ViewerProps & {

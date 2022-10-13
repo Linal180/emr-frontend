@@ -86,6 +86,7 @@ query GetPatientChartingInfo(
       problemSeverity
       problemStartDate
       note
+      appointmentId
 
       ICDCode {
         code
@@ -171,6 +172,7 @@ query GetPatientChartingReview(
       problemSeverity
       problemStartDate
       note
+      appointmentId
 
       ICDCode {
         code

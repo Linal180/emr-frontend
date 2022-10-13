@@ -37,7 +37,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
   const [state, dispatch] = useReducer<Reducer<State, Action>>(billingReducer, initialState)
   const {
     employment, autoAccident, otherAccident, facilityId, claimNumber, shouldCheckout, claimModalOpen, claimErrorMessages,
-    tableCodesData
+    tableCodesData, insuranceId
   } = state
 
   const methods = useForm<CreateBillingProps>({
@@ -388,9 +388,15 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
 
       if (findAppointmentInsuranceStatus) {
         const { insuranceStatus } = findAppointmentInsuranceStatus
-        const patientPaymentType = insuranceStatus === 'insurance' ? setRecord(PatientPaymentType.Insurance, PatientPaymentType.Insurance) : setRecord(PatientPaymentType.NoInsurance, PatientPaymentType.NoInsurance)
-        insuranceStatus && setValue('paymentType', patientPaymentType)
-        insuranceStatus && dispatch({ type: ActionType.SET_INSURANCE_STATUS, insuranceStatus: patientPaymentType?.id })
+        if (insuranceStatus) {
+          const patientPaymentType = insuranceStatus === 'insurance' ? setRecord(PatientPaymentType.Insurance, PatientPaymentType.Insurance) : setRecord(PatientPaymentType.NoInsurance, PatientPaymentType.NoInsurance)
+          insuranceStatus && setValue('paymentType', patientPaymentType)
+          insuranceStatus && dispatch({ type: ActionType.SET_INSURANCE_STATUS, insuranceStatus: patientPaymentType?.id })
+        } else if (insuranceId) {
+          setValue('paymentType', setRecord(PatientPaymentType.Insurance, PatientPaymentType.Insurance))
+          dispatch({ type: ActionType.SET_INSURANCE_STATUS, insuranceStatus: PatientPaymentType.Insurance })
+        }
+
       }
     }
   });
@@ -579,18 +585,18 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
     }
   }
 
-  const fetchDetail = useCallback(() => {
+  const fetchDetail = useCallback(async () => {
     if (shouldDisableEdit) {
-      fetchBillingDetails()
+      await fetchBillingDetails()
     } else {
-      fetchPatientInsurances()
-      fetchAppointment()
-      fetchAllPatientsProviders()
-      fetchFacility()
-      fetchClaimNumber()
-      fetchPatientAppointment()
-      fetchBillingDetails()
-      findInsuranceStatus()
+      await fetchPatientInsurances()
+      await fetchAppointment()
+      await fetchAllPatientsProviders()
+      await fetchFacility()
+      await fetchClaimNumber()
+      await fetchPatientAppointment()
+      await fetchBillingDetails()
+      await findInsuranceStatus()
     }
   }, [
     fetchBillingDetails, findInsuranceStatus, fetchPatientAppointment, fetchClaimNumber, fetchFacility,

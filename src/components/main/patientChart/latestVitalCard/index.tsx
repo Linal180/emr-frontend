@@ -78,7 +78,7 @@ const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId, shouldRefetch, s
             <Box className={classes.profileInfoHeading}>{VITAL_LABELS.patientTemperature}</Box>
 
             {loading ? renderLoading('') : <Box className={classes.profileInfoItem}>
-              <Typography variant="body1">{patientTemperature || '---'}</Typography>
+              <Typography variant="body1">{patientTemperature || '--'}</Typography>
             </Box>}
           </Box>
 
@@ -86,7 +86,7 @@ const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId, shouldRefetch, s
             <Box className={classes.profileInfoHeading}>{VITAL_LABELS.bloodPressure}</Box>
 
             {loading ? renderLoading('') : <Box className={classes.profileInfoItem}>
-              <Typography variant="body1">{`${systolicBloodPressure || '---'} / ${diastolicBloodPressure || '--'}`}</Typography>
+              <Typography variant="body1">{`${systolicBloodPressure || '--'} / ${diastolicBloodPressure || '--'}`}</Typography>
             </Box>}
           </Box>
 
