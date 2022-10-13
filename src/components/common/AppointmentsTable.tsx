@@ -358,7 +358,6 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   const deleteAppointmentHandler = (scheduleStartDateTime: string, id: string) => {
     if (id) {
       if (isSuper) {
-        debugger
         onDeleteClick(id)
       } else {
         const remainingTime = moment(getISOTime(scheduleStartDateTime || ''))

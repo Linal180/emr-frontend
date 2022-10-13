@@ -982,3 +982,7 @@ input[type=number] {
 .table-loader-row td:first-child {
   padding-left: 10px !important;
 }
+
+.MuiTableRow-head {
+  vertical-align: baseline !important;
+}

@@ -2,7 +2,7 @@
 import { FC } from "react";
 import { Grid, Typography } from "@material-ui/core";
 // utils, constants block
-import { renderItem } from "../../../../utils";
+import { formatNumber, renderItem } from "../../../../utils";
 import { PracticeDataProps } from "../../../../interfacesTypes";
 import {
   PRACTICE_NAME, PHONE, FAX, PRACTICE_IDENTIFIER, EIN, UPIN, MEDICARE, MEDICAID, CHAMPUS, GROUP_TAX_ID, GROUP_NPI
@@ -10,7 +10,7 @@ import {
 
 const PracticeData: FC<PracticeDataProps> = ({ practiceData, loading }) => {
   const { name, phone, ein, champus, fax, medicaid, medicare, upin, npi, taxId } = practiceData || {};
-  
+
   return (
     <>
       <Grid container spacing={3}>
@@ -21,11 +21,11 @@ const PracticeData: FC<PracticeDataProps> = ({ practiceData, loading }) => {
 
       <Grid container spacing={3}>
         <Grid item md={6} sm={12}>
-          {renderItem(PHONE, phone, undefined, loading)}
+          {renderItem(PHONE, formatNumber(phone || ""), undefined, loading)}
         </Grid>
 
         <Grid item md={6} sm={12}>
-          {renderItem(FAX, fax, undefined, loading)}
+          {renderItem(FAX, formatNumber(fax || ""), undefined, loading)}
         </Grid>
       </Grid>
 

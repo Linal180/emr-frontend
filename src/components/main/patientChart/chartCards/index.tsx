@@ -31,9 +31,9 @@ import ExamTab from "./tabs/ExamTab";
 // interfaces, graphql, constants block /styles
 import { HistoryIcon } from "../../../../assets/svgs";
 import {
-  CHART_TEXT, CONFIRMATION_MODAL_TYPE, DISCHARGE, DISCHARGE_PATIENT_DESCRIPTION, DONE_INTAKE, EXAM_OPTION, 
+  CHART_TEXT, CONFIRMATION_MODAL_TYPE, DISCHARGE, DISCHARGE_PATIENT_DESCRIPTION, DONE_INTAKE, EXAM_OPTION,
   PATIENT_CHARTING_MENU, PATIENT_CHARTING_TABS, PATIENT_DISCHARGED, PATIENT_DISCHARGED_SUCCESS, TRIAGE_NOTE_OPTION,
-  PRINT_CHART, REASON_FOR_VISIT_OPTION, SIGN_OFF, 
+  PRINT_CHART, REASON_FOR_VISIT_OPTION, SIGN_OFF, VISIT_OPTION,
 } from "../../../../constants";
 import { AuthContext, ChartContextProvider } from '../../../../context';
 import { AppointmentStatus, useUpdateAppointmentStatusMutation } from "../../../../generated/graphql";
@@ -43,6 +43,7 @@ import { useChartingStyles } from "../../../../styles/chartingStyles";
 import { useExternalPatientStyles } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
 import { WHITE } from '../../../../theme';
 import { isAdmin, isOnlyDoctor } from "../../../../utils";
+import VisitsTab from "./Visits";
 
 const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appointmentInfo, fetchAppointment, labOrderHandler, isInTake }): JSX.Element => {
   const classes = useChartingStyles();
@@ -218,7 +219,7 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
     })] :
     [EXAM_OPTION, ...PATIENT_CHARTING_TABS.map(stepData => {
       return { ...stepData, value: String(Number(stepData.value) + 1) }
-    })] : [TRIAGE_NOTE_OPTION, ...PATIENT_CHARTING_TABS]
+    })] : [TRIAGE_NOTE_OPTION, ...[...PATIENT_CHARTING_TABS, VISIT_OPTION]]
 
   const handleDischarge = () => {
     if (isInTake) {
@@ -227,7 +228,6 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
       if (isAdminUser || isDoctorUser) {
         setOpenDelete(true)
       }
-      labOrderHandler && labOrderHandler()
     }
   }
 
@@ -399,6 +399,12 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
                       <Vaccines shouldDisableEdit={shouldDisableEdit} />
                     </TabPanel>
                   </Box>
+
+                  {!appointmentId && <Box pt={0} bgcolor={WHITE} borderRadius={8}>
+                    <TabPanel value={appointmentId ? isInTake ? "11" : "10" : "9"}>
+                      <VisitsTab />
+                    </TabPanel>
+                  </Box>}
 
                   {appointmentId && <Box pt={0} bgcolor={WHITE} borderRadius={8}>
                     <TabPanel value={appointmentId ? isInTake ? "11" : "10" : "9"}>

@@ -500,7 +500,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                     return (
                       <Text style={[styles.fieldText, styles.colorRed]}>{name}</Text>
                     )
-                  }) : <Text style={[styles.fieldTitle]}>{NO_DRUG_ALLERGIES_RECORDED}</Text>}
+                  }) : <Text style={[styles.fieldTitle3]}>{NO_DRUG_ALLERGIES_RECORDED}</Text>}
                 </View>
 
                 <View style={[styles.w30]}>
@@ -508,7 +508,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                   {drugAllergies?.length ? drugAllergies?.map((allergyValue) => {
                     const { allergySeverity } = allergyValue || {}
                     return (
-                      <Text style={[styles.fieldText, styles.colorRed]}>{allergySeverity}</Text>
+                      <Text style={[styles.fieldText, styles.colorRed]}>{formatValue(allergySeverity)}</Text>
                     )
                   }) : <Text style={[styles.fieldTitle]}> </Text>}
                 </View>
@@ -573,7 +573,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                   {foodAllergies?.length ? foodAllergies?.map((allergyValue) => {
                     const { allergyStartDate, allergyOnset } = allergyValue || {}
                     return (
-                      <Text style={[styles.fieldText, styles.colorRed]}>{allergyStartDate ? getFormatDateString(allergyStartDate, 'MM-DD-YYYY') : formatValue(allergyOnset)}</Text>
+                      <Text style={[styles.fieldText]}>{allergyStartDate ? getFormatDateString(allergyStartDate, 'MM-DD-YYYY') : formatValue(allergyOnset)}</Text>
                     )
                   }) : <Text style={[styles.fieldTitle]}> </Text>}
                 </View>
@@ -619,7 +619,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                   </View>
                 </View>
 
-                <View style={[styles.w20]}>
+                <View style={[styles.w30]}>
                   <Text style={[styles.fieldTitle2,]}>{SEVERITY_REACTIONS}</Text>
                   {environmentAllergies?.length ? environmentAllergies?.map((allergyValue) => {
                     const { allergySeverity } = allergyValue || {}
@@ -634,7 +634,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                   {environmentAllergies?.length ? environmentAllergies?.map((allergyValue) => {
                     const { allergyStartDate, allergyOnset } = allergyValue || {}
                     return (
-                      <Text style={[styles.fieldText, styles.colorRed]}>{allergyStartDate ? getFormatDateString(allergyStartDate, 'MM-DD-YYYY') : formatValue(allergyOnset)}</Text>
+                      <Text style={[styles.fieldText]}>{allergyStartDate ? getFormatDateString(allergyStartDate, 'MM-DD-YYYY') : formatValue(allergyOnset)}</Text>
                     )
                   }) : <Text style={[styles.fieldTitle]}> </Text>}
                 </View>
