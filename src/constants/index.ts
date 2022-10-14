@@ -54,6 +54,7 @@ export const BANK_ACCOUNT_REGEX = /^([0-9]{11})|([0-9]{2}-[0-9]{3}-[0-9]{6})$/;
 export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
 export const NDC_REGEX = /^(?:\d{4}-\d{4}-\d{2}|\d{5}-(?:\d{3}-\d{2}|\d{4}-\d{1,2}))$/;
 export const MVX_CODE_REGEX = /^([A-Z]{2}|[A-Z]{3})$/;
+export const ONLY_NUMBERS_REGEX = /^[0-9]+$/;
 
 // system roles
 export enum SYSTEM_ROLES {
