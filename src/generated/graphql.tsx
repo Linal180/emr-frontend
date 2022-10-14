@@ -4033,6 +4033,7 @@ export type Ndc = {
   createdAt?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  systematic?: Maybe<Scalars['Boolean']>;
   updatedAt?: Maybe<Scalars['String']>;
 };
 
@@ -9460,7 +9461,7 @@ export type FindAllNdcQueryVariables = Exact<{
 }>;
 
 
-export type FindAllNdcQuery = { __typename?: 'Query', findAllNdc: { __typename?: 'FindAllNdcPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, ndcs?: Array<{ __typename?: 'NDC', id: string, code?: string | null, description?: string | null }> | null } };
+export type FindAllNdcQuery = { __typename?: 'Query', findAllNdc: { __typename?: 'FindAllNdcPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, ndcs?: Array<{ __typename?: 'NDC', id: string, code?: string | null, description?: string | null, systematic?: boolean | null }> | null } };
 
 export type GetNdcCodeQueryVariables = Exact<{
   getNdcCodeInput: GetNdcCodeInput;
@@ -20380,6 +20381,7 @@ export const FindAllNdcDocument = gql`
       id
       code
       description
+      systematic
     }
   }
 }

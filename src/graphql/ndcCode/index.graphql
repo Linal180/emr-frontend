@@ -15,6 +15,7 @@ query FindAllNdc($findAllNdcInput: FindAllNdcInput!) {
       id
       code
       description
+      systematic
     }
   }
 }
