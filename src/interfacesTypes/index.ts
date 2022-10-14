@@ -441,6 +441,13 @@ export interface NdcSelectorProps extends SelectorProps {
   mvxCodeId: string
 }
 
+export interface VaccineProductNdcSelectorProps extends SelectorProps {
+  filteredOptions?: SelectorOption[]
+  placeHolder?: string;
+  vaccineProductId: string
+}
+
+
 export interface MvxSelectorProps extends SelectorProps {
   filteredOptions?: SelectorOption[]
   placeHolder?: string;

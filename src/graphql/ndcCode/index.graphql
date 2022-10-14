@@ -20,7 +20,6 @@ query FindAllNdc($findAllNdcInput: FindAllNdcInput!) {
   }
 }
 
-
 query GetNdcCode($getNdcCodeInput: GetNdcCodeInput!) {
   getNdcCode(getNdcCodeInput: $getNdcCodeInput) {
     response {

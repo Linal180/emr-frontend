@@ -2255,6 +2255,20 @@ export type FindAllNdcPayload = {
   response?: Maybe<ResponsePayloadResponse>;
 };
 
+export type FindAllNdcVaccineProductsInput = {
+  ndcId?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+  searchQuery?: Maybe<Scalars['String']>;
+  vaccineProductId?: Maybe<Scalars['String']>;
+};
+
+export type FindAllNdcVaccineProductsPayload = {
+  __typename?: 'FindAllNdcVaccineProductsPayload';
+  ndcVaccineProducts?: Maybe<Array<NdcVaccineProduct>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
 export type FindAllQuestionTemplatesPayload = {
   __typename?: 'FindAllQuestionTemplatesPayload';
   pagination?: Maybe<PaginationPayload>;
@@ -5099,6 +5113,7 @@ export type Query = {
   findAllModifiers: AllModifiersPayload;
   findAllMvx: FindAllMvxPayload;
   findAllNdc: FindAllNdcPayload;
+  findAllNdcVaccineProducts: FindAllNdcVaccineProductsPayload;
   findAllPatient: PatientsPayload;
   findAllPatientAllergies: PatientAllergiesPayload;
   findAllPatientMedications: PatientMedicationsPayload;
@@ -5410,6 +5425,11 @@ export type QueryFindAllMvxArgs = {
 
 export type QueryFindAllNdcArgs = {
   findAllNdcInput: FindAllNdcInput;
+};
+
+
+export type QueryFindAllNdcVaccineProductsArgs = {
+  findAllNdcVaccineProductsInput: FindAllNdcVaccineProductsInput;
 };
 
 
@@ -9491,6 +9511,13 @@ export type RemoveNdcCodeMutationVariables = Exact<{
 
 
 export type RemoveNdcCodeMutation = { __typename?: 'Mutation', removeNdcCode: { __typename?: 'NdcPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, ndcCode?: { __typename?: 'NDC', id: string } | null } };
+
+export type FindAllVaccineProductNdcQueryVariables = Exact<{
+  findAllNdcVaccineProductsInput: FindAllNdcVaccineProductsInput;
+}>;
+
+
+export type FindAllVaccineProductNdcQuery = { __typename?: 'Query', findAllNdcVaccineProducts: { __typename?: 'FindAllNdcVaccineProductsPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, ndcVaccineProducts?: Array<{ __typename?: 'NdcVaccineProduct', ndcCode?: { __typename?: 'NDC', id: string, code?: string | null, description?: string | null } | null }> | null } };
 
 export type FindAllPatientQueryVariables = Exact<{
   patientInput: PatientInput;
@@ -20580,6 +20607,58 @@ export function useRemoveNdcCodeMutation(baseOptions?: Apollo.MutationHookOption
 export type RemoveNdcCodeMutationHookResult = ReturnType<typeof useRemoveNdcCodeMutation>;
 export type RemoveNdcCodeMutationResult = Apollo.MutationResult<RemoveNdcCodeMutation>;
 export type RemoveNdcCodeMutationOptions = Apollo.BaseMutationOptions<RemoveNdcCodeMutation, RemoveNdcCodeMutationVariables>;
+export const FindAllVaccineProductNdcDocument = gql`
+    query FindAllVaccineProductNdc($findAllNdcVaccineProductsInput: FindAllNdcVaccineProductsInput!) {
+  findAllNdcVaccineProducts(
+    findAllNdcVaccineProductsInput: $findAllNdcVaccineProductsInput
+  ) {
+    response {
+      status
+      error
+      message
+    }
+    pagination {
+      page
+      totalPages
+    }
+    ndcVaccineProducts {
+      ndcCode {
+        id
+        code
+        description
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllVaccineProductNdcQuery__
+ *
+ * To run a query within a React component, call `useFindAllVaccineProductNdcQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllVaccineProductNdcQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllVaccineProductNdcQuery({
+ *   variables: {
+ *      findAllNdcVaccineProductsInput: // value for 'findAllNdcVaccineProductsInput'
+ *   },
+ * });
+ */
+export function useFindAllVaccineProductNdcQuery(baseOptions: Apollo.QueryHookOptions<FindAllVaccineProductNdcQuery, FindAllVaccineProductNdcQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllVaccineProductNdcQuery, FindAllVaccineProductNdcQueryVariables>(FindAllVaccineProductNdcDocument, options);
+      }
+export function useFindAllVaccineProductNdcLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllVaccineProductNdcQuery, FindAllVaccineProductNdcQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllVaccineProductNdcQuery, FindAllVaccineProductNdcQueryVariables>(FindAllVaccineProductNdcDocument, options);
+        }
+export type FindAllVaccineProductNdcQueryHookResult = ReturnType<typeof useFindAllVaccineProductNdcQuery>;
+export type FindAllVaccineProductNdcLazyQueryHookResult = ReturnType<typeof useFindAllVaccineProductNdcLazyQuery>;
+export type FindAllVaccineProductNdcQueryResult = Apollo.QueryResult<FindAllVaccineProductNdcQuery, FindAllVaccineProductNdcQueryVariables>;
 export const FindAllPatientDocument = gql`
     query FindAllPatient($patientInput: PatientInput!) {
   findAllPatient(patientInput: $patientInput) {
