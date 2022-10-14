@@ -155,8 +155,8 @@ const MvxTable: FC = (): JSX.Element => {
                     </TableCell>
                   </TableRow>
                 ) : <TableBody>
-                  {data?.map((icdCode) => {
-                    const { id, manufacturerName, mvxCode, notes, mvxStatus } = icdCode ?? {}
+                  {data?.map((mvx) => {
+                    const { id, manufacturerName, mvxCode, notes, mvxStatus,systematic } = mvx ?? {}
                     return (
                       <TableRow>
                         <TableCell scope="row">
@@ -178,13 +178,13 @@ const MvxTable: FC = (): JSX.Element => {
                         <TableCell scope="row">
                           <Box display='flex' alignItems='center'>
 
-                            <Box className={`${classes.iconsBackground}`}>
+                            <Box className={`${classes.iconsBackground} ${systematic ? 'disable-icon' : ''}`}>
                               <Button onClick={() => id && handleEdit(id)}>
                                 <EditOutlinedIcon />
                               </Button>
                             </Box>
 
-                            <Box className={`${classes.iconsBackground}`}>
+                            <Box className={`${classes.iconsBackground} ${systematic ? 'disable-icon' : ''}`}>
                               <Button onClick={() => id && onDeleteClick(id)}>
                                 <TrashOutlinedSmallIcon />
                               </Button>
