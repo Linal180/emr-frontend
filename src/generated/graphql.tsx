@@ -3030,6 +3030,7 @@ export type Mvx = {
   mvxCode?: Maybe<Scalars['String']>;
   mvxStatus?: Maybe<Scalars['String']>;
   notes?: Maybe<Scalars['String']>;
+  systematic?: Maybe<Scalars['Boolean']>;
   updateDate?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
   vaccineProduct?: Maybe<Array<VaccineProduct>>;
@@ -9426,7 +9427,7 @@ export type FindAllMvxQueryVariables = Exact<{
 }>;
 
 
-export type FindAllMvxQuery = { __typename?: 'Query', findAllMvx: { __typename?: 'FindAllMvxPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, mvxs?: Array<{ __typename?: 'MVX', id: string, notes?: string | null, mvxCode?: string | null, mvxStatus?: string | null, manufacturerName?: string | null }> | null } };
+export type FindAllMvxQuery = { __typename?: 'Query', findAllMvx: { __typename?: 'FindAllMvxPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, mvxs?: Array<{ __typename?: 'MVX', id: string, notes?: string | null, mvxCode?: string | null, mvxStatus?: string | null, systematic?: boolean | null, manufacturerName?: string | null }> | null } };
 
 export type GetMvxCodeQueryVariables = Exact<{
   getMvxCodeInput: GetMvxCodeInput;
@@ -20166,6 +20167,7 @@ export const FindAllMvxDocument = gql`
       notes
       mvxCode
       mvxStatus
+      systematic
       manufacturerName
     }
   }
