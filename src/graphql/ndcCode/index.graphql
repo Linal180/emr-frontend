@@ -15,10 +15,10 @@ query FindAllNdc($findAllNdcInput: FindAllNdcInput!) {
       id
       code
       description
+      systematic
     }
   }
 }
-
 
 query GetNdcCode($getNdcCodeInput: GetNdcCodeInput!) {
   getNdcCode(getNdcCodeInput: $getNdcCodeInput) {

@@ -153,7 +153,7 @@ const NdcTable: FC = (): JSX.Element => {
                   </TableRow>
                 ) : <TableBody>
                   {data?.map((icdCode) => {
-                    const { id, code, description } = icdCode ?? {}
+                    const { id, code, description,systematic } = icdCode ?? {}
                     return (
                       <TableRow>
                         <TableCell scope="row">
@@ -166,13 +166,13 @@ const NdcTable: FC = (): JSX.Element => {
                         <TableCell scope="row">
                           <Box display='flex' alignItems='center'>
 
-                            <Box className={`${classes.iconsBackground}`}>
+                            <Box className={`${classes.iconsBackground} ${systematic ? 'disable-icon' : ''}`}>
                               <Button onClick={() => id && handleEdit(id)}>
                                 <EditOutlinedIcon />
                               </Button>
                             </Box>
 
-                            <Box className={`${classes.iconsBackground}`}>
+                            <Box className={`${classes.iconsBackground} ${systematic ? 'disable-icon' : ''}`}>
                               <Button onClick={() => id && onDeleteClick(id)}>
                                 <TrashOutlinedSmallIcon />
                               </Button>
