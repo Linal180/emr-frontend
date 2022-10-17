@@ -1578,6 +1578,7 @@ export const RELATIONSHIP_TO_PATIENT = "Relationship To Patient";
 export const BOOK_YOUR_APPOINTMENT = "1 - Book Your Appointment";
 export const MAINTENANCE_IN_PROGRESS = "Maintenance in progress";
 export const REGISTRATION_DATES = "Provider/ Registration Dates";
+export const PROVIDER_FACILITY = "Provider/ Facility";
 export const DELETE_STAFF_DESCRIPTION = "Confirm to delete staff";
 export const PAY_DEBIT_CARD_TEXT = "Pay via Debit or Credit Card";
 export const PASSWORD_CHANGE_HEADING_TEXT = "Password is changed";

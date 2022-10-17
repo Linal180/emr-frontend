@@ -332,6 +332,7 @@ const CheckInComponent = (): JSX.Element => {
     <>
       <ChartCards
         status={status}
+        appointmentState={state}
         labOrderHandler={() => handleStep(2)}
         appointmentInfo={appointmentInfo}
         fetchAppointment={fetchAppointment}
@@ -345,6 +346,7 @@ const CheckInComponent = (): JSX.Element => {
     <>
       <ChartCards
         status={status}
+        appointmentState={state}
         labOrderHandler={() => handleStep(3)}
         appointmentInfo={appointmentInfo}
         fetchAppointment={fetchAppointment}

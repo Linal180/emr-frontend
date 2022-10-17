@@ -11,8 +11,7 @@ import { PatientCardsProps, PatientInputProps } from "../../../../interfacesType
 import { AuthContext } from "../../../../context"
 import { isOnlyDoctor, isPracticeAdmin, isSuperAdmin, renderItem } from "../../../../utils"
 import {
-  DOCTOR, EMPTY_OPTION, FACILITY,
-  REGISTRATION_DATES, USUAL_PROVIDER_ID
+  DOCTOR, EMPTY_OPTION, FACILITY, PROVIDER_FACILITY, USUAL_PROVIDER_ID
 } from "../../../../constants"
 
 const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, shouldDisableEdit }) => {
@@ -37,7 +36,7 @@ const RegistrationDatesCard: FC<PatientCardsProps> = ({ getPatientLoading, shoul
   }
 
   return (
-    <CardComponent cardTitle={REGISTRATION_DATES}>
+    <CardComponent cardTitle={PROVIDER_FACILITY}>
       <>
         <Grid container spacing={3}>
           <Grid item lg={3} md={6} sm={12} xs={12}>
