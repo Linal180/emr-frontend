@@ -2099,6 +2099,7 @@ export interface ChartComponentProps {
   appointmentInfo?: SelectorOption
   labOrderHandler?: Function
   isInTake?: boolean
+  appointmentState?: AppointmentState
 }
 
 export type TriageNoteProps = {

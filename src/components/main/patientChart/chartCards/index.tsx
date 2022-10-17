@@ -31,7 +31,7 @@ import ExamTab from "./tabs/ExamTab";
 // interfaces, graphql, constants block /styles
 import { HistoryIcon } from "../../../../assets/svgs";
 import {
-  CHART_TEXT, CONFIRMATION_MODAL_TYPE, DISCHARGE, DISCHARGE_PATIENT_DESCRIPTION, DONE_INTAKE, EXAM_OPTION,
+  CONFIRMATION_MODAL_TYPE, DISCHARGE, DISCHARGE_PATIENT_DESCRIPTION, DONE_INTAKE, EXAM_OPTION,
   PATIENT_CHARTING_MENU, PATIENT_CHARTING_TABS, PATIENT_DISCHARGED, PATIENT_DISCHARGED_SUCCESS, TRIAGE_NOTE_OPTION,
   PRINT_CHART, REASON_FOR_VISIT_OPTION, SIGN_OFF, VISIT_OPTION,
 } from "../../../../constants";
@@ -45,8 +45,13 @@ import { WHITE } from '../../../../theme';
 import { isAdmin, isOnlyDoctor } from "../../../../utils";
 import VisitsTab from "./Visits";
 
-const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appointmentInfo, fetchAppointment, labOrderHandler, isInTake }): JSX.Element => {
+const ChartCards: FC<ChartComponentProps> = ({ appointmentState, shouldDisableEdit, status, appointmentInfo, fetchAppointment, labOrderHandler, isInTake }): JSX.Element => {
   const classes = useChartingStyles();
+
+  const { appointment } = appointmentState || {}
+  const { appointmentType } = appointment ?? {}
+  const { name: serviceName } = appointmentType ?? {}
+
   const patientClasses = useExternalPatientStyles();
   const { user } = useContext(AuthContext);
   const { roles } = user || {}
@@ -244,7 +249,8 @@ const ChartCards: FC<ChartComponentProps> = ({ shouldDisableEdit, status, appoin
 
       <Card>
         <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
-          <Typography variant="h4">{CHART_TEXT}</Typography>
+          {/* <Typography variant="h4">{CHART_TEXT}</Typography> */}
+          <Typography variant="h4">{serviceName}</Typography>
 
           <Box display="flex" alignItems="center">
             <Box m={0.5}>
