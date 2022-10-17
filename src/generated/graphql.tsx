@@ -1211,6 +1211,16 @@ export type CreateCptFeeScheduleInput = {
   shortDescription?: Maybe<Scalars['String']>;
 };
 
+export type CreateCvxCodeInput = {
+  cptCodeId?: Maybe<Scalars['String']>;
+  cvxCode?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  notes?: Maybe<Scalars['String']>;
+  shortDescription?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['String']>;
+  updateDate?: Maybe<Scalars['String']>;
+};
+
 export type CreateDoctorInput = {
   createBillingAddressInput: CreateBillingAddressInput;
   createContactInput: CreateContactInput;
@@ -1731,6 +1741,12 @@ export type CreateVitalInput = {
   unitType: UnitType;
   vitalCreationDate?: Maybe<Scalars['String']>;
   weightUnit: WeightType;
+};
+
+export type CvxPayload = {
+  __typename?: 'CvxPayload';
+  cvx?: Maybe<Cvx>;
+  response?: Maybe<ResponsePayloadResponse>;
 };
 
 export type DependentQuestions = {
@@ -2504,6 +2520,10 @@ export type GetCptFeeScheduleInput = {
   id: Scalars['String'];
 };
 
+export type GetCvxCodeInput = {
+  id: Scalars['String'];
+};
+
 export type GetDoctor = {
   id: Scalars['String'];
 };
@@ -3113,6 +3133,7 @@ export type Mutation = {
   createContact: ContactPayload;
   createCopay: Copay;
   createCptFeeSchedule: CptFeeSchedulePayload;
+  createCvxCode: CvxPayload;
   createDoctor: DoctorPayload;
   createElement: Element;
   createExternalAppointment: AppointmentPayload;
@@ -3164,6 +3185,7 @@ export type Mutation = {
   removeClaimStatus: ClaimStatusPayload;
   removeContact: ContactPayload;
   removeCptFeeSchedule: CptFeeSchedulePayload;
+  removeCvxCode: CvxPayload;
   removeDoctor: DoctorPayload;
   removeFacility: FacilityPayload;
   removeFamilyHistory: FamilyHistoryPayload;
@@ -3209,6 +3231,7 @@ export type Mutation = {
   updateClaimStatus: ClaimStatusPayload;
   updateContact: ContactPayload;
   updateCptFeeSchedule: CptFeeSchedulePayload;
+  updateCvxCode: CvxPayload;
   updateDoctor: DoctorPayload;
   updateFacility: FacilityPayload;
   updateFacilityTimeZone: FacilityPayload;
@@ -3364,6 +3387,11 @@ export type MutationCreateCopayArgs = {
 
 export type MutationCreateCptFeeScheduleArgs = {
   createCptFeeScheduleInput: CreateCptFeeScheduleInput;
+};
+
+
+export type MutationCreateCvxCodeArgs = {
+  createCvxCodeInput: CreateCvxCodeInput;
 };
 
 
@@ -3617,6 +3645,11 @@ export type MutationRemoveCptFeeScheduleArgs = {
 };
 
 
+export type MutationRemoveCvxCodeArgs = {
+  removeCvxCodeInput: RemoveCvxCodeInput;
+};
+
+
 export type MutationRemoveDoctorArgs = {
   removeDoctor: RemoveDoctor;
 };
@@ -3834,6 +3867,11 @@ export type MutationUpdateContactArgs = {
 
 export type MutationUpdateCptFeeScheduleArgs = {
   updateCptFeeScheduleInput: UpdateCptFeeScheduleInput;
+};
+
+
+export type MutationUpdateCvxCodeArgs = {
+  updateNdcCodeInput: UpdateCvxCodeInput;
 };
 
 
@@ -5161,6 +5199,7 @@ export type Query = {
   getClaimFile: ClaimFilePayload;
   getContact: ContactPayload;
   getCptFeeSchedule: CptFeeSchedulePayload;
+  getCvxCode: CvxPayload;
   getDoctor: DoctorPayload;
   getDoctorSchedule: SchedulesPayload;
   getFacility: FacilityPayload;
@@ -5658,6 +5697,11 @@ export type QueryGetCptFeeScheduleArgs = {
 };
 
 
+export type QueryGetCvxCodeArgs = {
+  getCvxCodeInput: GetCvxCodeInput;
+};
+
+
 export type QueryGetDoctorArgs = {
   getDoctor: GetDoctor;
 };
@@ -6079,6 +6123,10 @@ export type RemoveContact = {
 };
 
 export type RemoveCptFeeScheduleInput = {
+  id: Scalars['String'];
+};
+
+export type RemoveCvxCodeInput = {
   id: Scalars['String'];
 };
 
@@ -7244,6 +7292,17 @@ export type UpdateCptFeeScheduleInput = {
   revenueCode?: Maybe<Scalars['String']>;
   serviceFee?: Maybe<Scalars['String']>;
   shortDescription?: Maybe<Scalars['String']>;
+};
+
+export type UpdateCvxCodeInput = {
+  cptCodeId?: Maybe<Scalars['String']>;
+  cvxCode?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  notes?: Maybe<Scalars['String']>;
+  shortDescription?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['String']>;
+  updateDate?: Maybe<Scalars['String']>;
 };
 
 export type UpdateDoctorInput = {
@@ -8968,7 +9027,14 @@ export type FindAllCvxQueryVariables = Exact<{
 }>;
 
 
-export type FindAllCvxQuery = { __typename?: 'Query', findAllCvx: { __typename?: 'FindAllCvxPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, cvxs?: Array<{ __typename?: 'CVX', id: string, name?: string | null, cvxCode?: string | null, shortDescription?: string | null }> | null } };
+export type FindAllCvxQuery = { __typename?: 'Query', findAllCvx: { __typename?: 'FindAllCvxPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, cvxs?: Array<{ __typename?: 'CVX', id: string, name?: string | null, notes?: string | null, status?: string | null, cvxCode?: string | null, shortDescription?: string | null }> | null } };
+
+export type RemoveCvxCodeMutationVariables = Exact<{
+  removeCvxCodeInput: RemoveCvxCodeInput;
+}>;
+
+
+export type RemoveCvxCodeMutation = { __typename?: 'Mutation', removeCvxCode: { __typename?: 'CvxPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, cvx?: { __typename?: 'CVX', id: string } | null } };
 
 export type FindAllDoctorPatientQueryVariables = Exact<{
   doctorPatientsInput: DoctorPatientsInput;
@@ -16446,6 +16512,8 @@ export const FindAllCvxDocument = gql`
     cvxs {
       id
       name
+      notes
+      status
       cvxCode
       shortDescription
     }
@@ -16480,6 +16548,46 @@ export function useFindAllCvxLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type FindAllCvxQueryHookResult = ReturnType<typeof useFindAllCvxQuery>;
 export type FindAllCvxLazyQueryHookResult = ReturnType<typeof useFindAllCvxLazyQuery>;
 export type FindAllCvxQueryResult = Apollo.QueryResult<FindAllCvxQuery, FindAllCvxQueryVariables>;
+export const RemoveCvxCodeDocument = gql`
+    mutation RemoveCvxCode($removeCvxCodeInput: RemoveCvxCodeInput!) {
+  removeCvxCode(removeCvxCodeInput: $removeCvxCodeInput) {
+    response {
+      status
+      error
+      message
+    }
+    cvx {
+      id
+    }
+  }
+}
+    `;
+export type RemoveCvxCodeMutationFn = Apollo.MutationFunction<RemoveCvxCodeMutation, RemoveCvxCodeMutationVariables>;
+
+/**
+ * __useRemoveCvxCodeMutation__
+ *
+ * To run a mutation, you first call `useRemoveCvxCodeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveCvxCodeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeCvxCodeMutation, { data, loading, error }] = useRemoveCvxCodeMutation({
+ *   variables: {
+ *      removeCvxCodeInput: // value for 'removeCvxCodeInput'
+ *   },
+ * });
+ */
+export function useRemoveCvxCodeMutation(baseOptions?: Apollo.MutationHookOptions<RemoveCvxCodeMutation, RemoveCvxCodeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveCvxCodeMutation, RemoveCvxCodeMutationVariables>(RemoveCvxCodeDocument, options);
+      }
+export type RemoveCvxCodeMutationHookResult = ReturnType<typeof useRemoveCvxCodeMutation>;
+export type RemoveCvxCodeMutationResult = Apollo.MutationResult<RemoveCvxCodeMutation>;
+export type RemoveCvxCodeMutationOptions = Apollo.BaseMutationOptions<RemoveCvxCodeMutation, RemoveCvxCodeMutationVariables>;
 export const FindAllDoctorPatientDocument = gql`
     query FindAllDoctorPatient($doctorPatientsInput: DoctorPatientsInput!) {
   findAllDoctorPatients(doctorPatientsInput: $doctorPatientsInput) {

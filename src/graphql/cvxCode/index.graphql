@@ -14,8 +14,27 @@ query FindAllCvx($findAllCvxInput: FindAllCvxInput!) {
     cvxs {
       id
       name
+      notes
+      status
       cvxCode
       shortDescription
+    }
+  }
+}
+
+# mutation
+
+
+mutation RemoveCvxCode($removeCvxCodeInput: RemoveCvxCodeInput!) {
+  removeCvxCode(removeCvxCodeInput: $removeCvxCodeInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    cvx {
+      id
     }
   }
 }

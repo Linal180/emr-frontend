@@ -50,6 +50,7 @@ import { Action as ScheduleAction, State as ScheduleState } from "../reducers/sc
 import { Action as VaccineAction } from "../reducers/vaccinesReducer";
 import { Action as NdcCodeAction } from "../reducers/ndcCodeReducer";
 import { Action as MvxCodeAction } from "../reducers/mvxCodeReducer";
+import { Action as CvxCodeAction } from "../reducers/cvxCodeReducer";
 
 export type Order = 'ASC' | 'DESC';
 type Key = string | number | undefined;
@@ -2440,6 +2441,15 @@ export type MvxCodeFormProps = {
   fetch?: Function;
   id?: string;
   dispatcher?: Dispatch<MvxCodeAction>
+  handleClose: (open: boolean) => void
+}
+
+export type CvxCodeFormProps = {
+  open: boolean;
+  isEdit: boolean;
+  fetch?: Function;
+  id?: string;
+  dispatcher?: Dispatch<CvxCodeAction>
   handleClose: (open: boolean) => void
 }
 
