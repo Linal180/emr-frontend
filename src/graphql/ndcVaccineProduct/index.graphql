@@ -1,0 +1,26 @@
+query FindAllVaccineProductNdc(
+  $findAllNdcVaccineProductsInput: FindAllNdcVaccineProductsInput!
+) {
+  findAllNdcVaccineProducts(
+    findAllNdcVaccineProductsInput: $findAllNdcVaccineProductsInput
+  ) {
+    response {
+      status
+      error
+      message
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+
+    ndcVaccineProducts {
+      ndcCode {
+        id
+        code
+        description
+      }
+    }
+  }
+}

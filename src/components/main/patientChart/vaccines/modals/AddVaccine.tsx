@@ -7,12 +7,12 @@ import {
 import VaccineModal from "./VaccineModal";
 // constants, interfaces, utils block 
 import { GREY_SEVEN } from "../../../../../theme";
-import { NoDataIcon, SearchIcon } from "../../../../../assets/svgs";
 import { AddVaccineProps } from "../../../../../interfacesTypes";
+import { NoDataIcon, SearchIcon } from "../../../../../assets/svgs";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
-import { Cvx, FindAllCvxPayload, useFindAllCvxLazyQuery } from "../../../../../generated/graphql";
-import { Action, ActionType, vaccinesReducer, initialState, State } from "../../../../../reducers/vaccinesReducer";
 import { ADD_VACCINE_TEXT, INITIAL_PAGE_LIMIT, NO_RECORDS, SEARCH_FOR_VACCINES } from "../../../../../constants";
+import { Action, ActionType, vaccinesReducer, initialState, State } from "../../../../../reducers/vaccinesReducer";
+import { FindAllVaccineProductsPayload, useSearchAllVaccineProductsLazyQuery, VaccineProduct } from "../../../../../generated/graphql";
 
 const AddVaccine: FC<AddVaccineProps> = ({ isOpen = false, handleModalClose, fetch }) => {
 
@@ -26,7 +26,7 @@ const AddVaccine: FC<AddVaccineProps> = ({ isOpen = false, handleModalClose, fet
     handleModalClose()
   }
 
-  const [searchCvxCode, { loading: searchIcdCodesLoading }] = useFindAllCvxLazyQuery({
+  const [searchVaccineProduct, { loading: searchIcdCodesLoading }] = useSearchAllVaccineProductsLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -36,14 +36,14 @@ const AddVaccine: FC<AddVaccineProps> = ({ isOpen = false, handleModalClose, fet
 
     onCompleted(data) {
       if (data) {
-        const { findAllCvx } = data;
+        const { findAllVaccineProducts } = data;
 
-        if (findAllCvx) {
-          const { cvxs } = findAllCvx
+        if (findAllVaccineProducts) {
+          const { vaccineProducts } = findAllVaccineProducts
 
-          cvxs && dispatch({
+          vaccineProducts && dispatch({
             type: ActionType.SET_SEARCHED_DATA,
-            searchedData: cvxs as FindAllCvxPayload['cvxs']
+            searchedData: vaccineProducts as FindAllVaccineProductsPayload['vaccineProducts']
           })
         }
       }
@@ -52,16 +52,16 @@ const AddVaccine: FC<AddVaccineProps> = ({ isOpen = false, handleModalClose, fet
 
   const handleCvxSearch = useCallback(async (searchQuery: string) => {
     try {
-      await searchCvxCode({
+      await searchVaccineProduct({
         variables: {
-          findAllCvxInput: {
+          findAllVaccineProductsInput: {
             searchQuery,
             paginationOptions: { page: 1, limit: INITIAL_PAGE_LIMIT }
           }
         }
       })
     } catch (error) { }
-  }, [searchCvxCode])
+  }, [searchVaccineProduct])
 
 
   const handleSearch = useCallback(async (query: string) => {
@@ -76,7 +76,7 @@ const AddVaccine: FC<AddVaccineProps> = ({ isOpen = false, handleModalClose, fet
     }
   }, [handleCvxSearch])
 
-  const handleOpenForm = (item: Cvx) => {
+  const handleOpenForm = (item: VaccineProduct) => {
     dispatch({ type: ActionType.SET_SELECTED_ITEM, selectedItem: item })
     dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: true })
   };
@@ -93,14 +93,17 @@ const AddVaccine: FC<AddVaccineProps> = ({ isOpen = false, handleModalClose, fet
           :
           (searchedData && searchedData.length > 0 ?
             searchedData?.map(item => {
-              const { cvxCode, shortDescription, name } = item as Cvx || {}
+              const { cvxCode, name, mvx, cvx } = item as VaccineProduct || {}
+              const { shortDescription, name: cvxName } = cvx || {}
+              const { manufacturerName } = mvx || {}
 
               return (
-                <Box key={`${cvxCode} | ${shortDescription}`} my={0.2} className={chartingClasses.hoverClass}
-                  onClick={() => item && handleOpenForm(item as Cvx)}
+                <Box key={`${cvxCode} | ${name}`} my={0.2} className={chartingClasses.hoverClass}
+                  onClick={() => item && handleOpenForm(item as VaccineProduct)}
                 >
                   <Box display="flex" flexDirection="column" px={2}>
-                    <Typography variant='body1'>{`${cvxCode} | ${name} | ${shortDescription}  `}</Typography>
+                    <Typography variant='body1'>{cvxName ? `${name} | ${cvxName}` : name}</Typography>
+                    <Typography variant='caption'>{manufacturerName ? `${shortDescription || ""} |  ${manufacturerName}` : shortDescription || ''}</Typography>
                   </Box>
 
                 </Box>

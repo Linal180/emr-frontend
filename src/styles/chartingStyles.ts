@@ -1,7 +1,7 @@
 import { makeStyles, } from "@material-ui/core";
-import { 
-  BLACK, BLACK_THREE, BLACK_TWO, BLUE, GRAY_ONE, GRAY_SIX, GREEN, GREEN_TWO,  
-  GREY, GREY_FOUR, WHITE, WHITE_FOUR 
+import {
+  BLACK, BLACK_THREE, BLACK_TWO, BLUE, GRAY_ONE, GRAY_SIX, GREEN, GREEN_TWO,
+  GREY, GREY_FOUR, WHITE, WHITE_FOUR
 } from "../theme";
 
 export const useChartingStyles = makeStyles((theme) => ({
@@ -14,8 +14,8 @@ export const useChartingStyles = makeStyles((theme) => ({
       minHeight: 'auto',
       height: 'fit-content',
     },
-    
-    "& .MuiTabs-flexContainerVertical" :{
+
+    "& .MuiTabs-flexContainerVertical": {
       [theme.breakpoints.down("md")]: {
         flexDirection: 'row',
         overflowX: 'auto',
@@ -70,17 +70,17 @@ export const useChartingStyles = makeStyles((theme) => ({
   },
 
   iconBox: {
-    border:`1px solid ${GRAY_ONE}`,
+    border: `1px solid ${GRAY_ONE}`,
     borderRadius: 6,
     width: 40,
     height: 40,
     display: 'flex',
-   justifyContent: 'center',
-   alignItems: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
 
-   "& .MuiIconButton-root": {
-    borderRadius: 0, 
-   },
+    "& .MuiIconButton-root": {
+      borderRadius: 0,
+    },
   },
 
   unitsDropdown: {
@@ -108,7 +108,7 @@ export const useChartingStyles = makeStyles((theme) => ({
       height: 40,
       padding: 10,
     },
-    
+
   },
 
   tableBox: {
@@ -201,7 +201,7 @@ export const useChartingStyles = makeStyles((theme) => ({
 
   searchBox: {
     backgroundColor: GREY,
-    
+
     "& .MuiBox-root": {
       backgroundColor: GREY,
       borderRadius: 4,
@@ -238,14 +238,14 @@ export const useChartingStyles = makeStyles((theme) => ({
   activeBox: {
     borderRadius: 6,
     width: 'fit-content',
-    height : '100%',
+    height: '100%',
     minHeight: 30,
     padding: '2px 10px',
     color: WHITE,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    textAlign : 'center'
+    textAlign: 'center'
   },
 
   textOverflow: {
@@ -282,8 +282,8 @@ export const useChartingStyles = makeStyles((theme) => ({
   hoverClass: {
     padding: '5px 10px !important',
     borderRadius: 4,
-
     "&:hover": {
+      cursor: "pointer",
       backgroundColor: GREY,
     }
   },

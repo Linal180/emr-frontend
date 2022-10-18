@@ -14,7 +14,7 @@ import DatePicker from '../../../../common/DatePicker';
 import TextLoader from '../../../../common/TextLoader';
 import InputController from '../../../../../controller';
 import MvxSelector from '../../../../common/Selector/MvxSelector';
-import NdcSelector from '../../../../common/Selector/NdcSelector';
+import NdcSelector from '../../../../common/Selector/VaccineNdcSelector';
 // constants block
 import { GREY_THREE } from '../../../../../theme';
 import { PageBackIcon } from '../../../../../assets/svgs';
@@ -28,7 +28,7 @@ import {
   MANUFACTURER_TEXT, EXPIRY_DATE, VIS_GIVEN_TEXT, DATE_ON_VIS
 } from '../../../../../constants';
 import {
-  Cvx, useAddVaccineMutation, useGetVaccineLazyQuery, useUpdateVaccineMutation
+  useAddVaccineMutation, useGetVaccineLazyQuery, useUpdateVaccineMutation, VaccineProduct
 } from '../../../../../generated/graphql';
 
 const VaccineModal: FC<VaccineModalProps> = ({
@@ -39,11 +39,10 @@ const VaccineModal: FC<VaccineModalProps> = ({
   const { id: patientId, appointmentId } = useParams<ParamsType>()
   const methods = useForm<PatientVaccineFormType>({ mode: "all", resolver: yupResolver(patientVaccineSchema) });
 
-  const { handleSubmit, reset, setValue, watch } = methods;
-  const { id: cvxCodeId, cvxCode: code, shortDescription: description, name } = item as Cvx || {}
-
-  const { mvx } = watch();
-  const { id: mvxSelectorId } = mvx || {}
+  const { handleSubmit, reset, setValue } = methods;
+  const { id: vaccineProductId, cvx, name, mvx: vaccineMvx } = item as VaccineProduct || {}
+  const { shortDescription: description, name: cvxName } = cvx || {}
+  const { manufacturerName, mvxCode } = vaccineMvx || {}
 
 
   const closeAddModal = () => {
@@ -106,8 +105,8 @@ const VaccineModal: FC<VaccineModalProps> = ({
           }
 
           if (ndcId) {
-            const { id, ndcCode, cvxDescription } = ndc || {}
-            id && cvxDescription && setValue('ndc', { id, name: ndcCode ? `${ndcCode} | ${cvxDescription}` : cvxDescription })
+            const { id, code, description } = ndc || {}
+            id && code && setValue('ndc', { id, name: description ? `${code} | ${description}` : code })
           }
         }
       }
@@ -185,7 +184,7 @@ const VaccineModal: FC<VaccineModalProps> = ({
 
     const inputs = {
       administerBy, administrationDate: administrativeDate,
-      amount, lotNo, visGiven: visGivenDate, cvxId: cvxCodeId, mvxId,
+      amount, lotNo, visGiven: visGivenDate, vaccineProductId: vaccineProductId, mvxId,
       ndcId, route: routeId, site: siteId, units: unit,
       visDate: vis, expiryDate: exp, ...(appointmentId && { appointmentId })
     }
@@ -229,14 +228,14 @@ const VaccineModal: FC<VaccineModalProps> = ({
 
               <Box>
                 {loading ? <TextLoader width='300px' rows={[{ column: 1, size: 12 }]} />
-                  : <Typography variant='h4'>{description}</Typography>
+                  : <Typography variant='h4'>{cvxName ? `${name} | ${cvxName}` : name}</Typography>
                 }
 
                 <Box mt={1} color={GREY_THREE}>
                   {loading ?
                     <TextLoader width='300px' rows={[{ column: 1, size: 12 }]} /> :
                     <Typography variant='h6'>
-                      {name}: {code}
+                      {manufacturerName ? `${description || ""} |  ${manufacturerName}` : description || ''}
                     </Typography>}
                 </Box>
               </Box>
@@ -289,7 +288,7 @@ const VaccineModal: FC<VaccineModalProps> = ({
                   addEmpty
                   name='mvx'
                   loading={loading}
-                  cvxCodeId={cvxCodeId}
+                  mvxCode={mvxCode || ''}
                   label={MANUFACTURER_TEXT}
                   options={VACCINE_SITES_MAPPED}
                 />
@@ -301,7 +300,7 @@ const VaccineModal: FC<VaccineModalProps> = ({
                   name='ndc'
                   label={NDC_TEXT}
                   loading={loading}
-                  mvxCodeId={mvxSelectorId}
+                  vaccineProductId={vaccineProductId}
                 />
               </Grid>
 

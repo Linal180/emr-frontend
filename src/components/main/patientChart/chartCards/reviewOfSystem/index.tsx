@@ -1,4 +1,4 @@
-import { Box, Button, Card, Typography } from "@material-ui/core";
+import { Box, Button, Card, colors, Typography } from "@material-ui/core";
 import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
@@ -160,6 +160,19 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
 
   return (
     <Card>
+      <Box px={2} pb={2} mb={1} display='flex' justifyContent='space-between' alignItems='center' flexWrap="wrap" borderBottom={`1px solid ${colors.grey[300]}`}>
+        <Typography variant='h3'>
+          {REVIEW_OF_SYSTEM_TEXT}
+        </Typography>
+        {handleStep && <Box ml={1}>
+          <Button
+            variant='contained'
+            color='secondary'
+            onClick={() => handleStep()}
+          >
+            {NEXT}
+          </Button></Box>}
+      </Box>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Box p={3}>
@@ -171,28 +184,14 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
               onSelect={({ id }: SelectorOption) => fetchPatientChartingTemplates(id)}
             />
           </Box>
-          {sections?.length && <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
-
-            <Typography variant='h4'>
-              {REVIEW_OF_SYSTEM_TEXT}
-            </Typography>
-
-            <Box display='flex' alignItems='center' justifyContent="space-between">
+          {sections?.length &&
+            <Box display='flex' alignItems='center' justifyContent="flex-end" px={2}>
               {!shouldDisableEdit && <Button type="submit" variant="contained" color="primary">
                 {SUBMIT}
               </Button>}
-              {handleStep && <Box ml={1}>
-                <Button
-                  variant='contained'
-                  color='secondary'
-                  onClick={() => handleStep()}
-                >
-                  {NEXT}
-                </Button></Box>}
-            </Box>
-          </Box>}
+            </Box>}
 
-          <Box maxHeight="calc(100vh - 260px)" className="overflowY-auto">
+          <Box maxHeight="calc(100vh - 180px)" className="overflowY-auto">
             {sections?.map((section) => {
               const { id, name, questions } = section || {}
               return (

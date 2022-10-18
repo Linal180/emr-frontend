@@ -1,57 +1,57 @@
 // packages block
+import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import { FC, useCallback, useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
 // components block
 import AutocompleteTextField from "../AutocompleteTextField";
 // utils and interfaces/types block
-import { renderMvxs, requiredLabel } from "../../../utils";
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
-import { MvxSelectorProps, SelectorOption } from "../../../interfacesTypes";
-import { FindAllMvxPayload, useFindAllMvxLazyQuery } from "../../../generated/graphql";
+import { FindAllNdcVaccineProductsPayload, useFindAllVaccineProductNdcLazyQuery } from "../../../generated/graphql";
+import { VaccineProductNdcSelectorProps, SelectorOption } from "../../../interfacesTypes";
+import { renderVaccineProductNdcs, requiredLabel } from "../../../utils";
 
-const MvxSelector: FC<MvxSelectorProps> = ({
-  name, label, disabled, isRequired, addEmpty, onSelect, filteredOptions, placeHolder, mvxCode
+const VaccineProductNdcSelector: FC<VaccineProductNdcSelectorProps> = ({
+  name, label, disabled, isRequired, addEmpty, onSelect, filteredOptions, placeHolder, vaccineProductId
 }): JSX.Element => {
 
   const { control } = useFormContext()
   const [searchQuery, setSearchQuery] = useState<string>('')
-  const [mvxCodes, setMvxCodes] = useState<FindAllMvxPayload['mvxs']>([])
-  const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderMvxs(mvxCodes ?? [])] : [...renderMvxs(mvxCodes ?? [])]
+  const [ndcCodes, setNdcCodes] = useState<FindAllNdcVaccineProductsPayload['ndcVaccineProducts']>([])
+  const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderVaccineProductNdcs(ndcCodes ?? [])] : [...renderVaccineProductNdcs(ndcCodes ?? [])]
 
-  const [findAllMvxCodes, { loading }] = useFindAllMvxLazyQuery({
+  const [findAllNdcCodes, { loading }] = useFindAllVaccineProductNdcLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
     onError() {
-      setMvxCodes([])
+      setNdcCodes([])
     },
 
     onCompleted(data) {
-      const { findAllMvx } = data || {};
+      const { findAllNdcVaccineProducts } = data || {};
 
-      if (findAllMvx) {
-        const { mvxs } = findAllMvx
-        mvxs && setMvxCodes(mvxs as FindAllMvxPayload['mvxs'])
+      if (findAllNdcVaccineProducts) {
+        const { ndcVaccineProducts } = findAllNdcVaccineProducts
+        ndcVaccineProducts && setNdcCodes(ndcVaccineProducts as FindAllNdcVaccineProductsPayload['ndcVaccineProducts'])
       }
     }
   });
 
-  const fetchAllMvxCodes = useCallback(async () => {
+  const fetchAllNdcCodes = useCallback(async () => {
     try {
       const pageInputs = { paginationOptions: { page: 1, limit: DROPDOWN_PAGE_LIMIT } }
-      await findAllMvxCodes({
-        variables: { findAllMvxInput: { ...pageInputs, searchQuery, mvxCode: mvxCode } }
+      await findAllNdcCodes({
+        variables: { findAllNdcVaccineProductsInput: { ...pageInputs, searchQuery, vaccineProductId: vaccineProductId } }
       })
     } catch (error) { }
-  }, [findAllMvxCodes, searchQuery, mvxCode])
+  }, [findAllNdcCodes, searchQuery, vaccineProductId])
 
   useEffect(() => {
-    if ((!searchQuery.length || searchQuery.length > 2) && mvxCode) {
-      fetchAllMvxCodes()
+    if ((!searchQuery.length || searchQuery.length > 2) && vaccineProductId) {
+      fetchAllNdcCodes()
     }
-  }, [searchQuery, fetchAllMvxCodes, mvxCode]);
+  }, [searchQuery, fetchAllNdcCodes, vaccineProductId]);
 
   const filterOptions = (options: SelectorOption[]) => {
     if (filteredOptions) {
@@ -109,4 +109,4 @@ const MvxSelector: FC<MvxSelectorProps> = ({
   );
 };
 
-export default MvxSelector;
+export default VaccineProductNdcSelector;
