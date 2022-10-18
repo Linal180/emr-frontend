@@ -1,14 +1,14 @@
 // packages block
-import { Grid } from "@material-ui/core"
-import { FC } from "react"
+import { FC } from "react";
+import { Grid } from "@material-ui/core";
 // components block
-import DatePicker from "../../../common/DatePicker"
-import CardComponent from "../../../common/CardComponent"
+import DatePicker from "../../../common/DatePicker";
+import CardComponent from "../../../common/CardComponent";
 // constants, interfaces block
-import InputController from "../../../../controller"
-import { PatientCardsProps } from "../../../../interfacesTypes"
-import SnnController from "../../../../controller/SnnController"
-import { DOB, FIRST_NAME, IDENTIFICATION, MIDDLE_NAME, SSN, SUFFIX, LAST_NAME, SSN_FORMAT } from "../../../../constants"
+import InputController from "../../../../controller";
+import { PatientCardsProps } from "../../../../interfacesTypes";
+import SnnController from "../../../../controller/SnnController";
+import { DOB, FIRST_NAME, IDENTIFICATION, MIDDLE_NAME, SSN, SUFFIX, LAST_NAME, SSN_FORMAT } from "../../../../constants";
 
 const IdentificationCard: FC<PatientCardsProps> = ({
   getPatientLoading, shouldDisableEdit, state, disableSubmit, isEdit

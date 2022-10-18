@@ -49,6 +49,7 @@ const SnnController: FC<CustomInputControlProps> = ({
                 onBlur={() => setPasswordType(SSN_INPUT)}
                 onFocus={() => setPasswordType(TEXT)}
                 showMask={false}
+                className={classes.ssnField}
               />
 
               {/* <TextField
