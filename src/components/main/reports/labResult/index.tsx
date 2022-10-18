@@ -2,14 +2,14 @@
 import { PDFViewer } from "@react-pdf/renderer";
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router";
+import { Box, Typography } from "@material-ui/core";
 //components
 import ResultDoc from "./ResultDoc";
+import Device from "./Device";
+import ResultDownloadLink from "./ResultDownloadLink";
 //constants, types, utils
 import { LabTestsPayload, useFindLabResultInfoLazyQuery } from "../../../../generated/graphql";
 import { ParamsType } from "../../../../interfacesTypes";
-import Device from "./Device";
-import ResultDownloadLink from "./ResultDownloadLink";
-import { Box, Typography } from "@material-ui/core";
 
 // Create Document Component
 function LabResultDetail() {
