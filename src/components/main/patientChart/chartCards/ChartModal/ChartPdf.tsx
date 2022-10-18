@@ -498,7 +498,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                     const { allergy } = allergyValue || {}
                     const { name } = allergy || {}
                     return (
-                      <Text style={[styles.fieldText, styles.colorRed]}>{name}</Text>
+                      <Text style={[styles.fieldText]}>{name}</Text>
                     )
                   }) : <Text style={[styles.fieldTitle3]}>{NO_DRUG_ALLERGIES_RECORDED}</Text>}
                 </View>
@@ -508,7 +508,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                   {drugAllergies?.length ? drugAllergies?.map((allergyValue) => {
                     const { allergySeverity } = allergyValue || {}
                     return (
-                      <Text style={[styles.fieldText, styles.colorRed]}>{formatValue(allergySeverity)}</Text>
+                      <Text style={[styles.fieldText]}>{formatValue(allergySeverity)}</Text>
                     )
                   }) : <Text style={[styles.fieldTitle]}> </Text>}
                 </View>
@@ -518,9 +518,9 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                   {drugAllergies?.length ? drugAllergies?.map((allergyValue) => {
                     const { allergyStartDate, allergyOnset } = allergyValue || {}
                     return (
-                      <Text style={[styles.fieldText,]}>{allergyStartDate ? getFormatDateString(allergyStartDate, 'MM-DD-YYYY') : formatValue(allergyOnset)}</Text>
+                      <Text style={[styles.fieldText]}>{allergyStartDate ? getFormatDateString(allergyStartDate, 'MM-DD-YYYY') : formatValue(allergyOnset)}</Text>
                     )
-                  }) : <Text style={[styles.fieldTitle,]}> </Text>}
+                  }) : <Text style={[styles.fieldTitle]}> </Text>}
                 </View>
               </View>
 
@@ -553,7 +553,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                     const { allergy } = allergyValue || {}
                     const { name } = allergy || {}
                     return (
-                      <Text style={[styles.fieldText, styles.colorRed]}>{name}</Text>
+                      <Text style={[styles.fieldText]}>{name}</Text>
                     )
                   }) : <Text style={[styles.fieldText]}>{NO_FOOD_ALLERGIES_RECORDED}</Text>}
                 </View>
@@ -563,7 +563,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                   {foodAllergies?.length ? foodAllergies?.map((allergyValue) => {
                     const { allergySeverity } = allergyValue || {}
                     return (
-                      <Text style={[styles.fieldText, styles.colorRed]}>{allergySeverity}</Text>
+                      <Text style={[styles.fieldText]}>{formatValue(allergySeverity)}</Text>
                     )
                   }) : <Text style={[styles.fieldTitle]}> </Text>}
                 </View>
@@ -608,7 +608,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                     const { allergy } = allergyValue || {}
                     const { name } = allergy || {}
                     return (
-                      <Text style={[styles.fieldText, styles.colorRed]}>{name}</Text>
+                      <Text style={[styles.fieldText]}>{name}</Text>
                     )
                   }) : <Text style={[styles.fieldText]}>{NO_ENVIRONMENTAL_ALLERGIES_RECORDED}</Text>}
 
@@ -624,7 +624,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                   {environmentAllergies?.length ? environmentAllergies?.map((allergyValue) => {
                     const { allergySeverity } = allergyValue || {}
                     return (
-                      <Text style={[styles.fieldText, styles.colorRed]}>{allergySeverity}</Text>
+                      <Text style={[styles.fieldText]}>{formatValue(allergySeverity)}</Text>
                     )
                   }) : <Text style={[styles.fieldTitle]}> </Text>}
                 </View>

@@ -145,6 +145,7 @@ export const AUTO_LOGOUT_ERROR = "Auto logout time is not updated";
 export const ITEMS_ID = 'ITEMS'
 export const PRE_DEFINED = 'PRE-DEFINED'
 export const DASHES = '--'
+export const SLASH_IN_DASHES = '-- / --'
 export const CURRENT_DATE = new Date();
 export const LATEST_RECORDED_DATE = "Recorded Date"
 export const NOTE = "Note";
