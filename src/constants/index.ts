@@ -3927,6 +3927,12 @@ export const PATIENT_CHARTING_MENU = [
     title: "Vaccines",
   },
   {
+    title: "History of Present Illness",
+  },
+  {
+    title: "Review Of System",
+  },
+  {
     title: "Orders And Diagnoses",
   }
 ]

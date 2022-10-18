@@ -7,6 +7,9 @@ import ResultDoc from "./ResultDoc";
 //constants, types, utils
 import { LabTestsPayload, useFindLabResultInfoLazyQuery } from "../../../../generated/graphql";
 import { ParamsType } from "../../../../interfacesTypes";
+import Device from "./Device";
+import ResultDownloadLink from "./ResultDownloadLink";
+import { Box, Typography } from "@material-ui/core";
 
 // Create Document Component
 function LabResultDetail() {
@@ -52,9 +55,26 @@ function LabResultDetail() {
   }, [fetchLabTests, orderNum])
 
   return (
-    <PDFViewer style={{ width: "100%", height: `calc(100vh - 140px)`, }}>
-      <ResultDoc labTest={labTest} attachmentUrl={url} />
-    </PDFViewer>
+    <Device>
+      {({ isMobile }) => {
+        if (isMobile) {
+          return (
+            <Box textAlign='center' pt={5} width='100%'>
+              <Typography color="error" variant="h5">Unable to view Pdf, Press the button to download it.</Typography>
+              <Box mt={2}>
+                <ResultDownloadLink orderNumber={orderNum || ''} />
+              </Box>
+            </Box>
+          );
+        }
+        return (
+          <PDFViewer style={{ width: "100%", height: `calc(100vh - 140px)`, }}>
+            <ResultDoc labTest={labTest} attachmentUrl={url} />
+          </PDFViewer>
+        );
+      }}
+    </Device>
+
   );
 }
 export default LabResultDetail;
