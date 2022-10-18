@@ -2,8 +2,11 @@
 import { PDFViewer } from "@react-pdf/renderer";
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router";
+import { Box, Typography } from "@material-ui/core";
 //components
 import ResultDoc from "./ResultDoc";
+import Device from "./Device";
+import ResultDownloadLink from "./ResultDownloadLink";
 //constants, types, utils
 import { LabTestsPayload, useFindLabResultInfoLazyQuery } from "../../../../generated/graphql";
 import { ParamsType } from "../../../../interfacesTypes";
@@ -52,9 +55,26 @@ function LabResultDetail() {
   }, [fetchLabTests, orderNum])
 
   return (
-    <PDFViewer style={{ width: "100%", height: `calc(100vh - 140px)`, }}>
-      <ResultDoc labTest={labTest} attachmentUrl={url} />
-    </PDFViewer>
+    <Device>
+      {({ isMobile }) => {
+        if (isMobile) {
+          return (
+            <Box textAlign='center' pt={5} width='100%'>
+              <Typography color="error" variant="h5">Unable to view Pdf, Press the button to download it.</Typography>
+              <Box mt={2}>
+                <ResultDownloadLink orderNumber={orderNum || ''} />
+              </Box>
+            </Box>
+          );
+        }
+        return (
+          <PDFViewer style={{ width: "100%", height: `calc(100vh - 140px)`, }}>
+            <ResultDoc labTest={labTest} attachmentUrl={url} />
+          </PDFViewer>
+        );
+      }}
+    </Device>
+
   );
 }
 export default LabResultDetail;

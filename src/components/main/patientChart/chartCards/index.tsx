@@ -176,6 +176,12 @@ const ChartCards: FC<ChartComponentProps> = ({ appointmentState, shouldDisableEd
         return <Vaccines shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(10)} />
 
       case 10:
+        return <PatientHistory shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(11)} />
+
+      case 11:
+        return <ReviewOfSystem shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(12)} />
+
+      case 12:
         return <AssessmentPlanTab shouldDisableEdit={shouldDisableEdit} />
       default:
         return (

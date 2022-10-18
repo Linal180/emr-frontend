@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core";
-import { WHITE, GRAY_ONE, BLUE_NINE } from "../theme";
+import { WHITE, GRAY_ONE, BLUE_NINE, GREY, BLUE } from "../theme";
 
 export const useFormStyles = makeStyles(() => ({
   detailTooltipBox: {
@@ -41,5 +41,19 @@ export const useFormStyles = makeStyles(() => ({
   multilineInput: {
     maxHeight: 200,
     overflowY: 'auto',
+  },
+
+  ssnField: {
+    height: 48,
+    borderRadius: 4,
+    padding: '12px 16px',
+    backgroundColor: GREY,
+    border: '1px solid #EEF6FF',
+    fontSize: 16,
+
+    "&:focus-visible": {
+      outline: 'none',
+      border: `1px solid ${BLUE}`
+    }
   }
 }));
