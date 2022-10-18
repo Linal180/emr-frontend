@@ -15,7 +15,7 @@ import { ParamsType, VaccinesTableProps } from '../../../../../interfacesTypes';
 import { formatValue, getPageNumber, isLast, renderTh } from '../../../../../utils';
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from '../../../../../assets/svgs';
 import { vaccinesReducer, Action, ActionType, State, initialState } from '../../../../../reducers/vaccinesReducer';
-import { Cvx, FindAllVaccinesPayload, useFindAllVaccinesLazyQuery, useRemoveVaccineMutation } from '../../../../../generated/graphql';
+import { FindAllVaccinesPayload, useFindAllVaccinesLazyQuery, useRemoveVaccineMutation, VaccineProduct } from '../../../../../generated/graphql';
 import {
   ACTIONS, ADD_NEW_TEXT, ADMINISTER_BY, ADMINISTRATION_DATE, AMOUNT_UNIT_TEXT, DASHES,
   DELETE_VACCINE_DESCRIPTION, EIGHT_PAGE_LIMIT, EXPIRY_DATE, NAME, NEXT, PAGE_LIMIT, ROUTE,
@@ -119,7 +119,7 @@ const VaccinesTable: FC<VaccinesTableProps> = (props): JSX.Element => {
     dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: false })
   }
 
-  const handleEdit = (id: string, mvxCode?: Cvx) => {
+  const handleEdit = (id: string, mvxCode?: VaccineProduct) => {
     mvxCode && dispatch({ type: ActionType.SET_SELECTED_ITEM, selectedItem: mvxCode })
     dispatch({ type: ActionType.SET_ITEM_ID, itemId: id })
     dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: true })
@@ -184,14 +184,14 @@ const VaccinesTable: FC<VaccinesTableProps> = (props): JSX.Element => {
                     </TableRow>
                   ) : <TableBody>
                     {data?.map((vaccine) => {
-                      const { id, cvxId, administrationDate, amount, units, route, site,
-                        expiryDate, cvx, administerBy } = vaccine ?? {}
-                      const { name } = cvx || {}
+                      const { id, administrationDate, amount, units, route, site,
+                        expiryDate, administerBy, vaccineProduct, vaccineProductId } = vaccine ?? {}
+                      const { name } = vaccineProduct || {}
                       // const { ndcCode } = ndc || {}
                       return (
                         <TableRow>
                           <TableCell scope="row">
-                            <Typography>{cvxId ? name ?? DASHES : DASHES}</Typography>
+                            <Typography>{vaccineProductId ? name ?? DASHES : DASHES}</Typography>
                           </TableCell>
 
                           <TableCell scope="row">
@@ -243,7 +243,7 @@ const VaccinesTable: FC<VaccinesTableProps> = (props): JSX.Element => {
                           {
                             !shouldDisableEdit && <TableCell scope="row">
                               <Box display='flex' alignItems='center'>
-                                <IconButton size='small' onClick={() => id && handleEdit(id, cvx || undefined)}>
+                                <IconButton size='small' onClick={() => id && handleEdit(id, vaccineProduct || undefined)}>
                                   <EditOutlinedIcon />
                                 </IconButton>
 

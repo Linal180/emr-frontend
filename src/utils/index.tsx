@@ -41,7 +41,7 @@ import {
   ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, UserForms,
   AttachmentType, AttachmentsPayload, UsersPayload, UnitType, PracticeType, SchedulesPayload,
   WeightType, ClaimStatus, AllCptCodePayload, AllModifiersPayload, FeeSchedule, CptFeeSchedule,
-  AllCptFeeSchedulesPayload, Taxonomy, TaxonomyPayload, FindAllNdcPayload, FindAllMvxPayload, FindAllQuestionTemplatesPayload,
+  AllCptFeeSchedulesPayload, Taxonomy, TaxonomyPayload, FindAllNdcPayload, FindAllMvxPayload, FindAllQuestionTemplatesPayload, FindAllNdcVaccineProductsPayload,
 } from "../generated/graphql";
 
 export const handleLogout = () => {
@@ -863,15 +863,33 @@ export const renderNdcs = (ndcCodes: FindAllNdcPayload['ndcs']) => {
   if (!!ndcCodes) {
     for (let item of ndcCodes) {
       if (item) {
-        const { id, ndcCode, cvxDescription } = item;
+        const { id, code, description } = item;
 
-        cvxDescription && data.push({ id, name: ndcCode ? `${ndcCode} | ${cvxDescription}` : cvxDescription })
+        code && data.push({ id, name: description ? `${code} | ${description}` : code })
       }
     }
   }
 
   return data;
 }
+
+export const renderVaccineProductNdcs = (ndcCodes: FindAllNdcVaccineProductsPayload['ndcVaccineProducts']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!ndcCodes) {
+    for (let item of ndcCodes) {
+      if (item) {
+        const { ndcCode } = item;
+        const { id, code, description } = ndcCode || {}
+
+        id && code && data.push({ id, name: description ? `${code} | ${description}` : code })
+      }
+    }
+  }
+
+  return data;
+}
+
 
 export const renderMvxs = (mvxsCodes: FindAllMvxPayload['mvxs']) => {
   const data: SelectorOption[] = [];

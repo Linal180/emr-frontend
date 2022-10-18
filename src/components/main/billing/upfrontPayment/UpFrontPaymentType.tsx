@@ -79,7 +79,7 @@ const UpFrontPaymentType: FC<UpFrontPaymentTypeCompProps> = ({ moduleName, shoul
             <TableCell scope="row">
               <Box className={classes.boxBg} maxWidth="fit-content">
                 <InputController
-                  fieldType="number"
+                  fieldType="string"
                   controllerLabel={''}
                   controllerName={`${moduleName}.${index}.amount`}
                   disabled={shouldDisableEdit}
