@@ -51,25 +51,25 @@ const positiveNumber = (label: string, isRequired: boolean = false) => {
       if (!!value) {
         const int = parseFloat(value)
         if (Number.isNaN(int)) {
-          return true
+          return false
         } else {
           return int > 0 ? true : false
         }
       }
-      return false
+      return true
     })
   }
 
-  return yup.string().required(requiredMessage(label)).test('', invalidMessage(label), (value) => {
+  return yup.string().test('', invalidMessage(label), (value) => {
     if (!!value) {
       const int = parseFloat(value)
       if (Number.isNaN(int)) {
-        return true
+        return false
       } else {
         return int > 0 ? true : false
       }
     }
-    return false
+    return true
   })
 }
 
@@ -1275,12 +1275,13 @@ export const patientVaccineSchema = yup.object({
 export const ICDCodeSchema = yup.object({
   code: requiredMatches(CODE, invalidMessage(CODE), NO_SPACE_REGEX),
   description: yup.string().required(requiredMessage(DESCRIPTION)),
+  priority: positiveNumber(PRIORITY, false).test('len', invalidMessage(PRIORITY), (val) => val ? val.length <= 6 : true)
 })
 
 export const CptCodeSchema = yup.object({
   code: requiredMatches(CODE, invalidMessage(CODE), NO_SPACE_REGEX),
   shortDescription: yup.string().required(requiredMessage(DESCRIPTION)),
-  priority: positiveNumber(PRIORITY, false)
+  priority: positiveNumber(PRIORITY, false).test('len', invalidMessage(PRIORITY), (val) => val ? val.length <= 6 : true)
 })
 
 export const NdcCodeSchema = yup.object({
