@@ -1281,7 +1281,7 @@ export const ICDCodeSchema = yup.object({
 export const CptCodeSchema = yup.object({
   code: requiredMatches(CODE, invalidMessage(CODE), NO_SPACE_REGEX),
   shortDescription: yup.string().required(requiredMessage(DESCRIPTION)),
-  priority: positiveNumber(PRIORITY, false)
+  priority: positiveNumber(PRIORITY, false).test('len', invalidMessage(PRIORITY), (val) => val ? val.length <= 6 : true)
 })
 
 export const NdcCodeSchema = yup.object({
