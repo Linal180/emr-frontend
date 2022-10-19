@@ -21,8 +21,15 @@ const InsuranceSelectionCard: FC<InsuranceSelectionProps> = ({
   const classes = useExternalPatientStyles()
   const { appointmentId } = useParams<ParamsType>()
 
-  const handleCheck = (checked: boolean, name: string) => {
+  const handleCheck = async (checked: boolean, name: string) => {
     checked ? setSelection && setSelection(name) : setSelection && setSelection('')
+    await updateAppointment({
+      variables: {
+        updateAppointmentInput: {
+          id: appointmentId || '', insuranceStatus: checked ? name : ''
+        }
+      }
+    })
   }
 
   const [updateAppointment, { loading: updateAppointmentLoading }] = useUpdateAppointmentMutation({
