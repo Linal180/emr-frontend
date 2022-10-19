@@ -19,7 +19,7 @@ import {
   PAYMENT, PAYMENT_TYPE, TOTAL_TEXT, UPFRONT_INITIAL_VALUES, UPFRONT_PAYMENT_SUCCESS, UPFRONT_PAYMENT_TYPES,
   USER_NOT_FOUND_EXCEPTION_MESSAGE
 } from "../../../../constants";
-import { Copay, OrderOfBenefitType, useCreateUpFrontPaymentMutation, useFetchPatientInsurancesLazyQuery, useFetchUpFrontPaymentDetailsByAppointmentIdLazyQuery } from "../../../../generated/graphql";
+import { Copay, OrderOfBenefitType, useCreateUpFrontPaymentMutation, useFetchPatientInsurancesLazyQuery, useFetchUpFrontPaymentDetailsByAppointmentIdLazyQuery, useFindAppointmentInsuranceStatusLazyQuery } from "../../../../generated/graphql";
 import { CreateUpFrontPayment, FormForwardRef, ParamsType, UpFrontPaymentProps } from "../../../../interfacesTypes";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { GREY } from "../../../../theme";
@@ -30,6 +30,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
 ): JSX.Element => {
   const classes = useTableStyles();
   const { appointmentId, id } = useParams<ParamsType>()
+  const [isInsurance, setIsInsurance] = useState(true)
   const [copays, setCopays] = useState<Copay[]>([])
   const methods = useForm<CreateUpFrontPayment>({
     defaultValues: {
@@ -176,6 +177,23 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
     handleStep && handleStep(4)
   }
 
+  const [findInsuranceStatus] = useFindAppointmentInsuranceStatusLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+    variables: ({
+      appointmentId: appointmentId || ''
+    }),
+
+    onCompleted(data) {
+      const { findAppointmentInsuranceStatus } = data || {}
+      if (findAppointmentInsuranceStatus) {
+        const { insuranceStatus } = findAppointmentInsuranceStatus
+        setIsInsurance(insuranceStatus === 'insurance')
+      }
+    }
+  });
+
   const [fetchPatientInsurances] = useFetchPatientInsurancesLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
@@ -220,7 +238,8 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
   useEffect(() => {
     getPatientInsurances()
     fetchUpFrontPayments()
-  }, [fetchUpFrontPayments, getPatientInsurances])
+    findInsuranceStatus()
+  }, [fetchUpFrontPayments, findInsuranceStatus, getPatientInsurances])
 
   useImperativeHandle(ref, () => ({
     async submit() {
@@ -258,7 +277,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
                     </TableHead>
 
                     <TableBody>
-                      {!!copays?.length && <UpFrontPaymentType moduleName={UPFRONT_PAYMENT_TYPES.Copay} shouldDisableEdit={shouldDisableEdit} copays={copays} />}
+                      {!!copays?.length && isInsurance && <UpFrontPaymentType moduleName={UPFRONT_PAYMENT_TYPES.Copay} shouldDisableEdit={shouldDisableEdit} copays={copays} />}
                       <UpFrontPaymentType moduleName={UPFRONT_PAYMENT_TYPES.Additional} shouldDisableEdit={shouldDisableEdit} copays={copays} />
                       <UpFrontPaymentType moduleName={UPFRONT_PAYMENT_TYPES.Previous} shouldDisableEdit={shouldDisableEdit} copays={copays} />
                     </TableBody>
