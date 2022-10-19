@@ -71,7 +71,7 @@ const QuestionCard: FC<{ question: SectionQuestions, handleSubmit?: Function, sh
         <Typography variant='h6'>{title}</Typography>
       </Box>
 
-      <Box className={classes.root}>
+      <Box className={classes.root} pb={2}>
         <AnswerChips
           answers={normalAnswers}
           colors={['#03CC83', 'rgba(3,204,131,0.4)']}
