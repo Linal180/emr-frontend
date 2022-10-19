@@ -31,7 +31,7 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
   const { itemId, templates } = state;
   const { handleSubmit, setValue } = methods;
 
-  const [createReviewOfSystem, { loading: createLoading }] = useCreateReviewOfSystemHistoryMutation({
+  const [createReviewOfSystem] = useCreateReviewOfSystemHistoryMutation({
     onCompleted: (data) => {
       const { createReviewOfSystem } = data || {}
       const { response, reviewOfSystem } = createReviewOfSystem || {}
@@ -169,7 +169,7 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
 
   }
 
-  const loading = findPatientChartingTemplateLoading || createLoading || getLoading;
+  const loading = findPatientChartingTemplateLoading || getLoading;
 
   return (
     <>

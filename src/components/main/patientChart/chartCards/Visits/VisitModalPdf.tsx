@@ -117,6 +117,10 @@ function VisitModalPdf({ assessmentProblems, patientChartingReview, patientIllne
 
   const latestPatientVitals = patientVitals?.sort((a, b) => Number(b?.createdAt || 0) - Number(a?.createdAt || 0))?.[0] || {}
 
+  const singlePatientProblems = patientProblems?.filter((problem, index, self) => index === self.findIndex((t) => (
+    t.ICDCode?.code === problem.ICDCode?.code
+  )))
+
   return (
     <Document>
       <Page style={styles.page} size="A3" wrap>
@@ -199,7 +203,7 @@ function VisitModalPdf({ assessmentProblems, patientChartingReview, patientIllne
           </View>
 
           {/* 1.1-row */}
-          {patientProblems?.length ? patientProblems?.map(patientProblem => {
+          {singlePatientProblems?.length ? singlePatientProblems?.map(patientProblem => {
             const { appointmentId: problemAppointmentId, ICDCode } = patientProblem || {}
             if (problemAppointmentId === appointmentId) {
               return (
@@ -339,8 +343,8 @@ function VisitModalPdf({ assessmentProblems, patientChartingReview, patientIllne
           </View>
 
           {/* 3.1-row */}
-          {patientProblems?.length ?
-            patientProblems?.map(problem => {
+          {singlePatientProblems?.length ?
+            singlePatientProblems?.map(problem => {
               const { ICDCode } = problem || {}
               const { description } = ICDCode || {}
               return (

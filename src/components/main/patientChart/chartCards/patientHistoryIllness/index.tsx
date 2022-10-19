@@ -34,7 +34,7 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
   const handleChange = (panel: string) => (_: ChangeEvent<{}>, isExpanded: boolean) =>
     setExpanded(isExpanded ? panel : false);
 
-  const [createIllnessHistory, { loading: createLoading }] = useCreatePatientIllnessHistoryMutation({
+  const [createIllnessHistory] = useCreatePatientIllnessHistoryMutation({
     onCompleted: (data) => {
       const { createPatientIllnessHistory } = data || {}
       const { response, patientIllnessHistory } = createPatientIllnessHistory || {}
@@ -171,7 +171,7 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
 
   }
 
-  const loading = findPatientChartingTemplateLoading || createLoading || getLoading;
+  const loading = findPatientChartingTemplateLoading || getLoading;
   console.log("shouldDisableEdit", shouldDisableEdit)
   return (
     <>
