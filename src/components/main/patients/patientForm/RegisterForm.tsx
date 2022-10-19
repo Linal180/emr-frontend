@@ -17,16 +17,17 @@ import PatientDemographicsCard from "./Demographics";
 import EmergencyContactCard from './EmergencyContact';
 import RegistrationDatesCard from './RegistrationDates';
 import InsuranceSelectionCard from './InsuranceSelection';
+import CardComponent from '../../../common/CardComponent';
+import UpFrontPayment from '../../billing/upfrontPayment';
 import InsuranceComponent from '../patientDetail/insurance';
 // utils. interfaces, constants
-import { INSURANCE, INSURANCE_SELECTION, NEXT, PAYMENTS, RegisterPatientMenuNav } from '../../../../constants';
 import { calculateAge } from '../../../../utils';
+import { ActionType } from '../../../../reducers/patientReducer';
+import { useFindAppointmentInsuranceStatusLazyQuery } from '../../../../generated/graphql';
 import { ParamsType, PatientCardsProps, PatientInputProps } from '../../../../interfacesTypes';
 import { useExternalPatientStyles } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
-import { useFindAppointmentInsuranceStatusLazyQuery } from '../../../../generated/graphql';
-import CardComponent from '../../../common/CardComponent';
-import { ActionType } from '../../../../reducers/patientReducer';
-import UpFrontPayment from '../../billing/upfrontPayment';
+import { INSURANCE, INSURANCE_SELECTION, NEXT, PAYMENTS, RegisterPatientMenuNav } from '../../../../constants';
+
 
 const RegisterFormComponent: FC<PatientCardsProps> = ({
   getPatientLoading, dispatch, isEdit, state, shouldDisableEdit, disableSubmit, shouldShowBread

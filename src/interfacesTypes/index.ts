@@ -25,7 +25,7 @@ import {
   PatientsPayload, PatientVitals, PermissionsPayload, PolicyEligibilityWithPatientPayload, Practice, PracticePayload,
   QuestionAnswers, Questions, ReactionsPayload, ResponsePayloadResponse, ReviewOfSystemPayload, RolesPayload, Schedule,
   SectionsInputs, ServicesPayload, Staff, SurgicalHistory, TriageNotes, TriageNotesPayload, TwoFactorInput,
-  UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, User, 
+  UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, User,
   UsersFormsElements, VaccineProduct, VerifyCodeInput
 } from "../generated/graphql";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
@@ -160,6 +160,7 @@ export type ReviewTabProps = {
   shouldShowAdd?: boolean
   shouldShowCheckout?: boolean
   handleStepChange?: Function
+  shouldShowExamDetails?: boolean
   shouldDisableEdit?: boolean
 }
 
@@ -430,8 +431,11 @@ export interface FacilitySelectorProps extends SelectorProps {
   placeHolder?: string
 }
 
-export type ChartingTemplateSelectorProps = SelectorProps & {
+export type ChartingTemplateSelectorProps = ReactionSelectorInterface & {
   templateType?: string
+  onSelect?: Function
+  addEmpty?: boolean
+  disabled?: boolean
 }
 
 
@@ -2457,4 +2461,6 @@ export type DependentQuestionCardType = {
 export type AnswerChipsProps = {
   answers: QuestionAnswers[]
   colors: string[]
+  handleSubmit?: Function
+  shouldDisableEdit?: boolean
 }
