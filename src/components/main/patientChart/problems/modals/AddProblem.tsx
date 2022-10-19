@@ -1,36 +1,27 @@
 // packages block
+import { Add as AddIcon } from '@material-ui/icons';
+import { FC, Reducer, useCallback, useEffect, useReducer, useRef } from "react";
 import {
   Box, Button, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton, InputBase, Typography
 } from "@material-ui/core";
-import { Add as AddIcon } from '@material-ui/icons';
-import { FC, Reducer, useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 // components block
-import ICD10Form from "../../../icdTenCodes/icd10Form";
 import ProblemModal from "./ProblemModal";
+import ICD10Form from "../../../icdTenCodes/icd10Form";
 // constants, interfaces, utils block 
-import { NoDataIcon, SearchIcon } from "../../../../../assets/svgs";
-import {
-  ADD_PROBLEM, ICD_10, INITIAL_PAGE_LIMIT, NO_RECORDS, SEARCH_FOR_PROBLEMS, SNOMED, TYPE
-} from "../../../../../constants";
-import {
-  IcdCodes, IcdCodesWithSnowMedCode, useSearchIcdCodesLazyQuery
-} from "../../../../../generated/graphql";
-import { AddAllergyModalProps } from "../../../../../interfacesTypes";
-import {
-  Action, ActionType, chartReducer, initialState, State
-} from "../../../../../reducers/chartReducer";
-import { useChartingStyles } from "../../../../../styles/chartingStyles";
 import { GRAY_SIX, GREY_SEVEN } from "../../../../../theme";
+import { NoDataIcon, SearchIcon } from "../../../../../assets/svgs";
+import { AddAllergyModalProps } from "../../../../../interfacesTypes";
+import { useChartingStyles } from "../../../../../styles/chartingStyles";
+import { Action, ActionType, chartReducer, initialState, State } from "../../../../../reducers/chartReducer";
+import { IcdCodes, IcdCodesWithSnowMedCode, useSearchIcdCodesLazyQuery } from "../../../../../generated/graphql";
+import { ADD_PROBLEM, ICD_10, INITIAL_PAGE_LIMIT, NO_RECORDS, SEARCH_FOR_PROBLEMS, SNOMED, TYPE } from "../../../../../constants";
 
 const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose, fetch }) => {
-  const tabs = useMemo(() => {
-    return ['Common Terms', 'Covid Terms']
-  }, [])
+  const tabs = ['Common Terms']
   const observer = useRef<any>();
   const chartingClasses = useChartingStyles()
-  const [tab, setTab] = useState<string>(!!tabs ? tabs[0] : '');
-  const [{ isSubModalOpen, selectedItem, searchQuery, searchedData, newRecord, isIcdFormOpen, page, totalPages }, dispatch] =
-    useReducer<Reducer<State, Action>>(chartReducer, initialState)
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(chartReducer, initialState)
+  const { isSubModalOpen, selectedItem, searchQuery, searchedData, newRecord, isIcdFormOpen, page, totalPages } = state
 
   const closeSearchMenu = () => {
     dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: false })
@@ -64,55 +55,43 @@ const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
     }
   });
 
-  const handleICDSearch = useCallback(async (tabName: string, query: string, page?: number) => {
+  const handleICDSearch = useCallback(async (page?: number, searchQuery?: string) => {
     try {
-      const queryString = tabName === tabs[1] ? 'corona' : query
-
       await searchIcdCodes({
         variables: {
           searchIcdCodesInput: {
-            searchTerm: queryString,
+            searchTerm: searchQuery || "",
             paginationOptions: { page: page || 1, limit: INITIAL_PAGE_LIMIT }
           }
         }
       })
     } catch (error) { }
-  }, [searchIcdCodes, tabs])
+  }, [searchIcdCodes])
 
   useEffect(() => {
-    handleICDSearch(tabs[0], '')
-  }, [handleICDSearch, tabs])
+    handleICDSearch()
+  }, [handleICDSearch])
 
-  const handleSearch = useCallback(async (query: string, tabName?: string) => {
+  const handleSearch = async (query: string) => {
     dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
-    dispatch({
-      type: ActionType.SET_SEARCHED_DATA,
-      searchedData: []
-    })
 
     if (query.length > 2 || query.length === 0) {
-      handleICDSearch(tabName ? tabName : tab, query)
+      dispatch({ type: ActionType.SET_SEARCHED_DATA, searchedData: [] })
+      dispatch({ type: ActionType.SET_PAGE, page: 1 })
+      await handleICDSearch(1, query)
     }
-  }, [handleICDSearch, tab])
+  }
 
   const handleOpenForm = (item: IcdCodesWithSnowMedCode) => {
     dispatch({ type: ActionType.SET_SELECTED_ITEM, selectedItem: item })
     dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: true })
   };
 
-  const handleTabChange = (name: string) => {
-    setTab(name)
-    dispatch({ type: ActionType.SET_SEARCHED_DATA, searchedData: [] })
-    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: '' })
-    handleSearch('', name);
-  };
-
   const renderTabs = () => (
     <Box p={1} mb={3} mt={2} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
       {tabs?.map(tabName =>
         <Box key={tabName}
-          className={tab === tabName ? 'selectedBox selectBox' : 'selectBox'}
-          onClick={() => handleTabChange(tabName)}
+          className={'selectedBox selectBox'}
         >
           <Typography variant='h6'>{tabName}</Typography>
         </Box>
@@ -125,19 +104,24 @@ const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
     dispatch({ type: ActionType.SET_ICD_FORM_OPEN, isIcdFormOpen: true })
   }, [searchQuery])
 
-  const lastElementRef = useCallback(
-    (node) => {
-      if (searchIcdCodesLoading) return;
-      if (observer.current) observer.current.disconnect();
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && page <= totalPages) {
-          dispatch({ type: ActionType.SET_PAGE, page: page + 1 })
-          handleICDSearch(tab, searchQuery, page + 1)
+  const lastElementRef = useCallback((node) => {
+
+    if (searchIcdCodesLoading) return;
+    if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && page <= totalPages) {
+        dispatch({ type: ActionType.SET_PAGE, page: page + 1 })
+        if (searchQuery.length > 2 || searchQuery.length === 0) {
+          handleICDSearch(page + 1, searchQuery)
         }
-      });
-      if (node) observer.current.observe(node);
-    },
-    [searchIcdCodesLoading, page, totalPages, handleICDSearch, tab, searchQuery]
+        else {
+          handleICDSearch(page + 1)
+        }
+      }
+    });
+    if (node) observer.current.observe(node);
+  },
+    [searchIcdCodesLoading, page, totalPages, handleICDSearch, searchQuery]
   );
 
   const renderSearchData = useCallback(() => {
@@ -229,10 +213,10 @@ const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
         <Typography variant='h6'>{TYPE}</Typography>
 
         <Box className={chartingClasses.toggleProblem}>
-          {!!tabs && renderTabs()}
+          {renderTabs()}
         </Box>
 
-        {tab === tabs[0] && <Box mb={2} className={chartingClasses.searchBox} display="flex">
+        <Box mb={2} className={chartingClasses.searchBox} display="flex">
           <IconButton size='small' aria-label="search">
             <SearchIcon />
           </IconButton>
@@ -244,7 +228,6 @@ const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
             onChange={({ target: { value } }) => handleSearch(value)}
           />
         </Box>
-        }
 
         {renderSearchData()}
       </DialogContent>
