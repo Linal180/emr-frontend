@@ -1,14 +1,17 @@
 import { Box, Card, colors, Typography } from '@material-ui/core'
 import { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
-import { ALLERGIES_TEXT, DASHES, DIAGNOSES, INTAKE, MEDICATIONS } from '../../../../../constants'
-import { PatientVitals, useGetPatientChartingReviewLazyQuery } from '../../../../../generated/graphql'
-import { ParamsType, PatientChartingReview, ReviewTabProps } from '../../../../../interfacesTypes'
-import { useChartingStyles } from '../../../../../styles/chartingStyles'
+//components blocks
 import AppointmentReason from './AppointmentReason'
 import TriageNoteTab from './TriageNotesListing'
+//constants, style, interface, graphql
+import { useChartingStyles } from '../../../../../styles/chartingStyles'
+import { ALLERGIES_TEXT, DASHES, DIAGNOSES, INTAKE, MEDICATIONS } from '../../../../../constants'
+import { ParamsType, PatientChartingReview, ReviewTabProps } from '../../../../../interfacesTypes'
+import { PatientVitals, useGetPatientChartingReviewLazyQuery } from '../../../../../generated/graphql'
 
-function ReviewTab({ shouldShowAdd, shouldShowCheckout, handleStepChange, shouldDisableEdit }: ReviewTabProps) {
+
+function ReviewTab({ shouldShowCheckout, handleStepChange, shouldDisableEdit, shouldShowAdd }: ReviewTabProps) {
   const classes = useChartingStyles()
   const { id: patientId, appointmentId } = useParams<ParamsType>()
   const [patientChartingReview, setPatientChartingReview] = useState<PatientChartingReview | null>(null)
@@ -65,7 +68,7 @@ function ReviewTab({ shouldShowAdd, shouldShowCheckout, handleStepChange, should
 
   return (
     <div>
-      <AppointmentReason shouldShowAdd shouldShowCheckout={shouldShowCheckout} handleStepChange={handleStepChange} shouldDisableEdit={shouldShowCheckout || shouldDisableEdit}/>
+      <AppointmentReason shouldShowAdd={shouldShowAdd} shouldShowCheckout={shouldShowCheckout} handleStepChange={handleStepChange} shouldDisableEdit={shouldDisableEdit} />
 
       <Box mt={1} />
 

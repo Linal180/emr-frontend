@@ -345,7 +345,7 @@ const ChartCards: FC<ChartComponentProps> = ({ appointmentState, shouldDisableEd
                     <Box pt={0} borderRadius={8}>
                       <TabPanel value={"1"}>
                         {/* {isInTake ? <AppointmentReason isInTake={false} /> : <ReviewTab shouldShowAdd shouldDisableEdit={shouldDisableEdit} />} */}
-                        <ExamTab />
+                        <ExamTab shouldDisableEdit={shouldDisableEdit} />
                       </TabPanel>
                     </Box>}
 
