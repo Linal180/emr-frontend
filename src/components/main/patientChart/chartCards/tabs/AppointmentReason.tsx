@@ -97,6 +97,10 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
     }
   };
 
+  const singlePatientProblems = patientProblems?.filter((problem, index, self) => index === self.findIndex((t) => (
+    t?.ICDCode?.code === problem?.ICDCode?.code
+  )))
+
   return (
     <>
       <Card>
@@ -129,7 +133,7 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
           </Box>
 
           <Box p={2}>
-            {patientProblems?.map((value) => {
+            {singlePatientProblems?.map((value) => {
               const { id, ICDCode } = value || {}
               return <Box display="flex" flexDirection="row" justifyContent="space-between">
                 <Typography variant='inherit'>{ICDCode?.description}</Typography>
@@ -143,7 +147,12 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
       </Card>
 
       {isOpen &&
-        <AppointmentReasonModal isOpen={isOpen} handleModalClose={handleModalClose} fetch={() => fetchProblems()} />}
+        <AppointmentReasonModal
+          isOpen={isOpen}
+          handleModalClose={handleModalClose}
+          fetch={() => fetchProblems()}
+          alreadyAddedProblems={singlePatientProblems?.map((problem => problem?.ICDCode?.id || ''))}
+        />}
 
       <ConfirmationModal
         title={REASON}

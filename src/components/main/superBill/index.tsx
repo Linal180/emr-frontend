@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 // component block
 import Loader from '../../common/Loader';
 // constants, history, styling block
-import { Document, Page, PDFViewer, StyleSheet, Text, View } from '@react-pdf/renderer';
+import { Document, Link, Page, PDFViewer, StyleSheet, Text, View } from '@react-pdf/renderer';
 import { useParams } from 'react-router';
 import {
   APPOINTMENT_DATE, BILLING_CODE, CLINIC, DATE, DATE_OF_BIRTH, DATE_OF_VISIT, DIAGNOSIS,
@@ -239,7 +239,7 @@ const SuperBillComponent = (): JSX.Element => {
 
                   <View style={styles.fieldRow3}>
                     <Text style={[styles.fieldTitle]}>{EMAIL} :</Text>
-                    <Text style={[styles.fieldText, styles.ml10]}>{providerEmail}</Text>
+                    <Text style={[styles.fieldText, styles.ml10]}><Link src={providerEmail ? `mailto:${providerEmail}` : ''} style={{ textDecoration: "none" }} >{providerEmail}</Link></Text>
                   </View>
                 </View>
               </View>

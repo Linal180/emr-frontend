@@ -26,7 +26,7 @@ import { GREY } from "../../../../theme";
 import { renderTh, setRecord } from "../../../../utils";
 
 const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProps>((
-  { cptCodes, handleStep, shouldDisableEdit }, ref
+  { cptCodes, handleStep, shouldDisableEdit, setPrice }, ref
 ): JSX.Element => {
   const classes = useTableStyles();
   const { appointmentId, id } = useParams<ParamsType>()
@@ -368,6 +368,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
                               controllerLabel={''}
                               controllerName="paid"
                               disabled={shouldDisableEdit}
+                              onChange={(value: string) => setPrice && setPrice(value)}
                               className="payment-input"
                             />
                           </Box>

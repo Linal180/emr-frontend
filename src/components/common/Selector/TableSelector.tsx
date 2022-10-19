@@ -102,6 +102,10 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
     return
   }
 
+  const filteredModuleData= moduleData?.filter((problem, index, self) => index === self.findIndex((t) => (
+    t.code === problem.code
+  )))
+
   return (
     <Controller
       name={moduleName}
@@ -176,7 +180,7 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
                     </TableHead>
 
                     <TableBody>
-                      {(moduleData)?.map(({
+                      {(filteredModuleData)?.map(({
                         code, description, codeId, price, codeType
                       }, index) => {
                         return <>

@@ -2,39 +2,42 @@
 import {
   Box, Button, Card, Checkbox, CircularProgress, colors, FormControlLabel, FormGroup, Grid, Tab, Typography
 } from "@material-ui/core";
-import { AddCircleOutline, ChevronRight } from "@material-ui/icons";
-import { TabContext, TabList, TabPanel } from "@material-ui/lab";
-import { ChangeEvent, FC, useRef } from "react";
-import { FormProvider } from "react-hook-form";
-import { useParams } from "react-router";
 import { Link } from "react-router-dom";
+import { useParams } from "react-router";
+import { FormProvider } from "react-hook-form";
+import { ChangeEvent, FC, useRef } from "react";
+import { TabContext, TabList, TabPanel } from "@material-ui/lab";
+import { AddCircleOutline, ChevronRight } from "@material-ui/icons";
 //components block
-import InputController from "../../../../controller";
 import Alert from "../../../common/Alert";
-import CheckoutModal from "../../../common/CheckoutModal";
+import SelfPayComponent from "./PaymentModal";
+import UpFrontPayment from "../upfrontPayment";
+import Selector from "../../../common/Selector";
 import CodesTable from "../../../common/CodesTable";
 import CopayModal from "../../../common/CopayModal";
 import DatePicker from "../../../common/DatePicker";
+import InputController from "../../../../controller";
 import ItemSelector from "../../../common/ItemSelector";
-import Selector from "../../../common/Selector";
-import DoctorSelector from "../../../common/Selector/DoctorSelector";
-import FacilitySelector from "../../../common/Selector/FacilitySelector";
+import CheckoutModal from "../../../common/CheckoutModal";
 import TableSelector from "../../../common/Selector/TableSelector";
+import DoctorSelector from "../../../common/Selector/DoctorSelector";
 import InsuranceComponent from "../../patients/patientDetail/insurance";
-import UpFrontPayment from "../upfrontPayment";
-import SelfPayComponent from "./PaymentModal";
+import FacilitySelector from "../../../common/Selector/FacilitySelector";
 //constants, utils, interfaces block
 import {
   ADD_ANOTHER_COPAY, APPOINTMENT_FACILITY, AUTO_ACCIDENT, BILLING, BILLING_TABS, CHECKOUT, CLAIM_STATUS,
   COPAY_AMOUNT, CPT_CODES, EMPLOYMENT, FEE_SCHEDULE, FROM, HCFA_1500_FORM, HCFA_DESC, ICD_TEN_CODES,
-  INVOICE_DATE, INVOICE_NO, ITEM_MODULE, LAST_VISITED, MAPPED_ONSET_DATE_TYPE, MAPPED_PATIENT_PAYMENT_TYPE, MAPPED_SERVICE_CODES, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, PATIENT_PAYMENT_TYPE, POS, PRACTICE, RENDERING_PROVIDER, SAVE_TEXT, SELECT_ANOTHER_STATUS, SERVICE_DATE, SERVICING_PROVIDER, SUPER_BILL, SUPER_BILL_ROUTE, SystemBillingStatuses, TO, UNCOVERED_AMT
+  INVOICE_DATE, INVOICE_NO, ITEM_MODULE, LAST_VISITED, MAPPED_ONSET_DATE_TYPE, MAPPED_PATIENT_PAYMENT_TYPE,
+  MAPPED_SERVICE_CODES, ONSET_DATE, ONSET_DATE_TYPE, OTHER_ACCIDENT, PATIENT_PAYMENT_TYPE, POS, PRACTICE,
+  RENDERING_PROVIDER, SAVE_TEXT, SELECT_ANOTHER_STATUS, SERVICE_DATE, SERVICING_PROVIDER, SUPER_BILL,
+  SUPER_BILL_ROUTE, SystemBillingStatuses, TO, UNCOVERED_AMT
 } from "../../../../constants";
+import { GREY_THREE } from "../../../../theme";
+import { ActionType } from "../../../../reducers/billingReducer";
+import { formatValue, getClaimBtnText, renderItem } from "../../../../utils";
+import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
 import { BillingStatus, CodeType, OnsetDateType, PatientPaymentType } from "../../../../generated/graphql";
 import { BillingFormProps, FormForwardRef, ItemSelectorOption, ParamsType, SelectorOption } from "../../../../interfacesTypes";
-import { ActionType } from "../../../../reducers/billingReducer";
-import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
-import { GREY_THREE } from "../../../../theme";
-import { formatValue, getClaimBtnText, renderItem } from "../../../../utils";
 
 const BillingForm: FC<BillingFormProps> = ({
   methods, onSubmit, createBillingLoading, submitButtonText, createClaimCallback, shouldDisableEdit, dispatch, state,
@@ -516,6 +519,7 @@ const BillingForm: FC<BillingFormProps> = ({
         <UpFrontPayment
           cptCodes={cptFeeSchedule ?? []}
           ref={billingRef}
+          setPrice={(price) => price && dispatch({ type: ActionType.SET_TOTAL_PRICE, totalPrice: price })}
           shouldDisableEdit={shouldDisableEdit}
         />
       </form>
