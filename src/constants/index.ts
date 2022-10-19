@@ -145,6 +145,7 @@ export const AUTO_LOGOUT_ERROR = "Auto logout time is not updated";
 export const ITEMS_ID = 'ITEMS'
 export const PRE_DEFINED = 'PRE-DEFINED'
 export const DASHES = '--'
+export const SLASH_IN_DASHES = '-- / --'
 export const CURRENT_DATE = new Date();
 export const LATEST_RECORDED_DATE = "Recorded Date"
 export const NOTE = "Note";
@@ -1578,6 +1579,7 @@ export const RELATIONSHIP_TO_PATIENT = "Relationship To Patient";
 export const BOOK_YOUR_APPOINTMENT = "1 - Book Your Appointment";
 export const MAINTENANCE_IN_PROGRESS = "Maintenance in progress";
 export const REGISTRATION_DATES = "Provider/ Registration Dates";
+export const PROVIDER_FACILITY = "Provider/ Facility";
 export const DELETE_STAFF_DESCRIPTION = "Confirm to delete staff";
 export const PAY_DEBIT_CARD_TEXT = "Pay via Debit or Credit Card";
 export const PASSWORD_CHANGE_HEADING_TEXT = "Password is changed";
@@ -3926,6 +3928,12 @@ export const PATIENT_CHARTING_MENU = [
   },
   {
     title: "Vaccines",
+  },
+  {
+    title: "History of Present Illness",
+  },
+  {
+    title: "Review Of System",
   },
   {
     title: "Orders And Diagnoses",
