@@ -254,11 +254,11 @@ const ChartCards: FC<ChartComponentProps> = ({ appointmentState, shouldDisableEd
       </Box>
 
       <Card>
-        <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
+        <Box p={2} display="flex" flexWrap="wrap" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
           {/* <Typography variant="h4">{CHART_TEXT}</Typography> */}
           <Typography variant="h4">{serviceName}</Typography>
 
-          <Box display="flex" alignItems="center">
+          <Box display="flex" flexWrap="wrap" alignItems="center">
             <Box m={0.5}>
               <Button
                 type="button"
