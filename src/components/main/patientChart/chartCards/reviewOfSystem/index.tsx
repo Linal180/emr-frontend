@@ -119,7 +119,7 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
     try {
       ids.forEach(async (id) => {
         if (!templates?.some((template) => id === template.id)) {
-          ids && await findPatientChartingTemplate({
+          id && await findPatientChartingTemplate({
             variables: {
               templateId: id
             }
