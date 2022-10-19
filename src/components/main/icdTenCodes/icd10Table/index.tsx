@@ -93,6 +93,11 @@ const IcdCodesTable: FC<IcdCodesTableProps> = (): JSX.Element => {
     } catch (error) { }
   }, [fetchAllIcdCodes, page, searchQuery])
 
+  const fetchData = async () => {
+    dispatch({ type: ActionType.SET_PAGE, page: 1 })
+    await fetchIcdCodes()
+  }
+
   useEffect(() => {
     fetchIcdCodes()
   }, [fetchIcdCodes, page]);
@@ -232,7 +237,7 @@ const IcdCodesTable: FC<IcdCodesTableProps> = (): JSX.Element => {
         open={isOpen}
         isEdit={!!itemId}
         handleClose={handleModalClose}
-        fetch={() => fetchIcdCodes()}
+        fetch={() => fetchData()}
         dispatcher={dispatch}
         systematic={systematic}
       />

@@ -4,12 +4,12 @@ import { ChangeEvent, FC, useState } from "react";
 // components block
 import ReviewTab from "./ReviewTab";
 import ReviewOfSystem from "../reviewOfSystem";
+import PatientHistory from "../patientHistoryIllness";
 import AssessmentPlanTab from "../AssessmentPlan/AssessmentPlanTab";
 // constants, utils, styles, interfaces and graphql block
 import { EXAM_TABS } from "../../../../../constants";
 import { ChartComponentProps } from "../../../../../interfacesTypes";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
-import PatientHistory from "../patientHistoryIllness";
 
 const ExamTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
 
@@ -43,7 +43,7 @@ const ExamTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
 
             <Box className={classes.cardBox}>
               <TabPanel value="1">
-                <ReviewTab />
+                <ReviewTab shouldDisableEdit={shouldDisableEdit} shouldShowAdd={true} />
               </TabPanel>
 
               <TabPanel value="2">

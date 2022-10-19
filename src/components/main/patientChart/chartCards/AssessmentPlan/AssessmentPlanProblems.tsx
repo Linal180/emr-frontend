@@ -155,7 +155,7 @@ function AssessmentPlanProblems({ fetchProblems, assessmentProblems: problems, s
       <Card>
         <Box pb={2} className={classes.cardBox} px={2} py={1} display='flex' justifyContent='space-between' alignItems='center'
           flexWrap='wrap' borderBottom={`1px solid ${colors.grey[300]}`}>
-          <Box display='flex' alignItems='center'>
+          <Box display='flex'flexWrap='wrap' alignItems='center'>
             <Typography variant='h3'>{ASSESSMENT_PLAN}</Typography>
 
             {!(shouldDisableEdit || isSigned) && <Box ml={1} display="flex" alignItems="center" justifyContent="flex-end">
