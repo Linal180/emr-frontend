@@ -128,8 +128,6 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
             </Box>
           </Box>
 
-
-
           <Box p={2}>
             {patientProblems?.map((value) => {
               const { id, ICDCode } = value || {}
