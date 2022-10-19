@@ -82,7 +82,7 @@ const CheckInComponent = (): JSX.Element => {
     id: appointmentId ?? ''
   }
 
-  const shouldDisableChartingEdit = status === AppointmentStatus.Discharged
+  const shouldDisableChartingEdit = status === AppointmentStatus.Discharged || status === AppointmentStatus.Checkout
   const shouldDisableBillingEdit = status === AppointmentStatus.Checkout
 
   useEffect(() => {
