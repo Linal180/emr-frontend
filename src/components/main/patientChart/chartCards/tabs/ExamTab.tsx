@@ -47,15 +47,15 @@ const ExamTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
               </TabPanel>
 
               <TabPanel value="2">
-                <PatientHistory />
+                <PatientHistory shouldDisableEdit={shouldDisableEdit} />
               </TabPanel>
 
               <TabPanel value="3">
-                <ReviewOfSystem />
+                <ReviewOfSystem shouldDisableEdit={shouldDisableEdit} />
               </TabPanel>
 
               <TabPanel value="4">
-                <AssessmentPlanTab />
+                <AssessmentPlanTab shouldDisableEdit={shouldDisableEdit} />
               </TabPanel>
             </Box>
           </TabContext>

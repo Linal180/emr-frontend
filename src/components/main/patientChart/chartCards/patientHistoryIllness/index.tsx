@@ -172,7 +172,7 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
   }
 
   const loading = findPatientChartingTemplateLoading || createLoading || getLoading;
-
+  console.log("shouldDisableEdit", shouldDisableEdit)
   return (
     <>
       <Box p={2} display='flex' justifyContent='space-between' alignItems='center' flexWrap="wrap" borderBottom={`1px solid ${colors.grey[300]}`}>
@@ -227,7 +227,7 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
                               {questions?.map((question, index) => {
                                 return (
                                   <>
-                                    <QuestionCard key={`${index}-${id}`} question={question} handleSubmit={handleSubmit(onSubmit)} />
+                                    <QuestionCard key={`${index}-${id}`} question={question} handleSubmit={handleSubmit(onSubmit)} shouldDisableEdit={shouldDisableEdit} />
                                     <Box mt={2} />
                                   </>
                                 )
