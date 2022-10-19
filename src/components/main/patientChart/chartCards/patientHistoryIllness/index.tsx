@@ -156,7 +156,7 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
         value?: string
       }[])
 
-      await createIllnessHistory({
+      createIllnessHistory({
         variables: {
           createPatientIllnessHistoryInput: {
             answerResponses: answerResponses,
@@ -172,7 +172,7 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
   }
 
   const loading = findPatientChartingTemplateLoading || getLoading;
-  console.log("shouldDisableEdit", shouldDisableEdit)
+
   return (
     <>
       <Box p={2} display='flex' justifyContent='space-between' alignItems='center' flexWrap="wrap" borderBottom={`1px solid ${colors.grey[300]}`}>

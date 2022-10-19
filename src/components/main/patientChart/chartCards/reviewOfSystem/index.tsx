@@ -154,7 +154,7 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
         value?: string
       }[])
 
-      await createReviewOfSystem({
+      createReviewOfSystem({
         variables: {
           createReviewOfSystemInput: {
             answerResponses: answerResponses,
