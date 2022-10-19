@@ -67,7 +67,7 @@ function ReviewTab({ shouldShowAdd, shouldShowCheckout, handleStepChange, should
     <div>
       <AppointmentReason shouldShowAdd shouldShowCheckout={shouldShowCheckout} handleStepChange={handleStepChange} shouldDisableEdit={shouldShowCheckout || shouldDisableEdit}/>
 
-      <Box mt={1} />
+      <Box mt={2} />
 
       {!shouldShowCheckout && <TriageNoteTab shouldDisableEdit={shouldDisableEdit} />}
 

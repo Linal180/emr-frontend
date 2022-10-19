@@ -1,4 +1,4 @@
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Card, colors, Typography } from "@material-ui/core";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, colors, Typography } from "@material-ui/core";
 import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
@@ -12,12 +12,14 @@ import { multiOptionType, ParamsType, PatientHistoryProps } from "../../../../..
 import { Action, ActionType, initialState, patientHistoryReducer, State } from "../../../../../reducers/patientHistoryReducer";
 import CardComponent from "../../../../common/CardComponent";
 import ChartingTemplateSelector from "../../../../common/Selector/ChartingTemplateSelector";
+import { useChartingStyles } from '../../../../../styles/chartingStyles';
 import TableLoader from "../../../../common/TableLoader";
 import QuestionCard from "./QuestionCard";
 import { renderMultiTemplates } from "../../../../../utils";
 
 const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, handleStep }): JSX.Element => {
   const methods = useForm();
+  const chartingClasses = useChartingStyles();
   const { id: patientId, appointmentId } = useParams<ParamsType>()
 
   const [expanded, setExpanded] = useState<string | false>('panel1');
@@ -170,8 +172,8 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
   const loading = findPatientChartingTemplateLoading || createLoading || getLoading;
 
   return (
-    <Card>
-      <Box px={2} pb={2} mb={1} display='flex' justifyContent='space-between' alignItems='center' flexWrap="wrap" borderBottom={`1px solid ${colors.grey[300]}`}>
+    <>
+      <Box p={2} display='flex' justifyContent='space-between' alignItems='center' flexWrap="wrap" borderBottom={`1px solid ${colors.grey[300]}`}>
         <Typography variant='h3'>
           {REVIEW_OF_SYSTEM_TEXT}
         </Typography>
@@ -187,7 +189,7 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           {!loading ? <>
-            <Box p={3}>
+            <Box px={2} mt={3}>
               <ChartingTemplateSelector
                 label={ROS_TEMPLATES}
                 name="hpiTemplates"
@@ -201,8 +203,8 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
             {templates?.map((template, i) => {
               const { sections, name } = template || {}
               return (
-                <>
-                  <Accordion expanded={expanded === `panel${i + 1}`} onChange={handleChange(`panel${i + 1}`)} >
+                <Box px={1}>
+                  <Accordion expanded={expanded === `panel${i + 1}`} onChange={handleChange(`panel${i + 1}`)} className={chartingClasses.accordion}>
                     <AccordionSummary
                       expandIcon={<ExpandMore />}
                       aria-controls="panel1a-content"
@@ -231,13 +233,13 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
                       </Box>
                     </AccordionDetails>
                   </Accordion>
-                </>
+                </Box>
               )
             })}
           </> : <TableLoader numberOfColumns={1} numberOfRows={10} />}
         </form>
       </FormProvider>
-    </Card>
+    </>
   )
 }
 
