@@ -198,6 +198,7 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
                 name="hpiTemplates"
                 addEmpty
                 isEdit
+                disabled={shouldDisableEdit}
                 defaultValues={renderMultiTemplates(templates as QuestionTemplate[])}
                 templateType={TemplateType.HPI}
                 onSelect={(multiOption: multiOptionType[]) => fetchPatientChartingTemplates(multiOption.map(value => value.value))}

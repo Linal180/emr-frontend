@@ -193,6 +193,7 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
               <ChartingTemplateSelector
                 label={ROS_TEMPLATES}
                 name="hpiTemplates"
+                disabled={shouldDisableEdit}
                 addEmpty
                 isEdit
                 defaultValues={renderMultiTemplates(templates as QuestionTemplate[])}
@@ -222,7 +223,12 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
                               {questions?.map((question, index) => {
                                 return (
                                   <>
-                                    <QuestionCard key={`${index}-${id}`} question={question} handleSubmit={handleSubmit(onSubmit)} />
+                                    <QuestionCard
+                                      key={`${index}-${id}`}
+                                      question={question}
+                                      handleSubmit={handleSubmit(onSubmit)}
+                                      shouldDisableEdit={shouldDisableEdit}
+                                    />
                                     <Box mt={2} />
                                   </>
                                 )

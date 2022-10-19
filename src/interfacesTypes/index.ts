@@ -2461,4 +2461,5 @@ export type AnswerChipsProps = {
   answers: QuestionAnswers[]
   colors: string[]
   handleSubmit?: Function
+  shouldDisableEdit?: boolean
 }
