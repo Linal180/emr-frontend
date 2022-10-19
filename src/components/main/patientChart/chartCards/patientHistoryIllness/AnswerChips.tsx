@@ -7,7 +7,7 @@ import { QuestionAnswers } from '../../../../../generated/graphql'
 import { AnswerChipsProps } from '../../../../../interfacesTypes'
 import Selector from '../../../../common/Selector'
 
-function AnswerChips({ answers, colors }: AnswerChipsProps) {
+function AnswerChips({ answers, colors, handleSubmit, shouldDisableEdit = false }: AnswerChipsProps) {
   const methods = useFormContext()
   const [firstColor] = colors || []
   const { setValue, watch } = methods
@@ -66,6 +66,7 @@ function AnswerChips({ answers, colors }: AnswerChipsProps) {
       return
     }
     setValue(`${id}.select`, true)
+    handleSubmit && handleSubmit()
   }
 
 
@@ -78,6 +79,7 @@ function AnswerChips({ answers, colors }: AnswerChipsProps) {
             <Chip
               label={getTransformedName(answer)}
               clickable
+              disabled={shouldDisableEdit}
               style={{
                 background: answerValues[id]?.select ? firstColor : 'white',
                 border: `1.5px solid ${firstColor}`,

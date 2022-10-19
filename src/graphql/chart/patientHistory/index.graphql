@@ -26,6 +26,7 @@ query GetPatientChartingTemplate($templateId: String!) {
 
     template {
       id
+      name
       sections {
         id
         name
@@ -81,6 +82,30 @@ query PatientIllnessHistory(
     patientIllnessHistory {
       id
       patientId
+      templates {
+        id
+        name
+        sections {
+          id
+          name
+
+          questions {
+            id
+            title
+
+            answers {
+              id
+              questionType
+              name
+              answerType
+              options {
+                id
+                name
+              }
+            }
+          }
+        }
+      }
       appointmentId
 
       answers {
@@ -122,6 +147,31 @@ query ReviewOfSystem($reviewOfSystemInput: ReviewOfSystemInput!) {
     reviewOfSystem {
       id
       patientId
+      templateIds
+      templates {
+        id
+        name
+        sections {
+          id
+          name
+
+          questions {
+            id
+            title
+
+            answers {
+              id
+              questionType
+              name
+              answerType
+              options {
+                id
+                name
+              }
+            }
+          }
+        }
+      }
       appointmentId
 
       answers {
