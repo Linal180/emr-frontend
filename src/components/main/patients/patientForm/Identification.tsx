@@ -14,7 +14,7 @@ const IdentificationCard: FC<PatientCardsProps> = ({
   getPatientLoading, shouldDisableEdit, state, disableSubmit, isEdit
 }) =>
   <CardComponent
-    saveBtn
+    saveBtn={!shouldDisableEdit}
     state={state}
     isEdit={isEdit}
     cardTitle={IDENTIFICATION}

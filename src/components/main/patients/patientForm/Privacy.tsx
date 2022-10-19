@@ -20,7 +20,8 @@ const PatientPrivacyCard: FC<PatientCardsProps> = ({
   const classes = useExternalPatientStyles()
 
   return (
-    <CardComponent cardTitle={PRIVACY} state={state} saveBtn disableSubmit={disableSubmit} isEdit={isEdit}>
+    <CardComponent cardTitle={PRIVACY} state={state} saveBtn={!shouldDisableEdit}
+      disableSubmit={disableSubmit} isEdit={isEdit}>
       <Grid container spacing={2}>
         <Grid item md={6} sm={12} xs={12}>
           <Box>
