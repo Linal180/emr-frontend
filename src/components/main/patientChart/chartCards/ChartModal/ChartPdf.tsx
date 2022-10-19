@@ -182,7 +182,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
           {/* 1st-row */}
           <View style={[styles.tableRow]}>
             <View style={[styles.w20,]}>
-              <Text style={[styles.fieldTitleHeader,]}>{'PATIENT'}</Text>
+              <Text style={[styles.fieldTitleHeader]}>{'PATIENT'}</Text>
               <Text style={styles.fieldText}>{`${firstName} ${lastName}`}</Text>
 
               <View style={styles.fieldRow3}>
@@ -350,14 +350,14 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
               </View>
 
               {/* 5.1-row */}
-              <View style={[styles.tableRow, styles.borderStyle,]}>
+              <View style={[styles.tableRow, styles.borderStyle]}>
                 <View style={[styles.w60]}>
                   <Text style={[styles.fieldTitle2]}>{CURRENT}</Text>
                   {activeProblems?.length ? activeProblems?.map((problem) => {
                     const { ICDCode } = problem || {}
                     const { code, description } = ICDCode || {}
                     return (
-                      <Text style={[styles.fieldText, styles.colorRed]}>{`(${code}) ${description}`}</Text>
+                      <Text style={[styles.fieldText]}>{`(${code}) ${description}`}</Text>
                     )
                   }) : <View style={[styles.tableRow]}>
                     <View style={[styles.w100]}>
@@ -378,7 +378,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                     const { ICDCode } = problem || {}
                     const { code, description } = ICDCode || {}
                     return (
-                      <Text style={[styles.fieldText, styles.colorRed]}>{`(${code}) ${description}`}</Text>
+                      <Text style={[styles.fieldText]}>{`(${code}) ${description}`}</Text>
                     )
                   })}
                 </View>
@@ -388,7 +388,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                   {activeProblems?.length ? activeProblems?.map((problem) => {
                     const { problemSeverity } = problem || {}
                     return (
-                      <Text style={[styles.fieldText, styles.colorRed]}>{problemSeverity}</Text>
+                      <Text style={[styles.fieldText]}>{problemSeverity}</Text>
                     )
                   }) : <View style={styles.tableRow}>
                     <View style={[styles.w100]}>
@@ -408,7 +408,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                   {historicProblems?.length ? historicProblems?.map((problem) => {
                     const { problemSeverity } = problem || {}
                     return (
-                      <Text style={[styles.fieldText, styles.colorRed]}>{problemSeverity}</Text>
+                      <Text style={[styles.fieldText]}>{problemSeverity}</Text>
                     )
                   }) : <View style={styles.tableRow}>
                     <View style={[styles.w100]}>
@@ -444,12 +444,12 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                   {historicProblems?.length ? historicProblems?.map((problem) => {
                     const { problemStartDate } = problem || {}
                     return (
-                      <Text style={[styles.fieldText, styles.colorRed]}>{getFormatDateString(problemStartDate, "MM-DD-YYYY")}</Text>
+                      <Text style={[styles.fieldText]}>{getFormatDateString(problemStartDate, "MM-DD-YYYY")}</Text>
                     )
                   }) : <View style={styles.tableRow}>
                     <View style={[styles.w100]}>
                       <View style={[styles.borderStyle,]}>
-                        <Text style={[styles.fieldText, styles.colorRed]}>{"     "}</Text>
+                        <Text style={[styles.fieldText]}>{" "}</Text>
                       </View>
                     </View>
                   </View>}
@@ -601,7 +601,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
               </View>
 
               {/* 8.1-row */}
-              <View style={[styles.tableRow, styles.borderStyle,]}>
+              <View style={[styles.tableRow, styles.borderStyle]}>
                 <View style={[styles.w40]}>
                   <Text style={[styles.fieldTitle2,]}>{ACTIVE}</Text>
                   {environmentAllergies?.length ? environmentAllergies?.map((allergyValue) => {
@@ -620,7 +620,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                 </View>
 
                 <View style={[styles.w30]}>
-                  <Text style={[styles.fieldTitle2,]}>{SEVERITY_REACTIONS}</Text>
+                  <Text style={[styles.fieldTitle2]}>{SEVERITY_REACTIONS}</Text>
                   {environmentAllergies?.length ? environmentAllergies?.map((allergyValue) => {
                     const { allergySeverity } = allergyValue || {}
                     return (
@@ -630,7 +630,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                 </View>
 
                 <View style={[styles.w30]}>
-                  <Text style={[styles.fieldTitle2,]}>{ONSET}</Text>
+                  <Text style={[styles.fieldTitle2]}>{ONSET}</Text>
                   {environmentAllergies?.length ? environmentAllergies?.map((allergyValue) => {
                     const { allergyStartDate, allergyOnset } = allergyValue || {}
                     return (
