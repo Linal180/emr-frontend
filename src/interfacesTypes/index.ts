@@ -160,6 +160,7 @@ export type ReviewTabProps = {
   shouldShowAdd?: boolean
   shouldShowCheckout?: boolean
   handleStepChange?: Function
+  shouldShowExamDetails?: boolean
   shouldDisableEdit?: boolean
 }
 
