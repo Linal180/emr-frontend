@@ -42,7 +42,7 @@ const DemographicsCard: FC<PatientCardsProps> = ({
 
   return (
     <CardComponent
-      saveBtn
+      saveBtn={!shouldDisableEdit}
       state={state}
       isEdit={isEdit}
       cardTitle={DEMOGRAPHICS}
