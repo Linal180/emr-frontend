@@ -22,7 +22,7 @@ import {
   appointmentStatus, getAppointmentDate, getAppointmentDatePassingView, getAppointmentTime, getISOTime, isSuperAdmin
 } from '../../../../utils';
 import {
-  APPOINTMENT_CANCEL_REASON, CANCEL_RECORD, PROVIDER_NAME, APPOINTMENT, APPOINTMENT_DETAILS, PRIMARY_INSURANCE,
+  APPOINTMENT_CANCEL_REASON, CANCEL_RECORD, PROVIDER_NAME, APPOINTMENT, PRIMARY_INSURANCE,
   CANCEL_APPOINTMENT_DESCRIPTION, CHECK_IN_ROUTE, TELEHEALTH_URL, REASON, FACILITY_NAME, APPOINTMENT_TYPE,
   CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, APPOINTMENTS_ROUTE, TELEHEALTH, CANCEL_TIME_PAST_MESSAGE,
 } from '../../../../constants';
@@ -238,7 +238,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
             <ConfirmationModal
               isCalendar={true}
               actionText={CANCEL_RECORD}
-              title={APPOINTMENT_DETAILS}
+              title={APPOINTMENT}
               isOpen={openDelete}
               isLoading={cancelAppointmentLoading}
               description={CANCEL_APPOINTMENT_DESCRIPTION}

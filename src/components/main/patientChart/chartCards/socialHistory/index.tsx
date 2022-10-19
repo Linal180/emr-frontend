@@ -5,17 +5,18 @@ import { FC, Reducer, useCallback, useEffect, useMemo, useReducer } from "react"
 //components
 import QuestionCard from "./QuestionCard";
 import Alert from "../../../../common/Alert";
+import TableLoader from "../../../../common/TableLoader";
+import CardComponent from "../../../../common/CardComponent";
 //constants
 import { getSocialHistoryFormValues } from "../../../../../utils";
-import { NEXT, PAGE_LIMIT, QuestionType, SOCIAL_HISTORY_TEXT, SUBMIT } from "../../../../../constants";
 import { ParamsType, SocialHistoryProps } from "../../../../../interfacesTypes";
+import { NEXT, PAGE_LIMIT, QuestionType, SOCIAL_HISTORY_TEXT, SUBMIT } from "../../../../../constants";
 import { socialHistoryReducer, ActionType, State, initialState, Action } from "../../../../../reducers/socialHistoryReducer";
 import {
   SocialAnswer, SocialDependentAnswer, useCreatePatientSocialHistoryMutation, useFindAllSectionsLazyQuery,
   usePatientSocialHistoryLazyQuery
 } from '../../../../../generated/graphql'
-import TableLoader from "../../../../common/TableLoader";
-import CardComponent from "../../../../common/CardComponent";
+
 
 const SocialHistory: FC<SocialHistoryProps> = ({ shouldDisableEdit = false, handleStep }): JSX.Element => {
 
@@ -242,9 +243,9 @@ const SocialHistory: FC<SocialHistoryProps> = ({ shouldDisableEdit = false, hand
           </Typography>
 
           <Box display='flex' alignItems='center' justifyContent="space-between">
-            <Button type="submit" variant="contained" color="primary">
+            {!shouldDisableEdit && <Button type="submit" variant="contained" color="primary">
               {SUBMIT}
-            </Button>
+            </Button>}
             {handleStep && <Box ml={1}>
               <Button
                 variant='contained'

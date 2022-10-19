@@ -1,17 +1,21 @@
 // packages block
+import clsx from 'clsx';
+import { useParams } from "react-router";
+import { Check, ChevronRight } from '@material-ui/icons';
+import { Reducer, useCallback, useContext, useEffect, useReducer, useRef, useState } from "react";
 import {
   Box, Button, CircularProgress, colors, Step, StepIconProps, StepLabel, Stepper, Typography
 } from "@material-ui/core";
-import { Check, ChevronRight } from '@material-ui/icons';
-import clsx from 'clsx';
-import { Reducer, useCallback, useContext, useEffect, useReducer, useRef, useState } from "react";
-import { useParams } from "react-router";
 // component block
+import CheckIn from "./CheckIn";
+import SignOff from "./SignOff";
 import Alert from "../../common/Alert";
+import PatientForm from "../patients/patientForm";
+import ChartCards from "../patientChart/chartCards";
 import PatientProfileHero from "../../common/patient/profileHero";
 import BillingComponent from "../billing/addBill/BillingComponent";
-import PatientForm from "../patients/patientForm";
-import CheckIn from "./CheckIn";
+import ChartPrintModal from "../patientChart/chartCards/ChartModal/ChartPrintModal";
+import ChartSelectionModal from "../patientChart/chartCards/ChartModal/ChartSelectionModal";
 // constants, interfaces, utils block
 import { ChevronRightIcon } from "../../../assets/svgs";
 import { CHECK_IN_STEPS, DONE_CHECK_IN, PATIENT_INFO } from "../../../constants";
@@ -32,10 +36,7 @@ import {
 } from "../../../reducers/patientReducer";
 import { CheckInConnector, useCheckInProfileStyles, useCheckInStepIconStyles } from '../../../styles/checkInStyles';
 import { convertDateFromUnix, getFormattedDate, isBiller, isFrontDesk, isStaff } from "../../../utils";
-import ChartCards from "../patientChart/chartCards";
-import ChartPrintModal from "../patientChart/chartCards/ChartModal/ChartPrintModal";
-import ChartSelectionModal from "../patientChart/chartCards/ChartModal/ChartSelectionModal";
-import SignOff from "./SignOff";
+
 
 const CheckInStepIcon = (props: StepIconProps) => {
   const classes = useCheckInStepIconStyles();
@@ -81,7 +82,11 @@ const CheckInComponent = (): JSX.Element => {
     id: appointmentId ?? ''
   }
 
-  const shouldDisableEdit = status === AppointmentStatus.Checkout || status === AppointmentStatus.Discharged
+  const shouldDisableChartingEdit = status === AppointmentStatus.Discharged
+  const shouldDisableBillingEdit = status === AppointmentStatus.Checkout
+
+  console.log('shouldDisableChartingEdit', shouldDisableChartingEdit)
+  console.log('shouldDisableBillingEdit', shouldDisableBillingEdit)
 
   useEffect(() => {
     dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: Number(checkInActiveStep) ?? 0 })
@@ -280,14 +285,14 @@ const CheckInComponent = (): JSX.Element => {
       case 4:
         return <SignOff handleStepChange={handleStep} />
       case 5:
-        return <BillingComponent shouldDisableEdit={shouldDisableEdit} />
+        return <BillingComponent shouldDisableEdit={shouldDisableBillingEdit} />
       default:
         return <CircularProgress />;
     }
   }
 
   const handlePatientUpdate = () => {
-    !shouldDisableEdit && patientRef.current?.submit()
+    !shouldDisableChartingEdit && patientRef.current?.submit()
     isFrontDeskUser ? handleStep(4) : handleStep(1)
   }
 
@@ -312,7 +317,7 @@ const CheckInComponent = (): JSX.Element => {
               isEdit
               shouldShowBread={false}
               ref={patientRef}
-              shouldDisableEdit={shouldDisableEdit}
+              shouldDisableEdit={shouldDisableChartingEdit}
             />
           </Box>
         </> :
@@ -320,7 +325,7 @@ const CheckInComponent = (): JSX.Element => {
             appointmentState={state}
             appointmentDispatcher={dispatch}
             handleStep={handleStep}
-            shouldDisableEdit={shouldDisableEdit}
+            shouldDisableEdit={shouldDisableChartingEdit}
             activeStep={activeStep}
             handleProceed={activeStep > 0 ? () => setShouldProceed(true) : undefined}
           />
@@ -336,7 +341,7 @@ const CheckInComponent = (): JSX.Element => {
         labOrderHandler={() => handleStep(2)}
         appointmentInfo={appointmentInfo}
         fetchAppointment={fetchAppointment}
-        shouldDisableEdit={shouldDisableEdit}
+        shouldDisableEdit={shouldDisableChartingEdit}
         isInTake={true}
       />
     </>
@@ -350,7 +355,7 @@ const CheckInComponent = (): JSX.Element => {
         labOrderHandler={() => handleStep(3)}
         appointmentInfo={appointmentInfo}
         fetchAppointment={fetchAppointment}
-        shouldDisableEdit={shouldDisableEdit}
+        shouldDisableEdit={shouldDisableChartingEdit}
         isInTake={false}
       />
     </>
