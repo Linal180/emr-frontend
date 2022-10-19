@@ -1489,6 +1489,7 @@ export type CreatePatientIllnessHistoryInput = {
   appointmentId?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
   patientId?: Maybe<Scalars['String']>;
+  templateIds?: Maybe<Array<Scalars['String']>>;
 };
 
 export type CreatePatientInput = {
@@ -1639,6 +1640,7 @@ export type CreateReviewOfSystemInput = {
   appointmentId?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
   patientId?: Maybe<Scalars['String']>;
+  templateIds?: Maybe<Array<Scalars['String']>>;
 };
 
 export type CreateScheduleInput = {
@@ -4401,6 +4403,8 @@ export type PatientIllnessHistory = {
   id: Scalars['String'];
   patient?: Maybe<Patient>;
   patientId?: Maybe<Scalars['String']>;
+  templateIds?: Maybe<Array<Scalars['String']>>;
+  templates?: Maybe<Array<QuestionTemplate>>;
   updatedAt?: Maybe<Scalars['String']>;
 };
 
@@ -5988,6 +5992,7 @@ export type QuestionAnswers = {
   questionType?: Maybe<Scalars['String']>;
   questions?: Maybe<SectionQuestions>;
   questionsId?: Maybe<Scalars['String']>;
+  specialId?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
 };
 
@@ -6270,6 +6275,8 @@ export type ReviewOfSystem = {
   id: Scalars['String'];
   patient?: Maybe<Patient>;
   patientId?: Maybe<Scalars['String']>;
+  templateIds?: Maybe<Array<Scalars['String']>>;
+  templates?: Maybe<Array<QuestionTemplate>>;
   updatedAt?: Maybe<Scalars['String']>;
 };
 
@@ -8677,7 +8684,7 @@ export type GetPatientChartingTemplateQueryVariables = Exact<{
 }>;
 
 
-export type GetPatientChartingTemplateQuery = { __typename?: 'Query', getPatientChartingTemplate: { __typename?: 'QuestionTemplatePayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, template: { __typename?: 'QuestionTemplate', id: string, sections?: Array<{ __typename?: 'TemplateSections', id: string, name?: string | null, questions?: Array<{ __typename?: 'SectionQuestions', id: string, title?: string | null, answers?: Array<{ __typename?: 'QuestionAnswers', id: string, questionType?: string | null, name?: string | null, answerType?: string | null, options?: Array<{ __typename?: 'SelectorType', id?: string | null, name?: string | null }> | null }> | null }> | null }> | null } } };
+export type GetPatientChartingTemplateQuery = { __typename?: 'Query', getPatientChartingTemplate: { __typename?: 'QuestionTemplatePayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, template: { __typename?: 'QuestionTemplate', id: string, name?: string | null, sections?: Array<{ __typename?: 'TemplateSections', id: string, name?: string | null, questions?: Array<{ __typename?: 'SectionQuestions', id: string, title?: string | null, answers?: Array<{ __typename?: 'QuestionAnswers', id: string, questionType?: string | null, name?: string | null, answerType?: string | null, options?: Array<{ __typename?: 'SelectorType', id?: string | null, name?: string | null }> | null }> | null }> | null }> | null } } };
 
 export type CreatePatientIllnessHistoryMutationVariables = Exact<{
   createPatientIllnessHistoryInput: CreatePatientIllnessHistoryInput;
@@ -8691,7 +8698,7 @@ export type PatientIllnessHistoryQueryVariables = Exact<{
 }>;
 
 
-export type PatientIllnessHistoryQuery = { __typename?: 'Query', patientIllnessHistory: { __typename?: 'PatientIllnessHistoryPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, patientIllnessHistory?: { __typename?: 'PatientIllnessHistory', id: string, patientId?: string | null, appointmentId?: string | null, answers?: Array<{ __typename?: 'AnswerResponses', id: string, value?: string | null, answerId?: string | null, answer?: { __typename?: 'QuestionAnswers', name?: string | null, questionType?: string | null } | null }> | null } | null } };
+export type PatientIllnessHistoryQuery = { __typename?: 'Query', patientIllnessHistory: { __typename?: 'PatientIllnessHistoryPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, patientIllnessHistory?: { __typename?: 'PatientIllnessHistory', id: string, patientId?: string | null, appointmentId?: string | null, templates?: Array<{ __typename?: 'QuestionTemplate', id: string, name?: string | null, sections?: Array<{ __typename?: 'TemplateSections', id: string, name?: string | null, questions?: Array<{ __typename?: 'SectionQuestions', id: string, title?: string | null, answers?: Array<{ __typename?: 'QuestionAnswers', id: string, questionType?: string | null, name?: string | null, answerType?: string | null, options?: Array<{ __typename?: 'SelectorType', id?: string | null, name?: string | null }> | null }> | null }> | null }> | null }> | null, answers?: Array<{ __typename?: 'AnswerResponses', id: string, value?: string | null, answerId?: string | null, answer?: { __typename?: 'QuestionAnswers', name?: string | null, questionType?: string | null } | null }> | null } | null } };
 
 export type CreateReviewOfSystemHistoryMutationVariables = Exact<{
   createReviewOfSystemInput: CreateReviewOfSystemInput;
@@ -8705,7 +8712,7 @@ export type ReviewOfSystemQueryVariables = Exact<{
 }>;
 
 
-export type ReviewOfSystemQuery = { __typename?: 'Query', reviewOfSystem: { __typename?: 'ReviewOfSystemPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, reviewOfSystem?: { __typename?: 'ReviewOfSystem', id: string, patientId?: string | null, appointmentId?: string | null, answers?: Array<{ __typename?: 'AnswerResponses', id: string, value?: string | null, answerId?: string | null, answer?: { __typename?: 'QuestionAnswers', name?: string | null, questionType?: string | null } | null }> | null } | null } };
+export type ReviewOfSystemQuery = { __typename?: 'Query', reviewOfSystem: { __typename?: 'ReviewOfSystemPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, reviewOfSystem?: { __typename?: 'ReviewOfSystem', id: string, patientId?: string | null, templateIds?: Array<string> | null, appointmentId?: string | null, templates?: Array<{ __typename?: 'QuestionTemplate', id: string, name?: string | null, sections?: Array<{ __typename?: 'TemplateSections', id: string, name?: string | null, questions?: Array<{ __typename?: 'SectionQuestions', id: string, title?: string | null, answers?: Array<{ __typename?: 'QuestionAnswers', id: string, questionType?: string | null, name?: string | null, answerType?: string | null, options?: Array<{ __typename?: 'SelectorType', id?: string | null, name?: string | null }> | null }> | null }> | null }> | null }> | null, answers?: Array<{ __typename?: 'AnswerResponses', id: string, value?: string | null, answerId?: string | null, answer?: { __typename?: 'QuestionAnswers', name?: string | null, questionType?: string | null } | null }> | null } | null } };
 
 export type FindAllPatientProblemsQueryVariables = Exact<{
   patientProblemInput: PatientProblemInput;
@@ -14144,6 +14151,7 @@ export const GetPatientChartingTemplateDocument = gql`
     }
     template {
       id
+      name
       sections {
         id
         name
@@ -14245,6 +14253,28 @@ export const PatientIllnessHistoryDocument = gql`
     patientIllnessHistory {
       id
       patientId
+      templates {
+        id
+        name
+        sections {
+          id
+          name
+          questions {
+            id
+            title
+            answers {
+              id
+              questionType
+              name
+              answerType
+              options {
+                id
+                name
+              }
+            }
+          }
+        }
+      }
       appointmentId
       answers {
         id
@@ -14336,6 +14366,29 @@ export const ReviewOfSystemDocument = gql`
     reviewOfSystem {
       id
       patientId
+      templateIds
+      templates {
+        id
+        name
+        sections {
+          id
+          name
+          questions {
+            id
+            title
+            answers {
+              id
+              questionType
+              name
+              answerType
+              options {
+                id
+                name
+              }
+            }
+          }
+        }
+      }
       appointmentId
       answers {
         id

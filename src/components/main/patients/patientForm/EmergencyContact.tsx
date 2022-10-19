@@ -17,7 +17,7 @@ const EmergencyContactCard: FC<PatientCardsProps> = ({
 }) => {
   return (
     <CardComponent
-      saveBtn
+      saveBtn={!shouldDisableEdit}
       state={state}
       isEdit={isEdit}
       cardTitle={EMERGENCY_CONTACT}

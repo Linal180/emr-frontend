@@ -43,19 +43,19 @@ const ExamTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
 
             <Box className={classes.cardBox}>
               <TabPanel value="1">
-                <ReviewTab shouldDisableEdit={shouldDisableEdit} shouldShowAdd={true} />
+                <ReviewTab shouldDisableEdit={shouldDisableEdit} shouldShowAdd={true} shouldShowExamDetails={true} />
               </TabPanel>
 
               <TabPanel value="2">
-                <PatientHistory />
+                <PatientHistory shouldDisableEdit={shouldDisableEdit} />
               </TabPanel>
 
               <TabPanel value="3">
-                <ReviewOfSystem />
+                <ReviewOfSystem shouldDisableEdit={shouldDisableEdit} />
               </TabPanel>
 
               <TabPanel value="4">
-                <AssessmentPlanTab />
+                <AssessmentPlanTab shouldDisableEdit={shouldDisableEdit} />
               </TabPanel>
             </Box>
           </TabContext>
