@@ -34,7 +34,7 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
   const handleChange = (panel: string) => (_: ChangeEvent<{}>, isExpanded: boolean) =>
     setExpanded(isExpanded ? panel : false);
 
-  const [createIllnessHistory, { loading: createLoading }] = useCreatePatientIllnessHistoryMutation({
+  const [createIllnessHistory] = useCreatePatientIllnessHistoryMutation({
     onCompleted: (data) => {
       const { createPatientIllnessHistory } = data || {}
       const { response, patientIllnessHistory } = createPatientIllnessHistory || {}
@@ -156,7 +156,7 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
         value?: string
       }[])
 
-      await createIllnessHistory({
+      createIllnessHistory({
         variables: {
           createPatientIllnessHistoryInput: {
             answerResponses: answerResponses,
@@ -171,8 +171,8 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
 
   }
 
-  const loading = findPatientChartingTemplateLoading || createLoading || getLoading;
-  console.log("shouldDisableEdit", shouldDisableEdit)
+  const loading = findPatientChartingTemplateLoading || getLoading;
+
   return (
     <>
       <Box p={2} display='flex' justifyContent='space-between' alignItems='center' flexWrap="wrap" borderBottom={`1px solid ${colors.grey[300]}`}>

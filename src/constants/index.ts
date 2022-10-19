@@ -4753,3 +4753,4 @@ export const STATUS_MAPPED = [
     name: STATUS_ENUM.IN_ACTIVE
   }
 ]
+export const PROBLEMS_TABS = ['Common Terms']

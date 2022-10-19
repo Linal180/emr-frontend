@@ -16,6 +16,7 @@ const ChartingTemplateSelector: FC<ChartingTemplateSelectorProps> = ({
 }): JSX.Element => {
   const { control, setValue } = useFormContext()
   const [options, setOptions] = useState<multiOptionType[]>([])
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [values, setValues] = useState<multiOptionType[]>([])
   const [state, dispatch,] = useReducer<Reducer<State, Action>>(patientHistoryReducer, initialState)
   const { page, searchQuery } = state;
@@ -77,7 +78,7 @@ const ChartingTemplateSelector: FC<ChartingTemplateSelectorProps> = ({
       rules={{ required: true }}
       name={name}
       control={control}
-      defaultValue={options}
+      // defaultValue={options}
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <FormControl fullWidth margin={'normal'} error={Boolean(invalid)} >
@@ -92,10 +93,9 @@ const ChartingTemplateSelector: FC<ChartingTemplateSelectorProps> = ({
               isClearable
               options={options}
               isMulti
-              name={name}
               isDisabled={disabled}
-              defaultValue={options}
-              value={values}
+              // defaultValue={options}
+              // value={values}
               isLoading={findPatientChartingTemplatesLoading}
               components={{ LoadingIndicator: () => <CircularProgress color="inherit" size={20} style={{ marginRight: 5, }} /> }}
               onChange={(newValue) => {

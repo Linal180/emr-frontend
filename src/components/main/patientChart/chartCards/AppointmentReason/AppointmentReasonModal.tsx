@@ -3,14 +3,15 @@ import {
   Box, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton, InputBase, Typography
 } from "@material-ui/core";
 import moment from "moment";
-import { FC, Reducer, useCallback, useEffect, useMemo, useReducer, useState } from "react";
+import { FC, Reducer, useCallback, useEffect, useReducer, useRef } from "react";
 import { useParams } from "react-router";
 // components block
+import Alert from "../../../../common/Alert";
 // constants, interfaces, utils block 
 import { NoDataIcon, SearchIcon } from "../../../../../assets/svgs";
-import { ADD_REASON, ICD_10, INITIAL_PAGE_LIMIT, NO_RECORDS, REASON_ADDED, SEARCH_FOR_PROBLEMS, SNOMED, TYPE } from "../../../../../constants";
+import { ADD_REASON, ICD_10, INITIAL_PAGE_LIMIT, NO_RECORDS, PROBLEMS_TABS, REASON_ADDED, SEARCH_FOR_PROBLEMS, SNOMED, TYPE } from "../../../../../constants";
 import {
-  IcdCodesPayload, IcdCodesWithSnowMedCode, ProblemSeverity, ProblemType, useAddPatientProblemMutation, useSearchIcdCodesLazyQuery
+  IcdCodesWithSnowMedCode, ProblemSeverity, ProblemType, useAddPatientProblemMutation, useSearchIcdCodesLazyQuery
 } from "../../../../../generated/graphql";
 import { AddAppointmentReasonProps, ParamsType } from "../../../../../interfacesTypes";
 import {
@@ -18,18 +19,14 @@ import {
 } from "../../../../../reducers/chartReducer";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
 import { GRAY_SIX, GREY_SEVEN } from "../../../../../theme";
-import Alert from "../../../../common/Alert";
+
 
 const AppointmentReasonModal: FC<AddAppointmentReasonProps> = ({ isOpen = false, handleModalClose, fetch, title, handleAdd, alreadyAddedProblems }) => {
   const { appointmentId, id: patientId } = useParams<ParamsType>()
-  const tabs = useMemo(() => {
-    return ['Common Terms', 'Covid Terms']
-  }, [])
-
+  const observer = useRef<any>();
   const chartingClasses = useChartingStyles()
-  const [tab, setTab] = useState<string>(!!tabs ? tabs[0] : '');
-  const [{ searchQuery, searchedData }, dispatch] =
-    useReducer<Reducer<State, Action>>(chartReducer, initialState)
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(chartReducer, initialState)
+  const { searchQuery, searchedData, page, totalPages } = state
 
   const [addPatientProblem] = useAddPatientProblemMutation({
     onError({ message }) {
@@ -64,54 +61,45 @@ const AppointmentReasonModal: FC<AddAppointmentReasonProps> = ({ isOpen = false,
         const { searchIcdCodes } = data;
 
         if (searchIcdCodes) {
-          const { icdCodes } = searchIcdCodes
-
+          const { icdCodes, pagination } = searchIcdCodes;
+          const { totalPages: totalPage } = pagination || {}
+          dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: totalPage || 0 })
           icdCodes && dispatch({
             type: ActionType.SET_SEARCHED_DATA,
-            searchedData: icdCodes as IcdCodesPayload['icdCodes']
+            searchedData: [...(searchedData || []), ...(icdCodes || [])] as IcdCodesWithSnowMedCode[]
           })
         }
       }
     }
   });
 
-  const handleICDSearch = useCallback(async (tabName: string, query: string) => {
+  const handleICDSearch = useCallback(async (page?: number, searchQuery?: string) => {
     try {
-      const queryString = tabName === tabs[1] ? 'corona' : query
-
       await searchIcdCodes({
         variables: {
           searchIcdCodesInput: {
-            searchTerm: queryString,
-            paginationOptions: { page: 1, limit: INITIAL_PAGE_LIMIT }
+            searchTerm: searchQuery || "",
+            paginationOptions: { page: page || 1, limit: INITIAL_PAGE_LIMIT }
           }
         }
       })
     } catch (error) { }
-  }, [searchIcdCodes, tabs])
+  }, [searchIcdCodes])
+
 
   useEffect(() => {
-    handleICDSearch(tabs[0], '')
-  }, [handleICDSearch, tabs])
+    handleICDSearch()
+  }, [handleICDSearch])
 
-  const handleSearch = useCallback(async (query: string, tabName?: string) => {
+  const handleSearch = async (query: string) => {
     dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
-    dispatch({
-      type: ActionType.SET_SEARCHED_DATA,
-      searchedData: []
-    })
 
     if (query.length > 2 || query.length === 0) {
-      handleICDSearch(tabName ? tabName : tab, query)
+      dispatch({ type: ActionType.SET_SEARCHED_DATA, searchedData: [] })
+      dispatch({ type: ActionType.SET_PAGE, page: 1 })
+      await handleICDSearch(1, query)
     }
-  }, [handleICDSearch, tab])
-
-  const handleTabChange = (name: string) => {
-    setTab(name)
-    dispatch({ type: ActionType.SET_SEARCHED_DATA, searchedData: [] })
-    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: '' })
-    handleSearch('', name);
-  };
+  }
 
   const handleAddReason = useCallback(async (item: IcdCodesWithSnowMedCode) => {
     const commonInput = {
@@ -139,10 +127,9 @@ const AppointmentReasonModal: FC<AddAppointmentReasonProps> = ({ isOpen = false,
 
   const renderTabs = () => (
     <Box p={1} mb={3} mt={2} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
-      {tabs?.map(tabName =>
+      {PROBLEMS_TABS?.map(tabName =>
         <Box key={tabName}
-          className={tab === tabName ? 'selectedBox selectBox' : 'selectBox'}
-          onClick={() => handleTabChange(tabName)}
+          className={'selectedBox selectBox'}
         >
           <Typography variant='h6'>{tabName}</Typography>
         </Box>
@@ -150,22 +137,56 @@ const AppointmentReasonModal: FC<AddAppointmentReasonProps> = ({ isOpen = false,
     </Box>
   );
 
+  const lastElementRef = useCallback((node) => {
+
+    if (searchIcdCodesLoading) return;
+    if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && page <= totalPages) {
+        dispatch({ type: ActionType.SET_PAGE, page: page + 1 })
+        if (searchQuery.length > 2 || searchQuery.length === 0) {
+          handleICDSearch(page + 1, searchQuery)
+        }
+        else {
+          handleICDSearch(page + 1)
+        }
+      }
+    });
+    if (node) observer.current.observe(node);
+  },
+    [searchIcdCodesLoading, page, totalPages, handleICDSearch, searchQuery]
+  );
+
   const renderSearchData = useCallback(() => {
     return (
       <Box maxHeight={280} minHeight={280} className="overflowY-auto" display="flex"
         flexDirection="column" alignItems="flex-start"
       >
-        {!!searchIcdCodesLoading ?
-          <Box alignSelf="center">
-            <CircularProgress size={25} color="inherit" disableShrink />
-          </Box>
-          :
+        {
           (searchedData && searchedData.length > 0 ?
-            searchedData?.map(item => {
+            searchedData?.map((item, i) => {
               const { code, description, snoMedCode, id } = item as IcdCodesWithSnowMedCode || {}
               const { referencedComponentId } = snoMedCode || {}
               if (alreadyAddedProblems?.includes(id)) {
                 return <></>
+              }
+
+              if (i === searchedData.length - 1) {
+                return (
+                  <div key={`${code} | ${description} | ${snoMedCode?.id}`} className={chartingClasses.hoverClass}
+                    onClick={() => item && handleAdd ? handleAdd(item as IcdCodesWithSnowMedCode) : handleAddReason(item as IcdCodesWithSnowMedCode)}
+                    ref={lastElementRef}
+                    style={{ marginTop: 1, marginBottom: 1 }}
+                  >
+                    <Box display="flex" flexDirection="column" px={2}>
+                      <Typography variant='body1'>{description}</Typography>
+
+                      <Typography variant='caption'>
+                        {referencedComponentId ? `${SNOMED}: ${referencedComponentId} | ${ICD_10}: ${code}` : `ICD-10: ${code}`}
+                      </Typography>
+                    </Box>
+                  </div>
+                )
               }
 
               return (
@@ -182,16 +203,22 @@ const AppointmentReasonModal: FC<AddAppointmentReasonProps> = ({ isOpen = false,
 
                 </Box>
               )
-            }) : <Box color={GREY_SEVEN} margin='auto' textAlign='center'>
+            }) :
+            <Box color={GREY_SEVEN} margin='auto' textAlign='center'>
               <NoDataIcon />
               <Typography variant="h6">{NO_RECORDS}</Typography>
 
               <Box p={1} />
             </Box>)
         }
+        {!!searchIcdCodesLoading &&
+          <Box alignSelf="center">
+            <CircularProgress size={25} color="inherit" disableShrink />
+          </Box>}
+
       </Box>
     )
-  }, [alreadyAddedProblems, chartingClasses.hoverClass, handleAdd, handleAddReason, searchIcdCodesLoading, searchedData])
+  }, [alreadyAddedProblems, chartingClasses.hoverClass, handleAdd, handleAddReason, lastElementRef, searchIcdCodesLoading, searchedData])
 
 
   return (
@@ -204,10 +231,10 @@ const AppointmentReasonModal: FC<AddAppointmentReasonProps> = ({ isOpen = false,
         <Typography variant='h6'>{TYPE}</Typography>
 
         <Box className={chartingClasses.toggleProblem}>
-          {!!tabs && renderTabs()}
+          {renderTabs()}
         </Box>
 
-        {tab === tabs[0] && <Box mb={2} className={chartingClasses.searchBox} display="flex">
+        <Box mb={2} className={chartingClasses.searchBox} display="flex">
           <IconButton size='small' aria-label="search">
             <SearchIcon />
           </IconButton>
@@ -219,7 +246,6 @@ const AppointmentReasonModal: FC<AddAppointmentReasonProps> = ({ isOpen = false,
             onChange={({ target: { value } }) => handleSearch(value)}
           />
         </Box>
-        }
 
         {renderSearchData()}
       </DialogContent>

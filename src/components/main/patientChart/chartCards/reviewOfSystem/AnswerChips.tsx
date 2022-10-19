@@ -60,6 +60,7 @@ function AnswerChips({ answers, colors, handleSubmit, shouldDisableEdit }: Answe
     const value = answerValues[id]?.select
     if (value) {
       setValue(`${id}.select`, false)
+      handleSubmit && handleSubmit()
       return
     }
     setValue(`${id}.select`, true)
