@@ -41,7 +41,7 @@ import {
   ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, UserForms,
   AttachmentType, AttachmentsPayload, UsersPayload, UnitType, PracticeType, SchedulesPayload,
   WeightType, ClaimStatus, AllCptCodePayload, AllModifiersPayload, FeeSchedule, CptFeeSchedule,
-  AllCptFeeSchedulesPayload, Taxonomy, TaxonomyPayload, FindAllNdcPayload, FindAllMvxPayload, FindAllQuestionTemplatesPayload, FindAllNdcVaccineProductsPayload,
+  AllCptFeeSchedulesPayload, Taxonomy, TaxonomyPayload, FindAllNdcPayload, FindAllMvxPayload, FindAllQuestionTemplatesPayload, FindAllNdcVaccineProductsPayload, QuestionTemplate,
 } from "../generated/graphql";
 
 export const handleLogout = () => {
@@ -614,6 +614,22 @@ export const renderMultiServices = (services: ServicesPayload['services']) => {
         const { id, duration, name } = service;
 
         service && data.push({ value: id, label: `${name.trim()} (duration: ${duration} minutes)` })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderMultiTemplates = (templates: QuestionTemplate[]) => {
+  const data: multiOptionType[] = [];
+
+  if (!!templates) {
+    for (let template of templates) {
+      if (template) {
+        const { id, name } = template;
+
+        template && data.push({ value: id, label: name || '' })
       }
     }
   }

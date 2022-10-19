@@ -1,38 +1,45 @@
-import { Box, Button, Card, colors, Typography } from "@material-ui/core";
-import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Card, colors, Typography } from "@material-ui/core";
+import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 //components
 import Alert from "../../../../common/Alert";
 //constants
-import { NEXT, QuestionType, REVIEW_OF_SYSTEM_TEXT, ROS_TEMPLATES, SUBMIT, TemplateType } from "../../../../../constants";
-import { useCreateReviewOfSystemHistoryMutation, useGetPatientChartingTemplateLazyQuery, useReviewOfSystemLazyQuery } from '../../../../../generated/graphql';
-import { ParamsType, PatientHistoryProps, SelectorOption } from "../../../../../interfacesTypes";
+import { ExpandMore } from "@material-ui/icons";
+import { NEXT, QuestionType, REVIEW_OF_SYSTEM_TEXT, ROS_TEMPLATES, TemplateType } from "../../../../../constants";
+import { QuestionTemplate, useCreateReviewOfSystemHistoryMutation, useGetPatientChartingTemplateLazyQuery, useReviewOfSystemLazyQuery } from '../../../../../generated/graphql';
+import { multiOptionType, ParamsType, PatientHistoryProps } from "../../../../../interfacesTypes";
 import { Action, ActionType, initialState, patientHistoryReducer, State } from "../../../../../reducers/patientHistoryReducer";
 import CardComponent from "../../../../common/CardComponent";
 import ChartingTemplateSelector from "../../../../common/Selector/ChartingTemplateSelector";
 import TableLoader from "../../../../common/TableLoader";
 import QuestionCard from "./QuestionCard";
+import { renderMultiTemplates } from "../../../../../utils";
 
 const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, handleStep }): JSX.Element => {
   const methods = useForm();
   const { id: patientId, appointmentId } = useParams<ParamsType>()
 
+  const [expanded, setExpanded] = useState<string | false>('panel1');
+
+  const handleChange = (panel: string) => (_: ChangeEvent<{}>, isExpanded: boolean) =>
+    setExpanded(isExpanded ? panel : false);
+
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientHistoryReducer, initialState);
-  const { template, itemId } = state;
+  const { itemId, templates } = state;
   const { handleSubmit, setValue } = methods;
 
   const [createReviewOfSystem, { loading: createLoading }] = useCreateReviewOfSystemHistoryMutation({
     onCompleted: (data) => {
       const { createReviewOfSystem } = data || {}
       const { response, reviewOfSystem } = createReviewOfSystem || {}
-      const { status, message } = response || {}
+      const { status } = response || {}
       const { id } = reviewOfSystem || {}
       if (status === 200 && id) {
-        message && Alert.success(message)
-        fetchPatientReviewOfSystem()
+        id && dispatch({ type: ActionType.SET_ITEM_ID, itemId: id })
+        // message && Alert.success(message)
       } else {
-        message && Alert.error(message)
+        // message && Alert.error(message)
       }
     },
     onError: ({ message }) => {
@@ -53,10 +60,10 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
       const { status } = response || {};
 
       if (status === 200 && template) {
-        dispatch({ type: ActionType.SET_TEMPLATE, template })
+        dispatch({ type: ActionType.SET_TEMPLATES, templates: [...(templates || []), template] });
       }
       else {
-        dispatch({ type: ActionType.SET_TEMPLATE, template: null });
+        dispatch({ type: ActionType.SET_TEMPLATES, templates: [] });
       }
     }
   });
@@ -68,8 +75,12 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
       const { status } = response || {}
 
       if (status === 200) {
-        const { id, answers } = reviewOfSystem || {}
+        const { id, answers, templates } = reviewOfSystem || {}
         id && dispatch({ type: ActionType.SET_ITEM_ID, itemId: id })
+
+        dispatch({ type: ActionType.SET_TEMPLATES, templates: templates as QuestionTemplate[] })
+
+        setValue('hpiTemplates', renderMultiTemplates(templates as QuestionTemplate[]))
 
         answers?.forEach((answerInfo) => {
           const { answerId, value, answer } = answerInfo
@@ -102,19 +113,25 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
     fetchPatientReviewOfSystem()
   }, [fetchPatientReviewOfSystem])
 
-  const fetchPatientChartingTemplates = useCallback(async (id) => {
+  const fetchPatientChartingTemplates = useCallback(async (ids: string[]) => {
     try {
-      id && await findPatientChartingTemplate({
-        variables: {
-          templateId: id
+      ids.forEach(async (id) => {
+        if (!templates?.some((template) => id === template.id)) {
+          ids && await findPatientChartingTemplate({
+            variables: {
+              templateId: id
+            }
+          })
         }
       })
     } catch (error) { }
 
-  }, [findPatientChartingTemplate])
+  }, [findPatientChartingTemplate, templates])
 
   const onSubmit: SubmitHandler<any> = async (values) => {
     try {
+      const { hpiTemplates } = values
+      const templateIds = hpiTemplates.map((hpiTemplate: multiOptionType) => hpiTemplate.value)
       const answerResponses = Object.keys(values).reduce((acc, key) => {
         const value = values[key]
         if (key === 'hpiTemplates') {
@@ -141,7 +158,8 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
             answerResponses: answerResponses,
             appointmentId: appointmentId,
             patientId: patientId,
-            id: itemId
+            id: itemId,
+            templateIds
           }
         }
       })
@@ -150,13 +168,6 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
   }
 
   const loading = findPatientChartingTemplateLoading || createLoading || getLoading;
-
-
-  if (loading) {
-    return <TableLoader numberOfColumns={1} numberOfRows={10} />
-  }
-
-  const { sections } = template || {}
 
   return (
     <Card>
@@ -175,39 +186,55 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
       </Box>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Box p={3}>
-            <ChartingTemplateSelector
-              label={ROS_TEMPLATES}
-              name="hpiTemplates"
-              addEmpty
-              templateType={TemplateType.REVIEW_OF_SYSTEM}
-              onSelect={({ id }: SelectorOption) => fetchPatientChartingTemplates(id)}
-            />
-          </Box>
-          {sections?.length &&
-            <Box display='flex' alignItems='center' justifyContent="flex-end" px={2}>
-              {!shouldDisableEdit && <Button type="submit" variant="contained" color="primary">
-                {SUBMIT}
-              </Button>}
-            </Box>}
-
-          <Box maxHeight="calc(100vh - 180px)" className="overflowY-auto">
-            {sections?.map((section) => {
-              const { id, name, questions } = section || {}
+          {!loading ? <>
+            <Box p={3}>
+              <ChartingTemplateSelector
+                label={ROS_TEMPLATES}
+                name="hpiTemplates"
+                addEmpty
+                isEdit
+                defaultValues={renderMultiTemplates(templates as QuestionTemplate[])}
+                templateType={TemplateType.REVIEW_OF_SYSTEM}
+                onSelect={(multiOption: multiOptionType[]) => fetchPatientChartingTemplates(multiOption.map(value => value.value))}
+              />
+            </Box>
+            {templates?.map((template, i) => {
+              const { sections, name } = template || {}
               return (
-                <CardComponent cardTitle={name || ''} key={id}>
-                  {questions?.map((question, index) => {
-                    return (
-                      <>
-                        <QuestionCard key={`${index}-${id}`} question={question} />
-                        <Box mt={2} />
-                      </>
-                    )
-                  })}
-                </CardComponent>
+                <>
+                  <Accordion expanded={expanded === `panel${i + 1}`} onChange={handleChange(`panel${i + 1}`)} >
+                    <AccordionSummary
+                      expandIcon={<ExpandMore />}
+                      aria-controls="panel1a-content"
+                      id="panel1a-header"
+                    >
+                      <Typography variant="h4" color="textPrimary">{name}</Typography>
+                    </AccordionSummary>
+
+                    <AccordionDetails>
+                      <Box maxHeight="calc(100vh - 180px)" className="overflowY-auto">
+                        {sections?.map((section) => {
+                          const { id, name, questions } = section || {}
+                          return (
+                            <CardComponent cardTitle={name || ''} key={id}>
+                              {questions?.map((question, index) => {
+                                return (
+                                  <>
+                                    <QuestionCard key={`${index}-${id}`} question={question} handleSubmit={handleSubmit(onSubmit)} />
+                                    <Box mt={2} />
+                                  </>
+                                )
+                              })}
+                            </CardComponent>
+                          )
+                        })}
+                      </Box>
+                    </AccordionDetails>
+                  </Accordion>
+                </>
               )
             })}
-          </Box>
+          </> : <TableLoader numberOfColumns={1} numberOfRows={10} />}
         </form>
       </FormProvider>
     </Card>

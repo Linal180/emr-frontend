@@ -7,7 +7,7 @@ import { QuestionAnswers } from '../../../../../generated/graphql'
 import { AnswerChipsProps } from '../../../../../interfacesTypes'
 import Selector from '../../../../common/Selector'
 
-function AnswerChips({ answers, colors }: AnswerChipsProps) {
+function AnswerChips({ answers, colors, handleSubmit }: AnswerChipsProps) {
   const methods = useFormContext()
   const [firstColor] = colors || []
   const { setValue, watch } = methods
@@ -64,6 +64,7 @@ function AnswerChips({ answers, colors }: AnswerChipsProps) {
       return
     }
     setValue(`${id}.select`, true)
+    handleSubmit && handleSubmit()
   }
 
 
