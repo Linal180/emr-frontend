@@ -14,10 +14,9 @@ import { AddAllergyModalProps } from "../../../../../interfacesTypes";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
 import { Action, ActionType, chartReducer, initialState, State } from "../../../../../reducers/chartReducer";
 import { IcdCodes, IcdCodesWithSnowMedCode, useSearchIcdCodesLazyQuery } from "../../../../../generated/graphql";
-import { ADD_PROBLEM, ICD_10, INITIAL_PAGE_LIMIT, NO_RECORDS, SEARCH_FOR_PROBLEMS, SNOMED, TYPE } from "../../../../../constants";
+import { ADD_PROBLEM, ICD_10, INITIAL_PAGE_LIMIT, NO_RECORDS, PROBLEMS_TABS, SEARCH_FOR_PROBLEMS, SNOMED, TYPE } from "../../../../../constants";
 
 const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose, fetch }) => {
-  const tabs = ['Common Terms']
   const observer = useRef<any>();
   const chartingClasses = useChartingStyles()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(chartReducer, initialState)
@@ -89,7 +88,7 @@ const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
 
   const renderTabs = () => (
     <Box p={1} mb={3} mt={2} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
-      {tabs?.map(tabName =>
+      {PROBLEMS_TABS?.map(tabName =>
         <Box key={tabName}
           className={'selectedBox selectBox'}
         >
