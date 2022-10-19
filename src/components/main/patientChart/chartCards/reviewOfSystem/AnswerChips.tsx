@@ -1,5 +1,4 @@
 import { Box, Chip } from '@material-ui/core'
-import React from 'react'
 import { useFormContext } from 'react-hook-form'
 import { QuestionType } from '../../../../../constants'
 import InputController from '../../../../../controller'
@@ -7,7 +6,7 @@ import { QuestionAnswers } from '../../../../../generated/graphql'
 import { AnswerChipsProps } from '../../../../../interfacesTypes'
 import Selector from '../../../../common/Selector'
 
-function AnswerChips({ answers, colors, handleSubmit }: AnswerChipsProps) {
+function AnswerChips({ answers, colors, handleSubmit, shouldDisableEdit }: AnswerChipsProps) {
   const methods = useFormContext()
   const [firstColor] = colors || []
   const { setValue, watch } = methods
@@ -77,6 +76,7 @@ function AnswerChips({ answers, colors, handleSubmit }: AnswerChipsProps) {
             <Chip
               label={getTransformedName(answer)}
               clickable
+              disabled={shouldDisableEdit}
               style={{
                 background: answerValues[id]?.select ? firstColor : 'white',
                 border: `1.5px solid ${firstColor}`,

@@ -196,6 +196,7 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
                 name="hpiTemplates"
                 addEmpty
                 isEdit
+                disabled={shouldDisableEdit}
                 defaultValues={renderMultiTemplates(templates as QuestionTemplate[])}
                 templateType={TemplateType.HPI}
                 onSelect={(multiOption: multiOptionType[]) => fetchPatientChartingTemplates(multiOption.map(value => value.value))}
@@ -224,7 +225,7 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
                               {questions?.map((question, index) => {
                                 return (
                                   <>
-                                    <QuestionCard key={`${index}-${id}`} question={question} handleSubmit={handleSubmit(onSubmit)}/>
+                                    <QuestionCard key={`${index}-${id}`} question={question} handleSubmit={handleSubmit(onSubmit)} />
                                     <Box mt={2} />
                                   </>
                                 )

@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const QuestionCard: FC<{ question: SectionQuestions, handleSubmit?: Function }> = ({ question, handleSubmit }): JSX.Element => {
+const QuestionCard: FC<{ question: SectionQuestions, handleSubmit?: Function, shouldDisableEdit?: boolean }> = ({ question, handleSubmit, shouldDisableEdit = false }): JSX.Element => {
   const classes = useStyles()
   const { title, answers } = question || {}
 
@@ -76,18 +76,21 @@ const QuestionCard: FC<{ question: SectionQuestions, handleSubmit?: Function }> 
           answers={normalAnswers}
           colors={['#03CC83', 'rgba(3,204,131,0.4)']}
           handleSubmit={handleSubmit}
+          shouldDisableEdit={shouldDisableEdit}
         />
 
         <AnswerChips
           answers={neutralAnswers}
           colors={['#204ECF', `rgba(32,78,207,0.4)`]}
           handleSubmit={handleSubmit}
+          shouldDisableEdit={shouldDisableEdit}
         />
 
         <AnswerChips
           answers={abnormalAnswers}
           colors={['#DD1010', `rgba(221,16,16,0.4)`]}
           handleSubmit={handleSubmit}
+          shouldDisableEdit={shouldDisableEdit}
         />
       </Box>
     </Box>
