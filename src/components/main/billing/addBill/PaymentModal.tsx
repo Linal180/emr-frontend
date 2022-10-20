@@ -1,7 +1,7 @@
 import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { FC, Reducer, useMemo, useReducer } from "react";
-import { FormProvider, SubmitHandler, useForm, useFormContext } from "react-hook-form";
+import { FC } from "react";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, Dialog, DialogActions, DialogTitle, Grid, Typography } from "@material-ui/core";
 //components
 import Alert from "../../../common/Alert";
@@ -11,21 +11,15 @@ import RadioController from "../../../../controller/RadioController";
 // theme, constants, interfaces
 import { appointmentChargesDescription } from "../../../../utils";
 import { AppointmentPaymentTypeSchema } from "../../../../validationSchemas";
-import { externalPaymentReducer, Action, ActionType, State, initialState } from "../../../../reducers/externalPaymentReducer";
-import {
-  CreateBillingProps, ParamsType, SelfPayComponentProps, TableCodesProps, SideDrawerCloseReason, AppointmentPaymentType
-} from "../../../../interfacesTypes";
+import { ParamsType, SelfPayComponentProps, SideDrawerCloseReason, AppointmentPaymentType } from "../../../../interfacesTypes";
 import {
   ADD_CPT_AND_ICD_CODES, APPOINTMENT_PAYMENT_TYPE, CANCEL, CHOOSE_YOUR_PAYMENT_METHOD, LAST_FOUR_DIGIT,
   MAPPED_APPOINTMENT_PAYMENT_TYPE, PAY,
 } from "../../../../constants";
 import { BillingStatus, useUpdateAppointmentBillingStatusMutation } from "../../../../generated/graphql";
 
-const SelfPayComponent: FC<SelfPayComponentProps> = ({ onCloseHandler, isOpen, checkOutHandler }): JSX.Element => {
+const SelfPayComponent: FC<SelfPayComponentProps> = ({ onCloseHandler, isOpen, checkOutHandler, state: appointmentState }): JSX.Element => {
   const { appointmentId } = useParams<ParamsType>();
-  const [state, dispatch] = useReducer<Reducer<State, Action>>(externalPaymentReducer, initialState);
-  const { watch } = useFormContext<CreateBillingProps>();
-  const { IcdCodes, cptFeeSchedule } = watch()
   const methods = useForm<AppointmentPaymentType>({
     defaultValues: {
       paymentType: '',
@@ -36,9 +30,9 @@ const SelfPayComponent: FC<SelfPayComponentProps> = ({ onCloseHandler, isOpen, c
 
   const { handleSubmit, watch: formWatch } = methods
   const { paymentType } = formWatch()
+  const { totalPrice } = appointmentState || {}
 
-  const { price } = state;
-  const isZeroPrice = price === '0' || price === '';
+  const isZeroPrice = totalPrice === '0' || totalPrice === '';
 
   const [updateAppointmentBillingStatus, { loading }] = useUpdateAppointmentBillingStatusMutation({
     onError: ({ message }) => {
@@ -53,16 +47,6 @@ const SelfPayComponent: FC<SelfPayComponentProps> = ({ onCloseHandler, isOpen, c
       }
     }
   })
-
-  useMemo(() => {
-    let priceArr: TableCodesProps[] = []
-    if (IcdCodes?.length) priceArr = [...priceArr, ...IcdCodes]
-    if (cptFeeSchedule?.length) priceArr = [...priceArr, ...cptFeeSchedule]
-    const totalCharges = priceArr.reduce((acc, code) => {
-      return acc += Number(code.price || 0)
-    }, 0)
-    totalCharges && dispatch({ type: ActionType.SET_PRICE, price: `${totalCharges}` })
-  }, [IcdCodes, cptFeeSchedule])
 
   const onDialogClose = (_: Object, reason: SideDrawerCloseReason) => {
     if (reason === 'backdropClick') return
@@ -102,7 +86,7 @@ const SelfPayComponent: FC<SelfPayComponentProps> = ({ onCloseHandler, isOpen, c
                 <Box pt={5} textAlign="center">
 
                   <Typography variant='h6'>
-                    {appointmentChargesDescription(price || '0')}
+                    {appointmentChargesDescription(totalPrice || '0')}
                   </Typography>
                 </Box>
 

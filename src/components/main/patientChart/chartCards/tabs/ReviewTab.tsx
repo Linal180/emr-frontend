@@ -122,6 +122,10 @@ function ReviewTab({ shouldShowCheckout, handleStepChange, shouldDisableEdit, sh
 
   const { patientAllergies, patientMedications, patientProblems, patientVitals } = patientChartingReview || {}
 
+  const singlePatientProblems = patientProblems?.filter((problem, index, self) => index === self.findIndex((t) => (
+    t.ICDCode?.code === problem.ICDCode?.code
+  )))
+
   const latestPatientVitals = patientVitals?.sort((a, b) => Number(b?.createdAt || 0) - Number(a?.createdAt || 0))?.[0] || {}
 
   return (
@@ -159,9 +163,9 @@ function ReviewTab({ shouldShowCheckout, handleStepChange, shouldDisableEdit, sh
           <Box m={2} borderBottom={`1px solid ${colors.grey[300]}`}>
             <Typography variant='h4'>{DIAGNOSES}</Typography>
             <Box p={0.5} />
-            {!patientProblems?.length ? <Box mb={1}>
+            {!singlePatientProblems?.length ? <Box mb={1}>
               <Typography variant='body2'>{'None Recorded'}</Typography>
-            </Box> : patientProblems.map(problem => {
+            </Box> : singlePatientProblems.map(problem => {
               const { ICDCode } = problem
               return (
                 <Box mb={1}>

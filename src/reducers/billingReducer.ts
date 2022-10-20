@@ -22,6 +22,7 @@ export interface State {
   claimModalOpen: boolean;
   claimErrorMessages: string[]
   shouldSubmitPayment: boolean
+  totalPrice: string
 }
 
 export const initialState: State = {
@@ -44,7 +45,8 @@ export const initialState: State = {
   isCheckoutModalOpen: false,
   claimModalOpen: false,
   claimErrorMessages: [],
-  shouldSubmitPayment: false
+  shouldSubmitPayment: false,
+  totalPrice: ''
 }
 
 export enum ActionType {
@@ -67,7 +69,8 @@ export enum ActionType {
   SET_INSURANCE_STATUS = 'SET_INSURANCE_STATUS',
   SET_CLAIM_MODAL_OPEN = 'SET_CLAIM_MODAL_OPEN',
   SET_CLAIM_ERROR_MESSAGES = 'SET_CLAIM_ERROR_MESSAGES',
-  SET_SHOULD_SUBMIT_PAYMENT = 'SET_SHOULD_SUBMIT_PAYMENT'
+  SET_SHOULD_SUBMIT_PAYMENT = 'SET_SHOULD_SUBMIT_PAYMENT',
+  SET_TOTAL_PRICE = 'SET_TOTAL_PRICE'
 }
 
 export type Action =
@@ -91,6 +94,7 @@ export type Action =
   | { type: ActionType.SET_CLAIM_MODAL_OPEN, claimModalOpen: boolean }
   | { type: ActionType.SET_CLAIM_ERROR_MESSAGES, claimErrorMessages: string[] }
   | { type: ActionType.SET_SHOULD_SUBMIT_PAYMENT, shouldSubmitPayment: boolean }
+  | { type: ActionType.SET_TOTAL_PRICE, totalPrice: string }
 
 
 export const billingReducer = (state: State, action: Action): State => {
@@ -99,6 +103,12 @@ export const billingReducer = (state: State, action: Action): State => {
       return {
         ...state,
         employment: action.employment
+      }
+
+    case ActionType.SET_TOTAL_PRICE:
+      return {
+        ...state,
+        totalPrice: action.totalPrice
       }
 
     case ActionType.SET_AUTO_ACCIDENT:

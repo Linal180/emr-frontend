@@ -1431,6 +1431,7 @@ export type UpFrontPaymentProps = {
   cptCodes?: TableCodesProps[],
   handleStep?: Function
   shouldDisableEdit?: boolean
+  setPrice?: (price: string | undefined) => void
 }
 
 export interface AddPatientModalProps {
