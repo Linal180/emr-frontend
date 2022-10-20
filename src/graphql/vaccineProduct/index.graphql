@@ -32,3 +32,126 @@ query SearchAllVaccineProducts(
     }
   }
 }
+
+query FetchAllVaccineProducts(
+  $fetchAllVaccineProductsInput: FetchAllVaccineProductsInput!
+) {
+  fetchAllVaccineProducts(
+    fetchAllVaccineProductsInput: $fetchAllVaccineProductsInput
+  ) {
+    response {
+      status
+      error
+      message
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+
+    vaccineProducts {
+      id
+      name
+      status
+
+      cvx {
+        id
+        name
+        cvxCode
+        shortDescription
+      }
+
+      mvx {
+        id
+        mvxCode
+        manufacturerName
+      }
+    }
+  }
+}
+
+query GetVaccineProduct($getVaccineProductInput: GetVaccineProductInput!) {
+  getVaccineProduct(getVaccineProductInput: $getVaccineProductInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    vaccineProduct {
+      id
+      name
+      status
+
+      cvx {
+        id
+        name
+        shortDescription
+      }
+
+      mvx {
+        id
+        mvxCode
+        manufacturerName
+      }
+
+      ndcVaccine {
+
+        ndcCode {
+          id
+          code
+          description
+        }
+      }
+    }
+  }
+}
+
+# mutations
+
+mutation UpdateVaccineProduct(
+  $updateVaccineProductInput: UpdateVaccineProductInput!
+) {
+  updateVaccineProduct(updateVaccineProductInput: $updateVaccineProductInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    vaccineProduct {
+      id
+    }
+  }
+}
+
+mutation AddVaccineProduct($addVaccineProductInput: AddVaccineProductInput!) {
+  addVaccineProduct(addVaccineProductInput: $addVaccineProductInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    vaccineProduct {
+      id
+    }
+  }
+}
+
+mutation RemoveVaccineProduct(
+  $removeVaccineProductInput: RemoveVaccineProductInput!
+) {
+  removeVaccineProduct(removeVaccineProductInput: $removeVaccineProductInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    vaccineProduct {
+      id
+    }
+  }
+}

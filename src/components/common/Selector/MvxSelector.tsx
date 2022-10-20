@@ -48,7 +48,7 @@ const MvxSelector: FC<MvxSelectorProps> = ({
   }, [findAllMvxCodes, searchQuery, mvxCode])
 
   useEffect(() => {
-    if ((!searchQuery.length || searchQuery.length > 2) && mvxCode) {
+    if (!searchQuery.length || searchQuery.length > 2) {
       fetchAllMvxCodes()
     }
   }, [searchQuery, fetchAllMvxCodes, mvxCode]);

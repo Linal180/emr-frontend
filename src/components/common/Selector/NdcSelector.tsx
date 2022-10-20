@@ -12,7 +12,7 @@ import { NdcSelectorProps, SelectorOption } from "../../../interfacesTypes";
 import { renderNdcs, requiredLabel } from "../../../utils";
 
 const NdcSelector: FC<NdcSelectorProps> = ({
-  name, label, disabled, isRequired, addEmpty, onSelect, filteredOptions, placeHolder, mvxCodeId
+  name, label, disabled, isRequired, addEmpty, onSelect, filteredOptions, placeHolder
 }): JSX.Element => {
 
   const { control } = useFormContext()
@@ -42,16 +42,16 @@ const NdcSelector: FC<NdcSelectorProps> = ({
     try {
       const pageInputs = { paginationOptions: { page: 1, limit: DROPDOWN_PAGE_LIMIT } }
       await findAllNdcCodes({
-        variables: { findAllNdcInput: { ...pageInputs, searchQuery, mvxId: mvxCodeId } }
+        variables: { findAllNdcInput: { ...pageInputs, searchQuery } }
       })
     } catch (error) { }
-  }, [findAllNdcCodes, searchQuery, mvxCodeId])
+  }, [findAllNdcCodes, searchQuery])
 
   useEffect(() => {
-    if ((!searchQuery.length || searchQuery.length > 2) && mvxCodeId) {
+    if (!searchQuery.length || searchQuery.length > 2) {
       fetchAllNdcCodes()
     }
-  }, [searchQuery, fetchAllNdcCodes, mvxCodeId]);
+  }, [searchQuery, fetchAllNdcCodes]);
 
   const filterOptions = (options: SelectorOption[]) => {
     if (filteredOptions) {
