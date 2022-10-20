@@ -24,7 +24,7 @@ const CvxTable: FC = (): JSX.Element => {
 
   const classes = useTableStyles();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(cvxCodeReducer, initialState);
-  const { searchQuery, data, openDelete, isOpen, itemId, page, totalPages, delId } = state;
+  const { searchQuery, data, openDelete, isOpen, itemId, page, totalPages, delId, systematic } = state;
 
   const [findAllCvxCodes, { loading, error }] = useFindAllCvxLazyQuery({
     onCompleted: (data) => {
@@ -119,6 +119,11 @@ const CvxTable: FC = (): JSX.Element => {
   }, [fetchAllCvxCodes])
 
 
+  const fetchData = () => {
+    dispatch({ type: ActionType.SET_PAGE, page: 1 })
+    fetchAllCvxCodes()
+  }
+
   return (
     <Fragment>
       <Grid container spacing={3}>
@@ -160,8 +165,7 @@ const CvxTable: FC = (): JSX.Element => {
                   </TableRow>
                 ) : <TableBody>
                   {data?.map((cvx) => {
-                    const { id, cvxCode, shortDescription, name, notes, status } = cvx ?? {}
-                    const systematic = false
+                    const { id, cvxCode, shortDescription, name, notes, status, systematic } = cvx ?? {}
                     return (
                       <TableRow>
                         <TableCell scope="row">
@@ -231,7 +235,8 @@ const CvxTable: FC = (): JSX.Element => {
         isEdit={!!itemId}
         handleClose={handleModalClose}
         dispatcher={dispatch}
-        fetch={() => fetchAllCvxCodes()}
+        fetch={() => fetchData()}
+        systematic={systematic}
       />}
 
       {totalPages > 1 && !loading && (

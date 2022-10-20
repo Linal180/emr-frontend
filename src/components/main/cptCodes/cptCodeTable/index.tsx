@@ -134,13 +134,12 @@ const CptCodeTable: FC<IcdCodesTableProps> = (): JSX.Element => {
           <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
             <Typography variant='h3'>{CPT_CODES}</Typography>
 
-            {
               <Button
                 variant='contained' color='primary'
                 startIcon={<Box width={20}><AddWhiteIcon /></Box>}
                 onClick={addHandler}>
                 {ADD_NEW_TEXT}
-              </Button>}
+              </Button>
           </Box>
           <Box className={classes.mainTableContainer}>
             <Grid container spacing={3}>

@@ -8,32 +8,37 @@ import Selector from '../../../common/Selector';
 import InputController from '../../../../controller';
 import TableLoader from '../../../common/TableLoader';
 //interfaces, constants, schema, graphql
-import { MvxCodeSchema } from '../../../../validationSchemas';
+import { CvxCodeSchema } from '../../../../validationSchemas';
 import { ActionType } from '../../../../reducers/cptCodeReducer';
-import { CvxCodeFormProps, MvxCodeFormType, SideDrawerCloseReason } from '../../../../interfacesTypes';
-import { ADD, CANCEL, CODE, EDIT, EMPTY_OPTION, MVX_TEXT, NAME, NOTE, SOMETHING_WENT_WRONG, STATUS, STATUS_MAPPED, SUBMIT } from '../../../../constants';
-import { useCreateMvxCodeMutation, useGetMvxCodeLazyQuery, useUpdateMvxCodeMutation } from '../../../../generated/graphql';
+import { CvxCodeFormProps, CvxCodeFormType, SideDrawerCloseReason } from '../../../../interfacesTypes';
+import { useCreateCvxCodeMutation, useGetCvxCodeLazyQuery, useUpdateCvxCodeMutation } from '../../../../generated/graphql';
+import {
+  ADD, CANCEL, CODE, CVX_TEXT, DESCRIPTION, EDIT, EMPTY_OPTION, NAME, NOTE, SOMETHING_WENT_WRONG, STATUS,
+  STATUS_MAPPED, SUBMIT
+} from '../../../../constants';
 
-const CvxForm: FC<CvxCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, dispatcher }): JSX.Element => {
-  const methods = useForm<MvxCodeFormType>({ resolver: yupResolver(MvxCodeSchema) });
+const CvxForm: FC<CvxCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, dispatcher, systematic = false }): JSX.Element => {
+  const methods = useForm<CvxCodeFormType>({ resolver: yupResolver(CvxCodeSchema) });
   const { handleSubmit, setValue, } = methods;
 
   const resetForm = () => {
+    setValue('name', '')
     setValue('notes', '')
-    setValue('mvxCode', '')
-    setValue('manufacturerName', '')
-    setValue('mvxStatus', EMPTY_OPTION)
+    setValue('cvxCode', '')
+    setValue('status', EMPTY_OPTION)
+    setValue('shortDescription', '')
+    setValue('cptCode', EMPTY_OPTION)
   }
 
-  const [createMvxCode, { loading: createLoading }] = useCreateMvxCodeMutation({
+  const [createCvxCode, { loading: createLoading }] = useCreateCvxCodeMutation({
     onError: ({ message }) => {
       Alert.error(message)
     },
     onCompleted: (data) => {
-      const { createMvxCode } = data;
-      const { mvxCode, response } = createMvxCode || {}
+      const { createCvxCode } = data;
+      const { cvx, response } = createCvxCode || {}
       const { status, message } = response || {}
-      const { id } = mvxCode || {}
+      const { id } = cvx || {}
       if (id && status === 200) {
         resetForm()
         message && Alert.success(message)
@@ -46,17 +51,19 @@ const CvxForm: FC<CvxCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, d
     }
   })
 
-  const [getMvxCode, { loading: getLoading }] = useGetMvxCodeLazyQuery({
+  const [getCvxCode, { loading: getLoading }] = useGetCvxCodeLazyQuery({
     onCompleted: (data) => {
-      const { getMvxCode } = data || {}
-      const { mvxCode, response } = getMvxCode || {}
+      const { getCvxCode } = data || {}
+      const { cvx, response } = getCvxCode || {}
       const { status } = response || {}
-      if (status === 200 && mvxCode) {
-        const { mvxCode: code, manufacturerName, notes, mvxStatus } = mvxCode;
-        code && setValue('mvxCode', code)
+      if (status === 200 && cvx) {
+        const { cvxCode, name, notes, status, shortDescription } = cvx;
+
+        name && setValue('name', name)
         notes && setValue('notes', notes)
-        mvxStatus && setValue('mvxStatus', { id: mvxStatus, name: mvxStatus })
-        manufacturerName && setValue('manufacturerName', manufacturerName)
+        cvxCode && setValue('cvxCode', cvxCode)
+        status && setValue('status', { id: status, name: status })
+        shortDescription && setValue('shortDescription', shortDescription)
       } else {
         Alert.error(SOMETHING_WENT_WRONG)
       }
@@ -66,12 +73,12 @@ const CvxForm: FC<CvxCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, d
     }
   })
 
-  const [updateMvxCode, { loading: updateLoading }] = useUpdateMvxCodeMutation({
+  const [updateCvxCode, { loading: updateLoading }] = useUpdateCvxCodeMutation({
     onCompleted: (data) => {
-      const { updateMvxCode } = data;
-      const { mvxCode, response } = updateMvxCode || {}
+      const { updateCvxCode } = data;
+      const { cvx, response } = updateCvxCode || {}
       const { status, message } = response || {}
-      const { id } = mvxCode || {}
+      const { id } = cvx || {}
       if (id && status === 200) {
         dispatcher && dispatcher({ type: ActionType.SET_ITEM_ID, itemId: '' })
         resetForm()
@@ -88,27 +95,28 @@ const CvxForm: FC<CvxCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, d
     }
   })
 
-  const onSubmit: SubmitHandler<MvxCodeFormType> = async (values) => {
-    const { manufacturerName, mvxStatus: status, mvxCode, notes } = values;
-    const { id: mvxStatus } = status
+  const onSubmit: SubmitHandler<CvxCodeFormType> = async (values) => {
+    const { name, cvxCode, status, shortDescription, notes, cptCode } = values;
+    const { id: cvxStatus } = status || {}
+    const { id: cptCodeId } = cptCode || {}
     try {
       if (isEdit && id) {
-        await updateMvxCode({ variables: { updateMvxCodeInput: { id, manufacturerName, mvxCode, notes, mvxStatus } } })
+        await updateCvxCode({ variables: { updateCvxCodeInput: { id, name, cvxCode, notes, status: cvxStatus, shortDescription, cptCodeId } } })
       } else {
-        await createMvxCode({ variables: { createMvxCodeInput: { manufacturerName, mvxCode, notes, mvxStatus } } })
+        await createCvxCode({ variables: { createCvxCodeInput: { name, cvxCode, notes, status: cvxStatus, shortDescription, cptCodeId } } })
       }
     } catch (error) { }
   }
 
-  const fetchIcdCode = useCallback(async () => {
+  const fetchCvxCode = useCallback(async () => {
     try {
-      id && await getMvxCode({ variables: { getMvxCodeInput: { id } } })
+      id && await getCvxCode({ variables: { getCvxCodeInput: { id } } })
     } catch (error) { }
-  }, [id, getMvxCode])
+  }, [id, getCvxCode])
 
   useEffect(() => {
-    isEdit && id && fetchIcdCode()
-  }, [isEdit, id, fetchIcdCode])
+    isEdit && id && fetchCvxCode()
+  }, [isEdit, id, fetchCvxCode])
 
   const onClose = (_: object, reason: SideDrawerCloseReason) => {
     if (reason === 'escapeKeyDown') {
@@ -126,7 +134,7 @@ const CvxForm: FC<CvxCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, d
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth={'sm'} fullWidth>
-      <DialogTitle>{`${isEdit ? EDIT : ADD} ${MVX_TEXT}`}</DialogTitle>
+      <DialogTitle>{`${isEdit ? EDIT : ADD} ${CVX_TEXT}`}</DialogTitle>
       {loading ? <TableLoader numberOfColumns={1} numberOfRows={2} /> :
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -134,19 +142,24 @@ const CvxForm: FC<CvxCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, d
               <Grid container spacing={3}>
 
                 <Grid item xs={12}>
-                  <InputController controllerName='mvxCode' disabled={loading} controllerLabel={CODE} isRequired toUpperCase />
+                  <InputController controllerName='cvxCode' disabled={loading || systematic} controllerLabel={CODE} isRequired fieldType='number' />
                 </Grid>
 
                 <Grid item xs={12}>
-                  <InputController controllerName='manufacturerName' disabled={loading} controllerLabel={NAME} isRequired />
+                  <InputController controllerName='name' disabled={loading || systematic} controllerLabel={NAME} isRequired />
                 </Grid>
 
                 <Grid item xs={12}>
-                  <Selector label={STATUS} name="mvxStatus" options={STATUS_MAPPED} addEmpty isRequired />
+                  <InputController controllerName='shortDescription' isRequired multiline disabled={loading || systematic} controllerLabel={DESCRIPTION} />
+                </Grid>
+
+
+                <Grid item xs={12}>
+                  <Selector label={STATUS} name="status" disabled={loading || systematic} options={STATUS_MAPPED} addEmpty isRequired />
                 </Grid>
 
                 <Grid item xs={12}>
-                  <InputController controllerName='notes' multiline disabled={loading} controllerLabel={NOTE} />
+                  <InputController controllerName='notes' multiline disabled={loading || systematic} controllerLabel={NOTE} />
                 </Grid>
 
               </Grid>
