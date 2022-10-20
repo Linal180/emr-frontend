@@ -1294,3 +1294,10 @@ export const MvxCodeSchema = yup.object({
   manufacturerName: yup.string().required(requiredMessage(NAME)),
   mvxStatus: selectorSchema(STATUS),
 })
+
+export const CvxCodeSchema = yup.object({
+  cvxCode: requiredMatches(CODE, invalidMessage(CODE), NO_SPACE_REGEX),
+  name: yup.string().required(requiredMessage(NAME)),
+  shortDescription: yup.string().required(requiredMessage(DESCRIPTION)),
+  status: selectorSchema(STATUS),
+})

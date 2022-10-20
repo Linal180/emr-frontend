@@ -639,6 +639,7 @@ export type Cvx = {
   notes?: Maybe<Scalars['String']>;
   shortDescription?: Maybe<Scalars['String']>;
   status?: Maybe<Scalars['String']>;
+  systematic?: Maybe<Scalars['Boolean']>;
   updateDate?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
   vaccineProduct?: Maybe<Array<VaccineProduct>>;
@@ -3873,7 +3874,7 @@ export type MutationUpdateCptFeeScheduleArgs = {
 
 
 export type MutationUpdateCvxCodeArgs = {
-  updateNdcCodeInput: UpdateCvxCodeInput;
+  updateCvxCodeInput: UpdateCvxCodeInput;
 };
 
 
@@ -9034,7 +9035,35 @@ export type FindAllCvxQueryVariables = Exact<{
 }>;
 
 
-export type FindAllCvxQuery = { __typename?: 'Query', findAllCvx: { __typename?: 'FindAllCvxPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, cvxs?: Array<{ __typename?: 'CVX', id: string, name?: string | null, cvxCode?: string | null, shortDescription?: string | null }> | null } };
+export type FindAllCvxQuery = { __typename?: 'Query', findAllCvx: { __typename?: 'FindAllCvxPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, cvxs?: Array<{ __typename?: 'CVX', id: string, name?: string | null, notes?: string | null, status?: string | null, cvxCode?: string | null, shortDescription?: string | null, systematic?: boolean | null }> | null } };
+
+export type GetCvxCodeQueryVariables = Exact<{
+  getCvxCodeInput: GetCvxCodeInput;
+}>;
+
+
+export type GetCvxCodeQuery = { __typename?: 'Query', getCvxCode: { __typename?: 'CvxPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, cvx?: { __typename?: 'CVX', id: string, name?: string | null, notes?: string | null, status?: string | null, cvxCode?: string | null, shortDescription?: string | null } | null } };
+
+export type RemoveCvxCodeMutationVariables = Exact<{
+  removeCvxCodeInput: RemoveCvxCodeInput;
+}>;
+
+
+export type RemoveCvxCodeMutation = { __typename?: 'Mutation', removeCvxCode: { __typename?: 'CvxPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, cvx?: { __typename?: 'CVX', id: string } | null } };
+
+export type CreateCvxCodeMutationVariables = Exact<{
+  createCvxCodeInput: CreateCvxCodeInput;
+}>;
+
+
+export type CreateCvxCodeMutation = { __typename?: 'Mutation', createCvxCode: { __typename?: 'CvxPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, cvx?: { __typename?: 'CVX', id: string } | null } };
+
+export type UpdateCvxCodeMutationVariables = Exact<{
+  updateCvxCodeInput: UpdateCvxCodeInput;
+}>;
+
+
+export type UpdateCvxCodeMutation = { __typename?: 'Mutation', updateCvxCode: { __typename?: 'CvxPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, cvx?: { __typename?: 'CVX', id: string } | null } };
 
 export type FindAllDoctorPatientQueryVariables = Exact<{
   doctorPatientsInput: DoctorPatientsInput;
@@ -16558,8 +16587,11 @@ export const FindAllCvxDocument = gql`
     cvxs {
       id
       name
+      notes
+      status
       cvxCode
       shortDescription
+      systematic
     }
   }
 }
@@ -16592,6 +16624,173 @@ export function useFindAllCvxLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type FindAllCvxQueryHookResult = ReturnType<typeof useFindAllCvxQuery>;
 export type FindAllCvxLazyQueryHookResult = ReturnType<typeof useFindAllCvxLazyQuery>;
 export type FindAllCvxQueryResult = Apollo.QueryResult<FindAllCvxQuery, FindAllCvxQueryVariables>;
+export const GetCvxCodeDocument = gql`
+    query GetCvxCode($getCvxCodeInput: GetCvxCodeInput!) {
+  getCvxCode(getCvxCodeInput: $getCvxCodeInput) {
+    response {
+      status
+      error
+      message
+    }
+    cvx {
+      id
+      name
+      notes
+      status
+      cvxCode
+      shortDescription
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCvxCodeQuery__
+ *
+ * To run a query within a React component, call `useGetCvxCodeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCvxCodeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCvxCodeQuery({
+ *   variables: {
+ *      getCvxCodeInput: // value for 'getCvxCodeInput'
+ *   },
+ * });
+ */
+export function useGetCvxCodeQuery(baseOptions: Apollo.QueryHookOptions<GetCvxCodeQuery, GetCvxCodeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCvxCodeQuery, GetCvxCodeQueryVariables>(GetCvxCodeDocument, options);
+      }
+export function useGetCvxCodeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCvxCodeQuery, GetCvxCodeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCvxCodeQuery, GetCvxCodeQueryVariables>(GetCvxCodeDocument, options);
+        }
+export type GetCvxCodeQueryHookResult = ReturnType<typeof useGetCvxCodeQuery>;
+export type GetCvxCodeLazyQueryHookResult = ReturnType<typeof useGetCvxCodeLazyQuery>;
+export type GetCvxCodeQueryResult = Apollo.QueryResult<GetCvxCodeQuery, GetCvxCodeQueryVariables>;
+export const RemoveCvxCodeDocument = gql`
+    mutation RemoveCvxCode($removeCvxCodeInput: RemoveCvxCodeInput!) {
+  removeCvxCode(removeCvxCodeInput: $removeCvxCodeInput) {
+    response {
+      status
+      error
+      message
+    }
+    cvx {
+      id
+    }
+  }
+}
+    `;
+export type RemoveCvxCodeMutationFn = Apollo.MutationFunction<RemoveCvxCodeMutation, RemoveCvxCodeMutationVariables>;
+
+/**
+ * __useRemoveCvxCodeMutation__
+ *
+ * To run a mutation, you first call `useRemoveCvxCodeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveCvxCodeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeCvxCodeMutation, { data, loading, error }] = useRemoveCvxCodeMutation({
+ *   variables: {
+ *      removeCvxCodeInput: // value for 'removeCvxCodeInput'
+ *   },
+ * });
+ */
+export function useRemoveCvxCodeMutation(baseOptions?: Apollo.MutationHookOptions<RemoveCvxCodeMutation, RemoveCvxCodeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveCvxCodeMutation, RemoveCvxCodeMutationVariables>(RemoveCvxCodeDocument, options);
+      }
+export type RemoveCvxCodeMutationHookResult = ReturnType<typeof useRemoveCvxCodeMutation>;
+export type RemoveCvxCodeMutationResult = Apollo.MutationResult<RemoveCvxCodeMutation>;
+export type RemoveCvxCodeMutationOptions = Apollo.BaseMutationOptions<RemoveCvxCodeMutation, RemoveCvxCodeMutationVariables>;
+export const CreateCvxCodeDocument = gql`
+    mutation CreateCvxCode($createCvxCodeInput: CreateCvxCodeInput!) {
+  createCvxCode(createCvxCodeInput: $createCvxCodeInput) {
+    response {
+      status
+      error
+      message
+    }
+    cvx {
+      id
+    }
+  }
+}
+    `;
+export type CreateCvxCodeMutationFn = Apollo.MutationFunction<CreateCvxCodeMutation, CreateCvxCodeMutationVariables>;
+
+/**
+ * __useCreateCvxCodeMutation__
+ *
+ * To run a mutation, you first call `useCreateCvxCodeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCvxCodeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCvxCodeMutation, { data, loading, error }] = useCreateCvxCodeMutation({
+ *   variables: {
+ *      createCvxCodeInput: // value for 'createCvxCodeInput'
+ *   },
+ * });
+ */
+export function useCreateCvxCodeMutation(baseOptions?: Apollo.MutationHookOptions<CreateCvxCodeMutation, CreateCvxCodeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateCvxCodeMutation, CreateCvxCodeMutationVariables>(CreateCvxCodeDocument, options);
+      }
+export type CreateCvxCodeMutationHookResult = ReturnType<typeof useCreateCvxCodeMutation>;
+export type CreateCvxCodeMutationResult = Apollo.MutationResult<CreateCvxCodeMutation>;
+export type CreateCvxCodeMutationOptions = Apollo.BaseMutationOptions<CreateCvxCodeMutation, CreateCvxCodeMutationVariables>;
+export const UpdateCvxCodeDocument = gql`
+    mutation UpdateCvxCode($updateCvxCodeInput: UpdateCvxCodeInput!) {
+  updateCvxCode(updateCvxCodeInput: $updateCvxCodeInput) {
+    response {
+      status
+      error
+      message
+    }
+    cvx {
+      id
+    }
+  }
+}
+    `;
+export type UpdateCvxCodeMutationFn = Apollo.MutationFunction<UpdateCvxCodeMutation, UpdateCvxCodeMutationVariables>;
+
+/**
+ * __useUpdateCvxCodeMutation__
+ *
+ * To run a mutation, you first call `useUpdateCvxCodeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCvxCodeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCvxCodeMutation, { data, loading, error }] = useUpdateCvxCodeMutation({
+ *   variables: {
+ *      updateCvxCodeInput: // value for 'updateCvxCodeInput'
+ *   },
+ * });
+ */
+export function useUpdateCvxCodeMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCvxCodeMutation, UpdateCvxCodeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateCvxCodeMutation, UpdateCvxCodeMutationVariables>(UpdateCvxCodeDocument, options);
+      }
+export type UpdateCvxCodeMutationHookResult = ReturnType<typeof useUpdateCvxCodeMutation>;
+export type UpdateCvxCodeMutationResult = Apollo.MutationResult<UpdateCvxCodeMutation>;
+export type UpdateCvxCodeMutationOptions = Apollo.BaseMutationOptions<UpdateCvxCodeMutation, UpdateCvxCodeMutationVariables>;
 export const FindAllDoctorPatientDocument = gql`
     query FindAllDoctorPatient($doctorPatientsInput: DoctorPatientsInput!) {
   findAllDoctorPatients(doctorPatientsInput: $doctorPatientsInput) {

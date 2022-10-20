@@ -15,7 +15,7 @@ import { ATTACHMENT_TITLES, CONFIRMATION_MODAL_TYPE, ITEM_MODULE, UPFRONT_PAYMEN
 import {
   AddVaccineInput, AllDoctorPayload, Allergies, AppointmentPayload, AppointmentsPayload, AppointmentStatus, Attachment,
   AttachmentPayload, AttachmentType, BillingPayload, CodeType, Copay, CreateAppointmentInput, CreateContactInput,
-  CreateCptCodeInput, CreateCptFeeScheduleInput, CreateDoctorItemInput, CreateExternalAppointmentItemInput,
+  CreateCptCodeInput, CreateCptFeeScheduleInput, CreateCvxCodeInput, CreateDoctorItemInput, CreateExternalAppointmentItemInput,
   CreateFeeScheduleInput, CreateIcdCodeInput, CreateMvxCodeInput, CreatePatientAllergyInput, CreatePatientItemInput,
   CreatePatientMedicationInput, CreatePracticeItemInput, CreateProblemInput, CreateScheduleInput, CreateServiceInput,
   CreateStaffItemInput, Cvx, DependentQuestions, Doctor, DoctorPatient, FacilitiesPayload, FamilyHistory,
@@ -50,6 +50,7 @@ import { Action as ScheduleAction, State as ScheduleState } from "../reducers/sc
 import { Action as VaccineAction } from "../reducers/vaccinesReducer";
 import { Action as NdcCodeAction } from "../reducers/ndcCodeReducer";
 import { Action as MvxCodeAction } from "../reducers/mvxCodeReducer";
+import { Action as CvxCodeAction } from "../reducers/cvxCodeReducer";
 
 export type Order = 'ASC' | 'DESC';
 type Key = string | number | undefined;
@@ -2407,6 +2408,7 @@ export type ICD10FormType = Pick<CreateIcdCodeInput, 'code' | 'description'> & {
 export type CptCodeFormType = Pick<CreateCptCodeInput, 'code' | 'shortDescription'> & { priority: string };
 export type NdcCodeFormType = { code: string, description: string };
 export type MvxCodeFormType = Pick<CreateMvxCodeInput, 'manufacturerName' | 'mvxCode' | 'notes'> & { mvxStatus: SelectorOption }
+export type CvxCodeFormType = Pick<CreateCvxCodeInput, 'name' | 'cvxCode' | 'shortDescription' | 'notes'> & { cptCode: SelectorOption, status: SelectorOption }
 
 export type ICD10FormProps = {
   open: boolean;
@@ -2447,6 +2449,17 @@ export type MvxCodeFormProps = {
   id?: string;
   dispatcher?: Dispatch<MvxCodeAction>
   handleClose: (open: boolean) => void
+  systematic?: boolean
+}
+
+export type CvxCodeFormProps = {
+  open: boolean;
+  isEdit: boolean;
+  fetch?: Function;
+  id?: string;
+  dispatcher?: Dispatch<CvxCodeAction>
+  handleClose: (open: boolean) => void
+  systematic?: boolean
 }
 
 export type QuestionCardType = {

@@ -1,41 +1,40 @@
 import { Pagination } from '@material-ui/lab';
-import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer } from 'react'
-import { Box, Button, Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core'
+import { ChangeEvent, FC, Fragment, Reducer, useCallback, useEffect, useReducer } from 'react';
+import { Box, Button, Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core';
 //components
-import CptCodeForm from '../cptCodeForm';
+import CvxCodeForm from '../cvxForm'
 import Alert from '../../../common/Alert';
-import Search from "../../../common/Search";
+import Search from '../../../common/Search';
 import TableLoader from '../../../common/TableLoader';
 import ConfirmationModal from '../../../common/ConfirmationModal';
 import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
-//styles, constants, 
+//constants, styles, svgs
 import { useTableStyles } from '../../../../styles/tableStyles';
-import { IcdCodesTableProps } from '../../../../interfacesTypes';
 import { getPageNumber, isLast, renderTh } from '../../../../utils';
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from '../../../../assets/svgs';
-import { cptCodeReducer, Action, ActionType, State, initialState } from '../../../../reducers/cptCodeReducer';
-import { AllCptCodePayload, useFindAllCptCodesLazyQuery, useRemoveCptCodeMutation } from '../../../../generated/graphql';
+import { State, Action, ActionType, initialState, cvxCodeReducer } from '../../../../reducers/cvxCodeReducer';
+import { FindAllCvxPayload, useFindAllCvxLazyQuery, useRemoveCvxCodeMutation } from '../../../../generated/graphql';
 import {
-  ACTIONS, ADD_NEW_TEXT, CODE, CPT_CODE, CPT_CODES, DASHES, DELETE_CPT_CODE_DESCRIPTION, DESCRIPTION, EIGHT_PAGE_LIMIT,
-  PAGE_LIMIT, PRIORITY
+  ACTIONS, ADD_NEW_TEXT, CODE, CVX_TEXT, DASHES, DELETE_CVX_CODE_DESCRIPTION, DESCRIPTION, EIGHT_PAGE_LIMIT, NAME,
+  NOTES, PAGE_LIMIT, STATUS
 } from '../../../../constants';
 
-const CptCodeTable: FC<IcdCodesTableProps> = (): JSX.Element => {
 
-  const classes = useTableStyles()
+const CvxTable: FC = (): JSX.Element => {
 
-  const [state, dispatch] = useReducer<Reducer<State, Action>>(cptCodeReducer, initialState);
-  const { isOpen, page, data, totalPages, openDelete, delId, itemId, searchQuery, systematic } = state;
+  const classes = useTableStyles();
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(cvxCodeReducer, initialState);
+  const { searchQuery, data, openDelete, isOpen, itemId, page, totalPages, delId, systematic } = state;
 
-  const [fetchAllIcdCodes, { loading, error }] = useFindAllCptCodesLazyQuery({
+  const [findAllCvxCodes, { loading, error }] = useFindAllCvxLazyQuery({
     onCompleted: (data) => {
-      const { findAllCptCodes } = data || {}
-      const { pagination, cptCodes, response } = findAllCptCodes || {}
+      const { findAllCvx } = data || {}
+      const { cvxs, pagination, response } = findAllCvx || {}
       const { status } = response || {}
       if (status === 200) {
         const { totalPages } = pagination || {}
-        if (!!cptCodes?.length) {
-          dispatch({ type: ActionType.SET_DATA, data: cptCodes as AllCptCodePayload['cptCodes'] })
+        if (!!cvxs?.length) {
+          dispatch({ type: ActionType.SET_DATA, data: cvxs as FindAllCvxPayload['cvxs'] })
           totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
         } else {
           dispatch({ type: ActionType.SET_DATA, data: [] });
@@ -49,9 +48,9 @@ const CptCodeTable: FC<IcdCodesTableProps> = (): JSX.Element => {
     }
   })
 
-  const [removeCptCode, { loading: delLoading }] = useRemoveCptCodeMutation({
+  const [removeCvxCode, { loading: delLoading }] = useRemoveCvxCodeMutation({
     onCompleted: async (resData) => {
-      const { removeCPTCode: { response } } = resData;
+      const { removeCvxCode: { response } } = resData;
 
       if (response) {
         const { status, message } = response
@@ -62,7 +61,7 @@ const CptCodeTable: FC<IcdCodesTableProps> = (): JSX.Element => {
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
           if (!!data && (data.length > 1 || isLast(data?.length, page))) {
-            await fetchIcdCodes()
+            await fetchAllCvxCodes()
           } else {
             dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, isLast?.length || 0) })
           }
@@ -74,28 +73,15 @@ const CptCodeTable: FC<IcdCodesTableProps> = (): JSX.Element => {
     },
   })
 
-  const handleModalClose = () => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: !isOpen });
+  const search = (query: string) => {
+    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
+    dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
+    dispatch({ type: ActionType.SET_PAGE, page: 1 })
+  }
 
-  const onPageChange = (_: ChangeEvent<unknown>, value: number) => dispatch({
-    type: ActionType.SET_PAGE, page: value
-  });
-
-  const fetchIcdCodes = useCallback(async () => {
-    try {
-      await fetchAllIcdCodes({
-        variables: {
-          findAllCptCodesInput: {
-            paginationOptions: { limit: PAGE_LIMIT, page: page },
-            code: searchQuery
-          }
-        }
-      })
-    } catch (error) { }
-  }, [fetchAllIcdCodes, page, searchQuery])
-
-  useEffect(() => {
-    fetchIcdCodes()
-  }, [fetchIcdCodes, page]);
+  const addHandler = () => {
+    dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })
+  }
 
   const onDeleteClick = (id: string) => {
     if (id) {
@@ -104,42 +90,52 @@ const CptCodeTable: FC<IcdCodesTableProps> = (): JSX.Element => {
     }
   };
 
-  const handleDelete = async () => {
-    delId && await removeCptCode({
-      variables: { removeCPTCodeInput: { id: delId } }
-    })
-  }
-
-  const handleEdit = (id: string, systematic: boolean) => {
-    dispatch({ type: ActionType.SET_SYSTEMATIC, systematic })
+  const handleEdit = (id: string) => {
     dispatch({ type: ActionType.SET_ITEM_ID, itemId: id })
     dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })
   };
 
-  const search = (query: string) => {
-    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
-    dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
-    dispatch({ type: ActionType.SET_PAGE, page: 1 })
+  const handleDelete = async () => {
+    delId && await removeCvxCode({
+      variables: { removeCvxCodeInput: { id: delId } }
+    })
   }
 
-  const addHandler = () => {
-    dispatch({ type: ActionType.SET_SYSTEMATIC, systematic: false })
-    dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })
+  const handleModalClose = () => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: !isOpen });
+
+  const onPageChange = (_: ChangeEvent<unknown>, value: number) => dispatch({
+    type: ActionType.SET_PAGE, page: value
+  });
+
+
+  const fetchAllCvxCodes = useCallback(async () => {
+    try {
+      await findAllCvxCodes({ variables: { findAllCvxInput: { paginationOptions: { limit: PAGE_LIMIT, page }, searchQuery } } })
+    } catch (error) { }
+  }, [findAllCvxCodes, page, searchQuery])
+
+  useEffect(() => {
+    fetchAllCvxCodes()
+  }, [fetchAllCvxCodes])
+
+
+  const fetchData = () => {
+    dispatch({ type: ActionType.SET_PAGE, page: 1 })
+    fetchAllCvxCodes()
   }
 
   return (
-    <>
+    <Fragment>
       <Grid container spacing={3}>
         <Grid item md={12} sm={12} xs={12}>
           <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
-            <Typography variant='h3'>{CPT_CODES}</Typography>
-
-              <Button
-                variant='contained' color='primary'
-                startIcon={<Box width={20}><AddWhiteIcon /></Box>}
-                onClick={addHandler}>
-                {ADD_NEW_TEXT}
-              </Button>
+            <Typography variant='h3'>{CVX_TEXT}</Typography>
+            <Button
+              variant='contained' color='primary'
+              startIcon={<Box width={20}><AddWhiteIcon /></Box>}
+              onClick={addHandler}>
+              {ADD_NEW_TEXT}
+            </Button>
           </Box>
           <Box className={classes.mainTableContainer}>
             <Grid container spacing={3}>
@@ -153,8 +149,10 @@ const CptCodeTable: FC<IcdCodesTableProps> = (): JSX.Element => {
                 <TableHead>
                   <TableRow>
                     {renderTh(CODE)}
+                    {renderTh(NAME)}
+                    {renderTh(STATUS)}
                     {renderTh(DESCRIPTION)}
-                    {renderTh(PRIORITY)}
+                    {renderTh(NOTES)}
                     {renderTh(ACTIONS)}
                   </TableRow>
                 </TableHead>
@@ -162,16 +160,24 @@ const CptCodeTable: FC<IcdCodesTableProps> = (): JSX.Element => {
                 {loading ? (
                   <TableRow>
                     <TableCell colSpan={8}>
-                      <TableLoader numberOfRows={EIGHT_PAGE_LIMIT} numberOfColumns={5} />
+                      <TableLoader numberOfRows={EIGHT_PAGE_LIMIT} numberOfColumns={3} />
                     </TableCell>
                   </TableRow>
                 ) : <TableBody>
-                  {data?.map((icdCode) => {
-                    const { id, code, shortDescription, systematic, priority } = icdCode ?? {}
+                  {data?.map((cvx) => {
+                    const { id, cvxCode, shortDescription, name, notes, status, systematic } = cvx ?? {}
                     return (
                       <TableRow>
                         <TableCell scope="row">
-                          <Typography>{code ?? DASHES}</Typography>
+                          <Typography>{cvxCode ?? DASHES}</Typography>
+                        </TableCell>
+
+                        <TableCell scope="row">
+                          <Typography>{name ?? DASHES}</Typography>
+                        </TableCell>
+
+                        <TableCell scope="row">
+                          <Typography>{status ?? DASHES}</Typography>
                         </TableCell>
 
                         <TableCell scope="row">
@@ -179,15 +185,14 @@ const CptCodeTable: FC<IcdCodesTableProps> = (): JSX.Element => {
                         </TableCell>
 
                         <TableCell scope="row">
-                          <Typography>{priority ?? DASHES}</Typography>
+                          <Typography>{notes ?? DASHES}</Typography>
                         </TableCell>
 
-
-                        {<TableCell scope="row">
+                        <TableCell scope="row">
                           <Box display='flex' alignItems='center'>
 
-                            <Box className={`${classes.iconsBackground}`}>
-                              <Button onClick={() => id && handleEdit(id, systematic as boolean)}>
+                            <Box className={`${classes.iconsBackground} ${systematic ? 'disable-icon' : ''}`}>
+                              <Button onClick={() => id && handleEdit(id)}>
                                 <EditOutlinedIcon />
                               </Button>
                             </Box>
@@ -199,7 +204,6 @@ const CptCodeTable: FC<IcdCodesTableProps> = (): JSX.Element => {
                             </Box>
                           </Box>
                         </TableCell>
-                        }
                       </TableRow>
                     )
                   })}
@@ -218,21 +222,20 @@ const CptCodeTable: FC<IcdCodesTableProps> = (): JSX.Element => {
       </Grid>
 
       <ConfirmationModal
-        title={CPT_CODE}
+        title={CVX_TEXT}
         isOpen={openDelete}
         isLoading={delLoading}
-        description={DELETE_CPT_CODE_DESCRIPTION}
+        description={DELETE_CVX_CODE_DESCRIPTION}
         handleDelete={handleDelete}
         setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
       />
-
-      {isOpen && <CptCodeForm
+      {isOpen && <CvxCodeForm
         id={itemId}
         open={isOpen}
         isEdit={!!itemId}
         handleClose={handleModalClose}
         dispatcher={dispatch}
-        fetch={() => fetchIcdCodes()}
+        fetch={() => fetchData()}
         systematic={systematic}
       />}
 
@@ -247,8 +250,8 @@ const CptCodeTable: FC<IcdCodesTableProps> = (): JSX.Element => {
           />
         </Box>
       )}
-    </>
+    </Fragment>
   )
 }
 
-export default CptCodeTable
+export default CvxTable
