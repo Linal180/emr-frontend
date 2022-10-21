@@ -7,7 +7,6 @@ import Alert from '../../../common/Alert';
 import Selector from '../../../common/Selector';
 import InputController from '../../../../controller';
 import TableLoader from '../../../common/TableLoader';
-import NdcSelector from '../../../common/Selector/NdcSelector';
 import MvxSelector from '../../../common/Selector/MvxSelector';
 import CvxSelector from '../../../common/Selector/CvxSelector';
 //interfaces, constants, schema, graphql
@@ -15,7 +14,7 @@ import { ActionType } from '../../../../reducers/cptCodeReducer';
 import { VaccineProductSchema } from '../../../../validationSchemas';
 import { VaccineProductFormProps, SideDrawerCloseReason, VaccineProductFormType } from '../../../../interfacesTypes';
 import { useAddVaccineProductMutation, useGetVaccineProductLazyQuery, useUpdateVaccineProductMutation } from '../../../../generated/graphql';
-import { ADD, CANCEL, EDIT, EMPTY_OPTION, VACCINE_PRODUCT_TEXT, SOMETHING_WENT_WRONG, SUBMIT, NDC_TEXT, STATUS_MAPPED, STATUS, NAME, MVX_TEXT, CVX_TEXT } from '../../../../constants';
+import { ADD, CANCEL, EDIT, EMPTY_OPTION, VACCINE_PRODUCT_TEXT, SOMETHING_WENT_WRONG, SUBMIT, STATUS_MAPPED, STATUS, NAME, MVX_TEXT, CVX_TEXT } from '../../../../constants';
 
 
 const VaccineProductForm: FC<VaccineProductFormProps> = ({ open, fetch, isEdit, id, handleClose, dispatcher }): JSX.Element => {
@@ -50,7 +49,6 @@ const VaccineProductForm: FC<VaccineProductFormProps> = ({ open, fetch, isEdit, 
       const { status } = response || {}
       if (status === 200 && vaccineProduct) {
         const { name, status, cvx, mvx, ndcVaccine } = vaccineProduct;
-
         const { id: cvxId, name: cvxName, shortDescription: cvxDescription } = cvx || {}
         const { id: mvxId, mvxCode: mvxName, manufacturerName: mvxDescription } = mvx || {}
         const ndcs = ndcVaccine?.map(({ ndcCode }) => ndcCode)
@@ -159,20 +157,20 @@ const VaccineProductForm: FC<VaccineProductFormProps> = ({ open, fetch, isEdit, 
                 </Grid>
 
                 <Grid item xs={12}>
-                  <Selector label={STATUS} name="status" options={STATUS_MAPPED} isRequired />
+                  <Selector addEmpty label={STATUS} name="status" options={STATUS_MAPPED} isRequired />
                 </Grid>
 
                 <Grid item xs={12}>
-                  <MvxSelector label={MVX_TEXT} name="mvx" isRequired />
+                  <MvxSelector addEmpty label={MVX_TEXT} name="mvx" isRequired />
                 </Grid>
 
                 <Grid item xs={12}>
-                  <CvxSelector label={CVX_TEXT} name="cvx" isRequired />
+                  <CvxSelector addEmpty label={CVX_TEXT} name="cvx" isRequired />
                 </Grid>
-
+{/* 
                 <Grid item xs={12}>
                   <NdcSelector label={NDC_TEXT} name="ndcCode" isRequired />
-                </Grid>
+                </Grid> */}
 
               </Grid>
             </Box>

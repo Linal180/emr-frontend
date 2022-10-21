@@ -1307,5 +1307,5 @@ export const VaccineProductSchema = yup.object({
   status: selectorSchema(STATUS),
   cvx: selectorSchema(CVX_TEXT),
   mvx: selectorSchema(MVX_TEXT),
-  ndcCode: selectorSchema(NDC_TEXT),
+  // ndcCode: selectorSchema(NDC_TEXT),
 })
