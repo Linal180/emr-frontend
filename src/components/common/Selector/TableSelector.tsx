@@ -106,7 +106,6 @@ const TableSelector: FC<TableSelectorProps> = ({ title, moduleName, shouldShowPr
     t.code === problem.code
   )))
 
-  console.log("moduleData", moduleData)
 
   return (
     <Controller

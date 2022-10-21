@@ -403,7 +403,6 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
 
   const createClaimCallback = useCallback(async (claimMethod?: boolean) => {
     try {
-      debugger
       const { onsetDate, onsetDateType, otherDate, otherDateType, cptFeeSchedule, IcdCodes, from, to, paymentType } = watch()
       const { id: onSetDateTypeId } = onsetDateType ?? {}
       const { id: otherDateTypeId } = otherDateType ?? {}
@@ -544,7 +543,6 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
       const filteredBillingCodes = billingCodes.filter((problem, index, self) => index === self.findIndex((t) => (
         t.code === problem.code
       )))
-      debugger
       const transformedBillingCodes = filteredBillingCodes && filteredBillingCodes.map(billingCode => {
         const { m1, m2, m3, m4, diag1, diag2, diag3, diag4, unit, price, description, codeType, code } = billingCode
         const diagA = diag1 ? getCharFromNumber(Number(diag1) - 1) : ''

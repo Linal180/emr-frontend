@@ -1,5 +1,6 @@
 // packages block
 import { FC, useCallback, useEffect, useState } from 'react';
+import moment from 'moment';
 import { useParams } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
@@ -29,7 +30,6 @@ import {
   IcdCodes, IcdCodesWithSnowMedCode, ProblemSeverity, ProblemType, useAddPatientProblemMutation,
   useGetPatientProblemLazyQuery, useUpdatePatientProblemMutation
 } from '../../../../../generated/graphql';
-import moment from 'moment';
 
 const ProblemModal: FC<AddModalProps> = ({
   dispatcher, fetch, isEdit, item, recordId, isOpen = false, handleClose
