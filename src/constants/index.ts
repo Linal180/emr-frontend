@@ -553,6 +553,7 @@ export const SITE_TEXT = "Site";
 export const NDC_TEXT = "NDC";
 export const MVX_TEXT = "MVX";
 export const CVX_TEXT = "CVX";
+export const VACCINE_PRODUCT_TEXT = "Vaccine Product";
 export const VIS_GIVEN_TEXT = "VIS Given";
 export const DATE_ON_VIS = "Date on VIS";
 export const LOT_NO_TEXT = "Lot #";
@@ -677,6 +678,8 @@ export const MVX_DESCRIPTION =
   "Create and edit MVX inventory for your practice";
 export const CVX_DESCRIPTION =
   "Create and edit CVX inventory for your practice";
+  export const VACCINE_PRODUCT_DESCRIPTION =
+  "Create and edit Vaccine Product inventory for your practice";
 export const CLINICAL_TEXT = "Clinical";
 export const FORM_BUILDER = "Form Builder";
 export const AUDIT_LOG = "Audit Log";
@@ -1606,6 +1609,7 @@ export const DELETE_VACCINE_DESCRIPTION = "Confirm to delete vaccine";
 export const DELETE_ICD_10_DESCRIPTION = "Confirm to delete icd-10";
 export const DELETE_CPT_CODE_DESCRIPTION = "Confirm to delete CPT code";
 export const DELETE_NDC_CODE_DESCRIPTION = "Confirm to delete NDC code";
+export const DELETE_VACCINE_PRODUCT_DESCRIPTION = "Confirm to delete Vaccine Product";
 export const DELETE_CVX_CODE_DESCRIPTION = "Confirm to delete CVX code";
 export const DELETE_ALLERGY_DESCRIPTION = "Confirm to delete allergy";
 export const CHOOSE_YOUR_PAYMENT_METHOD = "Choose your Payment Method";
@@ -1766,6 +1770,7 @@ export const CPT_CODE_ROUTE = `/cpt-code`;
 export const NDC_ROUTE = `/ndc-code`;
 export const MVX_ROUTE = `/mvx-code`;
 export const CVX_ROUTE = `/cvx-code`;
+export const VACCINE_PRODUCT_ROUTE = `/vaccine-product`;
 
 // Facility Routes
 export const BILLING_PROFILE_ROUTE = "billing-profile";
@@ -2827,6 +2832,12 @@ export const INVENTORY_ITEMS = [
     link: CVX_ROUTE,
     desc: CVX_DESCRIPTION,
   },
+  {
+    name: VACCINE_PRODUCT_TEXT,
+    link: VACCINE_PRODUCT_ROUTE,
+    desc: VACCINE_PRODUCT_DESCRIPTION,
+  },
+  
   // {
   //   name: MEDICINES,
   //   link: "/",

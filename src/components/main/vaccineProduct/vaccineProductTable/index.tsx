@@ -2,7 +2,7 @@ import { Pagination } from '@material-ui/lab';
 import { ChangeEvent, FC, Fragment, Reducer, useCallback, useEffect, useReducer } from 'react';
 import { Box, Button, Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core';
 //components
-import NdcCodeForm from '../ndcForm'
+import VaccineProductForm from '../vaccineProductForm'
 import Alert from '../../../common/Alert';
 import Search from '../../../common/Search';
 import TableLoader from '../../../common/TableLoader';
@@ -12,25 +12,25 @@ import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
 import { useTableStyles } from '../../../../styles/tableStyles';
 import { getPageNumber, isLast, renderTh } from '../../../../utils';
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from '../../../../assets/svgs';
-import { State, Action, ActionType, initialState, ndcCodeReducer } from '../../../../reducers/ndcCodeReducer';
-import { FindAllNdcPayload, useFindAllNdcLazyQuery, useRemoveNdcCodeMutation } from '../../../../generated/graphql';
-import { ACTIONS, ADD_NEW_TEXT, CODE, DASHES, DELETE_NDC_CODE_DESCRIPTION, DESCRIPTION, EIGHT_PAGE_LIMIT, NDC_TEXT, PAGE_LIMIT } from '../../../../constants';
+import { FindAllVaccineProductsPayload, useFetchAllVaccineProductsLazyQuery, useRemoveVaccineProductMutation } from '../../../../generated/graphql';
+import { ACTIONS, ADD_NEW_TEXT, CVX_TEXT, DASHES, EIGHT_PAGE_LIMIT, MVX_TEXT, VACCINE_PRODUCT_TEXT, PAGE_LIMIT, DELETE_VACCINE_PRODUCT_DESCRIPTION, NAME } from '../../../../constants';
+import { State, Action, ActionType, initialState, vaccineProductReducer } from '../../../../reducers/vaccineProductReducer';
 
-const NdcTable: FC = (): JSX.Element => {
+const VaccineProductTable: FC = (): JSX.Element => {
 
   const classes = useTableStyles();
-  const [state, dispatch] = useReducer<Reducer<State, Action>>(ndcCodeReducer, initialState);
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(vaccineProductReducer, initialState);
   const { searchQuery, data, openDelete, isOpen, itemId, page, totalPages, delId } = state;
 
-  const [findAllNdcCodes, { loading, error }] = useFindAllNdcLazyQuery({
+  const [findAllVaccineProducts, { loading, error }] = useFetchAllVaccineProductsLazyQuery({
     onCompleted: (data) => {
-      const { findAllNdc } = data || {}
-      const { ndcs, pagination, response } = findAllNdc || {}
+      const { fetchAllVaccineProducts } = data || {}
+      const { vaccineProducts, pagination, response } = fetchAllVaccineProducts || {}
       const { status } = response || {}
       if (status === 200) {
         const { totalPages } = pagination || {}
-        if (!!ndcs?.length) {
-          dispatch({ type: ActionType.SET_DATA, data: ndcs as FindAllNdcPayload['ndcs'] })
+        if (!!vaccineProducts?.length) {
+          dispatch({ type: ActionType.SET_DATA, data: vaccineProducts as FindAllVaccineProductsPayload['vaccineProducts'] })
           dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: totalPages || 0 })
         } else {
           dispatch({ type: ActionType.SET_DATA, data: [] });
@@ -44,9 +44,9 @@ const NdcTable: FC = (): JSX.Element => {
     }
   })
 
-  const [removeNdcCode, { loading: delLoading }] = useRemoveNdcCodeMutation({
+  const [removeVaccineProduct, { loading: delLoading }] = useRemoveVaccineProductMutation({
     onCompleted: async (resData) => {
-      const { removeNdcCode: { response } } = resData;
+      const { removeVaccineProduct: { response } } = resData;
 
       if (response) {
         const { status, message } = response
@@ -92,8 +92,8 @@ const NdcTable: FC = (): JSX.Element => {
   };
 
   const handleDelete = async () => {
-    delId && await removeNdcCode({
-      variables: { removeNdcCodeInput: { id: delId } }
+    delId && await removeVaccineProduct({
+      variables: { removeVaccineProductInput: { id: delId } }
     })
   }
 
@@ -106,9 +106,9 @@ const NdcTable: FC = (): JSX.Element => {
 
   const fetchAllNdcCodes = useCallback(async () => {
     try {
-      await findAllNdcCodes({ variables: { findAllNdcInput: { paginationOptions: { limit: PAGE_LIMIT, page } } } })
+      await findAllVaccineProducts({ variables: { fetchAllVaccineProductsInput: { paginationOptions: { limit: PAGE_LIMIT, page }, searchQuery } } })
     } catch (error) { }
-  }, [findAllNdcCodes, page])
+  }, [findAllVaccineProducts, page, searchQuery])
 
   useEffect(() => {
     fetchAllNdcCodes()
@@ -120,7 +120,7 @@ const NdcTable: FC = (): JSX.Element => {
       <Grid container spacing={3}>
         <Grid item md={12} sm={12} xs={12}>
           <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
-            <Typography variant='h3'>{NDC_TEXT}</Typography>
+            <Typography variant='h3'>{VACCINE_PRODUCT_TEXT}</Typography>
             <Button
               variant='contained' color='primary'
               startIcon={<Box width={20}><AddWhiteIcon /></Box>}
@@ -139,8 +139,9 @@ const NdcTable: FC = (): JSX.Element => {
               <Table aria-label="customized table" className={classes.table}>
                 <TableHead>
                   <TableRow>
-                    {renderTh(CODE)}
-                    {renderTh(DESCRIPTION)}
+                    {renderTh(NAME)}
+                    {renderTh(CVX_TEXT)}
+                    {renderTh(MVX_TEXT)}
                     {renderTh(ACTIONS)}
                   </TableRow>
                 </TableHead>
@@ -153,16 +154,25 @@ const NdcTable: FC = (): JSX.Element => {
                   </TableRow>
                 ) : <TableBody>
                   {data?.map((icdCode) => {
-                    const { id, code, description, systematic } = icdCode ?? {}
+                    const { id, name, cvx, mvx, systematic } = icdCode ?? {}
+                    const { mvxCode, manufacturerName } = mvx || {}
+                    const { cvxCode, name: cvxName } = cvx || {}
+
                     return (
                       <TableRow>
+
                         <TableCell scope="row">
-                          <Typography>{code ?? DASHES}</Typography>
+                          <Typography>{name ?? DASHES}</Typography>
                         </TableCell>
 
                         <TableCell scope="row">
-                          <Typography>{description ?? DASHES}</Typography>
+                          <Typography>{cvxName ? `${cvxCode}: ${cvxName}` : cvxCode}</Typography>
                         </TableCell>
+
+                        <TableCell scope="row">
+                          <Typography>{manufacturerName ? `${mvxCode}: ${manufacturerName}` : mvxCode}</Typography>
+                        </TableCell>
+
                         <TableCell scope="row">
                           <Box display='flex' alignItems='center'>
 
@@ -197,14 +207,14 @@ const NdcTable: FC = (): JSX.Element => {
       </Grid>
 
       <ConfirmationModal
-        title={NDC_TEXT}
+        title={VACCINE_PRODUCT_TEXT}
         isOpen={openDelete}
         isLoading={delLoading}
-        description={DELETE_NDC_CODE_DESCRIPTION}
+        description={DELETE_VACCINE_PRODUCT_DESCRIPTION}
         handleDelete={handleDelete}
         setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
       />
-      {isOpen && <NdcCodeForm
+      {isOpen && <VaccineProductForm
         id={itemId}
         open={isOpen}
         isEdit={!!itemId}
@@ -228,4 +238,4 @@ const NdcTable: FC = (): JSX.Element => {
   )
 }
 
-export default NdcTable
+export default VaccineProductTable
