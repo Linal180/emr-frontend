@@ -1,21 +1,22 @@
 // packages block
-import { Grid } from "@material-ui/core";
 import { FC } from "react";
+import { Grid } from "@material-ui/core";
 // components block
+import DatePicker from "../../../common/DatePicker";
+import InputController from "../../../../controller";
 import CardComponent from "../../../common/CardComponent";
 import SnnController from "../../../../controller/SnnController";
-import InputController from "../../../../controller";
-import DatePicker from "../../../common/DatePicker";
 // constants, interfaces block
-import { DOB, FIRST_NAME, IDENTIFICATION, LAST_NAME, MIDDLE_NAME, SSN, SUFFIX } from "../../../../constants";
 import { PatientCardsProps } from "../../../../interfacesTypes";
+import { DOB, FIRST_NAME, IDENTIFICATION, LAST_NAME, MIDDLE_NAME, SAVE_AND_NEXT, SAVE_TEXT, SSN, SUFFIX } from "../../../../constants";
 
 const IdentificationCard: FC<PatientCardsProps> = ({
-  getPatientLoading, shouldDisableEdit, state, disableSubmit, isEdit
+  getPatientLoading, shouldDisableEdit, state, disableSubmit, isEdit, isAppointment
 }) =>
   <CardComponent
     saveBtn={!shouldDisableEdit}
     state={state}
+    saveBtnText={isAppointment ? SAVE_AND_NEXT : SAVE_TEXT}
     isEdit={isEdit}
     cardTitle={IDENTIFICATION}
     disableSubmit={disableSubmit}

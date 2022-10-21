@@ -13,12 +13,12 @@ import { usePublicAppointmentStyles } from "../../../../styles/publicAppointment
 import { AntSwitch } from "../../../../styles/publicAppointmentStyles/externalPatientStyles"
 import {
   DEMOGRAPHICS, ETHNICITY, GENDER_IDENTITY, HOMEBOUND, LANGUAGE_SPOKEN, LANGUAGE_SPOKEN_OPTIONS, LEGAL_SEX, MAPPED_ETHNICITY,
-  MAPPED_GENDER_IDENTITY, MAPPED_MARITAL_STATUS, MAPPED_RACE, MAPPED_SEXUAL_ORIENTATION, MARITAL_STATUS,
-  RACE, SEXUAL_ORIENTATION
+  MAPPED_GENDER_IDENTITY, MAPPED_MARITAL_STATUS, MAPPED_RACE, MAPPED_SEXUAL_ORIENTATION, MARITAL_STATUS, SAVE_AND_NEXT,
+  RACE, SAVE_TEXT, SEXUAL_ORIENTATION
 } from "../../../../constants"
 
 const DemographicsCard: FC<PatientCardsProps> = ({
-  getPatientLoading, state, dispatch, shouldDisableEdit, disableSubmit, isEdit
+  getPatientLoading, state, dispatch, shouldDisableEdit, disableSubmit, isEdit, isAppointment
 }) => {
   const { control, setValue, watch } = useFormContext<PatientInputProps>()
   const { language } = watch()
@@ -45,6 +45,7 @@ const DemographicsCard: FC<PatientCardsProps> = ({
       saveBtn={!shouldDisableEdit}
       state={state}
       isEdit={isEdit}
+      saveBtnText={isAppointment ? SAVE_AND_NEXT : SAVE_TEXT}
       cardTitle={DEMOGRAPHICS}
       disableSubmit={disableSubmit}
     >

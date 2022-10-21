@@ -1411,6 +1411,7 @@ export interface PatientCardsProps extends GeneralFormProps {
   shouldDisableEdit?: boolean
   disableSubmit?: boolean
   loading?: boolean
+  isAppointment: boolean
 }
 
 export interface InsuranceSelectionProps extends GeneralFormProps {
@@ -1433,6 +1434,7 @@ export interface FacilityCardsProps extends GeneralFormProps {
 export interface PatientFormProps extends GeneralFormProps {
   shouldShowBread?: boolean
   shouldDisableEdit?: boolean
+  isAppointment?: boolean
 }
 
 export type UpFrontPaymentProps = {

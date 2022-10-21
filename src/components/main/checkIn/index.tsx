@@ -312,6 +312,7 @@ const CheckInComponent = (): JSX.Element => {
             <PatientForm
               id={patientId}
               isEdit
+              isAppointment
               shouldShowBread={false}
               ref={patientRef}
               shouldDisableEdit={shouldDisableChartingEdit}

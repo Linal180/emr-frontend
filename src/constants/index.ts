@@ -93,6 +93,7 @@ export enum Heart_RATE_RANGES {
 
 // constants
 export const DIED_TEXT = 'Died'
+export const NDC_FORMAT = 'NNNNN/NNNN-NNN/NNNN-NN'
 export const ICD_TEXT = 'International Classification of Diseases'
 export const DISEASE_TEXT = 'Disease'
 export const ONSET_AGE_TEXT = 'Onset Age'
@@ -286,6 +287,7 @@ export const DATE_ADDED = "Date Added";
 export const BMI_FOR_AGE = "BMI for Age";
 export const SYSTEM_PASSWORD = "admin@123";
 export const NEXT = "Next";
+export const SAVE_AND_NEXT = "Save & Next";
 export const VIEW = "View";
 export const YES = "Yes";
 export const NO = "No";
@@ -678,7 +680,7 @@ export const MVX_DESCRIPTION =
   "Create and edit MVX inventory for your practice";
 export const CVX_DESCRIPTION =
   "Create and edit CVX inventory for your practice";
-  export const VACCINE_PRODUCT_DESCRIPTION =
+export const VACCINE_PRODUCT_DESCRIPTION =
   "Create and edit Vaccine Product inventory for your practice";
 export const CLINICAL_TEXT = "Clinical";
 export const FORM_BUILDER = "Form Builder";
@@ -1578,6 +1580,7 @@ export const TWO_FA_AUTHENTICATION = "2-Factor Authentication";
 export const NOTHING_HERE_TEXT = "Seems there is nothing here";
 export const SEARCH_FOR_MEDICATIONS = "Search for Medications";
 export const SEARCH_FOR_TESTS = "Search for Tests";
+export const SEARCH_FOR_IMAGING = "Search for Imaging";
 export const DELETE_RECORD_TEXT = "You are about delete record";
 export const DELETE_ROLE_DESCRIPTION = "Confirm to delete role";
 export const REGISTRATION_DEPARTMENT = "Registration Department";
@@ -1810,6 +1813,7 @@ export const NO_NUMBER_ERROR_MESSAGE = "Numbers are not acceptable";
 export const ROUTING_NO_VALIDATION_MESSAGE = `Invalid routing number`;
 export const BANK_ACCOUNT_VALIDATION_MESSAGE = "Invalid bank account.";
 export const SSN_VALIDATION_MESSAGE = "SSN valid format is NNN-NN-NNNN";
+export const NDC_VALIDATION_MESSAGE = `NDC valid format is ${NDC_FORMAT}`;
 export const CLIA_VALIDATION_MESSAGE = "CLIA should be 10-alphanumeric";
 export const TID_VALIDATION_MESSAGE = "Tax ID valid format is xxxxxxxxx";
 export const NPI_VALIDATION_MESSAGE = "NPI should be a 10-digit combination";
@@ -2837,7 +2841,7 @@ export const INVENTORY_ITEMS = [
     link: VACCINE_PRODUCT_ROUTE,
     desc: VACCINE_PRODUCT_DESCRIPTION,
   },
-  
+
   // {
   //   name: MEDICINES,
   //   link: "/",
@@ -4088,7 +4092,7 @@ export const formTemplateTabIds = {
 export const SMS_TEMPLATES: SelectorOption[] = [
   {
     // id: `Please register on the following link: ${`${process.env.REACT_APP_URL}/login`}`,
-    id: `Please register on the following link: https://admin.aimed.healthcare/public/form/2f883f99-c220-427c-8cee-2c39e65e3ec9`,
+    id: `Please register on the following link: https://app.aimed.healthcare/public/form/2f883f99-c220-427c-8cee-2c39e65e3ec9`,
     name: "Registration Link",
   },
   {
@@ -4777,3 +4781,4 @@ export const STATUS_MAPPED = [
   }
 ]
 export const PROBLEMS_TABS = ['Common Terms']
+export const ORDERS_TABS = ['Medications', 'Lab Order', 'Imaging']

@@ -7,21 +7,23 @@ import CardComponent from "../../../common/CardComponent"
 import {
   CELL_PHONE_PERMISSION,
   CONSENTS, IMMUNIZATION_CONSENT,
-  MEDICAL_PERMISSION, MEDICATION_HISTORY_CONSENT, PERMISSIONS_TEXT, PHONE_EMAIL_PERMISSION, PRIVACY, RESULT_CONSENT
+  MEDICAL_PERMISSION, MEDICATION_HISTORY_CONSENT, SAVE_AND_NEXT, PERMISSIONS_TEXT, PHONE_EMAIL_PERMISSION, PRIVACY, RESULT_CONSENT, SAVE_TEXT
 } from "../../../../constants"
 import { PatientCardsProps } from "../../../../interfacesTypes"
 import { ActionType } from "../../../../reducers/patientReducer"
 import { useExternalPatientStyles } from "../../../../styles/publicAppointmentStyles/externalPatientStyles"
 
 const PatientPrivacyCard: FC<PatientCardsProps> = ({
-  state, dispatch, shouldDisableEdit, disableSubmit, isEdit
+  state, dispatch, shouldDisableEdit, disableSubmit, isEdit, isAppointment
 }) => {
   const { medicalPermission, cellPhonePermission, phoneEmailPermission, resultConsent, immunizationConsent, medicationHistoryConsent } = state || {}
   const classes = useExternalPatientStyles()
 
   return (
     <CardComponent cardTitle={PRIVACY} state={state} saveBtn={!shouldDisableEdit}
-      disableSubmit={disableSubmit} isEdit={isEdit}>
+      disableSubmit={disableSubmit} isEdit={isEdit}
+      saveBtnText={isAppointment ? SAVE_AND_NEXT : SAVE_TEXT}
+    >
       <Grid container spacing={2}>
         <Grid item md={6} sm={12} xs={12}>
           <Box>
