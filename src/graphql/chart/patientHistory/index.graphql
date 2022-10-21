@@ -122,6 +122,60 @@ query PatientIllnessHistory(
   }
 }
 
+query LatestPatientIllnessHistory(
+  $patientIllnessHistoryInput: PatientIllnessHistoryInput!
+) {
+  latestPatientIllnessHistory(
+    patientIllnessHistoryInput: $patientIllnessHistoryInput
+  ) {
+    response {
+      status
+      message
+    }
+
+    patientIllnessHistory {
+      id
+      patientId
+      templates {
+        id
+        name
+        sections {
+          id
+          name
+
+          questions {
+            id
+            title
+
+            answers {
+              id
+              questionType
+              name
+              answerType
+              options {
+                id
+                name
+              }
+            }
+          }
+        }
+      }
+      appointmentId
+
+      answers {
+        id
+        value
+        answerId
+
+        answer {
+          name
+          questionType
+        }
+      }
+    }
+  }
+}
+
 mutation CreateReviewOfSystemHistory(
   $createReviewOfSystemInput: CreateReviewOfSystemInput!
 ) {
@@ -139,6 +193,57 @@ mutation CreateReviewOfSystemHistory(
 
 query ReviewOfSystem($reviewOfSystemInput: ReviewOfSystemInput!) {
   reviewOfSystem(reviewOfSystemInput: $reviewOfSystemInput) {
+    response {
+      status
+      message
+    }
+
+    reviewOfSystem {
+      id
+      patientId
+      templateIds
+      templates {
+        id
+        name
+        sections {
+          id
+          name
+
+          questions {
+            id
+            title
+
+            answers {
+              id
+              questionType
+              name
+              answerType
+              options {
+                id
+                name
+              }
+            }
+          }
+        }
+      }
+      appointmentId
+
+      answers {
+        id
+        value
+        answerId
+
+        answer {
+          name
+          questionType
+        }
+      }
+    }
+  }
+}
+
+query LatestReviewOfSystem($reviewOfSystemInput: ReviewOfSystemInput!) {
+  latestReviewOfSystem(reviewOfSystemInput: $reviewOfSystemInput) {
     response {
       status
       message

@@ -278,6 +278,7 @@ query FindLabTestsByOrderNum($labTestByOrderNumInput: LabTestByOrderNumInput!) {
         id
         loincNum
         component
+        isCovid
         unitsRequired
       }
       

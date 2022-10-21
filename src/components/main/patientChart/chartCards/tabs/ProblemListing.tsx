@@ -15,7 +15,7 @@ import ProblemModal from "../../problems/modals/ProblemModal";
 // constants, utils, interfaces ang graphql block
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from "../../../../../assets/svgs";
 import {
-  ACTIONS, ADD_NEW_TEXT, COMMENTS, DASHES, DELETE_PROBLEM_DESCRIPTION, EIGHT_PAGE_LIMIT, ICD_CODE, NEXT, ONSET_DATE, PATIENT_PROBLEM_DELETED, PROBLEM_TEXT, STATUS, TYPE
+  ACTIONS, ADD_NEW_TEXT, COMMENTS, DASHES, DELETE_PROBLEM_DESCRIPTION, EIGHT_PAGE_LIMIT, ICD_CODE, NEXT, ONSET_DATE, PATIENT_PROBLEM_DELETED, PROBLEM_TEXT, STATUS, TYPE, VISIT_DATE
 } from "../../../../../constants";
 import {
   IcdCodes, PatientProblemsPayload, useFindAllPatientProblemsLazyQuery, useRemovePatientProblemMutation
@@ -27,7 +27,7 @@ import {
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
 import { useTableStyles } from "../../../../../styles/tableStyles";
 import {
-  getFormatDateString, getPageNumber, getProblemSeverityColor, getProblemTypeColor, isLast, renderTh
+  getPageNumber, getProblemSeverityColor, getProblemTypeColor, isLast, renderTh
 } from "../../../../../utils";
 
 const ProblemTab: FC<ProblemTabProps> = ({ shouldDisableEdit, handleStep }) => {
@@ -173,6 +173,7 @@ const ProblemTab: FC<ProblemTabProps> = ({ shouldDisableEdit, handleStep }) => {
                     <TableRow>
                       {renderTh(ICD_CODE)}
                       {renderTh(PROBLEM_TEXT)}
+                      {renderTh(VISIT_DATE)}
                       {renderTh(ONSET_DATE)}
                       {renderTh(STATUS)}
                       {renderTh(COMMENTS)}
@@ -189,7 +190,8 @@ const ProblemTab: FC<ProblemTabProps> = ({ shouldDisableEdit, handleStep }) => {
                     </TableRow>
                   ) : <TableBody>
                     {patientProblems?.map((patientProblem) => {
-                      const { problemSeverity, ICDCode, problemType, note, problemStartDate, id } = patientProblem ?? {}
+                      const { problemSeverity, ICDCode, problemType, note, problemStartDate, id, appointment } = patientProblem ?? {}
+                      const { appointmentDate } = appointment || {}
                       return (
                         <TableRow>
                           <TableCell scope="row">
@@ -201,8 +203,12 @@ const ProblemTab: FC<ProblemTabProps> = ({ shouldDisableEdit, handleStep }) => {
                           </TableCell>
 
                           <TableCell scope="row">
+                            <Typography>{appointmentDate || DASHES}</Typography>
+                          </TableCell>
+
+                          <TableCell scope="row">
                             <Typography>
-                              {problemStartDate ? getFormatDateString(problemStartDate, 'MM-DD-YYYY') : ''}
+                              {problemStartDate || ''}
                             </Typography>
                           </TableCell>
 
