@@ -93,6 +93,7 @@ export enum Heart_RATE_RANGES {
 
 // constants
 export const DIED_TEXT = 'Died'
+export const NDC_FORMAT = 'NNNNN/NNNN-NNN/NNNN-NN'
 export const ICD_TEXT = 'International Classification of Diseases'
 export const DISEASE_TEXT = 'Disease'
 export const ONSET_AGE_TEXT = 'Onset Age'
@@ -678,7 +679,7 @@ export const MVX_DESCRIPTION =
   "Create and edit MVX inventory for your practice";
 export const CVX_DESCRIPTION =
   "Create and edit CVX inventory for your practice";
-  export const VACCINE_PRODUCT_DESCRIPTION =
+export const VACCINE_PRODUCT_DESCRIPTION =
   "Create and edit Vaccine Product inventory for your practice";
 export const CLINICAL_TEXT = "Clinical";
 export const FORM_BUILDER = "Form Builder";
@@ -1810,6 +1811,7 @@ export const NO_NUMBER_ERROR_MESSAGE = "Numbers are not acceptable";
 export const ROUTING_NO_VALIDATION_MESSAGE = `Invalid routing number`;
 export const BANK_ACCOUNT_VALIDATION_MESSAGE = "Invalid bank account.";
 export const SSN_VALIDATION_MESSAGE = "SSN valid format is NNN-NN-NNNN";
+export const NDC_VALIDATION_MESSAGE = `NDC valid format is ${NDC_FORMAT}`;
 export const CLIA_VALIDATION_MESSAGE = "CLIA should be 10-alphanumeric";
 export const TID_VALIDATION_MESSAGE = "Tax ID valid format is xxxxxxxxx";
 export const NPI_VALIDATION_MESSAGE = "NPI should be a 10-digit combination";
@@ -2837,7 +2839,7 @@ export const INVENTORY_ITEMS = [
     link: VACCINE_PRODUCT_ROUTE,
     desc: VACCINE_PRODUCT_DESCRIPTION,
   },
-  
+
   // {
   //   name: MEDICINES,
   //   link: "/",
