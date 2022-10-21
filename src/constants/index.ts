@@ -4086,7 +4086,7 @@ export const formTemplateTabIds = {
 export const SMS_TEMPLATES: SelectorOption[] = [
   {
     // id: `Please register on the following link: ${`${process.env.REACT_APP_URL}/login`}`,
-    id: `Please register on the following link: https://admin.aimed.healthcare/public/form/2f883f99-c220-427c-8cee-2c39e65e3ec9`,
+    id: `Please register on the following link: https://app.aimed.healthcare/public/form/2f883f99-c220-427c-8cee-2c39e65e3ec9`,
     name: "Registration Link",
   },
   {
