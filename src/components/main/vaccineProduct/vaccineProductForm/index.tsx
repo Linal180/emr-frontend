@@ -4,17 +4,19 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { Box, Button, Dialog, DialogActions, DialogTitle, Grid } from '@material-ui/core';
 //components
 import Alert from '../../../common/Alert';
+import Selector from '../../../common/Selector';
 import InputController from '../../../../controller';
 import TableLoader from '../../../common/TableLoader';
-//interfaces, constants, schema, graphql
-import { VaccineProductSchema } from '../../../../validationSchemas';
-import { ActionType } from '../../../../reducers/cptCodeReducer';
-import { VaccineProductFormProps, SideDrawerCloseReason, VaccineProductFormType } from '../../../../interfacesTypes';
-import { ADD, CANCEL, CODE, EDIT, EMPTY_OPTION, VACCINE_PRODUCT_TEXT, SOMETHING_WENT_WRONG, SUBMIT, NDC_TEXT, STATUS_MAPPED, STATUS } from '../../../../constants';
-import { useAddVaccineProductMutation, useGetVaccineProductLazyQuery, useUpdateVaccineProductMutation } from '../../../../generated/graphql';
 import NdcSelector from '../../../common/Selector/NdcSelector';
-import Selector from '../../../common/Selector';
 import MvxSelector from '../../../common/Selector/MvxSelector';
+import CvxSelector from '../../../common/Selector/CvxSelector';
+//interfaces, constants, schema, graphql
+import { ActionType } from '../../../../reducers/cptCodeReducer';
+import { VaccineProductSchema } from '../../../../validationSchemas';
+import { VaccineProductFormProps, SideDrawerCloseReason, VaccineProductFormType } from '../../../../interfacesTypes';
+import { useAddVaccineProductMutation, useGetVaccineProductLazyQuery, useUpdateVaccineProductMutation } from '../../../../generated/graphql';
+import { ADD, CANCEL, EDIT, EMPTY_OPTION, VACCINE_PRODUCT_TEXT, SOMETHING_WENT_WRONG, SUBMIT, NDC_TEXT, STATUS_MAPPED, STATUS, NAME, MVX_TEXT, CVX_TEXT } from '../../../../constants';
+
 
 const VaccineProductForm: FC<VaccineProductFormProps> = ({ open, fetch, isEdit, id, handleClose, dispatcher }): JSX.Element => {
   const methods = useForm<VaccineProductFormType>({ resolver: yupResolver(VaccineProductSchema) });
@@ -153,19 +155,23 @@ const VaccineProductForm: FC<VaccineProductFormProps> = ({ open, fetch, isEdit, 
               <Grid container spacing={3}>
 
                 <Grid item xs={12}>
-                  <InputController controllerName='name' disabled={loading} controllerLabel={CODE} isRequired toUpperCase />
+                  <InputController controllerName='name' disabled={loading} controllerLabel={NAME} isRequired />
                 </Grid>
 
                 <Grid item xs={12}>
-                  <Selector label={STATUS} name="status" options={STATUS_MAPPED} />
+                  <Selector label={STATUS} name="status" options={STATUS_MAPPED} isRequired />
                 </Grid>
 
                 <Grid item xs={12}>
-                  <MvxSelector label={NDC_TEXT} name="mvx" />
+                  <MvxSelector label={MVX_TEXT} name="mvx" isRequired />
                 </Grid>
 
                 <Grid item xs={12}>
-                  <NdcSelector label={NDC_TEXT} name="ndc" />
+                  <CvxSelector label={CVX_TEXT} name="cvx" isRequired />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <NdcSelector label={NDC_TEXT} name="ndcCode" isRequired />
                 </Grid>
 
               </Grid>

@@ -54,6 +54,7 @@ query FetchAllVaccineProducts(
       id
       name
       status
+      systematic
 
       cvx {
         id
@@ -97,7 +98,6 @@ query GetVaccineProduct($getVaccineProductInput: GetVaccineProductInput!) {
       }
 
       ndcVaccine {
-
         ndcCode {
           id
           code

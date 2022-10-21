@@ -13,7 +13,7 @@ import { useTableStyles } from '../../../../styles/tableStyles';
 import { getPageNumber, isLast, renderTh } from '../../../../utils';
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from '../../../../assets/svgs';
 import { FindAllVaccineProductsPayload, useFetchAllVaccineProductsLazyQuery, useRemoveVaccineProductMutation } from '../../../../generated/graphql';
-import { ACTIONS, ADD_NEW_TEXT, CODE, CVX_TEXT, DASHES, EIGHT_PAGE_LIMIT, MVX_TEXT, VACCINE_PRODUCT_TEXT, PAGE_LIMIT, DELETE_VACCINE_PRODUCT_DESCRIPTION } from '../../../../constants';
+import { ACTIONS, ADD_NEW_TEXT, CVX_TEXT, DASHES, EIGHT_PAGE_LIMIT, MVX_TEXT, VACCINE_PRODUCT_TEXT, PAGE_LIMIT, DELETE_VACCINE_PRODUCT_DESCRIPTION, NAME } from '../../../../constants';
 import { State, Action, ActionType, initialState, vaccineProductReducer } from '../../../../reducers/vaccineProductReducer';
 
 const VaccineProductTable: FC = (): JSX.Element => {
@@ -31,7 +31,7 @@ const VaccineProductTable: FC = (): JSX.Element => {
         const { totalPages } = pagination || {}
         if (!!vaccineProducts?.length) {
           dispatch({ type: ActionType.SET_DATA, data: vaccineProducts as FindAllVaccineProductsPayload['vaccineProducts'] })
-          totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
+          dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: totalPages || 0 })
         } else {
           dispatch({ type: ActionType.SET_DATA, data: [] });
           dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 });
@@ -106,9 +106,9 @@ const VaccineProductTable: FC = (): JSX.Element => {
 
   const fetchAllNdcCodes = useCallback(async () => {
     try {
-      await findAllVaccineProducts({ variables: { fetchAllVaccineProductsInput: { paginationOptions: { limit: PAGE_LIMIT, page } } } })
+      await findAllVaccineProducts({ variables: { fetchAllVaccineProductsInput: { paginationOptions: { limit: PAGE_LIMIT, page }, searchQuery } } })
     } catch (error) { }
-  }, [findAllVaccineProducts, page])
+  }, [findAllVaccineProducts, page, searchQuery])
 
   useEffect(() => {
     fetchAllNdcCodes()
@@ -139,7 +139,7 @@ const VaccineProductTable: FC = (): JSX.Element => {
               <Table aria-label="customized table" className={classes.table}>
                 <TableHead>
                   <TableRow>
-                    {renderTh(CODE)}
+                    {renderTh(NAME)}
                     {renderTh(CVX_TEXT)}
                     {renderTh(MVX_TEXT)}
                     {renderTh(ACTIONS)}
@@ -154,10 +154,9 @@ const VaccineProductTable: FC = (): JSX.Element => {
                   </TableRow>
                 ) : <TableBody>
                   {data?.map((icdCode) => {
-                    const { id, name, cvx, mvx } = icdCode ?? {}
+                    const { id, name, cvx, mvx, systematic } = icdCode ?? {}
                     const { mvxCode, manufacturerName } = mvx || {}
                     const { cvxCode, name: cvxName } = cvx || {}
-                    const systematic = true;
 
                     return (
                       <TableRow>

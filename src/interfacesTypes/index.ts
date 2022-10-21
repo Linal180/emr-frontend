@@ -459,6 +459,11 @@ export interface MvxSelectorProps extends SelectorProps {
   mvxCode?: string
 }
 
+export type CvxSelectorProps = SelectorProps & {
+  filteredOptions?: SelectorOption[]
+  placeHolder?: string;
+}
+
 export interface PracticeSelectorProps extends SelectorProps {
   patientId?: string;
   isLabelDisplay?: boolean;

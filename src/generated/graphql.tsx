@@ -8153,6 +8153,7 @@ export type VaccineProduct = {
   name?: Maybe<Scalars['String']>;
   ndcVaccine?: Maybe<Array<NdcVaccineProduct>>;
   status?: Maybe<Scalars['String']>;
+  systematic?: Maybe<Scalars['Boolean']>;
   updateDate?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
 };
@@ -10135,7 +10136,7 @@ export type FetchAllVaccineProductsQueryVariables = Exact<{
 }>;
 
 
-export type FetchAllVaccineProductsQuery = { __typename?: 'Query', fetchAllVaccineProducts: { __typename?: 'FindAllVaccineProductsPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, vaccineProducts?: Array<{ __typename?: 'VaccineProduct', id: string, name?: string | null, status?: string | null, cvx?: { __typename?: 'CVX', id: string, name?: string | null, cvxCode?: string | null, shortDescription?: string | null } | null, mvx?: { __typename?: 'MVX', id: string, mvxCode?: string | null, manufacturerName?: string | null } | null }> | null } };
+export type FetchAllVaccineProductsQuery = { __typename?: 'Query', fetchAllVaccineProducts: { __typename?: 'FindAllVaccineProductsPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, vaccineProducts?: Array<{ __typename?: 'VaccineProduct', id: string, name?: string | null, status?: string | null, systematic?: boolean | null, cvx?: { __typename?: 'CVX', id: string, name?: string | null, cvxCode?: string | null, shortDescription?: string | null } | null, mvx?: { __typename?: 'MVX', id: string, mvxCode?: string | null, manufacturerName?: string | null } | null }> | null } };
 
 export type GetVaccineProductQueryVariables = Exact<{
   getVaccineProductInput: GetVaccineProductInput;
@@ -24344,6 +24345,7 @@ export const FetchAllVaccineProductsDocument = gql`
       id
       name
       status
+      systematic
       cvx {
         id
         name
