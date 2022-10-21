@@ -286,6 +286,7 @@ export const DATE_ADDED = "Date Added";
 export const BMI_FOR_AGE = "BMI for Age";
 export const SYSTEM_PASSWORD = "admin@123";
 export const NEXT = "Next";
+export const SAVE_AND_NEXT = "Save & Next";
 export const VIEW = "View";
 export const YES = "Yes";
 export const NO = "No";

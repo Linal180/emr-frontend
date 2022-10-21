@@ -8,14 +8,15 @@ import CardComponent from "../../../common/CardComponent";
 import InputController from "../../../../controller";
 import { PatientCardsProps } from "../../../../interfacesTypes";
 import SnnController from "../../../../controller/SnnController";
-import { DOB, FIRST_NAME, IDENTIFICATION, MIDDLE_NAME, SSN, SUFFIX, LAST_NAME, SSN_FORMAT } from "../../../../constants";
+import { DOB, FIRST_NAME, IDENTIFICATION, MIDDLE_NAME, SSN, SUFFIX, LAST_NAME, SSN_FORMAT, SAVE_TEXT, SAVE_AND_NEXT } from "../../../../constants";
 
 const IdentificationCard: FC<PatientCardsProps> = ({
-  getPatientLoading, shouldDisableEdit, state, disableSubmit, isEdit
+  getPatientLoading, shouldDisableEdit, state, disableSubmit, isEdit, isAppointment
 }) =>
   <CardComponent
     saveBtn={!shouldDisableEdit}
     state={state}
+    saveBtnText={isAppointment ? SAVE_AND_NEXT : SAVE_TEXT}
     isEdit={isEdit}
     cardTitle={IDENTIFICATION}
     disableSubmit={disableSubmit}
