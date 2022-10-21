@@ -141,10 +141,10 @@ const ICD10Form: FC<ICD10FormProps> = ({ open, fetch, isEdit, id, handleClose, d
             <Box p={3}>
               <Grid container spacing={3}>
                 <Grid item xs={12}>
-                  <InputController controllerName='code' disabled={loading || systematic} controllerLabel={CODE} isRequired toUpperCase />
+                  <InputController controllerName='code' disabled={loading } controllerLabel={CODE} isRequired toUpperCase />
                 </Grid>
                 <Grid item xs={12}>
-                  <InputController controllerName='description' multiline disabled={loading || systematic} controllerLabel={DESCRIPTION} isRequired />
+                  <InputController controllerName='description' multiline disabled={loading } controllerLabel={DESCRIPTION} isRequired />
                 </Grid>
 
                 <Grid item xs={12}>

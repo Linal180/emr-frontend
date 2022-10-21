@@ -143,7 +143,6 @@ const CptForm: FC<cptCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, d
                 <Grid item xs={12}>
                   <InputController
                     notStep
-                    isRequired
                     fieldType='number'
                     disabled={loading}
                     controllerName='priority'
