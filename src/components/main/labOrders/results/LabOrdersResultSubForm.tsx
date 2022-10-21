@@ -23,7 +23,7 @@ const LabOrdersResultSubForm: FC<LabOrdersResultSubFormProps> = ({ index, setRes
   const { loinsCodeFields } = watch()
 
   const loinsCodeField = loinsCodeFields.find((_, fieldIndex) => fieldIndex === index)
-  const shouldShowCovidFields = loinsCodeField?.description.includes('corona')
+  const shouldShowCovidFields = loinsCodeField?.isCovid
 
   return (
     <Box p={2}>

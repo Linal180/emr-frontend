@@ -1248,6 +1248,7 @@ export interface LoinsCodeFields {
   testId: string
   loinccode: string
   description: string
+  isCovid: boolean
   resultsField: (LabOrdersResultOption1 | LabOrdersResultOption2)[]
 }
 
