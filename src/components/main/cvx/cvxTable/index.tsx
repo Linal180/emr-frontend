@@ -1,48 +1,40 @@
 import { Pagination } from '@material-ui/lab';
-import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer } from 'react'
-import { Box, Button, Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core'
+import { ChangeEvent, FC, Fragment, Reducer, useCallback, useEffect, useReducer } from 'react';
+import { Box, Button, Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core';
 //components
-import ICD10Form from '../icd10Form';
+import CvxCodeForm from '../cvxForm'
 import Alert from '../../../common/Alert';
-import Search from "../../../common/Search";
+import Search from '../../../common/Search';
 import TableLoader from '../../../common/TableLoader';
 import ConfirmationModal from '../../../common/ConfirmationModal';
 import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
-//styles, constants, 
+//constants, styles, svgs
 import { useTableStyles } from '../../../../styles/tableStyles';
-import { IcdCodesTableProps } from '../../../../interfacesTypes';
-import { getPageNumber, isLast, isSuperAdmin, renderTh } from '../../../../utils';
+import { getPageNumber, isLast, renderTh } from '../../../../utils';
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from '../../../../assets/svgs';
-import { icd10Reducer, Action, ActionType, State, initialState } from '../../../../reducers/icdTenReducer';
-import { FindAllIcdCodesPayload, useFindAllIcdCodesLazyQuery, useRemoveIcdCodeMutation } from '../../../../generated/graphql';
+import { State, Action, ActionType, initialState, cvxCodeReducer } from '../../../../reducers/cvxCodeReducer';
+import { FindAllCvxPayload, useFindAllCvxLazyQuery, useRemoveCvxCodeMutation } from '../../../../generated/graphql';
 import {
-  ACTIONS, ADD_NEW_TEXT, CODE, DASHES, DELETE_ICD_10_DESCRIPTION, DESCRIPTION, EIGHT_PAGE_LIMIT, ICD_TEN,
-  ICD_TEN_CODE, PAGE_LIMIT, PRIORITY
+  ACTIONS, ADD_NEW_TEXT, CODE, CVX_TEXT, DASHES, DELETE_CVX_CODE_DESCRIPTION, DESCRIPTION, EIGHT_PAGE_LIMIT, NAME,
+  NOTES, PAGE_LIMIT, STATUS
 } from '../../../../constants';
-import { AuthContext } from '../../../../context';
-
-const IcdCodesTable: FC<IcdCodesTableProps> = (): JSX.Element => {
-
-  const classes = useTableStyles()
-
-  const { user } = useContext(AuthContext)
-
-  const { roles } = user || {}
-  const isSuper = isSuperAdmin(roles);
 
 
-  const [state, dispatch] = useReducer<Reducer<State, Action>>(icd10Reducer, initialState);
-  const { isOpen, page, data, totalPages, openDelete, delId, itemId, searchQuery, systematic } = state;
+const CvxTable: FC = (): JSX.Element => {
 
-  const [fetchAllIcdCodes, { loading, error }] = useFindAllIcdCodesLazyQuery({
+  const classes = useTableStyles();
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(cvxCodeReducer, initialState);
+  const { searchQuery, data, openDelete, isOpen, itemId, page, totalPages, delId, systematic } = state;
+
+  const [findAllCvxCodes, { loading, error }] = useFindAllCvxLazyQuery({
     onCompleted: (data) => {
-      const { findAllIcdCodes } = data || {}
-      const { pagination, icdCodes, response } = findAllIcdCodes || {}
+      const { findAllCvx } = data || {}
+      const { cvxs, pagination, response } = findAllCvx || {}
       const { status } = response || {}
       if (status === 200) {
         const { totalPages } = pagination || {}
-        if (!!icdCodes?.length) {
-          dispatch({ type: ActionType.SET_DATA, data: icdCodes as FindAllIcdCodesPayload['icdCodes'] })
+        if (!!cvxs?.length) {
+          dispatch({ type: ActionType.SET_DATA, data: cvxs as FindAllCvxPayload['cvxs'] })
           totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
         } else {
           dispatch({ type: ActionType.SET_DATA, data: [] });
@@ -56,9 +48,9 @@ const IcdCodesTable: FC<IcdCodesTableProps> = (): JSX.Element => {
     }
   })
 
-  const [removeIcdCode, { loading: delLoading }] = useRemoveIcdCodeMutation({
+  const [removeCvxCode, { loading: delLoading }] = useRemoveCvxCodeMutation({
     onCompleted: async (resData) => {
-      const { removeIcdCode: { response } } = resData;
+      const { removeCvxCode: { response } } = resData;
 
       if (response) {
         const { status, message } = response
@@ -69,7 +61,7 @@ const IcdCodesTable: FC<IcdCodesTableProps> = (): JSX.Element => {
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
           if (!!data && (data.length > 1 || isLast(data?.length, page))) {
-            await fetchIcdCodes()
+            await fetchAllCvxCodes()
           } else {
             dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, isLast?.length || 0) })
           }
@@ -81,33 +73,15 @@ const IcdCodesTable: FC<IcdCodesTableProps> = (): JSX.Element => {
     },
   })
 
-  const handleModalClose = () => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: !isOpen });
-
-  const onPageChange = (_: ChangeEvent<unknown>, value: number) => dispatch({
-    type: ActionType.SET_PAGE, page: value
-  });
-
-  const fetchIcdCodes = useCallback(async (pageNo?: number) => {
-    try {
-      await fetchAllIcdCodes({
-        variables: {
-          findAllIcdCodesInput: {
-            paginationOptions: { limit: PAGE_LIMIT, page: pageNo || page },
-            searchQuery
-          }
-        }
-      })
-    } catch (error) { }
-  }, [fetchAllIcdCodes, page, searchQuery])
-
-  const fetchData = () => {
+  const search = (query: string) => {
+    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
+    dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
     dispatch({ type: ActionType.SET_PAGE, page: 1 })
-    fetchIcdCodes(1)
   }
 
-  useEffect(() => {
-    fetchIcdCodes()
-  }, [fetchIcdCodes]);
+  const addHandler = () => {
+    dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })
+  }
 
   const onDeleteClick = (id: string) => {
     if (id) {
@@ -116,43 +90,52 @@ const IcdCodesTable: FC<IcdCodesTableProps> = (): JSX.Element => {
     }
   };
 
-  const handleDelete = async () => {
-    (isSuper && delId) && await removeIcdCode({
-      variables: { removeIcdCodeInput: { id: delId } }
-    })
-  }
-
-  const handleEdit = (id: string, systematic: boolean) => {
-    dispatch({ type: ActionType.SET_SYSTEMATIC, systematic })
+  const handleEdit = (id: string) => {
     dispatch({ type: ActionType.SET_ITEM_ID, itemId: id })
     dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })
   };
 
-  const search = (query: string) => {
-    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
-    dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
-    dispatch({ type: ActionType.SET_PAGE, page: 1 })
+  const handleDelete = async () => {
+    delId && await removeCvxCode({
+      variables: { removeCvxCodeInput: { id: delId } }
+    })
   }
 
-  const addHandler = () => {
-    dispatch({ type: ActionType.SET_SYSTEMATIC, systematic: false })
-    dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })
+  const handleModalClose = () => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: !isOpen });
+
+  const onPageChange = (_: ChangeEvent<unknown>, value: number) => dispatch({
+    type: ActionType.SET_PAGE, page: value
+  });
+
+
+  const fetchAllCvxCodes = useCallback(async () => {
+    try {
+      await findAllCvxCodes({ variables: { findAllCvxInput: { paginationOptions: { limit: PAGE_LIMIT, page }, searchQuery } } })
+    } catch (error) { }
+  }, [findAllCvxCodes, page, searchQuery])
+
+  useEffect(() => {
+    fetchAllCvxCodes()
+  }, [fetchAllCvxCodes])
+
+
+  const fetchData = () => {
+    dispatch({ type: ActionType.SET_PAGE, page: 1 })
+    fetchAllCvxCodes()
   }
 
   return (
-    <>
+    <Fragment>
       <Grid container spacing={3}>
         <Grid item md={12} sm={12} xs={12}>
           <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
-            <Typography variant='h3'>{ICD_TEN}</Typography>
-
-            {
-              <Button
-                variant='contained' color='primary'
-                startIcon={<Box width={20}><AddWhiteIcon /></Box>}
-                onClick={addHandler}>
-                {ADD_NEW_TEXT}
-              </Button>}
+            <Typography variant='h3'>{CVX_TEXT}</Typography>
+            <Button
+              variant='contained' color='primary'
+              startIcon={<Box width={20}><AddWhiteIcon /></Box>}
+              onClick={addHandler}>
+              {ADD_NEW_TEXT}
+            </Button>
           </Box>
           <Box className={classes.mainTableContainer}>
             <Grid container spacing={3}>
@@ -166,8 +149,10 @@ const IcdCodesTable: FC<IcdCodesTableProps> = (): JSX.Element => {
                 <TableHead>
                   <TableRow>
                     {renderTh(CODE)}
+                    {renderTh(NAME)}
+                    {renderTh(STATUS)}
                     {renderTh(DESCRIPTION)}
-                    {renderTh(PRIORITY)}
+                    {renderTh(NOTES)}
                     {renderTh(ACTIONS)}
                   </TableRow>
                 </TableHead>
@@ -175,44 +160,50 @@ const IcdCodesTable: FC<IcdCodesTableProps> = (): JSX.Element => {
                 {loading ? (
                   <TableRow>
                     <TableCell colSpan={8}>
-                      <TableLoader numberOfRows={EIGHT_PAGE_LIMIT} numberOfColumns={5} />
+                      <TableLoader numberOfRows={EIGHT_PAGE_LIMIT} numberOfColumns={3} />
                     </TableCell>
                   </TableRow>
                 ) : <TableBody>
-                  {data?.map((icdCode) => {
-                    const { id, code, description, systematic, priority } = icdCode ?? {}
-
+                  {data?.map((cvx) => {
+                    const { id, cvxCode, shortDescription, name, notes, status, systematic } = cvx ?? {}
                     return (
                       <TableRow>
                         <TableCell scope="row">
-                          <Typography>{code || DASHES}</Typography>
+                          <Typography>{cvxCode ?? DASHES}</Typography>
                         </TableCell>
 
                         <TableCell scope="row">
-                          <Typography>{description || DASHES}</Typography>
+                          <Typography>{name ?? DASHES}</Typography>
                         </TableCell>
 
                         <TableCell scope="row">
-                          <Typography>{priority ?? DASHES}</Typography>
+                          <Typography>{status ?? DASHES}</Typography>
                         </TableCell>
 
-                        {<TableCell scope="row">
+                        <TableCell scope="row">
+                          <Typography>{shortDescription ?? DASHES}</Typography>
+                        </TableCell>
+
+                        <TableCell scope="row">
+                          <Typography>{notes ?? DASHES}</Typography>
+                        </TableCell>
+
+                        <TableCell scope="row">
                           <Box display='flex' alignItems='center'>
 
-                            <Box className={`${classes.iconsBackground} ${!isSuper ? 'disable-icon' : ''}`}>
-                              <Button onClick={() => id && handleEdit(id, systematic as boolean)}>
+                            <Box className={`${classes.iconsBackground} ${systematic ? 'disable-icon' : ''}`}>
+                              <Button onClick={() => id && handleEdit(id)}>
                                 <EditOutlinedIcon />
                               </Button>
                             </Box>
 
-                            <Box className={`${classes.iconsBackground} ${(systematic && !isSuper) ? 'disable-icon' : ''}`}>
+                            <Box className={`${classes.iconsBackground} ${systematic ? 'disable-icon' : ''}`}>
                               <Button onClick={() => id && onDeleteClick(id)}>
                                 <TrashOutlinedSmallIcon />
                               </Button>
                             </Box>
                           </Box>
                         </TableCell>
-                        }
                       </TableRow>
                     )
                   })}
@@ -231,23 +222,22 @@ const IcdCodesTable: FC<IcdCodesTableProps> = (): JSX.Element => {
       </Grid>
 
       <ConfirmationModal
-        title={ICD_TEN_CODE}
+        title={CVX_TEXT}
         isOpen={openDelete}
         isLoading={delLoading}
-        description={DELETE_ICD_10_DESCRIPTION}
+        description={DELETE_CVX_CODE_DESCRIPTION}
         handleDelete={handleDelete}
         setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
       />
-
-      <ICD10Form
+      {isOpen && <CvxCodeForm
         id={itemId}
         open={isOpen}
         isEdit={!!itemId}
         handleClose={handleModalClose}
-        fetch={() => fetchData()}
         dispatcher={dispatch}
+        fetch={() => fetchData()}
         systematic={systematic}
-      />
+      />}
 
       {totalPages > 1 && !loading && (
         <Box display="flex" justifyContent="flex-end" p={3}>
@@ -260,8 +250,8 @@ const IcdCodesTable: FC<IcdCodesTableProps> = (): JSX.Element => {
           />
         </Box>
       )}
-    </>
+    </Fragment>
   )
 }
 
-export default IcdCodesTable
+export default CvxTable

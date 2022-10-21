@@ -10,7 +10,7 @@ import TableLoader from '../../../common/TableLoader';
 import { NdcCodeSchema } from '../../../../validationSchemas';
 import { ActionType } from '../../../../reducers/cptCodeReducer';
 import { NdcCodeFormProps, NdcCodeFormType, SideDrawerCloseReason } from '../../../../interfacesTypes';
-import { ADD, CANCEL, CODE, DESCRIPTION, EDIT, NDC_TEXT, SOMETHING_WENT_WRONG, SUBMIT } from '../../../../constants';
+import { ADD, CANCEL, CODE, DESCRIPTION, EDIT, NDC_FORMAT, NDC_TEXT, SOMETHING_WENT_WRONG, SUBMIT } from '../../../../constants';
 import { useCreateNdcCodeMutation, useGetNdcCodeLazyQuery, useUpdateNdcCodeMutation } from '../../../../generated/graphql';
 
 const NdcForm: FC<NdcCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, dispatcher }): JSX.Element => {
@@ -126,7 +126,7 @@ const NdcForm: FC<NdcCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, d
               <Grid container spacing={3}>
 
                 <Grid item xs={12}>
-                  <InputController controllerName='code' disabled={loading} controllerLabel={CODE} isRequired toUpperCase />
+                  <InputController controllerName='code' disabled={loading} controllerLabel={CODE} isRequired toUpperCase placeholder={NDC_FORMAT} />
                 </Grid>
                 <Grid item xs={12}>
                   <InputController controllerName='description' multiline disabled={loading} controllerLabel={DESCRIPTION} />

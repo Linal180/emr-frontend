@@ -6,52 +6,52 @@ import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core"
 // components block
 import AutocompleteTextField from "../AutocompleteTextField";
 // utils and interfaces/types block
-import { renderMvxs, requiredLabel } from "../../../utils";
+import { renderCvxs, requiredLabel } from "../../../utils";
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
-import { MvxSelectorProps, SelectorOption } from "../../../interfacesTypes";
-import { FindAllMvxPayload, useFindAllMvxLazyQuery } from "../../../generated/graphql";
+import { CvxSelectorProps, SelectorOption } from "../../../interfacesTypes";
+import { FindAllCvxPayload, useFindAllCvxLazyQuery } from "../../../generated/graphql";
 
-const MvxSelector: FC<MvxSelectorProps> = ({
-  name, label, disabled, isRequired, addEmpty, onSelect, filteredOptions, placeHolder, mvxCode
+const CvxSelector: FC<CvxSelectorProps> = ({
+  name, label, disabled, isRequired, addEmpty, onSelect, filteredOptions, placeHolder
 }): JSX.Element => {
 
   const { control } = useFormContext()
   const [searchQuery, setSearchQuery] = useState<string>('')
-  const [mvxCodes, setMvxCodes] = useState<FindAllMvxPayload['mvxs']>([])
-  const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderMvxs(mvxCodes ?? [])] : [...renderMvxs(mvxCodes ?? [])]
+  const [cvxCodes, setCvxCodes] = useState<FindAllCvxPayload['cvxs']>([])
+  const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderCvxs(cvxCodes ?? [])] : [...renderCvxs(cvxCodes ?? [])]
 
-  const [findAllMvxCodes, { loading }] = useFindAllMvxLazyQuery({
+  const [findAllCvxCodes, { loading }] = useFindAllCvxLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
     onError() {
-      setMvxCodes([])
+      setCvxCodes([])
     },
 
     onCompleted(data) {
-      const { findAllMvx } = data || {};
+      const { findAllCvx } = data || {};
 
-      if (findAllMvx) {
-        const { mvxs } = findAllMvx
-        mvxs && setMvxCodes(mvxs as FindAllMvxPayload['mvxs'])
+      if (findAllCvx) {
+        const { cvxs } = findAllCvx
+        cvxs && setCvxCodes(cvxs as FindAllCvxPayload['cvxs'])
       }
     }
   });
 
-  const fetchAllMvxCodes = useCallback(async () => {
+  const fetchAllCvxCodes = useCallback(async () => {
     try {
       const pageInputs = { paginationOptions: { page: 1, limit: DROPDOWN_PAGE_LIMIT } }
-      await findAllMvxCodes({
-        variables: { findAllMvxInput: { ...pageInputs, searchQuery, mvxCode: mvxCode } }
+      await findAllCvxCodes({
+        variables: { findAllCvxInput: { ...pageInputs, searchQuery } }
       })
     } catch (error) { }
-  }, [findAllMvxCodes, searchQuery, mvxCode])
+  }, [findAllCvxCodes, searchQuery])
 
   useEffect(() => {
     if (!searchQuery.length || searchQuery.length > 2) {
-      fetchAllMvxCodes()
+      fetchAllCvxCodes()
     }
-  }, [searchQuery, fetchAllMvxCodes, mvxCode]);
+  }, [searchQuery, fetchAllCvxCodes]);
 
   const filterOptions = (options: SelectorOption[]) => {
     if (filteredOptions) {
@@ -109,4 +109,4 @@ const MvxSelector: FC<MvxSelectorProps> = ({
   );
 };
 
-export default MvxSelector;
+export default CvxSelector;

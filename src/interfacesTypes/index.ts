@@ -13,9 +13,9 @@ import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
 // constants, reducers, graphql block
 import { ATTACHMENT_TITLES, CONFIRMATION_MODAL_TYPE, ITEM_MODULE, UPFRONT_PAYMENT_TYPES } from "../constants";
 import {
-  AddVaccineInput, AllDoctorPayload, Allergies, AppointmentPayload, AppointmentsPayload, AppointmentStatus, Attachment,
+  AddVaccineInput, AddVaccineProductInput, AllDoctorPayload, Allergies, AppointmentPayload, AppointmentsPayload, AppointmentStatus, Attachment,
   AttachmentPayload, AttachmentType, BillingPayload, CodeType, Copay, CreateAppointmentInput, CreateContactInput,
-  CreateCptCodeInput, CreateCptFeeScheduleInput, CreateDoctorItemInput, CreateExternalAppointmentItemInput,
+  CreateCptCodeInput, CreateCptFeeScheduleInput, CreateCvxCodeInput, CreateDoctorItemInput, CreateExternalAppointmentItemInput,
   CreateFeeScheduleInput, CreateIcdCodeInput, CreateMvxCodeInput, CreatePatientAllergyInput, CreatePatientItemInput,
   CreatePatientMedicationInput, CreatePracticeItemInput, CreateProblemInput, CreateScheduleInput, CreateServiceInput,
   CreateStaffItemInput, Cvx, DependentQuestions, Doctor, DoctorPatient, FacilitiesPayload, FamilyHistory,
@@ -50,6 +50,8 @@ import { Action as ScheduleAction, State as ScheduleState } from "../reducers/sc
 import { Action as VaccineAction } from "../reducers/vaccinesReducer";
 import { Action as NdcCodeAction } from "../reducers/ndcCodeReducer";
 import { Action as MvxCodeAction } from "../reducers/mvxCodeReducer";
+import { Action as CvxCodeAction } from "../reducers/cvxCodeReducer";
+import { Action as VaccineProductAction } from "../reducers/vaccineProductReducer";
 
 export type Order = 'ASC' | 'DESC';
 type Key = string | number | undefined;
@@ -442,7 +444,6 @@ export type ChartingTemplateSelectorProps = ReactionSelectorInterface & {
 export interface NdcSelectorProps extends SelectorProps {
   filteredOptions?: SelectorOption[]
   placeHolder?: string;
-  mvxCodeId: string
 }
 
 export interface VaccineProductNdcSelectorProps extends SelectorProps {
@@ -455,7 +456,12 @@ export interface VaccineProductNdcSelectorProps extends SelectorProps {
 export interface MvxSelectorProps extends SelectorProps {
   filteredOptions?: SelectorOption[]
   placeHolder?: string;
-  mvxCode: string
+  mvxCode?: string
+}
+
+export type CvxSelectorProps = SelectorProps & {
+  filteredOptions?: SelectorOption[]
+  placeHolder?: string;
 }
 
 export interface PracticeSelectorProps extends SelectorProps {
@@ -638,6 +644,8 @@ export type PatientChartingInfo = {
   surgicalHistories: SurgicalHistory[]
   triageNotes: TriageNotes[]
   familyHistories: FamilyHistory[]
+  reviewOfSystem: ReviewOfSystemPayload['reviewOfSystem']
+  patientIllnessHistory: PatientIllnessHistoryPayload['patientIllnessHistory']
 }
 
 export type PatientChartingReview = {
@@ -1240,6 +1248,7 @@ export interface LoinsCodeFields {
   testId: string
   loinccode: string
   description: string
+  isCovid: boolean
   resultsField: (LabOrdersResultOption1 | LabOrdersResultOption2)[]
 }
 
@@ -1402,6 +1411,7 @@ export interface PatientCardsProps extends GeneralFormProps {
   shouldDisableEdit?: boolean
   disableSubmit?: boolean
   loading?: boolean
+  isAppointment: boolean
 }
 
 export interface InsuranceSelectionProps extends GeneralFormProps {
@@ -1424,6 +1434,7 @@ export interface FacilityCardsProps extends GeneralFormProps {
 export interface PatientFormProps extends GeneralFormProps {
   shouldShowBread?: boolean
   shouldDisableEdit?: boolean
+  isAppointment?: boolean
 }
 
 export type UpFrontPaymentProps = {
@@ -2407,6 +2418,10 @@ export type ICD10FormType = Pick<CreateIcdCodeInput, 'code' | 'description'> & {
 export type CptCodeFormType = Pick<CreateCptCodeInput, 'code' | 'shortDescription'> & { priority: string };
 export type NdcCodeFormType = { code: string, description: string };
 export type MvxCodeFormType = Pick<CreateMvxCodeInput, 'manufacturerName' | 'mvxCode' | 'notes'> & { mvxStatus: SelectorOption }
+export type CvxCodeFormType = Pick<CreateCvxCodeInput, 'name' | 'cvxCode' | 'shortDescription' | 'notes'> & { cptCode: SelectorOption, status: SelectorOption }
+export type VaccineProductFormType = Pick<AddVaccineProductInput, 'name'> & {
+  cvx: SelectorOption, mvx: SelectorOption, ndcCode: SelectorOption, status: SelectorOption
+}
 
 export type ICD10FormProps = {
   open: boolean;
@@ -2446,6 +2461,26 @@ export type MvxCodeFormProps = {
   fetch?: Function;
   id?: string;
   dispatcher?: Dispatch<MvxCodeAction>
+  handleClose: (open: boolean) => void
+  systematic?: boolean
+}
+
+export type CvxCodeFormProps = {
+  open: boolean;
+  isEdit: boolean;
+  fetch?: Function;
+  id?: string;
+  dispatcher?: Dispatch<CvxCodeAction>
+  handleClose: (open: boolean) => void
+  systematic?: boolean
+}
+
+export type VaccineProductFormProps = {
+  open: boolean;
+  isEdit: boolean;
+  fetch?: Function;
+  id?: string;
+  dispatcher?: Dispatch<VaccineProductAction>
   handleClose: (open: boolean) => void
 }
 

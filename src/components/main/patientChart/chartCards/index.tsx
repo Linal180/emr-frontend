@@ -33,7 +33,7 @@ import { HistoryIcon } from "../../../../assets/svgs";
 import {
   CONFIRMATION_MODAL_TYPE, DISCHARGE, DISCHARGE_PATIENT_DESCRIPTION, DONE_INTAKE, EXAM_OPTION,
   PATIENT_CHARTING_MENU, PATIENT_CHARTING_TABS, PATIENT_DISCHARGED, PATIENT_DISCHARGED_SUCCESS, TRIAGE_NOTE_OPTION,
-  PRINT_CHART, REASON_FOR_VISIT_OPTION, SIGN_OFF, VISIT_OPTION,
+  PRINT_CHART, REASON_FOR_VISIT_OPTION, SIGN_OFF, VISIT_OPTION, CHART_TEXT,
 } from "../../../../constants";
 import { AuthContext, ChartContextProvider } from '../../../../context';
 import { AppointmentStatus, useUpdateAppointmentStatusMutation } from "../../../../generated/graphql";
@@ -256,7 +256,7 @@ const ChartCards: FC<ChartComponentProps> = ({ appointmentState, shouldDisableEd
       <Card>
         <Box p={2} display="flex" flexWrap="wrap" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
           {/* <Typography variant="h4">{CHART_TEXT}</Typography> */}
-          <Typography variant="h4">{serviceName}</Typography>
+          <Typography variant="h4">{serviceName || CHART_TEXT}</Typography>
 
           <Box display="flex" flexWrap="wrap" alignItems="center">
             <Box m={0.5}>

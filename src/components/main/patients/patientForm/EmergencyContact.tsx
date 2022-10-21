@@ -9,16 +9,17 @@ import CardComponent from "../../../common/CardComponent"
 import InputController from "../../../../controller"
 import { PatientCardsProps } from "../../../../interfacesTypes"
 import {
-  EMERGENCY_CONTACT, HOME_PHONE, MAPPED_CONTACT_RELATIONSHIP_TYPE, MOBILE_PHONE, NAME, RELATIONSHIP
+  EMERGENCY_CONTACT, HOME_PHONE, MAPPED_CONTACT_RELATIONSHIP_TYPE, MOBILE_PHONE, NAME, SAVE_AND_NEXT, RELATIONSHIP, SAVE_TEXT
 } from "../../../../constants"
 
 const EmergencyContactCard: FC<PatientCardsProps> = ({
-  getPatientLoading, shouldDisableEdit, state, disableSubmit, isEdit
+  getPatientLoading, shouldDisableEdit, state, disableSubmit, isEdit, isAppointment
 }) => {
   return (
     <CardComponent
       saveBtn={!shouldDisableEdit}
       state={state}
+      saveBtnText={isAppointment ? SAVE_AND_NEXT : SAVE_TEXT}
       isEdit={isEdit}
       cardTitle={EMERGENCY_CONTACT}
       disableSubmit={disableSubmit}

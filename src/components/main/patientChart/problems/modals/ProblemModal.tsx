@@ -1,5 +1,6 @@
 // packages block
 import { FC, useCallback, useEffect, useState } from 'react';
+import moment from 'moment';
 import { useParams } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
@@ -163,7 +164,7 @@ const ProblemModal: FC<AddModalProps> = ({
     const commonInput = {
       note,
       ...(severity && { problemSeverity: severity.toUpperCase() as ProblemSeverity, }),
-      problemStartDate,
+      problemStartDate: moment(problemStartDate).format("MM-DD-YYYY"),
       ...(typeStatus && { problemType: typeStatus.toUpperCase() as ProblemType })
     }
 

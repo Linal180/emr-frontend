@@ -14,7 +14,7 @@ import DatePicker from '../../../../common/DatePicker';
 import TextLoader from '../../../../common/TextLoader';
 import InputController from '../../../../../controller';
 import MvxSelector from '../../../../common/Selector/MvxSelector';
-import NdcSelector from '../../../../common/Selector/VaccineNdcSelector';
+import VaccineNdcSelector from '../../../../common/Selector/VaccineNdcSelector';
 // constants block
 import { GREY_THREE } from '../../../../../theme';
 import { PageBackIcon } from '../../../../../assets/svgs';
@@ -290,12 +290,11 @@ const VaccineModal: FC<VaccineModalProps> = ({
                   loading={loading}
                   mvxCode={mvxCode || ''}
                   label={MANUFACTURER_TEXT}
-                  options={VACCINE_SITES_MAPPED}
                 />
               </Grid>
 
               <Grid item md={6} sm={6} xs={12}>
-                <NdcSelector
+                <VaccineNdcSelector
                   addEmpty
                   name='ndc'
                   label={NDC_TEXT}

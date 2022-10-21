@@ -80,18 +80,24 @@ const CptCodeTable: FC<IcdCodesTableProps> = (): JSX.Element => {
     type: ActionType.SET_PAGE, page: value
   });
 
-  const fetchIcdCodes = useCallback(async () => {
+  const fetchIcdCodes = useCallback(async (pageNo?: number) => {
     try {
       await fetchAllIcdCodes({
         variables: {
           findAllCptCodesInput: {
-            paginationOptions: { limit: PAGE_LIMIT, page: page },
+            paginationOptions: { limit: PAGE_LIMIT, page: pageNo || page },
             code: searchQuery
           }
         }
       })
     } catch (error) { }
   }, [fetchAllIcdCodes, page, searchQuery])
+
+
+  const fetchData = () => {
+    dispatch({ type: ActionType.SET_PAGE, page: 1 })
+    fetchIcdCodes(1)
+  }
 
   useEffect(() => {
     fetchIcdCodes()
@@ -134,13 +140,12 @@ const CptCodeTable: FC<IcdCodesTableProps> = (): JSX.Element => {
           <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
             <Typography variant='h3'>{CPT_CODES}</Typography>
 
-            {
-              <Button
-                variant='contained' color='primary'
-                startIcon={<Box width={20}><AddWhiteIcon /></Box>}
-                onClick={addHandler}>
-                {ADD_NEW_TEXT}
-              </Button>}
+            <Button
+              variant='contained' color='primary'
+              startIcon={<Box width={20}><AddWhiteIcon /></Box>}
+              onClick={addHandler}>
+              {ADD_NEW_TEXT}
+            </Button>
           </Box>
           <Box className={classes.mainTableContainer}>
             <Grid container spacing={3}>
@@ -233,7 +238,7 @@ const CptCodeTable: FC<IcdCodesTableProps> = (): JSX.Element => {
         isEdit={!!itemId}
         handleClose={handleModalClose}
         dispatcher={dispatch}
-        fetch={() => fetchIcdCodes()}
+        fetch={() => fetchData()}
         systematic={systematic}
       />}
 

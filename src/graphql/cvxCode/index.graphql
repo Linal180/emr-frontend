@@ -14,8 +14,76 @@ query FindAllCvx($findAllCvxInput: FindAllCvxInput!) {
     cvxs {
       id
       name
+      notes
+      status
       cvxCode
       shortDescription
+      systematic
+    }
+  }
+}
+
+query GetCvxCode($getCvxCodeInput: GetCvxCodeInput!) {
+  getCvxCode(getCvxCodeInput: $getCvxCodeInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    cvx {
+      id
+      name
+      notes
+      status
+      cvxCode
+      shortDescription
+    }
+  }
+}
+
+
+# mutation
+
+
+mutation RemoveCvxCode($removeCvxCodeInput: RemoveCvxCodeInput!) {
+  removeCvxCode(removeCvxCodeInput: $removeCvxCodeInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    cvx {
+      id
+    }
+  }
+}
+
+mutation CreateCvxCode($createCvxCodeInput: CreateCvxCodeInput!) {
+  createCvxCode(createCvxCodeInput: $createCvxCodeInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    cvx {
+      id
+    }
+  }
+}
+
+mutation UpdateCvxCode($updateCvxCodeInput: UpdateCvxCodeInput!) {
+  updateCvxCode(updateCvxCodeInput: $updateCvxCodeInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    cvx {
+      id
     }
   }
 }

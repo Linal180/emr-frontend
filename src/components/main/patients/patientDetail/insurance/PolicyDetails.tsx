@@ -1,24 +1,24 @@
 // packages block
-import { FC } from "react";
-import { useFieldArray, useFormContext } from "react-hook-form";
 import { Box, Button, Grid, Typography } from "@material-ui/core";
 import { AddCircleOutline, RemoveCircleOutline } from "@material-ui/icons";
+import { FC } from "react";
+import { useFieldArray, useFormContext } from "react-hook-form";
 // components block
-import Selector from "../../../../common/Selector";
-import DatePicker from "../../../../common/DatePicker";
 import InputController from "../../../../../controller";
+import DatePicker from "../../../../common/DatePicker";
+import Selector from "../../../../common/Selector";
 import DoctorSelector from "../../../../common/Selector/DoctorSelector";
 // constants, types, interfaces, utils block
-import { formatValue, setRecord } from "../../../../../utils";
-import { PolicyHolderRelationshipType } from "../../../../../generated/graphql";
-import { GeneralFormProps, InsuranceCreateInput } from "../../../../../interfacesTypes";
 import {
-  ADD_ANOTHER_COPAY_AMOUNT, COINSURANCE_PERCENTAGE, COPAY_AMOUNTS_TOOLTIP, COPAY_TYPE, EMPTY_OPTION,
+  ADD_COPAY_AMOUNT, COINSURANCE_PERCENTAGE, COPAY_AMOUNTS_TOOLTIP, COPAY_TYPE, EMPTY_OPTION,
   EXPIRATION_DATE, INITIAL_COPAY_VALUE, ISSUE_DATE, MAPPED_COPAY_TYPE, MAPPED_POLICY_HOLDER_RELATIONSHIP_TYPE,
   MAPPED_PRICING_PRODUCT_TYPE, MEMBER_ID_CERTIFICATE_NUMBER, MEMBER_ID_CERTIFICATE_NUMBER_TOOLTIP, NOTES,
   PATIENT_RELATIONSHIP_TO_POLICY_HOLDER, POLICY_GROUP_NUMBER, PRICING_PRODUCT_TYPE, PRIMARY_CARE_PROVIDER,
   REFERRING_PROVIDER, REMOVE_COPAY_AMOUNT, SUFFIX, VALUE
 } from "../../../../../constants";
+import { PolicyHolderRelationshipType } from "../../../../../generated/graphql";
+import { GeneralFormProps, InsuranceCreateInput } from "../../../../../interfacesTypes";
+import { formatValue, setRecord } from "../../../../../utils";
 
 const PolicyDetails: FC<GeneralFormProps> = ({ isEdit, loading }) => {
   const { control } = useFormContext<InsuranceCreateInput>()
@@ -137,7 +137,7 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit, loading }) => {
                 >
                   <AddCircleOutline color='secondary' />
                   <Box ml={1} />
-                  <Typography color="secondary">{ADD_ANOTHER_COPAY_AMOUNT}</Typography>
+                  <Typography color="secondary">{ADD_COPAY_AMOUNT}</Typography>
                 </Button>
               </Box>
             </Grid>

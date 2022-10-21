@@ -41,7 +41,7 @@ import {
   ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, UserForms,
   AttachmentType, AttachmentsPayload, UsersPayload, UnitType, PracticeType, SchedulesPayload,
   WeightType, ClaimStatus, AllCptCodePayload, AllModifiersPayload, FeeSchedule, CptFeeSchedule,
-  AllCptFeeSchedulesPayload, Taxonomy, TaxonomyPayload, FindAllNdcPayload, FindAllMvxPayload, FindAllQuestionTemplatesPayload, FindAllNdcVaccineProductsPayload, QuestionTemplate,
+  AllCptFeeSchedulesPayload, Taxonomy, TaxonomyPayload, FindAllNdcPayload, FindAllMvxPayload, FindAllQuestionTemplatesPayload, FindAllNdcVaccineProductsPayload, QuestionTemplate, FindAllCvxPayload,
 } from "../generated/graphql";
 
 export const handleLogout = () => {
@@ -906,6 +906,21 @@ export const renderVaccineProductNdcs = (ndcCodes: FindAllNdcVaccineProductsPayl
   return data;
 }
 
+export const renderCvxs = (mvxsCodes: FindAllCvxPayload['cvxs']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!mvxsCodes) {
+    for (let item of mvxsCodes) {
+      if (item) {
+        const { id, cvxCode, name, shortDescription } = item;
+
+        cvxCode && data.push({ id, name: shortDescription ? `${cvxCode}:${name || ''} | ${shortDescription}` : cvxCode })
+      }
+    }
+  }
+
+  return data;
+}
 
 export const renderMvxs = (mvxsCodes: FindAllMvxPayload['mvxs']) => {
   const data: SelectorOption[] = [];
