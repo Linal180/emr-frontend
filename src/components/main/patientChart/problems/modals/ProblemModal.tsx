@@ -29,6 +29,7 @@ import {
   IcdCodes, IcdCodesWithSnowMedCode, ProblemSeverity, ProblemType, useAddPatientProblemMutation,
   useGetPatientProblemLazyQuery, useUpdatePatientProblemMutation
 } from '../../../../../generated/graphql';
+import moment from 'moment';
 
 const ProblemModal: FC<AddModalProps> = ({
   dispatcher, fetch, isEdit, item, recordId, isOpen = false, handleClose
@@ -163,7 +164,7 @@ const ProblemModal: FC<AddModalProps> = ({
     const commonInput = {
       note,
       ...(severity && { problemSeverity: severity.toUpperCase() as ProblemSeverity, }),
-      problemStartDate,
+      problemStartDate: moment(problemStartDate).format("MM-DD-YYYY"),
       ...(typeStatus && { problemType: typeStatus.toUpperCase() as ProblemType })
     }
 

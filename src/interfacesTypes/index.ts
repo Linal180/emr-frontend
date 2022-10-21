@@ -639,6 +639,8 @@ export type PatientChartingInfo = {
   surgicalHistories: SurgicalHistory[]
   triageNotes: TriageNotes[]
   familyHistories: FamilyHistory[]
+  reviewOfSystem: ReviewOfSystemPayload['reviewOfSystem']
+  patientIllnessHistory: PatientIllnessHistoryPayload['patientIllnessHistory']
 }
 
 export type PatientChartingReview = {

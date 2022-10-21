@@ -1,11 +1,7 @@
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import {
-  ACTIVE, ACUITY, ASSOCIATED_DX, BLOOD_PRESSURE_TEXT, START, CURRENT, DIAGNOSES, DOB, DOB_TEXT, DRUG_ALLERGIES,
-  ENVIRONMENTAL_ALLERGIES, FACILITY, FAMILY_HISTORY_TEXT, FIRST_NAME, FOOD_ALLERGIES, HISTORICAL, LAST_NAME, SEX,
-  MEDICATIONS, NOTES, NO_DRUG_ALLERGIES_RECORDED, ONSET_DATE, PHONE, NO_ENVIRONMENTAL_ALLERGIES_RECORDED, START_STOP,
-  NO_FOOD_ALLERGIES_RECORDED, ONSET, ONSET_AGE_TEXT, PROBLEM_TEXT, SIG, PROCEDURE_TEXT, RELATIVE, TEMPERATURE_TEXT,
-  RESPIRATORY_RATE_TEXT, SEVERITY_REACTIONS, SURGERY_DATE, SURGICAL_HISTORY_TEXT, TRIAGE_NOTES, VITALS_TEXT,
-  PATIENT_ID, NO_SURGICAL_PROCEDURE_RECORDED, EXPRESS_HEALTHCARE_URL, NO_NOTES_ADDED,
+  ACTIVE, ACUITY, ASSOCIATED_DX, BLOOD_PRESSURE_TEXT, CURRENT, DIAGNOSES, DOB, DOB_TEXT, DRUG_ALLERGIES,
+  ENVIRONMENTAL_ALLERGIES, EXPRESS_HEALTHCARE_URL, FACILITY, FAMILY_HISTORY_TEXT, FIRST_NAME, FOOD_ALLERGIES, HISTORICAL, HISTORY_OF_PATIENT_ILLNESS, LAST_NAME, MEDICATIONS, NOTES, NO_DATA_FOUND, NO_DRUG_ALLERGIES_RECORDED, NO_ENVIRONMENTAL_ALLERGIES_RECORDED, NO_FOOD_ALLERGIES_RECORDED, NO_NOTES_ADDED, NO_SURGICAL_PROCEDURE_RECORDED, ONSET, ONSET_AGE_TEXT, ONSET_DATE, PATIENT_ID, PHONE, PROBLEM_TEXT, PROCEDURE_TEXT, RELATIVE, RESPIRATORY_RATE_TEXT, REVIEW_OF_SYSTEM_TEXT, SEVERITY_REACTIONS, SEX, SIG, START, START_STOP, SURGERY_DATE, SURGICAL_HISTORY_TEXT, TEMPERATURE_TEXT, TRIAGE_NOTES, VITALS_TEXT
 } from "../../../../../constants";
 import { AllergyType, Genderidentity, ProblemType } from "../../../../../generated/graphql";
 import { PatientChartingInfo } from "../../../../../interfacesTypes";
@@ -151,11 +147,15 @@ const styles = StyleSheet.create({
   },
   borderRed: {
     border: '1px solid red',
-  }
+  },
+  ml10: {
+    marginLeft: '10px',
+  },
 });
 
 const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: PatientChartingInfo | null, modulesToPrint: string[] }) => {
-  const { patientInfo, patientProblems, patientAllergies, patientMedications, patientVitals, surgicalHistories, triageNotes, familyHistories } = patientChartInfo || {}
+  const { patientInfo, patientProblems, patientAllergies, patientMedications,
+    patientVitals, surgicalHistories, triageNotes, familyHistories, patientIllnessHistory, reviewOfSystem } = patientChartInfo || {}
   const { firstName, lastName, dob, genderIdentity, patientRecord, facility } =
     patientInfo || {}
   // const { address: patientAddress, address2: patientAddress2, city: patientCity, state: patientState, zipCode: patientZipCode, mobile } =
@@ -167,13 +167,17 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
   const { phone, address, address2, city, state, zipCode } = facilityContacts?.find((facilityContact) => facilityContact?.primaryContact) || {}
   const { name: practiceName, attachments } = practice || {}
   const { url } = attachments?.[0] || {}
+  const singlePatientProblems = patientProblems?.filter((problem, index, self) => index === self.findIndex((t) => (
+    t.ICDCode?.code === problem.ICDCode?.code
+  )))
 
-  const activeProblems = patientProblems?.filter((problem) => problem.problemType === ProblemType.Active) || []
-  const historicProblems = patientProblems?.filter((problem) => problem.problemType === ProblemType.Historic) || []
+  const activeProblems = singlePatientProblems?.filter((problem) => problem.problemType === ProblemType.Active) || []
+  const historicProblems = singlePatientProblems?.filter((problem) => problem.problemType === ProblemType.Historic) || []
 
   const drugAllergies = patientAllergies?.filter((allergy) => allergy.allergy?.allergyType === AllergyType.Drug)
   const foodAllergies = patientAllergies?.filter((allergy) => allergy.allergy?.allergyType === AllergyType.Food)
   const environmentAllergies = patientAllergies?.filter((allergy) => allergy.allergy?.allergyType === AllergyType.Environment)
+
 
   return (
     <Document>
@@ -953,6 +957,79 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                 <View style={{ height: '10px' }}>
                 </View>
               </View>
+            </> : <View></View>}
+
+          {modulesToPrint.includes('ROS') ?
+            <>
+              <View style={styles.tableRow}>
+                <View style={[styles.w100]}>
+                  <View style={[styles.bgLightGrey, styles.borderStyle, styles.borderTopWidth, styles.borderBottomWidth]}>
+                    <Text style={styles.fieldTitle2}>{REVIEW_OF_SYSTEM_TEXT}</Text>
+                  </View>
+                </View>
+              </View>
+
+              {/* spacing-row */}
+              <View style={styles.tableRow}>
+                <View style={{ height: '10px' }}>
+                </View>
+              </View>
+              {reviewOfSystem?.answers?.length ? reviewOfSystem?.answers?.map(answerInfo => {
+                const { answer, value } = answerInfo || {}
+                const { name } = answer || {}
+                const [first, second] = name?.split('fill') || []
+
+                return (
+                  <View style={[styles.tableRow, styles.ml10]}>
+                    <View style={[styles.w100]}>
+                      <View style={styles.fieldRow3}>
+                        <Text style={styles.fieldText}>{`${first} ${value || ''} ${second || ''}`}</Text>
+                      </View>
+                    </View>
+                  </View>
+                )
+              }) : <View style={[styles.w100]}>
+                <View style={styles.fieldRow3}>
+                  <Text style={styles.fieldText}>{NO_DATA_FOUND}</Text>
+                </View>
+              </View>}
+            </> : <View></View>}
+
+          {modulesToPrint.includes('HPI') ?
+            <>
+              <View style={styles.tableRow}>
+                <View style={[styles.w100]}>
+                  <View style={[styles.bgLightGrey, styles.borderStyle, styles.borderTopWidth, styles.borderBottomWidth]}>
+                    <Text style={styles.fieldTitle2}>{HISTORY_OF_PATIENT_ILLNESS}</Text>
+                  </View>
+                </View>
+              </View>
+
+              {/* spacing-row */}
+              <View style={styles.tableRow}>
+                <View style={{ height: '10px' }}>
+                </View>
+              </View>
+              {/* 7.1-row */}
+              {patientIllnessHistory?.answers?.length ? patientIllnessHistory?.answers?.map(answerInfo => {
+                const { answer, value } = answerInfo || {}
+                const { name } = answer || {}
+                const [first, second] = name?.split('fill') || []
+
+                return (
+                  <View style={[styles.tableRow, styles.ml10]}>
+                    <View style={[styles.w100]}>
+                      <View style={styles.fieldRow3}>
+                        <Text style={styles.fieldText}>{`${first} ${value || ''} ${second || ''}`}</Text>
+                      </View>
+                    </View>
+                  </View>
+                )
+              }) : <View style={[styles.w100]}>
+                <View style={styles.fieldRow3}>
+                  <Text style={styles.fieldText}>{NO_DATA_FOUND}</Text>
+                </View>
+              </View>}
             </> : <View></View>}
         </View>
       </Page>
