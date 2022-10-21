@@ -1,23 +1,23 @@
 // packages block
+import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Button, Typography } from '@material-ui/core';
-import { useParams } from 'react-router';
-import { FC, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 //components block
-import { LabOrderCreateProps, LabOrdersCreateFormInput, ParamsType } from '../../../../interfacesTypes';
-import { GREY_SIXTEEN } from '../../../../theme';
 import Alert from '../../../common/Alert';
-import Loader from '../../../common/Loader';
 import LabOrderComponent from './LabOrder';
+import Loader from '../../../common/Loader';
 // utils, constants, interfaces block
+import { GREY_SIXTEEN } from '../../../../theme';
+import { createLabOrdersSchema } from '../../../../validationSchemas';
+import { convertDateFromUnix, generateString, getFormatDateString, setRecord } from '../../../../utils';
+import { LabOrderCreateProps, LabOrdersCreateFormInput, ParamsType } from '../../../../interfacesTypes';
 import {
   CREATE, EDIT_LAB_ORDER, LAB_ORDER_CREATE_SUCCESS, LAB_ORDER_SIDEDRAWER_STEPS,
   NEW_LAB_ORDER, NOT_FOUND_EXCEPTION, UPDATE, USER_NOT_FOUND_EXCEPTION_MESSAGE
 } from '../../../../constants';
 import { LabTestStatus, useCreateLabTestMutation, useRemoveLabTestMutation, useUpdateLabTestMutation } from '../../../../generated/graphql';
-import { convertDateFromUnix, generateString, getFormatDateString, setRecord } from '../../../../utils';
-import { createLabOrdersSchema } from '../../../../validationSchemas';
 
 export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo, toggleSideDrawer, isEdit, labTestsToEdit, orderNumber }): JSX.Element => {
   const [activeStep, setActiveStep] = useState(0);
@@ -112,53 +112,49 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
     }
   });
 
-  useEffect(() => {
-    if (isEdit) {
-      const { appointment, labTestStatus, primaryProvider, referringProvider, accessionNumber, providerNotes } = labTestsToEdit?.[0] || {}
-      accessionNumber && setAccessionNumber(accessionNumber)
-      appointment?.id && setValue('appointment', {
-        id: appointment?.id,
-        name: `${appointment?.appointmentType?.name.trim() ?? ''} ${convertDateFromUnix(appointment?.scheduleStartDateTime, 'MM-DD-YYYY hh:mm A')}`
+  const valueSetter = useCallback(() => {
+    const { appointment, labTestStatus, primaryProvider, referringProvider, accessionNumber, providerNotes } = labTestsToEdit?.[0] || {}
+    accessionNumber && setAccessionNumber(accessionNumber)
+    appointment?.id && setValue('appointment', {
+      id: appointment?.id,
+      name: `${appointment?.appointmentType?.name.trim() ?? ''} ${convertDateFromUnix(appointment?.scheduleStartDateTime, 'MM-DD-YYYY hh:mm A')}`
+    })
+    labTestStatus && setValue('labTestStatus', setRecord(labTestStatus, labTestStatus))
+    primaryProvider?.id && setValue('primaryProviderId', setRecord(primaryProvider?.id, `${primaryProvider?.firstName} ${primaryProvider?.lastName}`))
+    referringProvider?.id && setValue('referringProviderId', setRecord(referringProvider?.id, `${referringProvider?.firstName} ${referringProvider?.lastName}`))
+    providerNotes && setValue('providerNotes', providerNotes)
+
+    labTestsToEdit?.forEach((labTest, index) => {
+      const { test, testDate, testNotes, testSpecimens, testTime, diagnoses, id } = labTest || {}
+      const diagnosesIds = diagnoses?.map((value) => {
+        return {
+          label: `${value?.code} | ${value?.description}`,
+          value: value?.id || ''
+        }
+      }) ?? []
+
+      testDate && setValue(`testFieldValues.${index}.testDate`, testDate)
+      testTime && setValue(`testFieldValues.${index}.testTime`, testTime)
+      testNotes && setValue(`testFieldValues.${index}.testNotes`, testNotes)
+      testNotes && setValue(`testFieldValues.${index}.testNotes`, testNotes)
+      diagnosesIds && setValue(`testFieldValues.${index}.diagnosesIds`, diagnosesIds)
+      test?.id && setValue(`testFieldValues.${index}.test`, setRecord(test.id, test.loincNum ? `${test.loincNum} | ${test.component}` : `${test.component}`))
+      id && setValue(`testFieldValues.${index}.testId`, id)
+
+      testSpecimens?.forEach((testSpecimen, subIndex) => {
+        const { collectionDate, collectionTime, specimenNotes, specimenTypes } = testSpecimen || {}
+        collectionDate && setValue(`testFieldValues.${index}.specimenTypeField.${subIndex}.collectionDate`, collectionDate)
+        collectionTime && setValue(`testFieldValues.${index}.specimenTypeField.${subIndex}.collectionTime`, collectionTime)
+        specimenNotes && setValue(`testFieldValues.${index}.specimenTypeField.${subIndex}.specimenNotes`, specimenNotes)
+        specimenTypes?.id && setValue(`testFieldValues.${index}.specimenTypeField.${subIndex}.specimenType`, setRecord(specimenTypes?.id, specimenTypes?.name || ''))
       })
-      labTestStatus && setValue('labTestStatus', setRecord(labTestStatus, labTestStatus))
-      primaryProvider?.id && setValue('primaryProviderId', setRecord(primaryProvider?.id, `${primaryProvider?.firstName} ${primaryProvider?.lastName}`))
-      referringProvider?.id && setValue('referringProviderId', setRecord(referringProvider?.id, `${referringProvider?.firstName} ${referringProvider?.lastName}`))
-      providerNotes && setValue('providerNotes', providerNotes)
-
-      labTestsToEdit?.forEach((labTest, index) => {
-        const { test, testDate, testNotes, testSpecimens, testTime, diagnoses, id } = labTest || {}
-        const diagnosesIds = diagnoses?.map((value) => {
-          return {
-            label: `${value?.code} | ${value?.description}`,
-            value: value?.id || ''
-          }
-        }) ?? []
-
-        testDate && setValue(`testFieldValues.${index}.testDate`, testDate)
-        testTime && setValue(`testFieldValues.${index}.testTime`, testTime)
-        testNotes && setValue(`testFieldValues.${index}.testNotes`, testNotes)
-        testNotes && setValue(`testFieldValues.${index}.testNotes`, testNotes)
-        diagnosesIds && setValue(`testFieldValues.${index}.diagnosesIds`, diagnosesIds)
-        test?.id && setValue(`testFieldValues.${index}.test`, setRecord(test.id, test.loincNum ? `${test.loincNum} | ${test.component}` : `${test.component}`))
-        id && setValue(`testFieldValues.${index}.testId`, id)
-
-        testSpecimens?.forEach((testSpecimen, subIndex) => {
-          const { collectionDate, collectionTime, specimenNotes, specimenTypes } = testSpecimen || {}
-          collectionDate && setValue(`testFieldValues.${index}.specimenTypeField.${subIndex}.collectionDate`, collectionDate)
-          collectionTime && setValue(`testFieldValues.${index}.specimenTypeField.${subIndex}.collectionTime`, collectionTime)
-          specimenNotes && setValue(`testFieldValues.${index}.specimenTypeField.${subIndex}.specimenNotes`, specimenNotes)
-          specimenTypes?.id && setValue(`testFieldValues.${index}.specimenTypeField.${subIndex}.specimenType`, setRecord(specimenTypes?.id, specimenTypes?.name || ''))
-        })
-      })
-      setIsLoading(false)
-    }
-  }, [isEdit, labTestsToEdit, setValue])
+    })
+    setIsLoading(false)
+  }, [labTestsToEdit, setValue])
 
   useEffect(() => {
-    return () => {
-      toggleSideDrawer && toggleSideDrawer()
-    }
-  }, [toggleSideDrawer])
+    isEdit && valueSetter()
+  }, [isEdit, valueSetter])
 
   const handleTestCreation = (values: LabOrdersCreateFormInput) => {
     const { appointment, testFieldValues, orderNum, accessionNumber, primaryProviderId, referringProviderId, providerNotes } = values

@@ -31,7 +31,7 @@ const NdcTable: FC = (): JSX.Element => {
         const { totalPages } = pagination || {}
         if (!!ndcs?.length) {
           dispatch({ type: ActionType.SET_DATA, data: ndcs as FindAllNdcPayload['ndcs'] })
-          totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
+          dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: totalPages || 0 })
         } else {
           dispatch({ type: ActionType.SET_DATA, data: [] });
           dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 });
@@ -153,7 +153,7 @@ const NdcTable: FC = (): JSX.Element => {
                   </TableRow>
                 ) : <TableBody>
                   {data?.map((icdCode) => {
-                    const { id, code, description,systematic } = icdCode ?? {}
+                    const { id, code, description, systematic } = icdCode ?? {}
                     return (
                       <TableRow>
                         <TableCell scope="row">

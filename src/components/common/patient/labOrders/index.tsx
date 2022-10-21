@@ -155,15 +155,15 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisabl
     dispatch({ type: ActionType.SET_ORDER_NUM, orderNum: '' })
     dispatch({ type: ActionType.SET_LAB_TEST_IDS, labTestIds: [] })
   }
-  const toggleSideDrawer = () => { dispatch({ type: ActionType.SET_DRAWER_OPENED, drawerOpened: !drawerOpened }) }
+  const toggleSideDrawer = () => dispatch({ type: ActionType.SET_DRAWER_OPENED, drawerOpened: !drawerOpened });
 
   const handleReload = () => {
     dispatch({ type: ActionType.SET_DRAWER_OPENED, drawerOpened: false })
-    fetchLabTests()
     dispatch({ type: ActionType.SET_ORDER_NUM, orderNum: '' })
     dispatch({ type: ActionType.SET_LAB_TESTS_TO_EDIT, labTestsToEdit: [] })
     dispatch({ type: ActionType.SET_SHOULD_REFETCH, shouldRefetch: true })
   }
+  
   const handleLabOrderEdit = (orderNumber: string, labOrder: LabTests[]) => {
     dispatch({ type: ActionType.SET_LAB_TESTS_TO_EDIT, labTestsToEdit: labOrder })
     dispatch({ type: ActionType.SET_ORDER_NUM, orderNum: orderNumber })
@@ -212,17 +212,18 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisabl
                 </Box>
 
 
-                <SideDrawer
+                {drawerOpened && <SideDrawer
                   drawerOpened={drawerOpened}
-                  toggleSideDrawer={toggleSideDrawer} >
-                  {drawerOpened && <AddLabOrdersComponent
+                  toggleSideDrawer={handleReload}
+                >
+                  <AddLabOrdersComponent
                     toggleSideDrawer={handleReload}
                     isEdit={!!labTestsToEdit?.length}
                     labTestsToEdit={labTestsToEdit}
                     orderNumber={orderNum}
                     appointmentInfo={appointmentInfo}
-                  />}
-                </SideDrawer>
+                  />
+                </SideDrawer>}
 
 
                 <Box className="table-overflow">

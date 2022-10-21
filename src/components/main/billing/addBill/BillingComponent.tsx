@@ -410,7 +410,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
 
       const billingCodes = [...cptFeeSchedule, ...IcdCodes]
       const transformedBillingCodes = !!billingCodes.length ? billingCodes.map(billingCode => {
-        const { codeId, id, m1, m2, m3, m4, diag1, diag2, diag3, diag4, unit, ...billingCodeToCreate } = billingCode
+        const { m1, m2, m3, m4, diag1, diag2, diag3, diag4, unit, codeType, price, code, description } = billingCode
         const diagA = diag1 ? getCharFromNumber(Number(diag1) - 1) : ''
         const diagB = diag2 ? getCharFromNumber(Number(diag2) - 1) : ''
         const diagC = diag3 ? getCharFromNumber(Number(diag3) - 1) : ''
@@ -425,9 +425,11 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
           unit
         }
         return {
-          ...billingCodeToCreate,
-          price: String(billingCodeToCreate.price),
-          ...(billingCodeToCreate.codeType === CodeType.CptCode && cptVariables)
+          price: String(price),
+          code,
+          description,
+          codeType,
+          ...(codeType === CodeType.CptCode && cptVariables)
         }
       }) : []
 
@@ -538,8 +540,11 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
       const { id: feeScheduleId } = feeSchedule ?? {}
 
       const billingCodes = [...cptFeeSchedule, ...IcdCodes]
-      const transformedBillingCodes = billingCodes && billingCodes.map(billingCode => {
-        const { codeId, id, m1, m2, m3, m4, diag1, diag2, diag3, diag4, unit, ...billingCodeToCreate } = billingCode
+      const filteredBillingCodes = billingCodes.filter((problem, index, self) => index === self.findIndex((t) => (
+        t.code === problem.code
+      )))
+      const transformedBillingCodes = filteredBillingCodes && filteredBillingCodes.map(billingCode => {
+        const { m1, m2, m3, m4, diag1, diag2, diag3, diag4, unit, price, description, codeType, code } = billingCode
         const diagA = diag1 ? getCharFromNumber(Number(diag1) - 1) : ''
         const diagB = diag2 ? getCharFromNumber(Number(diag2) - 1) : ''
         const diagC = diag3 ? getCharFromNumber(Number(diag3) - 1) : ''
@@ -554,9 +559,11 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
           unit: `${unit ?? ""}`
         }
         return {
-          ...billingCodeToCreate,
-          price: String(billingCodeToCreate.price),
-          ...(billingCodeToCreate.codeType === CodeType.CptCode && cptVariables)
+          price: String(price),
+          description,
+          code,
+          codeType,
+          ...(codeType === CodeType.CptCode && cptVariables)
         }
       })
 

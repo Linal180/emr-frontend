@@ -2,31 +2,29 @@
 import {
   Box, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton, InputBase, Typography
 } from "@material-ui/core";
-import { FC, Reducer, useCallback, useEffect, useMemo, useReducer, useState } from "react";
+import { FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
 // components block
 // constants, interfaces, utils block 
-import { NoDataIcon, SearchIcon } from "../../../../../assets/svgs";
 import {
-  ADD_ORDER, NO_RECORDS, PAGE_LIMIT, SEARCH_FOR_MEDICATIONS, SEARCH_FOR_TESTS, TYPE
+  ADD_ORDER, NO_RECORDS, ORDERS_TABS, PAGE_LIMIT, SEARCH_FOR_IMAGING, SEARCH_FOR_MEDICATIONS, SEARCH_FOR_TESTS, TYPE
 } from "../../../../../constants";
-import { LoincCodePayload, LoincCodesPayload, Medications, MedicationsPayload, useFindAllLoincCodesLazyQuery, useFindAllMedicationsLazyQuery } from "../../../../../generated/graphql";
-import { DiagnosesModalModalProps } from "../../../../../interfacesTypes";
+import {
+  LoincCodePayload, LoincCodesPayload, Medications, MedicationsPayload, useFindAllLoincCodesLazyQuery,
+  useFindAllMedicationsLazyQuery
+} from "../../../../../generated/graphql";
 import {
   Action, ActionType, chartReducer, initialState, State
 } from "../../../../../reducers/chartReducer";
-import { useChartingStyles } from "../../../../../styles/chartingStyles";
 import { GRAY_SIX, GREY_SEVEN } from "../../../../../theme";
+import { NoDataIcon, SearchIcon } from "../../../../../assets/svgs";
+import { useChartingStyles } from "../../../../../styles/chartingStyles";
+import { DiagnosesModalModalProps } from "../../../../../interfacesTypes";
 
 const DiagnosesModal: FC<DiagnosesModalModalProps> = ({ isOpen = false, handleModalClose, fetch, handleAdd, alreadyAddedMedications }) => {
   const chartingClasses = useChartingStyles()
-  const [{ searchQuery, searchedData }, dispatch] =
-    useReducer<Reducer<State, Action>>(chartReducer, initialState)
+  const [{ searchQuery, searchedData }, dispatch] = useReducer<Reducer<State, Action>>(chartReducer, initialState)
 
-  const tabs = useMemo(() => {
-    return ['Medications', 'Lab Order']
-  }, [])
-
-  const [tab, setTab] = useState<string>(!!tabs ? tabs[0] : '');
+  const [tab, setTab] = useState<string>(!!ORDERS_TABS ? ORDERS_TABS[0] : '');
 
   const [getMedications, { loading: searchIcdCodesLoading }] = useFindAllMedicationsLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -103,31 +101,43 @@ const DiagnosesModal: FC<DiagnosesModalModalProps> = ({ isOpen = false, handleMo
     } catch (error) { }
   }, [findAllLoincCodes])
 
+  const tabDataHandler = useCallback(async (tabName?: string) => {
+    switch (tabName) {
+
+      case ORDERS_TABS[0]:
+        await handleMedicationSearch('')
+        break;
+
+      case ORDERS_TABS[1]:
+        await handleLabTestsSearch('')
+        break;
+
+      case ORDERS_TABS[2]:
+
+        break;
+
+      default:
+        await handleMedicationSearch('')
+        break;
+    }
+  }, [handleLabTestsSearch, handleMedicationSearch])
+
   useEffect(() => {
-    tab === tabs[0] ?
-      handleMedicationSearch('') :
-      handleLabTestsSearch('')
-  }, [handleLabTestsSearch, handleMedicationSearch, tab, tabs])
+    tabDataHandler()
+  }, [tabDataHandler])
 
-  const handleSearch = useCallback(async (query: string, tabName?: string) => {
-    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
-    dispatch({
-      type: ActionType.SET_SEARCHED_DATA,
-      searchedData: []
-    })
-
-
-    tabName === tabs[0] ?
-      handleMedicationSearch(query) :
-      handleLabTestsSearch(query)
-  }, [handleLabTestsSearch, handleMedicationSearch, tabs])
+  const handleSearch = async (query: string, tabName?: string) => {
+    dispatch({ type: ActionType.SET_SEARCHED_DATA, searchedData: [] });
+    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query });
+    await tabDataHandler(tabName);
+  }
 
   const handleOpenForm = (item: Medications) => {
     dispatch({ type: ActionType.SET_SELECTED_ITEM, selectedItem: item })
     dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: true })
   };
 
-  const renderSearchData = useCallback(() => {
+  const renderSearchData = () => {
     return (
       <Box maxHeight={280} minHeight={280} className="overflowY-auto" display="flex"
         flexDirection="column" alignItems="flex-start"
@@ -154,7 +164,7 @@ const DiagnosesModal: FC<DiagnosesModalModalProps> = ({ isOpen = false, handleMo
 
                 </Box>
               )
-            }) : <Box color={GREY_SEVEN} margin='auto' textAlign='center'> 
+            }) : <Box color={GREY_SEVEN} margin='auto' textAlign='center'>
               <NoDataIcon />
               <Typography variant="h6">{NO_RECORDS}</Typography>
 
@@ -163,9 +173,9 @@ const DiagnosesModal: FC<DiagnosesModalModalProps> = ({ isOpen = false, handleMo
         }
       </Box>
     )
-  }, [alreadyAddedMedications, chartingClasses.hoverClass, handleAdd, searchIcdCodesLoading, searchedData])
+  }
 
-  const renderLabTestSearchData = useCallback(() => {
+  const renderLabTestSearchData = () => {
     return (
       <Box maxHeight={280} minHeight={280} className="overflowY-auto" display="flex"
         flexDirection="column" alignItems="flex-start"
@@ -201,7 +211,42 @@ const DiagnosesModal: FC<DiagnosesModalModalProps> = ({ isOpen = false, handleMo
         }
       </Box>
     )
-  }, [alreadyAddedMedications, chartingClasses.hoverClass, findAllLoincCodesLoading, handleAdd, searchedData])
+  }
+
+  const renderImagingSearchData = () => {
+    return (
+      <Box maxHeight={280} minHeight={280} className="overflowY-auto" display="flex"
+        flexDirection="column" alignItems="flex-start"
+      >
+        {!!findAllLoincCodesLoading ?
+          <Box alignSelf="center">
+            <CircularProgress size={25} color="inherit" disableShrink />
+          </Box>
+          :
+          (searchedData && searchedData.length > 0 ?
+            searchedData?.map(item => {
+              const { component } = item as LoincCodePayload['loincCode'] || {}
+
+              return (
+                <Box key={`${component}`} my={0.2} className={chartingClasses.hoverClass}
+                  onClick={() => item && handleAdd ? handleAdd(item, 'test') : handleOpenForm(item as Medications)}
+                >
+                  <Box display="flex" flexDirection="column" px={2}>
+                    <Typography variant='body1'>{component}</Typography>
+                  </Box>
+
+                </Box>
+              )
+            }) : <Box color={GREY_SEVEN} margin='auto' textAlign='center'>
+              <NoDataIcon />
+              <Typography variant="h6">{NO_RECORDS}</Typography>
+
+              <Box p={1} />
+            </Box>)
+        }
+      </Box>
+    )
+  }
 
   const handleTabChange = (name: string) => {
     setTab(name)
@@ -212,7 +257,7 @@ const DiagnosesModal: FC<DiagnosesModalModalProps> = ({ isOpen = false, handleMo
 
   const renderTabs = () => (
     <Box p={1} mb={3} mt={2} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
-      {tabs?.map(tabName =>
+      {ORDERS_TABS?.map(tabName =>
         <Box key={tabName}
           className={tab === tabName ? 'selectedBox selectBox' : 'selectBox'}
           onClick={() => handleTabChange(tabName)}
@@ -222,6 +267,39 @@ const DiagnosesModal: FC<DiagnosesModalModalProps> = ({ isOpen = false, handleMo
       )}
     </Box>
   );
+
+  const renderTabData = () => {
+    switch (tab) {
+
+      case ORDERS_TABS[0]:
+        return renderSearchData()
+
+      case ORDERS_TABS[1]:
+        return renderLabTestSearchData()
+
+      case ORDERS_TABS[2]:
+        return renderImagingSearchData()
+
+      default:
+        return renderSearchData()
+    }
+  }
+
+  const renderTabSearchPlaceholder = (): string => {
+    switch (tab) {
+      case ORDERS_TABS[0]:
+        return SEARCH_FOR_MEDICATIONS
+
+      case ORDERS_TABS[1]:
+        return SEARCH_FOR_TESTS
+
+      case ORDERS_TABS[2]:
+        return SEARCH_FOR_IMAGING
+
+      default:
+        return SEARCH_FOR_MEDICATIONS
+    }
+  }
 
   return (
     <Dialog fullWidth maxWidth="sm" open={isOpen} onClose={handleModalClose}>
@@ -233,7 +311,7 @@ const DiagnosesModal: FC<DiagnosesModalModalProps> = ({ isOpen = false, handleMo
         <Typography variant='h6'>{TYPE}</Typography>
 
         <Box className={chartingClasses.toggleProblem}>
-          {!!tabs && renderTabs()}
+          {renderTabs()}
         </Box>
 
         <Box mb={2} className={chartingClasses.searchBox} display="flex">
@@ -244,13 +322,12 @@ const DiagnosesModal: FC<DiagnosesModalModalProps> = ({ isOpen = false, handleMo
           <InputBase
             value={searchQuery}
             inputProps={{ 'aria-label': 'search' }}
-            placeholder={tab === tabs[0] ? SEARCH_FOR_MEDICATIONS : SEARCH_FOR_TESTS}
+            placeholder={renderTabSearchPlaceholder()}
             onChange={({ target: { value } }) => handleSearch(value, tab)}
           />
         </Box>
-
-
-        {tab === tabs[0] ? renderSearchData() : renderLabTestSearchData()}
+        
+        {renderTabData()}
       </DialogContent>
     </Dialog>
   )

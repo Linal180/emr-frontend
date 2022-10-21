@@ -2,18 +2,21 @@
 import {
   IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography
 } from '@material-ui/core';
+import moment from 'moment';
+import { useParams } from 'react-router';
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { FormEditNewIcon } from '../../../../../assets/svgs';
 import { DASHES, IN_TEXT, KG_TEXT } from '../../../../../constants';
 import {
   HeadCircumferenceType, PatientVitalPayload, TempUnitType, UnitType, WeightType
 } from '../../../../../generated/graphql';
-import { VitalListingTableProps } from '../../../../../interfacesTypes';
+import { ParamsType, VitalListingTableProps } from '../../../../../interfacesTypes';
 import { ActionType } from '../../../../../reducers/patientReducer';
 import { formatValue, getFormatDateString, renderTh, roundOffUpto2Decimal } from '../../../../../utils';
 
 export const VitalListingTable = ({
   patientStates, shouldDisableEdit, dispatcher }: VitalListingTableProps) => {
+  const { appointmentId } = useParams<ParamsType>()
   const { patientVitals } = patientStates;
 
   const getWeightValue = (weight: string) => {
@@ -59,8 +62,17 @@ export const VitalListingTable = ({
 
   const renderIcon = (vital: PatientVitalPayload['patientVital']) =>
     <IconButton className='py-0 ml-5' size='small' onClick={() => editHandler(vital)}>
-        <FormEditNewIcon />
+      <FormEditNewIcon />
     </IconButton>
+
+  const getIsEditIconShown = (vitalCreationDate: string) => {
+    if (appointmentId) {
+      return !shouldDisableEdit && !moment(moment(vitalCreationDate).format('MM-DD-YYYY')).isBefore(moment().format('MM-DD-YYYY'))
+    }
+
+    return true
+  }
+
 
   return (
     <TableContainer>
@@ -71,7 +83,7 @@ export const VitalListingTable = ({
               const { vitalCreationDate } = vital || {}
 
               return renderTh(`${getFormatDateString(vitalCreationDate || '', 'MM-DD-YYYY')} `,
-                'left', false, '', true, !shouldDisableEdit ? () => renderIcon(vital) : () => { })
+                'left', false, '', true, getIsEditIconShown(vitalCreationDate || '') ? () => renderIcon(vital) : () => { })
             })}
           </TableRow>
         </TableHead>

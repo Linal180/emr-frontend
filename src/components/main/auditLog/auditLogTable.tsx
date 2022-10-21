@@ -44,7 +44,7 @@ const AuditLogTable = (): JSX.Element => {
   const methods = useForm<AuditLogsInputs>({
     mode: "all", defaultValues: {
       endDate: new Date().toString(),
-      startDate: moment().subtract(1,'hour').toString()
+      startDate: moment().subtract(1, 'hour').toString()
     }
   });
 
@@ -100,6 +100,7 @@ const AuditLogTable = (): JSX.Element => {
 
   const onSubmit = async (data: AuditLogsInputs) => {
     const { module, patient, user, startDate, endDate } = data
+    const transformedEndDate = endDate ? moment(endDate).format("MM-DD-YYYY") : ''
     const { id: userId } = user
     const { id: moduleType } = module
     const { id: patientId } = patient
@@ -110,7 +111,7 @@ const AuditLogTable = (): JSX.Element => {
         variables: {
           userLogsInput: {
             ...pageInputs, userId: userId ? userId : null, moduleType: moduleType ? moduleType : null,
-            patientId: patientId ? patientId : null, startDate: startDate ? moment(startDate).subtract(1, 'hour').format() : null, endDate: endDate ? moment(`${endDate} 23:59:59`).format() : null
+            patientId: patientId ? patientId : null, startDate: startDate ? moment(startDate).subtract(1, 'hour').format() : null, endDate: endDate ? moment(`${transformedEndDate} 23:59:59`).format() : null
           }
         }
       })
@@ -141,7 +142,7 @@ const AuditLogTable = (): JSX.Element => {
     setValue('patient', setRecord('', '--'));
     setValue('user', setRecord('', '--'));
     setValue('module', setRecord('', '--'));
-    setValue('startDate', moment().subtract(1,'hour').toString());
+    setValue('startDate', moment().subtract(1, 'hour').toString());
     setValue('endDate', new Date().toString());
     await fetchAllUserLogs()
   }

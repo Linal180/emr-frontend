@@ -30,7 +30,7 @@ import { INSURANCE, INSURANCE_SELECTION, NEXT, PAYMENTS, RegisterPatientMenuNav 
 
 
 const RegisterFormComponent: FC<PatientCardsProps> = ({
-  getPatientLoading, dispatch, isEdit, state, shouldDisableEdit, disableSubmit, shouldShowBread
+  getPatientLoading, dispatch, isEdit, state, shouldDisableEdit, disableSubmit, shouldShowBread, isAppointment
 }) => {
   const classes = useExternalPatientStyles()
   const methods = useFormContext<PatientInputProps>()
@@ -106,6 +106,7 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
             <IdentificationCard
               getPatientLoading={getPatientLoading}
               shouldDisableEdit={shouldDisableEdit}
+              isAppointment={isAppointment}
               state={state}
               dispatch={dispatch}
               disableSubmit={disableSubmit}
@@ -115,6 +116,7 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
 
           <Box mb={3}>
             <RegistrationDatesCard
+              isAppointment={isAppointment}
               getPatientLoading={getPatientLoading}
               shouldDisableEdit={shouldDisableEdit}
             />
@@ -122,6 +124,7 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
 
           <ContactInfoCard
             isEdit={isEdit}
+            isAppointment={isAppointment}
             disableSubmit={disableSubmit}
             state={state} dispatch={dispatch}
             shouldDisableEdit={shouldDisableEdit}
@@ -135,6 +138,7 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
             <Box mb={3}>
               <EmergencyContactCard
                 isEdit={isEdit}
+                isAppointment={isAppointment}
                 disableSubmit={disableSubmit}
                 state={state} dispatch={dispatch}
                 getPatientLoading={getPatientLoading}
@@ -143,12 +147,20 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
             </Box>
 
             <Box mb={3}>
-              <PatientNextKinCard getPatientLoading={getPatientLoading} shouldDisableEdit={shouldDisableEdit} />
+              <PatientNextKinCard
+                isAppointment={isAppointment}
+                getPatientLoading={getPatientLoading}
+                shouldDisableEdit={shouldDisableEdit}
+              />
             </Box>
 
             {age < 18 && <>
               <Box mb={3}>
-                <PatientGuardianCard getPatientLoading={getPatientLoading} shouldDisableEdit={shouldDisableEdit} />
+                <PatientGuardianCard
+                  getPatientLoading={getPatientLoading}
+                  shouldDisableEdit={shouldDisableEdit}
+                  isAppointment={isAppointment}
+                />
               </Box>
               <Box mb={3}>
                 <GuarantorCard
@@ -156,13 +168,16 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
                   state={state} dispatch={dispatch}
                   shouldDisableEdit={shouldDisableEdit}
                   getPatientLoading={getPatientLoading}
+                  isAppointment={isAppointment}
                 />
               </Box>
             </>}
-
-
-
-            <EmploymentCard getPatientLoading={getPatientLoading} shouldDisableEdit={shouldDisableEdit} />
+            
+            <EmploymentCard
+              getPatientLoading={getPatientLoading}
+              shouldDisableEdit={shouldDisableEdit}
+              isAppointment={isAppointment}
+            />
           </>
         )
 
@@ -170,30 +185,36 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
         return (
           <PatientDemographicsCard
             isEdit={isEdit}
+            isAppointment={isAppointment}
             disableSubmit={disableSubmit}
             state={state} dispatch={dispatch}
             getPatientLoading={getPatientLoading}
             shouldDisableEdit={shouldDisableEdit}
           />
         )
+
       case shouldShowInsuranceStep ? 5 : !shouldShowBread ? 4 : 3:
         return (
           <PatientPrivacyCard
             isEdit={isEdit}
+            isAppointment={isAppointment}
             disableSubmit={disableSubmit}
             state={state} dispatch={dispatch}
             getPatientLoading={getPatientLoading}
             shouldDisableEdit={shouldDisableEdit}
           />
         )
+
       case shouldShowInsuranceStep ? 6 : !shouldShowBread ? 5 : 4:
         return (
           <UpFrontPayment shouldDisableEdit={shouldDisableEdit} />
         )
+        
       default:
         return (
           <PatientPrivacyCard
             isEdit={isEdit}
+            isAppointment={isAppointment}
             disableSubmit={disableSubmit}
             state={state} dispatch={dispatch}
             getPatientLoading={getPatientLoading}
