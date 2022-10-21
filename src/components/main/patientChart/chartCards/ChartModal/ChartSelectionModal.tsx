@@ -13,7 +13,7 @@ const ChartSelectionModal: FC<ChartSelectionViewerProps> = ({
 }): JSX.Element => {
   const moduleNames = [
     "Patient Demographics", "Vitals", "Diagnoses", "Triage Notes", "Allergies",
-    "Medications", "Family History", "Surgical History"
+    "Medications", "Family History", "Surgical History", "HPI", "ROS"
   ]
 
   const [isSelectAll, setIsSelectAll] = useState<boolean>(false)

@@ -27,7 +27,7 @@ import {
 } from '../../../../generated/graphql';
 
 const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
-  const { orderNum, patientId } = useParams<ParamsType>();
+  const { orderNum, patientId, appointmentId } = useParams<ParamsType>();
   const [resultsToRemove, setResultsToRemove] = useState<string[]>([])
   const [doctorSignOff, setDoctorSignOff] = useState(false);
   const [accessionNumber, setAccessionNumber] = useState<string>('');
@@ -52,7 +52,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
     },
 
     onCompleted() {
-      history.push(`/patients/${patientId}/details/1`)
+      history.push(appointmentId ? `/appointments/${appointmentId}/${patientId}/check-in` : `/patients/${patientId}/details/1`)
     }
   });
 
@@ -81,7 +81,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
     }
 
     values.loinsCodeFields.forEach(async (loinsCodeField) => {
-      const { testId, description, resultsField } = loinsCodeField ?? {}
+      const { testId, description, resultsField, isCovid } = loinsCodeField ?? {}
 
       await updateLabTest({
         variables: {
@@ -107,7 +107,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
         let normalRangeUnits = ''
         let resultUnits = ''
         let resultValue = ''
-        if (description.includes('corona')) {
+        if (isCovid) {
           const resultFieldValue = resultsFieldValues as LabOrdersResultOption2 ?? {}
           resultValue = resultFieldValue.resultValue?.id || ''
           observationId = resultFieldValue.observationId || ''
@@ -163,7 +163,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
 
         const transformedLabTests = labTests?.map((labTest) => {
           const { test, id, testObservations, doctor, vendorName, collectedDate, receivedDate, accessionNumber, labName, testSpecimens } = labTest ?? {}
-          const { component, loincNum, unitsRequired } = test ?? {}
+          const { component, loincNum, isCovid, unitsRequired } = test ?? {}
 
           setValue('labName', {
             id: labName ?? OTHER_OPTION.id,
@@ -183,7 +183,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
 
             setDoctorSignOff(doctorsSignOff || false)
 
-            if (component?.includes('corona')) {
+            if (isCovid) {
               return {
                 observationId: id,
                 resultValue: setRecord(resultValue || '', resultValue || ''),
@@ -207,6 +207,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
             testId: id ?? '',
             loinccode: loincNum ?? '',
             description: component ?? '',
+            isCovid: isCovid || false,
             resultsField: transformedObservations?.length ? transformedObservations : [component?.includes('corona') ? ORDERS_RESULT_INITIAL_VALUES_2 : { ...ORDERS_RESULT_INITIAL_VALUES_1, resultUnits: unitsRequired ?? '' }]
           }
         }) ?? []

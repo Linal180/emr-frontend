@@ -3,12 +3,12 @@ import { FC } from "react";
 import { Grid } from "@material-ui/core";
 // components block
 import DatePicker from "../../../common/DatePicker";
-import CardComponent from "../../../common/CardComponent";
-// constants, interfaces block
 import InputController from "../../../../controller";
-import { PatientCardsProps } from "../../../../interfacesTypes";
+import CardComponent from "../../../common/CardComponent";
 import SnnController from "../../../../controller/SnnController";
-import { DOB, FIRST_NAME, IDENTIFICATION, MIDDLE_NAME, SSN, SUFFIX, LAST_NAME, SSN_FORMAT, SAVE_TEXT, SAVE_AND_NEXT } from "../../../../constants";
+// constants, interfaces block
+import { PatientCardsProps } from "../../../../interfacesTypes";
+import { DOB, FIRST_NAME, IDENTIFICATION, LAST_NAME, MIDDLE_NAME, SAVE_AND_NEXT, SAVE_TEXT, SSN, SUFFIX } from "../../../../constants";
 
 const IdentificationCard: FC<PatientCardsProps> = ({
   getPatientLoading, shouldDisableEdit, state, disableSubmit, isEdit, isAppointment
@@ -76,12 +76,12 @@ const IdentificationCard: FC<PatientCardsProps> = ({
             loading={getPatientLoading}
           />
           :
-          <InputController
-            defaultValue={SSN_FORMAT}
+          <SnnController
             fieldType="text"
             controllerName="ssn"
             controllerLabel={SSN}
             disabled={shouldDisableEdit}
+            loading={getPatientLoading}
           />
         }
       </Grid>

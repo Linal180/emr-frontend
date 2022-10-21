@@ -1,19 +1,21 @@
 // packages block
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@material-ui/core";
 import { PDFViewer } from "@react-pdf/renderer";
-import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
+import { FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
 // components block
 // interfaces/types block, theme, svgs and constants
 import { useParams } from "react-router";
 import { CLOSE, PRINT_PATIENT_CHART } from "../../../../../constants";
-import { useGetPatientChartingInfoLazyQuery } from "../../../../../generated/graphql";
+import { PatientIllnessHistoryPayload, ReviewOfSystemPayload, useGetPatientChartingInfoLazyQuery, useLatestPatientIllnessHistoryLazyQuery, useLatestReviewOfSystemLazyQuery } from "../../../../../generated/graphql";
 import { ChartPrintModalProps, ParamsType, PatientChartingInfo } from "../../../../../interfacesTypes";
 import { Action as ChartAction, ActionType as ChartActionType, chartReducer, initialState as chartInitialState, State as ChartState } from '../../../../../reducers/chartReducer';
 import Loader from "../../../../common/Loader";
 import ChartPdf from "./ChartPdf";
 
 const ChartPrintModal: FC<ChartPrintModalProps> = ({ isOpen, handleClose, modulesToPrint }): JSX.Element => {
-  const { id: patientId } = useParams<ParamsType>()
+  const { id: patientId, appointmentId } = useParams<ParamsType>()
+  const [reviewOfSystem, setReviewOfSystem] = useState<ReviewOfSystemPayload['reviewOfSystem']>(null)
+  const [patientIllnessHistory, setPatientIllnessHistory] = useState<PatientIllnessHistoryPayload['patientIllnessHistory']>(null)
   const [{ patientChartingInfo }, chartDispatch] =
     useReducer<Reducer<ChartState, ChartAction>>(chartReducer, chartInitialState)
 
@@ -60,11 +62,67 @@ const ChartPrintModal: FC<ChartPrintModalProps> = ({ isOpen, handleClose, module
     } catch (error) { }
   }, [getPatientChartingInfo, patientId])
 
-  useEffect(() => {
-    patientId && findPatientChartingInfo()
-  }, [findPatientChartingInfo, patientId])
 
-  if (getPatientChartingInfoLoading) {
+
+  const [patientReviewOfSystem, { loading: patientReviewOfSystemLoading }] = useLatestReviewOfSystemLazyQuery({
+    onCompleted: (data) => {
+      const { latestReviewOfSystem: dataResponse } = data || {}
+      const { response, reviewOfSystem } = dataResponse || {}
+      const { status } = response || {}
+
+      if (status === 200) {
+        setReviewOfSystem(reviewOfSystem as ReviewOfSystemPayload['reviewOfSystem'])
+
+      }
+    },
+    onError: () => { }
+  })
+
+  const fetchPatientReviewOfSystem = useCallback(async () => {
+    patientId && await patientReviewOfSystem({
+      variables: {
+        reviewOfSystemInput: {
+          appointmentId,
+          patientId
+        }
+      }
+    })
+
+  }, [patientId, patientReviewOfSystem, appointmentId])
+
+  const [getPatientIllnessHistory, { loading: getPatientIllnessHistoryLoading }] = useLatestPatientIllnessHistoryLazyQuery({
+    onCompleted: (data) => {
+      const { latestPatientIllnessHistory: dataResponse } = data || {}
+      const { response, patientIllnessHistory } = dataResponse || {}
+      const { status } = response || {}
+
+      if (status === 200) {
+        setPatientIllnessHistory(patientIllnessHistory as PatientIllnessHistoryPayload['patientIllnessHistory'])
+      }
+    },
+    onError: () => { }
+  })
+  const fetchPatientIllnessHistory = useCallback(async () => {
+    patientId && await getPatientIllnessHistory({
+      variables: {
+        patientIllnessHistoryInput: {
+          appointmentId,
+          patientId
+        }
+      }
+    })
+
+  }, [appointmentId, getPatientIllnessHistory, patientId])
+
+  useEffect(() => {
+    if (patientId) {
+      findPatientChartingInfo()
+      fetchPatientIllnessHistory()
+      fetchPatientReviewOfSystem()
+    }
+  }, [fetchPatientIllnessHistory, fetchPatientReviewOfSystem, findPatientChartingInfo, patientId])
+
+  if (getPatientChartingInfoLoading || patientReviewOfSystemLoading || getPatientIllnessHistoryLoading) {
     return <Loader loaderText='Loading Chart Info...' loading />
   }
 
@@ -83,7 +141,10 @@ const ChartPrintModal: FC<ChartPrintModalProps> = ({ isOpen, handleClose, module
         <Box className="dialogBg">
           <PDFViewer width={"100%"} height="500">
             <ChartPdf
-              patientChartInfo={patientChartingInfo}
+              patientChartInfo={{
+                ...patientChartingInfo,
+                reviewOfSystem, patientIllnessHistory,
+              } as PatientChartingInfo}
               modulesToPrint={modulesToPrint}
             />
           </PDFViewer>
