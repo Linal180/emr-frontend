@@ -112,6 +112,7 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
               {!shouldDisableEdit && shouldShowAdd && <Button
                 variant="contained"
                 color="primary"
+                size="large"
                 onClick={() => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: true })}
               >
                 {ADD}
