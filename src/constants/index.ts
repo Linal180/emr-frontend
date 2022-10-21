@@ -1577,6 +1577,7 @@ export const TWO_FA_AUTHENTICATION = "2-Factor Authentication";
 export const NOTHING_HERE_TEXT = "Seems there is nothing here";
 export const SEARCH_FOR_MEDICATIONS = "Search for Medications";
 export const SEARCH_FOR_TESTS = "Search for Tests";
+export const SEARCH_FOR_IMAGING = "Search for Imaging";
 export const DELETE_RECORD_TEXT = "You are about delete record";
 export const DELETE_ROLE_DESCRIPTION = "Confirm to delete role";
 export const REGISTRATION_DEPARTMENT = "Registration Department";
@@ -4776,3 +4777,4 @@ export const STATUS_MAPPED = [
   }
 ]
 export const PROBLEMS_TABS = ['Common Terms']
+export const ORDERS_TABS = ['Medications', 'Lab Order', 'Imaging']
