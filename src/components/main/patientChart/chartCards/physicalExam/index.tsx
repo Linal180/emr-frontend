@@ -1,21 +1,22 @@
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, colors, Typography } from "@material-ui/core";
 import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { ExpandMore } from "@material-ui/icons";
 import { useParams } from "react-router-dom";
 //components
 import Alert from "../../../../common/Alert";
+import CardComponent from "../../../../common/CardComponent";
+import ChartingTemplateSelector from "../../../../common/Selector/ChartingTemplateSelector";
+import TableLoader from "../../../../common/TableLoader";
+import QuestionCard from "./QuestionCard";
 //constants
-import { ExpandMore } from "@material-ui/icons";
 import { NEXT, PE_TEMPLATES, QuestionType, REVIEW_OF_SYSTEM_TEXT, TemplateType } from "../../../../../constants";
 import { QuestionTemplate, useCreatePhysicalExamHistoryMutation, useGetPatientChartingTemplateLazyQuery, usePhysicalExamLazyQuery } from '../../../../../generated/graphql';
 import { multiOptionType, ParamsType, PatientHistoryProps } from "../../../../../interfacesTypes";
 import { Action, ActionType, initialState, patientHistoryReducer, State } from "../../../../../reducers/patientHistoryReducer";
 import { useChartingStyles } from '../../../../../styles/chartingStyles';
 import { renderMultiTemplates } from "../../../../../utils";
-import CardComponent from "../../../../common/CardComponent";
-import ChartingTemplateSelector from "../../../../common/Selector/ChartingTemplateSelector";
-import TableLoader from "../../../../common/TableLoader";
-import QuestionCard from "./QuestionCard";
+
 
 const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, handleStep }): JSX.Element => {
   const methods = useForm();

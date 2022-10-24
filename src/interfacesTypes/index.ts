@@ -24,6 +24,7 @@ import {
   PatientIllnessHistoryPayload, PatientMedication, PatientPayload, PatientProblems, PatientProviderPayload,
   PatientsPayload, PatientVitals, PermissionsPayload, PolicyEligibilityWithPatientPayload, Practice, PracticePayload,
   QuestionAnswers, Questions, ReactionsPayload, ResponsePayloadResponse, ReviewOfSystemPayload, RolesPayload, Schedule,
+  SectionQuestions,
   SectionsInputs, ServicesPayload, Staff, SurgicalHistory, TriageNotes, TriageNotesPayload, TwoFactorInput,
   UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, User,
   UsersFormsElements, VaccineProduct, VerifyCodeInput
@@ -1286,6 +1287,12 @@ export interface CopayFields {
 
 export interface ClaimStatusFields {
   statusName?: string
+}
+
+export type TemplateQuestionCardType = {
+  question: SectionQuestions,
+  handleSubmit?: Function,
+  shouldDisableEdit?: boolean
 }
 
 export interface InsuranceCreateInput {
