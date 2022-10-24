@@ -27,7 +27,7 @@ import {
   multiOptionType, ParamsType, ScheduleFormProps, ScheduleInputProps
 } from "../../../interfacesTypes";
 import {
-  checkPermission, getDayFromTimestamps, getTimeString, invalidMessage, renderItem,
+  checkPermission, getDayFromTimestamps, getTime24String, invalidMessage, renderItem,
   renderLoading, setTimeDay, timeValidation
 } from "../../../utils";
 import {
@@ -111,8 +111,8 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
             setValue('serviceId', transformedScheduleServices)
           }
 
-          endAt && setValue('endAt', getTimeString(endAt))
-          startAt && setValue('startAt', getTimeString(startAt))
+          endAt && setValue('endAt', getTime24String(endAt))
+          startAt && setValue('startAt', getTime24String(startAt))
           recurringEndDate && setValue('recurringEndDate', recurringEndDate)
 
           scheduleDispatch && scheduleDispatch({
@@ -180,8 +180,8 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
 
   useEffect(() => {
     reset()
-    fetchSchedule()
-  }, [doctorFacilityId, fetchSchedule, getSchedule, id, isEdit, reset])
+    id && isEdit && fetchSchedule()
+  }, [fetchSchedule, id, isEdit, reset])
 
   const onSubmit: SubmitHandler<ScheduleInputProps> = async ({
     endAt, serviceId, startAt, recurringEndDate

@@ -1024,6 +1024,12 @@ export const getTimeString = (timestamp: string) => {
   return new Date(parseInt(timestamp)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
 };
 
+export const getTime24String = (timestamp: string) => {
+  if (!timestamp) return "";
+
+  return moment(new Date(parseInt(timestamp))).format('HH:mm')
+};
+
 export const getISOTime = (timestamp: string) => {
   if (!timestamp) return "";
 
