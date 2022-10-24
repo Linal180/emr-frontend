@@ -10,6 +10,7 @@ import AssessmentPlanTab from "../AssessmentPlan/AssessmentPlanTab";
 import { EXAM_TABS } from "../../../../../constants";
 import { ChartComponentProps } from "../../../../../interfacesTypes";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
+import PhysicalExam from "../physicalExam";
 
 const ExamTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
 
@@ -55,6 +56,10 @@ const ExamTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
               </TabPanel>
 
               <TabPanel value="4">
+                <PhysicalExam shouldDisableEdit={shouldDisableEdit} />
+              </TabPanel>
+
+              <TabPanel value="5">
                 <AssessmentPlanTab shouldDisableEdit={shouldDisableEdit} />
               </TabPanel>
             </Box>
