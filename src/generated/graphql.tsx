@@ -4287,6 +4287,7 @@ export type Patient = {
   prefferedName?: Maybe<Scalars['String']>;
   previousFirstName?: Maybe<Scalars['String']>;
   previouslastName?: Maybe<Scalars['String']>;
+  primaryDoctor?: Maybe<Doctor>;
   privacyNotice: Scalars['Boolean'];
   profileAttachment?: Maybe<Scalars['String']>;
   pronouns?: Maybe<Pronouns>;
@@ -9790,6 +9791,13 @@ export type GetPatientProviderQueryVariables = Exact<{
 
 
 export type GetPatientProviderQuery = { __typename?: 'Query', getPatientProvider: { __typename?: 'PatientDoctorPayload', response?: { __typename?: 'ResponsePayload', name?: string | null, error?: string | null, status?: number | null, message?: string | null } | null, provider?: { __typename?: 'DoctorPatient', id: string, doctorId?: string | null, patientId?: string | null, currentProvider?: boolean | null, otherRelation?: string | null, relation?: DoctorPatientRelationType | null, createdAt: string, updatedAt: string, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null, email?: string | null, speciality?: Speciality | null, contacts?: Array<{ __typename?: 'Contact', id: string, name?: string | null, city?: string | null, email?: string | null, phone?: string | null, primaryContact?: boolean | null }> | null } | null } | null } };
+
+export type GetPatientPrimaryProviderQueryVariables = Exact<{
+  getPatient: GetPatient;
+}>;
+
+
+export type GetPatientPrimaryProviderQuery = { __typename?: 'Query', getPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, patient?: { __typename?: 'Patient', id: string, primaryDoctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null } | null } };
 
 export type CreatePatientConsentMutationVariables = Exact<{
   createPatientConsentInputs: CreatePatientConsentInputs;
@@ -22046,6 +22054,52 @@ export function useGetPatientProviderLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GetPatientProviderQueryHookResult = ReturnType<typeof useGetPatientProviderQuery>;
 export type GetPatientProviderLazyQueryHookResult = ReturnType<typeof useGetPatientProviderLazyQuery>;
 export type GetPatientProviderQueryResult = Apollo.QueryResult<GetPatientProviderQuery, GetPatientProviderQueryVariables>;
+export const GetPatientPrimaryProviderDocument = gql`
+    query GetPatientPrimaryProvider($getPatient: GetPatient!) {
+  getPatient(getPatient: $getPatient) {
+    response {
+      status
+      message
+    }
+    patient {
+      id
+      primaryDoctor {
+        id
+        firstName
+        lastName
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPatientPrimaryProviderQuery__
+ *
+ * To run a query within a React component, call `useGetPatientPrimaryProviderQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPatientPrimaryProviderQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPatientPrimaryProviderQuery({
+ *   variables: {
+ *      getPatient: // value for 'getPatient'
+ *   },
+ * });
+ */
+export function useGetPatientPrimaryProviderQuery(baseOptions: Apollo.QueryHookOptions<GetPatientPrimaryProviderQuery, GetPatientPrimaryProviderQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPatientPrimaryProviderQuery, GetPatientPrimaryProviderQueryVariables>(GetPatientPrimaryProviderDocument, options);
+      }
+export function useGetPatientPrimaryProviderLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPatientPrimaryProviderQuery, GetPatientPrimaryProviderQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPatientPrimaryProviderQuery, GetPatientPrimaryProviderQueryVariables>(GetPatientPrimaryProviderDocument, options);
+        }
+export type GetPatientPrimaryProviderQueryHookResult = ReturnType<typeof useGetPatientPrimaryProviderQuery>;
+export type GetPatientPrimaryProviderLazyQueryHookResult = ReturnType<typeof useGetPatientPrimaryProviderLazyQuery>;
+export type GetPatientPrimaryProviderQueryResult = Apollo.QueryResult<GetPatientPrimaryProviderQuery, GetPatientPrimaryProviderQueryVariables>;
 export const CreatePatientConsentDocument = gql`
     mutation CreatePatientConsent($createPatientConsentInputs: CreatePatientConsentInputs!) {
   createPatientConsent(createPatientConsentInputs: $createPatientConsentInputs) {

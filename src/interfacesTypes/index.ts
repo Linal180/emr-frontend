@@ -2500,3 +2500,9 @@ export type AnswerChipsProps = {
   handleSubmit?: Function
   shouldDisableEdit?: boolean
 }
+
+export type PatientPrimaryProviderProps = {
+  patientId: string,
+  setPrimaryProvider?: (provider: string) => void
+  label?: string
+}
