@@ -11,7 +11,7 @@ import {
 import { RouteProps } from "react-router-dom";
 import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
 // constants, reducers, graphql block
-import { ATTACHMENT_TITLES, CONFIRMATION_MODAL_TYPE, ITEM_MODULE, UPFRONT_PAYMENT_TYPES } from "../constants";
+import { ATTACHMENT_TITLES, CONFIRMATION_MODAL_TYPE, ITEM_MODULE, TemplateType, UPFRONT_PAYMENT_TYPES } from "../constants";
 import {
   AddVaccineInput, AddVaccineProductInput, AllDoctorPayload, Allergies, AppointmentPayload, AppointmentsPayload,
   AppointmentStatus, Attachment, AttachmentPayload, AttachmentType, BillingPayload, CodeType, Copay,
@@ -625,6 +625,13 @@ export type ParamsType = {
   tabValue?: string
   appointmentId?: string;
   testId?: string
+}
+
+export type MacroViewTypes = {
+  itemId: string;
+  setItemId: Function;
+  notes: string
+  type: TemplateType
 }
 
 export type ExtendedStaffInputProps = Omit<

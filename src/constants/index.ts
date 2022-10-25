@@ -574,6 +574,7 @@ export const MEDICATIONS_TEXT = "Medications";
 export const SOCIAL_HISTORY_TEXT = "Social History";
 export const PATIENT_HISTORY_ILLNESS_TEXT = "History of Patient Illness";
 export const REVIEW_OF_SYSTEM_TEXT = "Review of Systems";
+export const PHYSICAL_EXAM_TEXT = "Physical Exam";
 export const FAMILY_HISTORY_TEXT = "Family History";
 export const SURGICAL_HISTORY_TEXT = "Surgical History";
 export const MEDICAL_HISTORY_TEXT = "Past Medical History";

@@ -1,0 +1,19 @@
+query FetchAllMacros($macroInput: MacroPaginationInput!) {
+  fetchAllMacros(macroInput: $macroInput) {
+    macros {
+      id
+      expansion
+      shortcut
+    }
+
+    response {
+      status
+      message
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+  }
+}

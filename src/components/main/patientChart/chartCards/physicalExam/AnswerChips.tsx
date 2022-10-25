@@ -25,6 +25,7 @@ function AnswerChips({ answers, colors, handleSubmit, shouldDisableEdit }: Answe
               fieldType='number'
               controllerName={`${id}.value`}
               controllerLabel=""
+              onChange={()=>handleSubmit && handleSubmit()}
             />
           </Box>
           &nbsp;
@@ -46,6 +47,7 @@ function AnswerChips({ answers, colors, handleSubmit, shouldDisableEdit }: Answe
               label=''
               name={`${id}.value`}
               options={transformedOptions || []}
+              onSelect={()=>handleSubmit && handleSubmit()}
             />
           </Box>
           <Box onClick={() => handleAnswers(id)}>{secondSelect}</Box>
