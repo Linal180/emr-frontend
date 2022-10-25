@@ -112,8 +112,8 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
   }, [patientReviewOfSystem, appointmentId])
 
   useEffect(() => {
-    fetchPatientReviewOfSystem()
-  }, [fetchPatientReviewOfSystem])
+    appointmentId && fetchPatientReviewOfSystem()
+  }, [appointmentId, fetchPatientReviewOfSystem])
 
   const fetchPatientChartingTemplates = useCallback(async (ids: string[]) => {
     try {
@@ -154,7 +154,7 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
         value?: string
       }[])
 
-      createReviewOfSystem({
+      await createReviewOfSystem({
         variables: {
           createReviewOfSystemInput: {
             answerResponses: answerResponses,
