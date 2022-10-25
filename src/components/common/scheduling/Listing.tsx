@@ -1,7 +1,7 @@
 // packages block
 import { useParams } from "react-router";
-import { Box, Grid, Typography } from "@material-ui/core";
-import { FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
+import { Box, Button, Grid, Typography } from "@material-ui/core";
+import { FC, Fragment, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
 // components block
 import Alert from "../Alert";
 import ScheduleBox from "./ScheduleBox";
@@ -10,6 +10,7 @@ import ViewDataLoader from "../ViewDataLoader";
 import ScheduleModal from "../scheduling/FormModal";
 import ConfirmationModal from "../ConfirmationModal";
 // interfaces, graphql, constants block
+import { AuthContext } from "../../../context";
 import { getDaySchedules } from "../../../utils";
 import { AddSlotIcon } from '../../../assets/svgs';
 import { useDoctorScheduleStyles } from '../../../styles/doctorSchedule';
@@ -21,10 +22,9 @@ import {
   SchedulesPayload, useGetDoctorScheduleLazyQuery, useGetFacilityScheduleLazyQuery, useRemoveScheduleMutation
 } from "../../../generated/graphql";
 import {
-  ADD_MORE_RECORDS_TEXT, AVAILABILITY_TEXT, CANT_DELETE_SCHEDULE, DELETE_DOCTOR_SCHEDULE_DESCRIPTION,
+  ADD_MORE_RECORDS_TEXT, AVAILABILITY_TEXT, BULK_UPDATE_TEXT, CANT_DELETE_SCHEDULE, DELETE_DOCTOR_SCHEDULE_DESCRIPTION,
   DELETE_FACILITY_SCHEDULE_DESCRIPTION, DOCTOR_SCHEDULE, FACILITY_SCHEDULE, SOMETHING_WENT_WRONG,
 } from "../../../constants";
-import { AuthContext } from "../../../context";
 
 const ScheduleListing: FC<ScheduleListingProps> = ({ isDoctor, doctorFacilityId, doctorId }) => {
   const { id } = useParams<ParamsType>();
@@ -121,9 +121,11 @@ const ScheduleListing: FC<ScheduleListingProps> = ({ isDoctor, doctorFacilityId,
     });
 
   const handleSlotCard = () => {
-    dispatch({ type: ActionType.SET_OPEN_MODAL, openModal: true })
     dispatch({ type: ActionType.SET_SCHEDULE_ID, scheduleId: '' })
     dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
+    dispatch({ type: ActionType.SET_SCHEDULES_IDS, scheduleIds: [] })
+    dispatch({ type: ActionType.SET_BULK_EDIT, bulkEdit: false })
+    dispatch({ type: ActionType.SET_OPEN_MODAL, openModal: true })
   };
 
   const fetchSchedules = useCallback(async () => {
@@ -152,6 +154,14 @@ const ScheduleListing: FC<ScheduleListingProps> = ({ isDoctor, doctorFacilityId,
 
   const getLoading = facilitySchedulesLoading || doctorSchedulesLoading
 
+  const handleBulkEdit = () => {
+    dispatch({ type: ActionType.SET_SCHEDULE_ID, scheduleId: '' })
+    dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
+    dispatch({ type: ActionType.SET_SCHEDULES_IDS, scheduleIds: [] })
+    dispatch({ type: ActionType.SET_BULK_EDIT, bulkEdit: true })
+    dispatch({ type: ActionType.SET_OPEN_MODAL, openModal: true })
+  }
+
   return (
     <>
       <CardComponent cardTitle={AVAILABILITY_TEXT}>
@@ -167,24 +177,29 @@ const ScheduleListing: FC<ScheduleListingProps> = ({ isDoctor, doctorFacilityId,
 
             {getLoading ?
               <ViewDataLoader rows={5} columns={12} hasMedia={false} /> : (
-                <Box>
-                  {byDaySchedules?.map((schedule: DaySchedule) => {
-                    const { day, slots } = schedule || {}
+                <Fragment>
+                  <Box display="flex" justifyContent="flex-end" py={2}>
+                    <Button variant="contained" color="primary" onClick={handleBulkEdit}>{BULK_UPDATE_TEXT}</Button>
+                  </Box>
+                  <Box>
+                    {byDaySchedules?.map((schedule: DaySchedule) => {
+                      const { day, slots } = schedule || {}
 
-                    return slots && slots.length > 0
-                      && (
-                        <Box key={day} className={classes.viewSlots} mb={3}>
-                          <Typography className={classes.heading}>
-                            {day}
-                          </Typography>
+                      return slots && slots.length > 0
+                        && (
+                          <Box key={day} className={classes.viewSlots} mb={3}>
+                            <Typography className={classes.heading}>
+                              {day}
+                            </Typography>
 
-                          {slots.map(slot => slot &&
-                            <ScheduleBox schedule={slot} isDoctor={isDoctor} dispatcher={dispatch} />
-                          )}
-                        </Box>
-                      )
-                  })}
-                </Box>
+                            {slots.map(slot => slot &&
+                              <ScheduleBox schedule={slot} isDoctor={isDoctor} dispatcher={dispatch} />
+                            )}
+                          </Box>
+                        )
+                    })}
+                  </Box>
+                </Fragment>
               )}
           </Grid>
         </Grid>

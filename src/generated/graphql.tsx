@@ -1664,13 +1664,7 @@ export type CreateReviewOfSystemInput = {
 };
 
 export type CreateScheduleInput = {
-  day: Scalars['String'];
-  doctorId?: Maybe<Scalars['String']>;
-  endAt: Scalars['String'];
-  facilityId?: Maybe<Scalars['String']>;
-  recurringEndDate?: Maybe<Scalars['DateTime']>;
-  servicesIds: Array<Scalars['String']>;
-  startAt: Scalars['String'];
+  schedules: Array<SingleScheduleInput>;
 };
 
 export type CreateServiceInput = {
@@ -3261,6 +3255,7 @@ export type Mutation = {
   updateAppointmentStatus: AppointmentPayload;
   updateAttachmentData: AttachmentPayload;
   updateAutoLogoutTime: UserPayload;
+  updateBulkSchedule: SchedulePayload;
   updateCPTCode: CptCodePayload;
   updateClaimStatus: ClaimStatusPayload;
   updateContact: ContactPayload;
@@ -3576,7 +3571,7 @@ export type MutationCreateRoleArgs = {
 
 
 export type MutationCreateScheduleArgs = {
-  createScheduleInput: Array<CreateScheduleInput>;
+  createScheduleInput: CreateScheduleInput;
 };
 
 
@@ -3897,6 +3892,11 @@ export type MutationUpdateAttachmentDataArgs = {
 
 export type MutationUpdateAutoLogoutTimeArgs = {
   userInfoInput: UserInfoInput;
+};
+
+
+export type MutationUpdateBulkScheduleArgs = {
+  updateBulkScheduleInput: UpdateBulkScheduleInput;
 };
 
 
@@ -4305,6 +4305,7 @@ export type Patient = {
   prefferedName?: Maybe<Scalars['String']>;
   previousFirstName?: Maybe<Scalars['String']>;
   previouslastName?: Maybe<Scalars['String']>;
+  primaryDoctor?: Maybe<Doctor>;
   privacyNotice: Scalars['Boolean'];
   profileAttachment?: Maybe<Scalars['String']>;
   pronouns?: Maybe<Pronouns>;
@@ -6765,6 +6766,16 @@ export type ShortUrlResponse = {
   shortUrl?: Maybe<ShortUrl>;
 };
 
+export type SingleScheduleInput = {
+  day: Scalars['String'];
+  doctorId?: Maybe<Scalars['String']>;
+  endAt: Scalars['String'];
+  facilityId?: Maybe<Scalars['String']>;
+  recurringEndDate?: Maybe<Scalars['DateTime']>;
+  servicesIds: Array<Scalars['String']>;
+  startAt: Scalars['String'];
+};
+
 export type Slots = {
   __typename?: 'Slots';
   endTime?: Maybe<Scalars['String']>;
@@ -7348,6 +7359,10 @@ export type UpdateBillingAddressInput = {
   state?: Maybe<Scalars['String']>;
   userId?: Maybe<Scalars['String']>;
   zipCode?: Maybe<Scalars['String']>;
+};
+
+export type UpdateBulkScheduleInput = {
+  schedules: Array<SingleScheduleInput>;
 };
 
 export type UpdateCptCodeInput = {
@@ -9867,6 +9882,13 @@ export type GetPatientProviderQueryVariables = Exact<{
 
 export type GetPatientProviderQuery = { __typename?: 'Query', getPatientProvider: { __typename?: 'PatientDoctorPayload', response?: { __typename?: 'ResponsePayload', name?: string | null, error?: string | null, status?: number | null, message?: string | null } | null, provider?: { __typename?: 'DoctorPatient', id: string, doctorId?: string | null, patientId?: string | null, currentProvider?: boolean | null, otherRelation?: string | null, relation?: DoctorPatientRelationType | null, createdAt: string, updatedAt: string, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null, email?: string | null, speciality?: Speciality | null, contacts?: Array<{ __typename?: 'Contact', id: string, name?: string | null, city?: string | null, email?: string | null, phone?: string | null, primaryContact?: boolean | null }> | null } | null } | null } };
 
+export type GetPatientPrimaryProviderQueryVariables = Exact<{
+  getPatient: GetPatient;
+}>;
+
+
+export type GetPatientPrimaryProviderQuery = { __typename?: 'Query', getPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, patient?: { __typename?: 'Patient', id: string, primaryDoctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null } | null } };
+
 export type CreatePatientConsentMutationVariables = Exact<{
   createPatientConsentInputs: CreatePatientConsentInputs;
 }>;
@@ -10020,11 +10042,18 @@ export type FindAllPermissionQueryVariables = Exact<{
 export type FindAllPermissionQuery = { __typename?: 'Query', findAllPermissions: { __typename?: 'PermissionsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, permissions?: Array<{ __typename?: 'Permission', id: string, name?: string | null, moduleType?: string | null, status?: boolean | null } | null> | null } };
 
 export type CreateScheduleMutationVariables = Exact<{
-  createScheduleInput: Array<CreateScheduleInput> | CreateScheduleInput;
+  createScheduleInput: CreateScheduleInput;
 }>;
 
 
 export type CreateScheduleMutation = { __typename?: 'Mutation', createSchedule: { __typename?: 'SchedulePayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type UpdateBulkScheduleMutationVariables = Exact<{
+  updateBulkScheduleInput: UpdateBulkScheduleInput;
+}>;
+
+
+export type UpdateBulkScheduleMutation = { __typename?: 'Mutation', updateBulkSchedule: { __typename?: 'SchedulePayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
 
 export type UpdateScheduleMutationVariables = Exact<{
   updateScheduleInput: UpdateScheduleInput;
@@ -22311,6 +22340,52 @@ export function useGetPatientProviderLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GetPatientProviderQueryHookResult = ReturnType<typeof useGetPatientProviderQuery>;
 export type GetPatientProviderLazyQueryHookResult = ReturnType<typeof useGetPatientProviderLazyQuery>;
 export type GetPatientProviderQueryResult = Apollo.QueryResult<GetPatientProviderQuery, GetPatientProviderQueryVariables>;
+export const GetPatientPrimaryProviderDocument = gql`
+    query GetPatientPrimaryProvider($getPatient: GetPatient!) {
+  getPatient(getPatient: $getPatient) {
+    response {
+      status
+      message
+    }
+    patient {
+      id
+      primaryDoctor {
+        id
+        firstName
+        lastName
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPatientPrimaryProviderQuery__
+ *
+ * To run a query within a React component, call `useGetPatientPrimaryProviderQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPatientPrimaryProviderQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPatientPrimaryProviderQuery({
+ *   variables: {
+ *      getPatient: // value for 'getPatient'
+ *   },
+ * });
+ */
+export function useGetPatientPrimaryProviderQuery(baseOptions: Apollo.QueryHookOptions<GetPatientPrimaryProviderQuery, GetPatientPrimaryProviderQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPatientPrimaryProviderQuery, GetPatientPrimaryProviderQueryVariables>(GetPatientPrimaryProviderDocument, options);
+      }
+export function useGetPatientPrimaryProviderLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPatientPrimaryProviderQuery, GetPatientPrimaryProviderQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPatientPrimaryProviderQuery, GetPatientPrimaryProviderQueryVariables>(GetPatientPrimaryProviderDocument, options);
+        }
+export type GetPatientPrimaryProviderQueryHookResult = ReturnType<typeof useGetPatientPrimaryProviderQuery>;
+export type GetPatientPrimaryProviderLazyQueryHookResult = ReturnType<typeof useGetPatientPrimaryProviderLazyQuery>;
+export type GetPatientPrimaryProviderQueryResult = Apollo.QueryResult<GetPatientPrimaryProviderQuery, GetPatientPrimaryProviderQueryVariables>;
 export const CreatePatientConsentDocument = gql`
     mutation CreatePatientConsent($createPatientConsentInputs: CreatePatientConsentInputs!) {
   createPatientConsent(createPatientConsentInputs: $createPatientConsentInputs) {
@@ -23286,7 +23361,7 @@ export type FindAllPermissionQueryHookResult = ReturnType<typeof useFindAllPermi
 export type FindAllPermissionLazyQueryHookResult = ReturnType<typeof useFindAllPermissionLazyQuery>;
 export type FindAllPermissionQueryResult = Apollo.QueryResult<FindAllPermissionQuery, FindAllPermissionQueryVariables>;
 export const CreateScheduleDocument = gql`
-    mutation CreateSchedule($createScheduleInput: [CreateScheduleInput!]!) {
+    mutation CreateSchedule($createScheduleInput: CreateScheduleInput!) {
   createSchedule(createScheduleInput: $createScheduleInput) {
     response {
       error
@@ -23322,6 +23397,43 @@ export function useCreateScheduleMutation(baseOptions?: Apollo.MutationHookOptio
 export type CreateScheduleMutationHookResult = ReturnType<typeof useCreateScheduleMutation>;
 export type CreateScheduleMutationResult = Apollo.MutationResult<CreateScheduleMutation>;
 export type CreateScheduleMutationOptions = Apollo.BaseMutationOptions<CreateScheduleMutation, CreateScheduleMutationVariables>;
+export const UpdateBulkScheduleDocument = gql`
+    mutation UpdateBulkSchedule($updateBulkScheduleInput: UpdateBulkScheduleInput!) {
+  updateBulkSchedule(updateBulkScheduleInput: $updateBulkScheduleInput) {
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type UpdateBulkScheduleMutationFn = Apollo.MutationFunction<UpdateBulkScheduleMutation, UpdateBulkScheduleMutationVariables>;
+
+/**
+ * __useUpdateBulkScheduleMutation__
+ *
+ * To run a mutation, you first call `useUpdateBulkScheduleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateBulkScheduleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateBulkScheduleMutation, { data, loading, error }] = useUpdateBulkScheduleMutation({
+ *   variables: {
+ *      updateBulkScheduleInput: // value for 'updateBulkScheduleInput'
+ *   },
+ * });
+ */
+export function useUpdateBulkScheduleMutation(baseOptions?: Apollo.MutationHookOptions<UpdateBulkScheduleMutation, UpdateBulkScheduleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateBulkScheduleMutation, UpdateBulkScheduleMutationVariables>(UpdateBulkScheduleDocument, options);
+      }
+export type UpdateBulkScheduleMutationHookResult = ReturnType<typeof useUpdateBulkScheduleMutation>;
+export type UpdateBulkScheduleMutationResult = Apollo.MutationResult<UpdateBulkScheduleMutation>;
+export type UpdateBulkScheduleMutationOptions = Apollo.BaseMutationOptions<UpdateBulkScheduleMutation, UpdateBulkScheduleMutationVariables>;
 export const UpdateScheduleDocument = gql`
     mutation UpdateSchedule($updateScheduleInput: UpdateScheduleInput!) {
   updateSchedule(updateScheduleInput: $updateScheduleInput) {

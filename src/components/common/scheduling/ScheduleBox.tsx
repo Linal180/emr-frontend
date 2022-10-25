@@ -18,6 +18,7 @@ const ScheduleBox: FC<ScheduleBoxProps> = ({
     if (id) {
       dispatcher({ type: ActionType.SET_IS_EDIT, isEdit: true })
       dispatcher({ type: ActionType.SET_SCHEDULE_ID, scheduleId: id })
+      dispatcher({ type: ActionType.SET_BULK_EDIT, bulkEdit: false })
       dispatcher({ type: ActionType.SET_OPEN_MODAL, openModal: true })
     }
   };

@@ -1,5 +1,15 @@
-mutation CreateSchedule($createScheduleInput: [CreateScheduleInput!]!){
+mutation CreateSchedule($createScheduleInput: CreateScheduleInput!){
   createSchedule(createScheduleInput: $createScheduleInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation UpdateBulkSchedule($updateBulkScheduleInput: UpdateBulkScheduleInput!){
+  updateBulkSchedule(updateBulkScheduleInput: $updateBulkScheduleInput){
     response {
       error
       status
