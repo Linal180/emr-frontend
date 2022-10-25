@@ -1021,6 +1021,7 @@ export interface LabOrderCreateProps {
   labTestsToEdit?: LabTests[]
   orderNumber?: string;
   setCurrentTest?: Function
+  fetchData?: Function
 }
 
 export interface LabOrdersTableProps {

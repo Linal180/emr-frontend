@@ -133,7 +133,6 @@ const LabOrderComponent: FC<LabOrderInitialScreenProps> = ({ appointmentInfo, se
 
         <Grid item md={12} sm={12} xs={12}>
           <DoctorSelector
-            isRequired
             label={PRIMARY_PROVIDER}
             name="primaryProviderId"
             disabled={true}

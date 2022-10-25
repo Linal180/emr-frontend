@@ -994,7 +994,7 @@ export const createLabOrdersSchema = (isSpecimenForm?: boolean) => (
         // .test('', DIAGNOSES_VALIDATION_MESSAGE, (value) => !!value && value.length > 0),
       })
     ).test('', TESTS_FIELD_VALIDATION_MESSAGE, (value) => !!value && value.length > 0),
-    primaryProviderId: selectorSchema(PRIMARY_PROVIDER, !isSpecimenForm),
+    // primaryProviderId: selectorSchema(PRIMARY_PROVIDER, !isSpecimenForm),
   })
 )
 
