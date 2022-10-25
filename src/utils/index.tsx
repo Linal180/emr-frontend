@@ -2567,3 +2567,6 @@ export const formatNumber = (str: string) => {
   };
   return ""
 }
+export const transformedEndDate = (endDate: string) =>{
+  return endDate ? moment(endDate).format("MM-DD-YYYY") : ''
+}
