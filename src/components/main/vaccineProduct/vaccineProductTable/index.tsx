@@ -57,7 +57,7 @@ const VaccineProductTable: FC = (): JSX.Element => {
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
           if (!!data && (data.length > 1 || isLast(data?.length, page))) {
-            await fetchAllNdcCodes()
+            await fetchAllVacinesProduct()
           } else {
             dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, isLast?.length || 0) })
           }
@@ -104,15 +104,19 @@ const VaccineProductTable: FC = (): JSX.Element => {
   });
 
 
-  const fetchAllNdcCodes = useCallback(async () => {
+  const fetchAllVacinesProduct = useCallback(async (pageNo?: number) => {
     try {
-      await findAllVaccineProducts({ variables: { fetchAllVaccineProductsInput: { paginationOptions: { limit: PAGE_LIMIT, page }, searchQuery } } })
+      await findAllVaccineProducts({ variables: { fetchAllVaccineProductsInput: { paginationOptions: { limit: PAGE_LIMIT, page: pageNo || page }, searchQuery } } })
     } catch (error) { }
   }, [findAllVaccineProducts, page, searchQuery])
 
+  const fetchData = () => {
+    dispatch({ type: ActionType.SET_PAGE, page: 1 })
+    fetchAllVacinesProduct(1)
+  }
   useEffect(() => {
-    fetchAllNdcCodes()
-  }, [fetchAllNdcCodes])
+    fetchAllVacinesProduct()
+  }, [fetchAllVacinesProduct])
 
 
   return (
@@ -220,7 +224,7 @@ const VaccineProductTable: FC = (): JSX.Element => {
         isEdit={!!itemId}
         handleClose={handleModalClose}
         dispatcher={dispatch}
-        fetch={() => fetchAllNdcCodes()}
+        fetch={() => fetchData()}
       />}
 
       {totalPages > 1 && !loading && (
