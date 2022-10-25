@@ -25,6 +25,27 @@ const styles = StyleSheet.create({
     margin: "auto",
     flexDirection: "row",
   },
+  minWidth60: {
+    minWidth: '60px',
+    maxWidth: '60px',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
+  minWidth80: {
+    minWidth: '80px',
+    maxWidth: '80px',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
+  minWidth100: {
+    minWidth: '100px',
+    maxWidth: '100px',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
   fieldTitle: {
     minHeight: '30px',
     padding: '7px',
@@ -32,7 +53,7 @@ const styles = StyleSheet.create({
   },
   fieldText: {
     minHeight: '30px',
-    minWidth: '170px',
+    // minWidth: '170px',
     padding: '7px',
     overflow: 'hidden',
     backgroundColor: '#eee',
@@ -120,11 +141,20 @@ const styles = StyleSheet.create({
   w30: {
     width: '30%',
   },
+  w40: {
+    width: '40%',
+  },
   w50: {
     width: '50%',
   },
+  w60: {
+    width: '60%',
+  },
   w70: {
     width: '70%',
+  },
+  w80: {
+    width: '80%',
   },
   w100: {
     width: '100%',
@@ -147,7 +177,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   logoImage: {
-    width: '110px',
+    width: '90px',
     margin: '10px',
   }
 });
@@ -180,38 +210,38 @@ const ResultDoc = ({ labTest, attachmentUrl }: { labTest: LabTestsPayload['labTe
         <View style={styles.table}>
           {/* 1st-row */}
           <View style={styles.tableRow}>
-            <View style={[styles.w30, styles.flexRow, styles.borderStyle, styles.borderRightWidth]}>
+            <View style={[styles.w20, styles.flexRow,]}>
               <Image
                 src={attachmentUrl ? attachmentUrl + '?noCache=randomString' : Logo}
                 style={styles.logoImage}
               />
             </View>
 
-            <View style={[styles.w70]}>
+            <View style={[styles.w80]}>
               <View style={[styles.bgGrey, styles.borderStyle, styles.borderBottomWidth]}>
                 <Text style={styles.fieldTitle2}>{SPECIMEN}</Text>
               </View>
 
               <View style={styles.fieldRow2}>
                 <View style={styles.fieldRow3}>
-                  <Text style={styles.fieldTitle}>{PATIENT_NO}:</Text>
+                  <Text style={[styles.fieldTitle, styles.minWidth100]}>{PATIENT_NO}:</Text>
                   <Text style={styles.fieldText}>{patientRecord}</Text>
                 </View>
 
                 <View style={styles.fieldRow3}>
-                  <Text style={styles.fieldTitle}>{FINAL_REPORT}:</Text>
+                  <Text style={[styles.fieldTitle, styles.minWidth100]}>{FINAL_REPORT}:</Text>
                   <Text style={styles.fieldText}>{N_A}</Text>
                 </View>
               </View>
 
               <View style={styles.fieldRow2}>
                 <View style={styles.fieldRow3}>
-                  <Text style={styles.fieldTitle}>{COLLECTED_DATE}:</Text>
+                  <Text style={[styles.fieldTitle, styles.minWidth100]}>{COLLECTED_DATE}:</Text>
                   <Text style={styles.fieldText}>{collectedDate}</Text>
                 </View>
 
                 <View style={styles.fieldRow3}>
-                  <Text style={styles.fieldTitle}>{RECEIVED_DATE}:</Text>
+                  <Text style={[styles.fieldTitle, styles.minWidth100]}>{RECEIVED_DATE}:</Text>
                   <Text style={styles.fieldText}>{receivedDate}</Text>
                 </View>
               </View>
@@ -220,78 +250,78 @@ const ResultDoc = ({ labTest, attachmentUrl }: { labTest: LabTestsPayload['labTe
 
           {/* 2nd-row */}
           <View style={styles.tableRow}>
-            <View style={[styles.w30, styles.borderStyle, styles.borderRightWidth, styles.borderTopWidth]}>
+            <View style={[styles.w40, styles.borderStyle, styles.borderTopWidth]}>
               <View style={[styles.bgGrey, styles.borderStyle, styles.borderBottomWidth]}>
                 <Text style={styles.fieldTitle2}>{PATIENT}</Text>
               </View>
 
               <View style={styles.fieldRow1}>
-                <Text style={styles.fieldTitle}>{NAME}:</Text>
+                <Text style={[styles.fieldTitle, styles.minWidth60]}>{NAME}:</Text>
                 <Text style={styles.fieldText}>{patientFullName}</Text>
               </View>
 
               <View style={styles.fieldRow1}>
-                <Text style={styles.fieldTitle}>{DOB_TEXT}:</Text>
+                <Text style={[styles.fieldTitle, styles.minWidth60]}>{DOB_TEXT}:</Text>
                 <Text style={styles.fieldText}>{dob}</Text>
               </View>
 
               <View style={styles.fieldRow1}>
-                <Text style={styles.fieldTitle}>{GENDER}:</Text>
+                <Text style={[styles.fieldTitle, styles.minWidth60]}>{GENDER}:</Text>
                 <Text style={styles.fieldText}>{gender}</Text>
               </View>
 
               <View style={styles.fieldRow1}>
-                <Text style={styles.fieldTitle}>ID #:</Text>
+                <Text style={[styles.fieldTitle, styles.minWidth60]}>ID #:</Text>
                 <Text style={styles.fieldText}>{patientRecord}</Text>
               </View>
 
               <View style={styles.fieldRow1}>
-                <Text style={styles.fieldTitle}>{TEL}:</Text>
+                <Text style={[styles.fieldTitle, styles.minWidth60]}>{TEL}:</Text>
                 <Text style={styles.fieldText}>{formatPhone(phone)}</Text>
               </View>
             </View>
 
-            <View style={[styles.w70, styles.borderStyle, styles.borderTopWidth]}>
+            <View style={[styles.w60, styles.borderStyle, styles.borderTopWidth]}>
               <View style={[styles.bgGrey, styles.borderStyle, styles.borderBottomWidth]}>
                 <Text style={styles.fieldTitle2}>{PHYSICIAN}</Text>
               </View>
 
               <View style={[styles.fieldRow2, styles.w100]}>
-                <Text style={styles.fieldTitle}>{FACILITY}:</Text>
+                <Text style={[styles.fieldTitle,styles.minWidth80]}>{FACILITY}:</Text>
                 <Text style={styles.fieldText}>{facilityName}</Text>
               </View>
 
               <View style={styles.fieldRow2}>
-                <Text style={styles.fieldTitle}>{CLIA_ID_NUMBER}:</Text>
+                <Text style={[styles.fieldTitle,styles.minWidth100]}>{CLIA_ID_NUMBER}:</Text>
                 <Text style={styles.fieldText}>{cliaIdNumber || N_A}</Text>
               </View>
 
               <View style={styles.fieldRow2}>
                 <View style={styles.fieldRow3}>
-                  <Text style={styles.fieldTitle}>{PRIMARY_CARE}:</Text>
+                  <Text style={[styles.fieldTitle,styles.minWidth80]}>{PRIMARY_CARE}:</Text>
                   <Text style={styles.fieldText}>{PRIMARY}</Text>
                 </View>
 
                 <View style={styles.fieldRow3}>
-                  <Text style={styles.fieldTitle}>{URGENT_CARE}:</Text>
+                  <Text style={[styles.fieldTitle,styles.minWidth80]}>{URGENT_CARE}:</Text>
                   <Text style={styles.fieldText}>{PRIMARY}</Text>
                 </View>
               </View>
 
               <View style={styles.fieldRow2}>
                 <View style={styles.fieldRow3}>
-                  <Text style={styles.fieldTitle}>{ATTENDING}:</Text>
+                  <Text style={[styles.fieldTitle,styles.minWidth80]}>{ATTENDING}:</Text>
                   <Text style={styles.fieldText}>Dr. {doctorFullName}</Text>
                 </View>
 
                 <View style={styles.fieldRow3}>
-                  <Text style={styles.fieldTitle}>{TEL}:</Text>
+                  <Text style={[styles.fieldTitle,styles.minWidth80]}>{TEL}:</Text>
                   <Text style={styles.fieldText}>{formatPhone(facilityPhone)}</Text>
                 </View>
               </View>
 
               <View style={[styles.fieldRow2, styles.w100]}>
-                <Text style={styles.fieldTitle}>{ADDRESS}:</Text>
+                <Text style={[styles.fieldTitle,styles.minWidth80]}>{ADDRESS}:</Text>
                 <Text style={styles.fieldText}>{formatAddress(address, city, state, zipCode)} </Text>
               </View>
             </View>
