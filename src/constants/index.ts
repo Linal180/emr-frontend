@@ -92,6 +92,7 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
+export const BULK_UPDATE_TEXT = 'Bulk Update'
 export const DIED_TEXT = 'Died'
 export const NDC_FORMAT = 'NNNNN/NNNN-NNN/NNNN-NN'
 export const ICD_TEXT = 'International Classification of Diseases'
