@@ -106,9 +106,9 @@ const NdcTable: FC = (): JSX.Element => {
 
   const fetchAllNdcCodes = useCallback(async () => {
     try {
-      await findAllNdcCodes({ variables: { findAllNdcInput: { paginationOptions: { limit: PAGE_LIMIT, page } } } })
+      await findAllNdcCodes({ variables: { findAllNdcInput: { paginationOptions: { limit: PAGE_LIMIT, page } , searchQuery} } })
     } catch (error) { }
-  }, [findAllNdcCodes, page])
+  }, [findAllNdcCodes, page , searchQuery])
 
   useEffect(() => {
     fetchAllNdcCodes()
