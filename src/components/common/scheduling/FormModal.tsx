@@ -21,7 +21,7 @@ import { ActionType } from "../../../reducers/scheduleReducer";
 import { usePublicAppointmentStyles } from "../../../styles/publicAppointmentStyles";
 import { AntSwitch } from "../../../styles/publicAppointmentStyles/externalPatientStyles";
 import {
-  useCreateScheduleMutation, useGetScheduleLazyQuery, useUpdateScheduleMutation
+  useCreateScheduleMutation, useGetScheduleLazyQuery, useUpdateBulkScheduleMutation, useUpdateScheduleMutation
 } from "../../../generated/graphql";
 import {
   multiOptionType, ParamsType, ScheduleFormProps, ScheduleInputProps
@@ -45,7 +45,7 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
   const { id: typeId } = useParams<ParamsType>();
   const { currentUser, user } = useContext(AuthContext)
   const { facility } = user || {}
-  const { scheduleIds, scheduleRecursion, serviceIds } = state || {}
+  const { scheduleIds, scheduleRecursion, serviceIds, bulkEdit } = state || {}
 
   const { id: currentDoctor } = currentUser || {}
   const { id: facilityId } = facility || {}
@@ -55,6 +55,7 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
     mode: "all",
     resolver: yupResolver(scheduleSchema(isDoctor || false, scheduleRecursion))
   });
+
   const { reset, handleSubmit, setValue, control, watch, setError, clearErrors } = methods;
   const { startAt, endAt } = watch()
 
@@ -171,6 +172,27 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
     }
   });
 
+  const [updateBulkSchedule] = useUpdateBulkScheduleMutation({
+    onError({ message }) {
+      Alert.error(message)
+      handleClose()
+    },
+
+    onCompleted(data) {
+      const { updateBulkSchedule: { response } } = data;
+
+      if (response) {
+        const { status } = response
+
+        if (status && status === 200) {
+          Alert.success(SCHEDULE_UPDATED_SUCCESSFULLY);
+          handleClose()
+          reload();
+        }
+      }
+    }
+  })
+
   const fetchSchedule = useCallback(async () => {
     try {
       isEdit && id &&
@@ -210,10 +232,16 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
               updateScheduleInput: { id, ...scheduleInput[0] }
             }
           }) : Alert.error(SCHEDULE_NOT_FOUND)
-      } else {
+      }
+      else if (bulkEdit) {
+        await updateBulkSchedule({
+          variables: { updateBulkScheduleInput: { schedules: scheduleInput,  } }
+        })
+      }
+      else {
         await createSchedule({
           variables: {
-            createScheduleInput: scheduleInput
+            createScheduleInput: { schedules: scheduleInput }
           }
         })
       }
@@ -255,7 +283,7 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
     >
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <CardComponent cardTitle={isDoctor ? DOCTOR_SCHEDULE : FACILITY_SCHEDULE}>
+          <CardComponent cardTitle={isDoctor ? bulkEdit ? `Bulk ${DOCTOR_SCHEDULE}` : DOCTOR_SCHEDULE : bulkEdit ? `Bulk ${FACILITY_SCHEDULE}` : FACILITY_SCHEDULE}>
             <Box px={1}>
               <Grid container spacing={3}>
                 <Grid item md={12} sm={12} xs={12}>
@@ -369,7 +397,7 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
                     <Button type="submit" variant="contained" color="primary"
                       disabled={disableSubmit}
                     >
-                      {isEdit ? UPDATE_SCHEDULE : CREATE_SCHEDULE}
+                      {isEdit ? UPDATE_SCHEDULE : bulkEdit ? UPDATE_SCHEDULE : CREATE_SCHEDULE}
 
                       {disableSubmit && <CircularProgress size={20} color="inherit" />}
                     </Button>

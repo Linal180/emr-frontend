@@ -13,6 +13,7 @@ export interface State {
   serviceIds: multiOptionType[];
   byDaySchedules: DaySchedule[];
   schedules: SchedulesPayload['schedules'];
+  bulkEdit: boolean
 }
 
 export const initialState: State = {
@@ -27,6 +28,7 @@ export const initialState: State = {
   byDaySchedules: [],
   doctorFacilityId: "",
   scheduleRecursion: true,
+  bulkEdit: false
 }
 
 export enum ActionType {
@@ -41,6 +43,7 @@ export enum ActionType {
   SET_BY_DAY_SCHEDULES = 'setByDaySchedules',
   SET_DOCTOR_FACILITY_ID = 'setDoctorFacilityId',
   SET_SCHEDULE_RECURSION = 'setScheduleRecursion',
+  SET_BULK_EDIT = 'setBulkEdit'
 }
 
 export type Action =
@@ -55,6 +58,7 @@ export type Action =
   | { type: ActionType.SET_SLOTS; slots: SlotsPayload['slots'] }
   | { type: ActionType.SET_SCHEDULE_RECURSION; scheduleRecursion: boolean }
   | { type: ActionType.SET_SCHEDULES, schedules: SchedulesPayload['schedules'] }
+  | { type: ActionType.SET_BULK_EDIT, bulkEdit: boolean }
 
 export const scheduleReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -122,6 +126,12 @@ export const scheduleReducer = (state: State, action: Action): State => {
       return {
         ...state,
         serviceIds: action.serviceIds
+      }
+
+    case ActionType.SET_BULK_EDIT:
+      return {
+        ...state,
+        bulkEdit: action.bulkEdit
       }
   };
 }

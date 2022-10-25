@@ -1653,13 +1653,7 @@ export type CreateReviewOfSystemInput = {
 };
 
 export type CreateScheduleInput = {
-  day: Scalars['String'];
-  doctorId?: Maybe<Scalars['String']>;
-  endAt: Scalars['String'];
-  facilityId?: Maybe<Scalars['String']>;
-  recurringEndDate?: Maybe<Scalars['DateTime']>;
-  servicesIds: Array<Scalars['String']>;
-  startAt: Scalars['String'];
+  schedules: Array<SingleScheduleInput>;
 };
 
 export type CreateServiceInput = {
@@ -3249,6 +3243,7 @@ export type Mutation = {
   updateAppointmentStatus: AppointmentPayload;
   updateAttachmentData: AttachmentPayload;
   updateAutoLogoutTime: UserPayload;
+  updateBulkSchedule: SchedulePayload;
   updateCPTCode: CptCodePayload;
   updateClaimStatus: ClaimStatusPayload;
   updateContact: ContactPayload;
@@ -3559,7 +3554,7 @@ export type MutationCreateRoleArgs = {
 
 
 export type MutationCreateScheduleArgs = {
-  createScheduleInput: Array<CreateScheduleInput>;
+  createScheduleInput: CreateScheduleInput;
 };
 
 
@@ -3880,6 +3875,11 @@ export type MutationUpdateAttachmentDataArgs = {
 
 export type MutationUpdateAutoLogoutTimeArgs = {
   userInfoInput: UserInfoInput;
+};
+
+
+export type MutationUpdateBulkScheduleArgs = {
+  updateBulkScheduleInput: UpdateBulkScheduleInput;
 };
 
 
@@ -6711,6 +6711,16 @@ export type ShortUrlResponse = {
   shortUrl?: Maybe<ShortUrl>;
 };
 
+export type SingleScheduleInput = {
+  day: Scalars['String'];
+  doctorId?: Maybe<Scalars['String']>;
+  endAt: Scalars['String'];
+  facilityId?: Maybe<Scalars['String']>;
+  recurringEndDate?: Maybe<Scalars['DateTime']>;
+  servicesIds: Array<Scalars['String']>;
+  startAt: Scalars['String'];
+};
+
 export type Slots = {
   __typename?: 'Slots';
   endTime?: Maybe<Scalars['String']>;
@@ -7294,6 +7304,10 @@ export type UpdateBillingAddressInput = {
   state?: Maybe<Scalars['String']>;
   userId?: Maybe<Scalars['String']>;
   zipCode?: Maybe<Scalars['String']>;
+};
+
+export type UpdateBulkScheduleInput = {
+  schedules: Array<SingleScheduleInput>;
 };
 
 export type UpdateCptCodeInput = {
@@ -9952,11 +9966,18 @@ export type FindAllPermissionQueryVariables = Exact<{
 export type FindAllPermissionQuery = { __typename?: 'Query', findAllPermissions: { __typename?: 'PermissionsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, permissions?: Array<{ __typename?: 'Permission', id: string, name?: string | null, moduleType?: string | null, status?: boolean | null } | null> | null } };
 
 export type CreateScheduleMutationVariables = Exact<{
-  createScheduleInput: Array<CreateScheduleInput> | CreateScheduleInput;
+  createScheduleInput: CreateScheduleInput;
 }>;
 
 
 export type CreateScheduleMutation = { __typename?: 'Mutation', createSchedule: { __typename?: 'SchedulePayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type UpdateBulkScheduleMutationVariables = Exact<{
+  updateBulkScheduleInput: UpdateBulkScheduleInput;
+}>;
+
+
+export type UpdateBulkScheduleMutation = { __typename?: 'Mutation', updateBulkSchedule: { __typename?: 'SchedulePayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
 
 export type UpdateScheduleMutationVariables = Exact<{
   updateScheduleInput: UpdateScheduleInput;
@@ -23075,7 +23096,7 @@ export type FindAllPermissionQueryHookResult = ReturnType<typeof useFindAllPermi
 export type FindAllPermissionLazyQueryHookResult = ReturnType<typeof useFindAllPermissionLazyQuery>;
 export type FindAllPermissionQueryResult = Apollo.QueryResult<FindAllPermissionQuery, FindAllPermissionQueryVariables>;
 export const CreateScheduleDocument = gql`
-    mutation CreateSchedule($createScheduleInput: [CreateScheduleInput!]!) {
+    mutation CreateSchedule($createScheduleInput: CreateScheduleInput!) {
   createSchedule(createScheduleInput: $createScheduleInput) {
     response {
       error
@@ -23111,6 +23132,43 @@ export function useCreateScheduleMutation(baseOptions?: Apollo.MutationHookOptio
 export type CreateScheduleMutationHookResult = ReturnType<typeof useCreateScheduleMutation>;
 export type CreateScheduleMutationResult = Apollo.MutationResult<CreateScheduleMutation>;
 export type CreateScheduleMutationOptions = Apollo.BaseMutationOptions<CreateScheduleMutation, CreateScheduleMutationVariables>;
+export const UpdateBulkScheduleDocument = gql`
+    mutation UpdateBulkSchedule($updateBulkScheduleInput: UpdateBulkScheduleInput!) {
+  updateBulkSchedule(updateBulkScheduleInput: $updateBulkScheduleInput) {
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type UpdateBulkScheduleMutationFn = Apollo.MutationFunction<UpdateBulkScheduleMutation, UpdateBulkScheduleMutationVariables>;
+
+/**
+ * __useUpdateBulkScheduleMutation__
+ *
+ * To run a mutation, you first call `useUpdateBulkScheduleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateBulkScheduleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateBulkScheduleMutation, { data, loading, error }] = useUpdateBulkScheduleMutation({
+ *   variables: {
+ *      updateBulkScheduleInput: // value for 'updateBulkScheduleInput'
+ *   },
+ * });
+ */
+export function useUpdateBulkScheduleMutation(baseOptions?: Apollo.MutationHookOptions<UpdateBulkScheduleMutation, UpdateBulkScheduleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateBulkScheduleMutation, UpdateBulkScheduleMutationVariables>(UpdateBulkScheduleDocument, options);
+      }
+export type UpdateBulkScheduleMutationHookResult = ReturnType<typeof useUpdateBulkScheduleMutation>;
+export type UpdateBulkScheduleMutationResult = Apollo.MutationResult<UpdateBulkScheduleMutation>;
+export type UpdateBulkScheduleMutationOptions = Apollo.BaseMutationOptions<UpdateBulkScheduleMutation, UpdateBulkScheduleMutationVariables>;
 export const UpdateScheduleDocument = gql`
     mutation UpdateSchedule($updateScheduleInput: UpdateScheduleInput!) {
   updateSchedule(updateScheduleInput: $updateScheduleInput) {
