@@ -107,9 +107,9 @@ const MvxTable: FC = (): JSX.Element => {
 
   const fetchAllMvxCodes = useCallback(async () => {
     try {
-      await findAllMvxCodes({ variables: { findAllMvxInput: { paginationOptions: { limit: PAGE_LIMIT, page } } } })
+      await findAllMvxCodes({ variables: { findAllMvxInput: { paginationOptions: { limit: PAGE_LIMIT, page }, searchQuery } } })
     } catch (error) { }
-  }, [findAllMvxCodes, page])
+  }, [findAllMvxCodes, page, searchQuery])
 
   useEffect(() => {
     fetchAllMvxCodes()
@@ -156,7 +156,7 @@ const MvxTable: FC = (): JSX.Element => {
                   </TableRow>
                 ) : <TableBody>
                   {data?.map((mvx) => {
-                    const { id, manufacturerName, mvxCode, notes, mvxStatus,systematic } = mvx ?? {}
+                    const { id, manufacturerName, mvxCode, notes, mvxStatus, systematic } = mvx ?? {}
                     return (
                       <TableRow>
                         <TableCell scope="row">
