@@ -483,3 +483,23 @@ query GetPatientProvider($patientProviderInputs: PatientProviderInputs!) {
       } 
   }
 }
+
+
+query GetPatientPrimaryProvider($getPatient: GetPatient!) {
+  getPatient(getPatient: $getPatient) {
+    response {
+      status
+      message
+    }
+
+    patient {
+      id 
+
+      primaryDoctor {
+        id
+        firstName
+        lastName
+      }
+    }
+  }
+}

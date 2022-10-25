@@ -394,6 +394,7 @@ const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({
                                   </Grid>
                                   <Grid item xs={4}>
                                     <InputController
+                                      isRequired
                                       controllerName={`familyRelative.${index}.onsetAge`}
                                       key={`familyRelative.${index}.onsetAge`} fieldType="number"
                                       controllerLabel={ONSET_AGE_TEXT} notStep

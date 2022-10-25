@@ -39,6 +39,7 @@ import {
   PAYMENT_TYPE, APPOINTMENT_PAYMENT_TYPE, LAST_FOUR_DIGIT, PROBLEM_TEXT, FAMILY_RELATIVE, RELATIVE, MANUFACTURER_TEXT,
   NDC_TEXT, ROUTE, SITE_TEXT, UNITS, ADMINISTRATION_DATE, CODE, UPFRONT_PAYMENT_TYPES, STOP_DATE, NO_SPACE_REGEX,
   PRIORITY, NDC_REGEX, MVX_CODE_REGEX, STATUS, ONLY_NUMBERS_REGEX, CVX_TEXT, MVX_TEXT, NDC_VALIDATION_MESSAGE, SIG, NUMBERS_WITHOUT_DDECIMAL_REGEX, NO_DECIMAL_REQUIRED,
+  ONSET_AGE_TEXT,
 } from "../constants";
 import { Copay, PatientPaymentType, ProblemType } from "../generated/graphql";
 
@@ -1271,7 +1272,7 @@ export const AppointmentPaymentTypeSchema = yup.object({
 
 const familyRelativeSchema = yup.object({
   relative: selectorSchema(RELATIVE),
-  onsetAge: yup.string(),
+  onsetAge: yup.string().required(requiredMessage(ONSET_AGE_TEXT)),
   died: yup.string(),
   notes: yup.string()
 })

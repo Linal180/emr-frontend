@@ -93,6 +93,7 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
+export const BULK_UPDATE_TEXT = 'Bulk Update'
 export const DIED_TEXT = 'Died'
 export const NDC_FORMAT = 'NNNNN/NNNN-NNN/NNNN-NN'
 export const ICD_TEXT = 'International Classification of Diseases'
@@ -1112,6 +1113,7 @@ export const BACK_TO_HOME = "Return to Home";
 export const APPOINTMENT_TEXT = "Appointment";
 export const HPI_TEMPLATES = "HPI Templates";
 export const ROS_TEMPLATES = "ROS Templates";
+export const PE_TEMPLATES = "PE Templates";
 export const LAB_RESULTS_TEXT = "Lab Results";
 export const BILLING_STATUS = "Billing Status";
 export const VISIT_REASON = "Reason for visit";
@@ -2707,7 +2709,8 @@ export enum ITEM_MODULE {
 
 export enum TemplateType {
   HPI = 'hpi',
-  REVIEW_OF_SYSTEM = 'reviewOfSystem'
+  REVIEW_OF_SYSTEM = 'reviewOfSystem',
+  PHYSICAL_EXAM = "physicalExam"
 }
 
 export enum TABLE_SELECTOR_MODULES {
@@ -3965,6 +3968,9 @@ export const PATIENT_CHARTING_MENU = [
     title: "Review Of System",
   },
   {
+    title: "Physical Exam",
+  },
+  {
     title: "Orders And Diagnoses",
   }
 ]
@@ -3998,8 +4004,12 @@ export const EXAM_TABS = [
     value: "3",
   },
   {
-    title: "Assessment & Plan",
+    title: "PE",
     value: "4",
+  },
+  {
+    title: "Assessment & Plan",
+    value: "5",
   },
 ]
 
