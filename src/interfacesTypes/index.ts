@@ -27,7 +27,7 @@ import {
   ResponsePayloadResponse, ReviewOfSystemPayload, RolesPayload, Schedule, SectionsInputs, ServicesPayload,
   SingleScheduleInput, Staff, SurgicalHistory, TriageNotes, TriageNotesPayload, TwoFactorInput, User,
   UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput,
-  UsersFormsElements, VaccineProduct, VerifyCodeInput
+  UsersFormsElements, VaccineProduct, VerifyCodeInput, SectionQuestions
 } from "../generated/graphql";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
 import { Action as BillingAction, State as BillingState } from "../reducers/billingReducer";
@@ -1287,6 +1287,12 @@ export interface CopayFields {
 
 export interface ClaimStatusFields {
   statusName?: string
+}
+
+export type TemplateQuestionCardType = {
+  question: SectionQuestions,
+  handleSubmit?: Function,
+  shouldDisableEdit?: boolean
 }
 
 export interface InsuranceCreateInput {

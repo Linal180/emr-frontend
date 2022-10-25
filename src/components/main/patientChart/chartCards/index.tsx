@@ -44,6 +44,7 @@ import { useExternalPatientStyles } from '../../../../styles/publicAppointmentSt
 import { WHITE } from '../../../../theme';
 import { isAdmin, isOnlyDoctor } from "../../../../utils";
 import VisitsTab from "./Visits";
+import PhysicalExam from "./physicalExam";
 
 const ChartCards: FC<ChartComponentProps> = ({ appointmentState, shouldDisableEdit, status, appointmentInfo, fetchAppointment, labOrderHandler, isInTake }): JSX.Element => {
   const classes = useChartingStyles();
@@ -182,6 +183,9 @@ const ChartCards: FC<ChartComponentProps> = ({ appointmentState, shouldDisableEd
         return <ReviewOfSystem shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(12)} />
 
       case 12:
+        return <PhysicalExam shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(13)} />
+
+      case 13:
         return <AssessmentPlanTab shouldDisableEdit={shouldDisableEdit} />
       default:
         return (

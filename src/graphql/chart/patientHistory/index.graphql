@@ -292,3 +292,120 @@ query LatestReviewOfSystem($reviewOfSystemInput: ReviewOfSystemInput!) {
     }
   }
 }
+
+mutation CreatePhysicalExamHistory(
+  $createPhysicalExamInput: CreatePhysicalExamInput!
+) {
+  createPhysicalExam(createPhysicalExamInput: $createPhysicalExamInput) {
+    response {
+      status
+      message
+    }
+
+    physicalExam {
+      id
+    }
+  }
+}
+
+query PhysicalExam($physicalExamInput: PhysicalExamInput!) {
+  physicalExam(physicalExamInput: $physicalExamInput) {
+    response {
+      status
+      message
+    }
+
+    physicalExam {
+      id
+      patientId
+      templateIds
+      templates {
+        id
+        name
+        sections {
+          id
+          name
+
+          questions {
+            id
+            title
+
+            answers {
+              id
+              questionType
+              name
+              answerType
+              options {
+                id
+                name
+              }
+            }
+          }
+        }
+      }
+      appointmentId
+
+      answers {
+        id
+        value
+        answerId
+
+        answer {
+          name
+          questionType
+        }
+      }
+    }
+  }
+}
+
+query LatestPhysicalExam($physicalExamInput: PhysicalExamInput!) {
+  latestPhysicalExam(physicalExamInput: $physicalExamInput) {
+    response {
+      status
+      message
+    }
+
+    physicalExam {
+      id
+      patientId
+      templateIds
+      templates {
+        id
+        name
+        sections {
+          id
+          name
+
+          questions {
+            id
+            title
+
+            answers {
+              id
+              questionType
+              name
+              answerType
+              options {
+                id
+                name
+              }
+            }
+          }
+        }
+      }
+      appointmentId
+
+      answers {
+        id
+        value
+        answerId
+
+        answer {
+          name
+          questionType
+        }
+      }
+    }
+  }
+}
