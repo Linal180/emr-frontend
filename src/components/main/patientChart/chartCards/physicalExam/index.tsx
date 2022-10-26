@@ -1,7 +1,7 @@
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, colors, Typography } from "@material-ui/core";
+import { ExpandMore } from "@material-ui/icons";
 import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { ExpandMore } from "@material-ui/icons";
 import { useParams } from "react-router-dom";
 //components
 import Alert from "../../../../common/Alert";
@@ -10,12 +10,13 @@ import ChartingTemplateSelector from "../../../../common/Selector/ChartingTempla
 import TableLoader from "../../../../common/TableLoader";
 import QuestionCard from "./QuestionCard";
 //constants
-import { NEXT, PE_TEMPLATES, QuestionType, REVIEW_OF_SYSTEM_TEXT, TemplateType } from "../../../../../constants";
+import { NEXT, PE_TEMPLATES, PHYSICAL_EXAM_TEXT, QuestionType, TemplateType } from "../../../../../constants";
 import { QuestionTemplate, useCreatePhysicalExamHistoryMutation, useGetPatientChartingTemplateLazyQuery, usePhysicalExamLazyQuery } from '../../../../../generated/graphql';
 import { multiOptionType, ParamsType, PatientHistoryProps } from "../../../../../interfacesTypes";
 import { Action, ActionType, initialState, patientHistoryReducer, State } from "../../../../../reducers/patientHistoryReducer";
 import { useChartingStyles } from '../../../../../styles/chartingStyles';
 import { renderMultiTemplates } from "../../../../../utils";
+import MacroView from "../../../../common/Macro/MacroView";
 
 
 const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, handleStep }): JSX.Element => {
@@ -29,7 +30,7 @@ const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, hand
     setExpanded(isExpanded ? panel : false);
 
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientHistoryReducer, initialState);
-  const { itemId, templates } = state;
+  const { itemId, templates, notes } = state;
   const { handleSubmit, setValue } = methods;
 
   const [createPhysicalExam] = useCreatePhysicalExamHistoryMutation({
@@ -52,7 +53,6 @@ const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, hand
 
 
   const [findPatientChartingTemplate, { loading: findPatientChartingTemplateLoading }] = useGetPatientChartingTemplateLazyQuery({
-
     onError: ({ message }) => {
       Alert.error(message)
     },
@@ -78,8 +78,9 @@ const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, hand
       const { status } = response || {}
 
       if (status === 200) {
-        const { id, answers, templates } = physicalExam || {}
+        const { id, answers, templates, notes } = physicalExam || {}
         id && dispatch({ type: ActionType.SET_ITEM_ID, itemId: id })
+        notes && dispatch({ type: ActionType.SET_NOTES, notes: notes })
 
         dispatch({ type: ActionType.SET_TEMPLATES, templates: templates as QuestionTemplate[] })
 
@@ -176,7 +177,7 @@ const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, hand
     <>
       <Box p={2} display='flex' justifyContent='space-between' alignItems='center' flexWrap="wrap" borderBottom={`1px solid ${colors.grey[300]}`}>
         <Typography variant='h3'>
-          {REVIEW_OF_SYSTEM_TEXT}
+          {PHYSICAL_EXAM_TEXT}
         </Typography>
         {handleStep && <Box ml={1}>
           <Button
@@ -202,6 +203,12 @@ const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, hand
                 onSelect={(multiOption: multiOptionType[]) => fetchPatientChartingTemplates(multiOption.map(value => value.value))}
               />
             </Box>
+            <MacroView
+              itemId={itemId}
+              setItemId={(itemId: string) => dispatch({ type: ActionType.SET_ITEM_ID, itemId })}
+              notes={notes}
+              type={TemplateType.PHYSICAL_EXAM}
+            />
             {templates?.map((template, i) => {
               const { sections, name } = template || {}
               return (

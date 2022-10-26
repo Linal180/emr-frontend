@@ -26,6 +26,7 @@ function AnswerChips({ answers, colors, handleSubmit, shouldDisableEdit = false 
               fieldType='number'
               controllerName={`${id}.value`}
               controllerLabel=""
+              onChange={() => handleSubmit && handleSubmit()}
             />
           </Box>
           &nbsp;
@@ -48,6 +49,7 @@ function AnswerChips({ answers, colors, handleSubmit, shouldDisableEdit = false 
               label=''
               name={`${id}.value`}
               options={transformedOptions || []}
+              onSelect={() => handleSubmit && handleSubmit()}
             />
           </Box>
           &nbsp;
