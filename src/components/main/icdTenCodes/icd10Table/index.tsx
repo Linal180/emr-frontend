@@ -239,7 +239,7 @@ const IcdCodesTable: FC<IcdCodesTableProps> = (): JSX.Element => {
         setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
       />
 
-      <ICD10Form
+      {isOpen && <ICD10Form
         id={itemId}
         open={isOpen}
         isEdit={!!itemId}
@@ -247,7 +247,7 @@ const IcdCodesTable: FC<IcdCodesTableProps> = (): JSX.Element => {
         fetch={() => fetchData()}
         dispatcher={dispatch}
         systematic={systematic}
-      />
+      />}
 
       {totalPages > 1 && !loading && (
         <Box display="flex" justifyContent="flex-end" p={3}>

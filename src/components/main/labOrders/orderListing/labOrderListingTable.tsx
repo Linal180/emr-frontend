@@ -108,9 +108,7 @@ const LabOrderListingTable = (): JSX.Element => {
                 {renderTh(COMMENTS)}
               </TableRow>
             </TableHead>
-
-
-
+            
             <TableBody>
               {loading ? (
                 <TableRow>

@@ -2,14 +2,18 @@ import { Box, Button, Card, colors, IconButton, Typography } from '@material-ui/
 import { ChevronRight, RemoveCircleOutline } from '@material-ui/icons'
 import { Reducer, useCallback, useEffect, useReducer } from 'react'
 import { useParams } from 'react-router'
+//component block
+import Alert from '../../../../common/Alert'
+import ConfirmationModal from '../../../../common/ConfirmationModal'
+import NoDataFoundComponent from '../../../../common/NoDataFoundComponent'
+import AppointmentReasonModal from '../AppointmentReason/AppointmentReasonModal'
+//constants, interfaces, styles, reducers, graphql
 import { ADD, APPOINTMENT_REASON_DELETED, DELETE_REASON_DESCRIPTION, NEXT, REACTION_PAGE_LIMIT, REASON, REASON_VISIT, TO_CHECKOUT } from '../../../../../constants'
 import { PatientProblemsPayload, useFindAllPatientProblemsLazyQuery, useRemovePatientProblemMutation } from '../../../../../generated/graphql'
 import { AppointmentReasonProps, ParamsType } from '../../../../../interfacesTypes'
 import { Action, ActionType, chartReducer, initialState, State } from '../../../../../reducers/chartReducer'
 import { useChartingStyles } from '../../../../../styles/chartingStyles'
-import Alert from '../../../../common/Alert'
-import ConfirmationModal from '../../../../common/ConfirmationModal'
-import AppointmentReasonModal from '../AppointmentReason/AppointmentReasonModal'
+
 
 function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableEdit, shouldShowCheckout, handleStepChange }: AppointmentReasonProps) {
   const classes = useChartingStyles()
@@ -21,7 +25,7 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
 
   const handleModalClose = () => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: !isOpen })
 
-  const [findAllPatientProblems] = useFindAllPatientProblemsLazyQuery({
+  const [findAllPatientProblems, { loading, error }] = useFindAllPatientProblemsLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -144,6 +148,12 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
               </Box>
             })}
           </Box>
+          
+          {((!loading && singlePatientProblems?.length === 0) || error) && (
+            <Box display="flex" justifyContent="center" pb={12} pt={5}>
+              <NoDataFoundComponent />
+            </Box>
+          )}
         </Box>
       </Card>
 

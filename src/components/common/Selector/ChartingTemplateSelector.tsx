@@ -9,7 +9,6 @@ import { QuestionTemplate, usePatientChartingTemplatesLazyQuery } from "../../..
 import { ChartingTemplateSelectorProps, multiOptionType } from "../../../interfacesTypes";
 import { Action, ActionType, initialState, patientHistoryReducer, State } from "../../../reducers/patientHistoryReducer";
 import { renderMultiTemplates, requiredLabel } from "../../../utils";
-import Alert from "../Alert";
 
 const ChartingTemplateSelector: FC<ChartingTemplateSelectorProps> = ({
   name, label, disabled, isRequired, addEmpty, templateType, onSelect, isEdit, defaultValues
@@ -22,9 +21,6 @@ const ChartingTemplateSelector: FC<ChartingTemplateSelectorProps> = ({
   const { page, searchQuery } = state;
 
   const [findPatientChartingTemplates, { loading: findPatientChartingTemplatesLoading }] = usePatientChartingTemplatesLazyQuery({
-    onError: ({ message }) => {
-      Alert.error(message)
-    },
 
     onCompleted: (data) => {
       const { patientChartingTemplates } = data || {};

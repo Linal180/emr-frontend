@@ -29,6 +29,7 @@ const TimePicker: FC<PickerProps> = ({ name, label, isRequired, loading, disable
                 type="time"
                 defaultValue="07:30"
                 className="timePickerIcon"
+                variant='outlined'
                 error={invalid}
                 inputProps={{ step: 300, }}
                 disabled={disabled}

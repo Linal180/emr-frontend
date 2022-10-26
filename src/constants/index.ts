@@ -55,6 +55,7 @@ export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-
 export const NDC_REGEX = /^(?:\d{4}-\d{4}-\d{2}|\d{5}-(?:\d{3}-\d{2}|\d{4}-\d{1,2}))$/;
 export const MVX_CODE_REGEX = /^([A-Z]{2}|[A-Z]{3})$/;
 export const ONLY_NUMBERS_REGEX = /^[0-9]+$/;
+export const NUMBERS_WITHOUT_DDECIMAL_REGEX = /(?<![.\d])\d+(?![.\d])/g;
 
 // system roles
 export enum SYSTEM_ROLES {
@@ -92,6 +93,7 @@ export enum Heart_RATE_RANGES {
 }
 
 // constants
+export const BULK_UPDATE_TEXT = 'Bulk Update'
 export const DIED_TEXT = 'Died'
 export const NDC_FORMAT = 'NNNNN/NNNN-NNN/NNNN-NN'
 export const ICD_TEXT = 'International Classification of Diseases'
@@ -1111,6 +1113,7 @@ export const BACK_TO_HOME = "Return to Home";
 export const APPOINTMENT_TEXT = "Appointment";
 export const HPI_TEMPLATES = "HPI Templates";
 export const ROS_TEMPLATES = "ROS Templates";
+export const PE_TEMPLATES = "PE Templates";
 export const LAB_RESULTS_TEXT = "Lab Results";
 export const BILLING_STATUS = "Billing Status";
 export const VISIT_REASON = "Reason for visit";
@@ -1842,6 +1845,7 @@ export const FACILITY_CODE_VALIDATION_MESSAGE = "Facility code can only be capit
 export const NO_WHITE_SPACING_AT_BOTH_ENDS_ERROR_MESSAGE = "White-spaces at beginning or ending is not acceptable";
 export const MAMMOGRAPHY_VALIDATION_MESSAGE = "Valid mammography certification number format is like REF-EW-111111";
 export const DESCRIPTION_INVALID_MESSAGE = "White-spaces at start and special characters (!@#$%^&*) are not acceptable";
+export const NO_DECIMAL_REQUIRED = "Only numbers without decimal required"
 export const ValidOTP = () => 'Please enter only numbers';
 export const ValidMessage = (fieldName: string, Example?: string) =>
   `Please enter valid ${fieldName.toLowerCase()}`;
@@ -2705,7 +2709,8 @@ export enum ITEM_MODULE {
 
 export enum TemplateType {
   HPI = 'hpi',
-  REVIEW_OF_SYSTEM = 'reviewOfSystem'
+  REVIEW_OF_SYSTEM = 'reviewOfSystem',
+  PHYSICAL_EXAM = "physicalExam"
 }
 
 export enum TABLE_SELECTOR_MODULES {
@@ -3963,6 +3968,9 @@ export const PATIENT_CHARTING_MENU = [
     title: "Review Of System",
   },
   {
+    title: "Physical Exam",
+  },
+  {
     title: "Orders And Diagnoses",
   }
 ]
@@ -3996,8 +4004,12 @@ export const EXAM_TABS = [
     value: "3",
   },
   {
-    title: "Assessment & Plan",
+    title: "PE",
     value: "4",
+  },
+  {
+    title: "Assessment & Plan",
+    value: "5",
   },
 ]
 

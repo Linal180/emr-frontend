@@ -19,7 +19,7 @@ import { AuditLogsInputs } from "../../../interfacesTypes";
 import { useTableStyles } from "../../../styles/tableStyles";
 import { useFindAllUserLogsLazyQuery, UserLogsPayload } from "../../../generated/graphql";
 import { Action, State, initialState, userLogsReducer, ActionType } from '../../../reducers/userLogsReducer';
-import { formatModuleTypes, getFormatLogsDate, getFormatLogsTime, renderTh, setRecord } from "../../../utils";
+import { formatModuleTypes, getFormatLogsDate, getFormatLogsTime, renderTh, setRecord, transformedEndDate } from "../../../utils";
 import {
   ACTION, ALL_LOG_TYPES, DATE, DETAIL, FROM_DATE, IP_TEXT, AUDIT_LOG_REPORT, EXPORT_TO_FILE,
   PATIENT, PATIENT_NAME, TIME, TO_DATE, TYPE, UPDATE_FILTER, USER_NAME, USER_TEXT, USER_LOG_PAGE_LIMIT,
@@ -87,7 +87,8 @@ const AuditLogTable = (): JSX.Element => {
       const pageInputs = {
         paginationOptions: { page, limit: USER_LOG_PAGE_LIMIT }, userId: userId ? userId : null,
         moduleType: moduleType ? moduleType : null, patientId: patientId ? patientId : null,
-        startDate: startDate ? moment(startDate).subtract(1, 'hour').format() : null, endDate: endDate ? moment(`${endDate} 23:59:59`).format() : null
+        startDate: startDate ? moment(startDate).subtract(1, 'hour').format() : null, 
+        endDate: endDate ? moment(`${transformedEndDate(endDate)} 23:59:59`).format() : null
       }
 
       await findAllUserLogs({ variables: { userLogsInput: { ...pageInputs } } })
@@ -100,7 +101,6 @@ const AuditLogTable = (): JSX.Element => {
 
   const onSubmit = async (data: AuditLogsInputs) => {
     const { module, patient, user, startDate, endDate } = data
-    const transformedEndDate = endDate ? moment(endDate).format("MM-DD-YYYY") : ''
     const { id: userId } = user
     const { id: moduleType } = module
     const { id: patientId } = patient
@@ -111,7 +111,8 @@ const AuditLogTable = (): JSX.Element => {
         variables: {
           userLogsInput: {
             ...pageInputs, userId: userId ? userId : null, moduleType: moduleType ? moduleType : null,
-            patientId: patientId ? patientId : null, startDate: startDate ? moment(startDate).subtract(1, 'hour').format() : null, endDate: endDate ? moment(`${transformedEndDate} 23:59:59`).format() : null
+            patientId: patientId ? patientId : null, startDate: startDate ? moment(startDate).subtract(1, 'hour').format() : null, 
+            endDate: endDate ? moment(`${transformedEndDate(endDate)} 23:59:59`).format() : null
           }
         }
       })

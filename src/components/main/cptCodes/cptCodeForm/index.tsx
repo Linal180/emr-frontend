@@ -15,7 +15,7 @@ import { useCreateCptCodeMutation, useGetCptCodeLazyQuery, useUpdateCptCodeMutat
 
 const CptForm: FC<cptCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, dispatcher, systematic }): JSX.Element => {
   const methods = useForm<CptCodeFormType>({ resolver: yupResolver(CptCodeSchema) });
-  const { handleSubmit, setValue, } = methods;
+  const { handleSubmit, setValue, trigger } = methods;
 
   const [createCptCode, { loading: createLoading }] = useCreateCptCodeMutation({
     onError: ({ message }) => {
@@ -120,6 +120,7 @@ const CptForm: FC<cptCodeFormProps> = ({ open, fetch, isEdit, id, handleClose, d
     setValue('shortDescription', '')
     setValue('priority', '')
     handleClose(false)
+    trigger()
   }
 
   const loading = createLoading || getLoading || updateLoading
