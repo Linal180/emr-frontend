@@ -1,3 +1,4 @@
+import { Box } from "@material-ui/core";
 import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router";
 import { createEditor, Editor, Element as SlateElement, Point, Range, Transforms } from "slate";
@@ -6,6 +7,7 @@ import { Editable, ReactEditor, Slate, useSlateStatic, withReact } from "slate-r
 import { TemplateType } from "../../../constants";
 import { MacroPayload, MacrosPayload, useFetchAllMacrosLazyQuery, useUpdateHpiNotesMutation, useUpdatePeNotesMutation, useUpdateRosNotesMutation } from "../../../generated/graphql";
 import { MacroViewTypes, ParamsType } from "../../../interfacesTypes";
+import { GREY } from "../../../theme";
 import { getMacroTextInitialValue } from "../../../utils";
 
 const MacroView: FC<MacroViewTypes> = ({ itemId, setItemId, notes, type }) => {
@@ -155,10 +157,9 @@ const MacroView: FC<MacroViewTypes> = ({ itemId, setItemId, notes, type }) => {
     setShouldShowList(false)
   }
 
-
   if (value) {
     return (
-      <>
+      <Box pb={1}>
         <Slate
           editor={editor}
           value={value}
@@ -170,23 +171,29 @@ const MacroView: FC<MacroViewTypes> = ({ itemId, setItemId, notes, type }) => {
           }}
         >
 
-          <Editable
-            renderElement={renderElement}
-            placeholder="Get to work…"
-            spellCheck
-          />
+          <Box
+            bgcolor={GREY} borderRadius={4} minHeight={48} m={2} mt={0} p={2} display='flex'
+            flexDirection='column' justifyContent='center'>
+            <Editable
+              renderElement={renderElement}
+              placeholder="Get to work…"
+              spellCheck
+            />
+          </Box>
 
-          {shouldShowList &&
-            <ul>
-              {macros?.map((macro) => {
-                return (
-                  <li onClick={() => handleMacroClick(editor, macro)}>{macro?.shortcut}</li>
-                )
-              })}
-            </ul>
-          }
+          <Box mx={2} maxWidth={300} maxHeight={300} position="absolute" className="z-index overflow-auto">
+            {shouldShowList &&
+              <ul className="macro-ul word-wrap">
+                {macros?.map((macro) => {
+                  return (
+                    <li className="pointer-cursor" onClick={() => handleMacroClick(editor, macro)}>{macro?.shortcut}</li>
+                  )
+                })}
+              </ul>
+            }
+          </Box>
         </Slate>
-      </>
+      </Box>
     );
   }
   return <></>

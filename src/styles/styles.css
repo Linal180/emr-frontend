@@ -182,16 +182,14 @@ body .MuiTabPanel-root {
   border-color: #F3F4F6;
 }
 
-.MuiCheckbox-colorPrimary, 
-.MuiCheckbox-colorSecondary 
-{
+.MuiCheckbox-colorPrimary,
+.MuiCheckbox-colorSecondary {
   width: 40px;
 }
 
 .MuiCheckbox-colorPrimary.Mui-checked,
 .MuiCheckbox-colorSecondary.Mui-checked,
-.MuiCheckbox-root.Mui-checked .MuiSvgIcon-root 
-  {
+.MuiCheckbox-root.Mui-checked .MuiSvgIcon-root {
   color: #204ECF;
   width: 40px;
 }
@@ -554,6 +552,34 @@ input::-webkit-inner-spin-button {
 .card-box-shadow {
   box-shadow: 0px 4px 30px rgba(56, 71, 109, 0.09) !important;
   border-radius: 8px !important;
+}
+
+.macro-ul {
+  border-radius: 8px;
+  background-color: #F3F4F6;
+  padding-left: 0;
+}
+
+.macro-ul li {
+  padding: 10px;
+  list-style: none;
+}
+
+.macro-ul li:hover {
+  box-shadow: 0px 4px 30px rgba(56, 71, 109, 0.09);
+  background-color: #ffffff;
+}
+
+.word-wrap {
+  word-wrap: break-word;
+}
+
+.z-index {
+  z-index: 1;
+}
+
+.overflow-auto {
+  overflow: auto;
 }
 
 .patient-information-form .MuiInputLabel-formControl {
@@ -970,7 +996,7 @@ input[type=number] {
   width: 40px;
 }
 
-.payment-input .MuiOutlinedInput-root{
+.payment-input .MuiOutlinedInput-root {
   background-color: #fff;
 }
 

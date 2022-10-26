@@ -205,12 +205,14 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
                 onSelect={(multiOption: multiOptionType[]) => fetchPatientChartingTemplates(multiOption.map(value => value.value))}
               />
             </Box>
+
             <MacroView
               itemId={itemId}
               setItemId={(itemId: string) => dispatch({ type: ActionType.SET_ITEM_ID, itemId })}
               notes={notes}
               type={TemplateType.HPI}
             />
+
             {templates?.map((template, i) => {
               const { sections, name } = template || {}
               return (
