@@ -11,7 +11,7 @@ import {
 import { RouteProps } from "react-router-dom";
 import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
 // constants, reducers, graphql block
-import { ATTACHMENT_TITLES, CONFIRMATION_MODAL_TYPE, ITEM_MODULE, UPFRONT_PAYMENT_TYPES } from "../constants";
+import { ATTACHMENT_TITLES, CONFIRMATION_MODAL_TYPE, ITEM_MODULE, TemplateType, UPFRONT_PAYMENT_TYPES } from "../constants";
 import {
   AddVaccineInput, AddVaccineProductInput, AllDoctorPayload, Allergies, AppointmentPayload, AppointmentsPayload,
   AppointmentStatus, Attachment, AttachmentPayload, AttachmentType, BillingPayload, CodeType, Copay,
@@ -27,7 +27,7 @@ import {
   ResponsePayloadResponse, ReviewOfSystemPayload, RolesPayload, Schedule, SectionsInputs, ServicesPayload,
   SingleScheduleInput, Staff, SurgicalHistory, TriageNotes, TriageNotesPayload, TwoFactorInput, User,
   UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput,
-  UsersFormsElements, VaccineProduct, VerifyCodeInput, SectionQuestions
+  UsersFormsElements, VaccineProduct, VerifyCodeInput, SectionQuestions, CreateMacroInput
 } from "../generated/graphql";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
 import { Action as BillingAction, State as BillingState } from "../reducers/billingReducer";
@@ -52,6 +52,7 @@ import { Action as VaccineAction } from "../reducers/vaccinesReducer";
 import { Action as NdcCodeAction } from "../reducers/ndcCodeReducer";
 import { Action as MvxCodeAction } from "../reducers/mvxCodeReducer";
 import { Action as CvxCodeAction } from "../reducers/cvxCodeReducer";
+import { Action as MacroAction } from "../reducers/macrosReducer";
 import { Action as VaccineProductAction } from "../reducers/vaccineProductReducer";
 
 export type Order = 'ASC' | 'DESC';
@@ -625,6 +626,13 @@ export type ParamsType = {
   tabValue?: string
   appointmentId?: string;
   testId?: string
+}
+
+export type MacroViewTypes = {
+  itemId: string;
+  setItemId: Function;
+  notes: string
+  type: TemplateType
 }
 
 export type ExtendedStaffInputProps = Omit<
@@ -1845,6 +1853,7 @@ export interface ServiceSelectorInterface extends ReactionSelectorInterface {
   shouldEmitFacilityId?: boolean,
   loading?: boolean
   onSelect?: Function
+  userOptions?: multiOptionType[]
 }
 
 export interface MediaDoctorDataType extends Message {
@@ -2431,6 +2440,8 @@ export type VaccineProductFormType = Pick<AddVaccineProductInput, 'name'> & {
   cvx: SelectorOption, mvx: SelectorOption, ndcCode: SelectorOption, status: SelectorOption
 }
 
+export type MacroFormType = Pick<CreateMacroInput, 'expansion' | 'shortcut'> & { section: multiOptionType[] }
+
 export type ICD10FormProps = {
   open: boolean;
   isEdit: boolean;
@@ -2479,6 +2490,16 @@ export type CvxCodeFormProps = {
   fetch?: Function;
   id?: string;
   dispatcher?: Dispatch<CvxCodeAction>
+  handleClose: (open: boolean) => void
+  systematic?: boolean
+}
+
+export type MacroFormProps = {
+  open: boolean;
+  isEdit: boolean;
+  fetch?: Function;
+  id?: string;
+  dispatcher?: Dispatch<MacroAction>
   handleClose: (open: boolean) => void
   systematic?: boolean
 }

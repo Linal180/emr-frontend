@@ -1,6 +1,7 @@
 // packages block
 import { memo, ReactNode } from "react";
 import axios from "axios";
+import _ from 'lodash'
 import moment from "moment";
 import { Skeleton } from "@material-ui/lab";
 import { Collection, pluck, sortBy } from "underscore";
@@ -31,7 +32,7 @@ import {
   LOCK_ROUTE, LOGIN_ROUTE, MISSING, N_A, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE,
   SUPER_ADMIN, TABLE_SELECTOR_MODULES, TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE,
   ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES, ASC, CALENDAR_ROUTE, SYSTEM_ROLES, LAB_RESULTS_ROUTE,
-  CLAIM_FEED_ROUTE, CREATE_CLAIM, UPDATE_CLAIM, SUBMIT_CLAIM, CLAIM_STATUS_ROUTE, areaChartOne, areaChartTwo, BLOOD_PRESSURE_RANGES, Heart_RATE_RANGES, CANCEL_TIME_EXPIRED_MESSAGE
+  CLAIM_FEED_ROUTE, CREATE_CLAIM, UPDATE_CLAIM, SUBMIT_CLAIM, CLAIM_STATUS_ROUTE, areaChartOne, areaChartTwo, BLOOD_PRESSURE_RANGES, Heart_RATE_RANGES, CANCEL_TIME_EXPIRED_MESSAGE, TemplateType
 } from "../constants";
 import {
   AllDoctorPayload, AllergySeverity, AppointmentCreateType, AppointmentsPayload, AppointmentStatus,
@@ -2567,6 +2568,128 @@ export const formatNumber = (str: string) => {
   };
   return ""
 }
-export const transformedEndDate = (endDate: string) =>{
+export const transformedEndDate = (endDate: string) => {
   return endDate ? moment(endDate).format("MM-DD-YYYY") : ''
+}
+
+export const getMacroTextInitialValue = (strValue: string) => {
+  let tmp = document.createElement("DIV");
+  tmp.innerHTML = strValue;
+  const initialValueText = tmp.innerText.replace(/<(.|\n)*?>/g, '')
+  const initArray = initialValueText.split("");
+
+  const dropdownOptions: string[] = [];
+  let tempString = "";
+  let flag = false;
+
+  initArray.forEach((value, i) => {
+    if (value === "{") {
+      flag = true;
+      return;
+    }
+    if (value === "}" && initArray[i + 1] !== "}") {
+      dropdownOptions.push(tempString);
+      flag = false;
+      tempString = "";
+    }
+    if (flag && value !== "}") {
+      tempString += value;
+    }
+  });
+  var regex = /}}\s*(.*?)\s*{{/g;
+  let allData: string[] = [];
+  let tempRegexVariable
+  while ((tempRegexVariable = regex.exec(initialValueText))) {
+    allData.push(tempRegexVariable[1]);
+  }
+
+  const lastValueArray = _.split(initialValueText, `{{${dropdownOptions[dropdownOptions.length - 1]}}}`)
+  const lastValue = lastValueArray[lastValueArray.length - 1]
+
+  allData = [
+    initialValueText.split(`{{${dropdownOptions[0]}}}`)[0],
+    ...allData,
+    lastValue
+  ];
+
+  const transformedData = allData.filter((item, pos) => {
+    return allData.indexOf(item) === pos;
+  })
+
+  const finalResult = transformedData.reduce((acc, value, i) => {
+    const accObj = [];
+    const optionData = dropdownOptions[i]
+      ?.split("|")
+    let type
+    switch (optionData?.[0]) {
+      case 'DATE':
+        type = 'date'
+        break
+      case 'TIME':
+        type = 'time'
+        break
+
+      case 'DATETIME':
+        type = 'datetime'
+        break
+
+      default:
+        type = optionData?.length > 1 ? 'drop-down-item' : 'paragraph'
+
+    }
+
+    const plainTextValue = {
+      type: "paragraph",
+      children: [{ text: value.length ? value : type === 'paragraph' ? optionData?.[0] || '' : '' }]
+    };
+    plainTextValue && accObj.push(plainTextValue);
+
+    if (['date', 'time', 'datetime', 'drop-down-item'].includes(type)) {
+      const dropdownOption = dropdownOptions[i] && {
+        type: type,
+        options: optionData
+          ?.map((val) => val.replace("*", "")),
+        children: [{ text: "" }],
+        defaultValue: optionData
+          ?.find((val) => val.includes("*"))
+          ?.replace("*", "")
+      };
+
+      dropdownOption && accObj.push(dropdownOption);
+    }
+
+    if (i === transformedData.length - 1) {
+      const plainTextValue2 = {
+        type: "paragraph",
+        children: [{ text: '' }]
+      };
+      plainTextValue2 && accObj.push(plainTextValue2);
+    }
+
+    acc.push(...accObj);
+    return acc;
+  }, [] as {
+    type: string;
+    children: {
+      text: string;
+    }[];
+  }[]);
+
+  return finalResult
+}
+
+export const getTemplateLabel = (labelValue: TemplateType) => {
+  switch (labelValue) {
+    case TemplateType.HPI:
+      return 'Hpi'
+
+    case TemplateType.PHYSICAL_EXAM:
+      return 'Physical Exam'
+
+    case TemplateType.REVIEW_OF_SYSTEM:
+      return 'Review Of System'
+
+    default:
+      return ''
+  }
 }
