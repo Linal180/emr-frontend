@@ -7,6 +7,7 @@ export interface State {
   templates: FindAllQuestionTemplatesPayload['templates']
   template: QuestionTemplatePayload['template'] | null
   searchQuery: string
+  notes: string
 }
 
 export const initialState: State = {
@@ -15,7 +16,8 @@ export const initialState: State = {
   templates: [],
   template: null,
   totalPages: 0,
-  searchQuery: ''
+  searchQuery: '',
+  notes: ''
 }
 
 export enum ActionType {
@@ -24,7 +26,8 @@ export enum ActionType {
   SET_TEMPLATES = 'setTemplates',
   SET_TEMPLATE = 'setTemplate',
   SET_TOTAL_PAGES = 'setTotalPages',
-  SET_SEARCH_QUERY = 'setSearchQuery'
+  SET_SEARCH_QUERY = 'setSearchQuery',
+  SET_NOTES = 'setNotes'
 }
 
 export type Action =
@@ -33,7 +36,8 @@ export type Action =
   { type: ActionType.SET_TOTAL_PAGES; totalPages: number } |
   { type: ActionType.SET_SEARCH_QUERY; searchQuery: string } |
   { type: ActionType.SET_TEMPLATES; templates: FindAllQuestionTemplatesPayload['templates'] } |
-  { type: ActionType.SET_TEMPLATE; template: QuestionTemplatePayload['template'] | null }
+  { type: ActionType.SET_TEMPLATE; template: QuestionTemplatePayload['template'] | null } |
+  { type: ActionType.SET_NOTES; notes: string }
 
 
 export const patientHistoryReducer = (state: State, action: Action): State => {
@@ -72,6 +76,12 @@ export const patientHistoryReducer = (state: State, action: Action): State => {
       return {
         ...state,
         searchQuery: action.searchQuery
+      }
+
+    case ActionType.SET_NOTES:
+      return {
+        ...state,
+        notes: action.notes
       }
   }
 }

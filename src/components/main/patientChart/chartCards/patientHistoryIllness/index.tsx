@@ -19,6 +19,7 @@ import { useChartingStyles } from '../../../../../styles/chartingStyles';
 import ChartingTemplateSelector from "../../../../common/Selector/ChartingTemplateSelector";
 import TableLoader from "../../../../common/TableLoader";
 import QuestionCard from "./QuestionCard";
+import MacroView from "../../../../common/Macro/MacroView";
 
 const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, handleStep }): JSX.Element => {
   const methods = useForm();
@@ -26,7 +27,7 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
   const { id: patientId, appointmentId } = useParams<ParamsType>()
 
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientHistoryReducer, initialState);
-  const { itemId, templates } = state;
+  const { itemId, templates, notes } = state;
   const { handleSubmit, setValue } = methods;
 
   const [expanded, setExpanded] = useState<string | false>('panel1');
@@ -53,7 +54,6 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
   })
 
   const [findPatientChartingTemplate, { loading: findPatientChartingTemplateLoading }] = useGetPatientChartingTemplateLazyQuery({
-
     onError: ({ message }) => {
       Alert.error(message)
     },
@@ -79,8 +79,9 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
       const { status } = response || {}
 
       if (status === 200) {
-        const { id, answers, templates } = patientIllnessHistory || {}
+        const { id, answers, templates, notes } = patientIllnessHistory || {}
         id && dispatch({ type: ActionType.SET_ITEM_ID, itemId: id })
+        notes && dispatch({ type: ActionType.SET_NOTES, notes: notes })
 
         dispatch({ type: ActionType.SET_TEMPLATES, templates: templates as QuestionTemplate[] })
 
@@ -204,6 +205,14 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
                 onSelect={(multiOption: multiOptionType[]) => fetchPatientChartingTemplates(multiOption.map(value => value.value))}
               />
             </Box>
+
+            <MacroView
+              itemId={itemId}
+              setItemId={(itemId: string) => dispatch({ type: ActionType.SET_ITEM_ID, itemId })}
+              notes={notes}
+              type={TemplateType.HPI}
+            />
+
             {templates?.map((template, i) => {
               const { sections, name } = template || {}
               return (

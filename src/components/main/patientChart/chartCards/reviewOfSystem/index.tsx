@@ -1,20 +1,21 @@
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, colors, Typography } from "@material-ui/core";
 import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { ExpandMore } from "@material-ui/icons";
 import { useParams } from "react-router-dom";
 //components
 import Alert from "../../../../common/Alert";
+import TableLoader from "../../../../common/TableLoader";
+import MacroView from "../../../../common/Macro/MacroView";
+import QuestionCard from "./QuestionCard";
+import ChartingTemplateSelector from "../../../../common/Selector/ChartingTemplateSelector";
+import CardComponent from "../../../../common/CardComponent";
 //constants
-import { ExpandMore } from "@material-ui/icons";
 import { NEXT, QuestionType, REVIEW_OF_SYSTEM_TEXT, ROS_TEMPLATES, TemplateType } from "../../../../../constants";
 import { QuestionTemplate, useCreateReviewOfSystemHistoryMutation, useGetPatientChartingTemplateLazyQuery, useReviewOfSystemLazyQuery } from '../../../../../generated/graphql';
 import { multiOptionType, ParamsType, PatientHistoryProps } from "../../../../../interfacesTypes";
 import { Action, ActionType, initialState, patientHistoryReducer, State } from "../../../../../reducers/patientHistoryReducer";
-import CardComponent from "../../../../common/CardComponent";
-import ChartingTemplateSelector from "../../../../common/Selector/ChartingTemplateSelector";
 import { useChartingStyles } from '../../../../../styles/chartingStyles';
-import TableLoader from "../../../../common/TableLoader";
-import QuestionCard from "./QuestionCard";
 import { renderMultiTemplates } from "../../../../../utils";
 
 const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, handleStep }): JSX.Element => {
@@ -28,7 +29,7 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
     setExpanded(isExpanded ? panel : false);
 
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientHistoryReducer, initialState);
-  const { itemId, templates } = state;
+  const { itemId, templates, notes } = state;
   const { handleSubmit, setValue } = methods;
 
   const [createReviewOfSystem] = useCreateReviewOfSystemHistoryMutation({
@@ -51,7 +52,6 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
 
 
   const [findPatientChartingTemplate, { loading: findPatientChartingTemplateLoading }] = useGetPatientChartingTemplateLazyQuery({
-
     onError: ({ message }) => {
       Alert.error(message)
     },
@@ -77,8 +77,9 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
       const { status } = response || {}
 
       if (status === 200) {
-        const { id, answers, templates } = reviewOfSystem || {}
+        const { id, answers, templates, notes } = reviewOfSystem || {}
         id && dispatch({ type: ActionType.SET_ITEM_ID, itemId: id })
+        notes && dispatch({ type: ActionType.SET_NOTES, notes: notes })
 
         dispatch({ type: ActionType.SET_TEMPLATES, templates: templates as QuestionTemplate[] })
 
@@ -201,6 +202,12 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
                 onSelect={(multiOption: multiOptionType[]) => fetchPatientChartingTemplates(multiOption.map(value => value.value))}
               />
             </Box>
+            <MacroView
+              itemId={itemId}
+              setItemId={(itemId: string) => dispatch({ type: ActionType.SET_ITEM_ID, itemId })}
+              notes={notes}
+              type={TemplateType.REVIEW_OF_SYSTEM}
+            />
             {templates?.map((template, i) => {
               const { sections, name } = template || {}
               return (
