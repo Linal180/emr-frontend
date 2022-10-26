@@ -2638,7 +2638,6 @@ export const getMacroTextInitialValue = (strValue: string) => {
 
     }
 
-
     const plainTextValue = {
       type: "paragraph",
       children: [{ text: value.length ? value : type === 'paragraph' ? optionData?.[0] || '' : '' }]
@@ -2657,6 +2656,14 @@ export const getMacroTextInitialValue = (strValue: string) => {
       };
 
       dropdownOption && accObj.push(dropdownOption);
+    }
+
+    if (i === transformedData.length - 1) {
+      const plainTextValue2 = {
+        type: "paragraph",
+        children: [{ text: '' }]
+      };
+      plainTextValue2 && accObj.push(plainTextValue2);
     }
 
     acc.push(...accObj);

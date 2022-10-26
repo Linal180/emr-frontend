@@ -179,7 +179,7 @@ const MacroView: FC<MacroViewTypes> = ({ itemId, setItemId, notes, type }) => {
             flexDirection='column' justifyContent='center'>
             <Editable
               renderElement={renderElement}
-              placeholder="Get to work…"
+              placeholder="Enter Note..."
               spellCheck
             />
           </Box>
@@ -299,20 +299,23 @@ const DateElement = ({ attributes, children, element }: any) => {
     <React.Fragment
       {...attributes}
     >
-      <span
-        contentEditable={false}
-      >
-        <input
-          type="date"
-          value={value}
-          onChange={(event) => {
-            const path = ReactEditor.findPath(editor, element);
-            const newProperties = {
-              value: event.target.value
-            };
-            Transforms.setNodes<any>(editor, newProperties, { at: path });
-          }}
-        />
+      <span>
+        <span
+          contentEditable={false}
+        >
+          <input
+            type="date"
+            value={value}
+            onChange={(event) => {
+              const path = ReactEditor.findPath(editor, element);
+              const newProperties = {
+                value: event.target.value
+              };
+              Transforms.setNodes<any>(editor, newProperties, { at: path });
+            }}
+          />
+        </span>
+        {children}
       </span>
     </React.Fragment>
   );
@@ -324,20 +327,23 @@ const TimeElement = ({ attributes, children, element }: any) => {
     <React.Fragment
       {...attributes}
     >
-      <span
-        contentEditable={false}
-      >
-        <input
-          type="time"
-          value={value}
-          onChange={(event) => {
-            const path = ReactEditor.findPath(editor, element);
-            const newProperties = {
-              value: event.target.value
-            };
-            Transforms.setNodes<any>(editor, newProperties, { at: path });
-          }}
-        />
+      <span>
+        <span
+          contentEditable={false}
+        >
+          <input
+            type="time"
+            value={value}
+            onChange={(event) => {
+              const path = ReactEditor.findPath(editor, element);
+              const newProperties = {
+                value: event.target.value
+              };
+              Transforms.setNodes<any>(editor, newProperties, { at: path });
+            }}
+          />
+        </span>
+        {children}
       </span>
     </React.Fragment>
   );
