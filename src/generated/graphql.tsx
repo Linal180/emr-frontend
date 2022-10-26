@@ -238,6 +238,8 @@ export type AnswerResponses = {
   id: Scalars['String'];
   patientIllnessHistory?: Maybe<PatientIllnessHistory>;
   patientIllnessHistoryId?: Maybe<Scalars['String']>;
+  physicalExam?: Maybe<ReviewOfSystem>;
+  physicalExamId?: Maybe<Scalars['String']>;
   reviewOfSystem?: Maybe<ReviewOfSystem>;
   reviewOfSystemId?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
@@ -290,6 +292,7 @@ export type Appointment = {
   patientProblem?: Maybe<Array<PatientProblems>>;
   patientVitals?: Maybe<Array<PatientVitals>>;
   paymentType: PaymentType;
+  physicalExam?: Maybe<PhysicalExam>;
   practiceId?: Maybe<Scalars['String']>;
   primaryInsurance?: Maybe<Scalars['String']>;
   provider?: Maybe<Doctor>;
@@ -1587,6 +1590,14 @@ export type CreatePatientSocialHistoryInput = {
   socialAnswer: Array<SocialAnswerInput>;
 };
 
+export type CreatePhysicalExamInput = {
+  answerResponses: Array<AnswerResponsesInput>;
+  appointmentId?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
+  patientId?: Maybe<Scalars['String']>;
+  templateIds?: Maybe<Array<Scalars['String']>>;
+};
+
 export type CreatePolicyInput = {
   coinsurancePercentage?: Maybe<Scalars['String']>;
   copays?: Maybe<Array<CopayInput>>;
@@ -1653,13 +1664,7 @@ export type CreateReviewOfSystemInput = {
 };
 
 export type CreateScheduleInput = {
-  day: Scalars['String'];
-  doctorId?: Maybe<Scalars['String']>;
-  endAt: Scalars['String'];
-  facilityId?: Maybe<Scalars['String']>;
-  recurringEndDate?: Maybe<Scalars['DateTime']>;
-  servicesIds: Array<Scalars['String']>;
-  startAt: Scalars['String'];
+  schedules: Array<SingleScheduleInput>;
 };
 
 export type CreateServiceInput = {
@@ -3178,6 +3183,7 @@ export type Mutation = {
   createPatientIllnessHistory: PatientIllnessHistoryPayload;
   createPatientSocialHistory: PatientSocialHistoryPayload;
   createPermission: PermissionPayload;
+  createPhysicalExam: PhysicalExamPayload;
   createPolicy: PolicyPayload;
   createPolicyHolder: PolicyHolder;
   createPractice: PracticePayload;
@@ -3249,6 +3255,7 @@ export type Mutation = {
   updateAppointmentStatus: AppointmentPayload;
   updateAttachmentData: AttachmentPayload;
   updateAutoLogoutTime: UserPayload;
+  updateBulkSchedule: SchedulePayload;
   updateCPTCode: CptCodePayload;
   updateClaimStatus: ClaimStatusPayload;
   updateContact: ContactPayload;
@@ -3533,6 +3540,11 @@ export type MutationCreatePermissionArgs = {
 };
 
 
+export type MutationCreatePhysicalExamArgs = {
+  createPhysicalExamInput: CreatePhysicalExamInput;
+};
+
+
 export type MutationCreatePolicyArgs = {
   createPolicyInput: CreatePolicyInput;
 };
@@ -3559,7 +3571,7 @@ export type MutationCreateRoleArgs = {
 
 
 export type MutationCreateScheduleArgs = {
-  createScheduleInput: Array<CreateScheduleInput>;
+  createScheduleInput: CreateScheduleInput;
 };
 
 
@@ -3880,6 +3892,11 @@ export type MutationUpdateAttachmentDataArgs = {
 
 export type MutationUpdateAutoLogoutTimeArgs = {
   userInfoInput: UserInfoInput;
+};
+
+
+export type MutationUpdateBulkScheduleArgs = {
+  updateBulkScheduleInput: UpdateBulkScheduleInput;
 };
 
 
@@ -4279,6 +4296,7 @@ export type Patient = {
   patientVitals?: Maybe<Array<PatientVitals>>;
   pharmacy?: Maybe<Scalars['String']>;
   phoneEmailPermission?: Maybe<Scalars['Boolean']>;
+  physicalExams?: Maybe<Array<PhysicalExam>>;
   policies?: Maybe<Array<Policy>>;
   policyHolder?: Maybe<PolicyHolder>;
   policyHolderId?: Maybe<Scalars['String']>;
@@ -4287,6 +4305,7 @@ export type Patient = {
   prefferedName?: Maybe<Scalars['String']>;
   previousFirstName?: Maybe<Scalars['String']>;
   previouslastName?: Maybe<Scalars['String']>;
+  primaryDoctor?: Maybe<Doctor>;
   privacyNotice: Scalars['Boolean'];
   profileAttachment?: Maybe<Scalars['String']>;
   pronouns?: Maybe<Pronouns>;
@@ -4742,6 +4761,31 @@ export type PermissionsPayload = {
   pagination?: Maybe<PaginationPayload>;
   permissions?: Maybe<Array<Maybe<Permission>>>;
   response?: Maybe<ResponsePayload>;
+};
+
+export type PhysicalExam = {
+  __typename?: 'PhysicalExam';
+  answers?: Maybe<Array<AnswerResponses>>;
+  appointment?: Maybe<Appointment>;
+  appointmentId?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  patient?: Maybe<Patient>;
+  patientId?: Maybe<Scalars['String']>;
+  templateIds?: Maybe<Array<Scalars['String']>>;
+  templates?: Maybe<Array<QuestionTemplate>>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type PhysicalExamInput = {
+  appointmentId?: Maybe<Scalars['String']>;
+  patientId?: Maybe<Scalars['String']>;
+};
+
+export type PhysicalExamPayload = {
+  __typename?: 'PhysicalExamPayload';
+  physicalExam?: Maybe<PhysicalExam>;
+  response?: Maybe<ResponsePayloadResponse>;
 };
 
 export type PoliciesPayload = {
@@ -5294,11 +5338,13 @@ export type Query = {
   getVaccine: VaccinePayload;
   getVaccineProduct: VaccineProductPayload;
   latestPatientIllnessHistory: PatientIllnessHistoryPayload;
+  latestPhysicalExam: PhysicalExamPayload;
   latestReviewOfSystem: ReviewOfSystemPayload;
   me: UserPayload;
   patientChartingTemplates: FindAllQuestionTemplatesPayload;
   patientIllnessHistory: PatientIllnessHistoryPayload;
   patientSocialHistory: PatientSocialHistoryPayload;
+  physicalExam: PhysicalExamPayload;
   reviewOfSystem: ReviewOfSystemPayload;
   searchIcdCodes: IcdCodesPayload;
   searchSnoMedCodeByIcdCodes: SnoMedCodesPayload;
@@ -6001,6 +6047,11 @@ export type QueryLatestPatientIllnessHistoryArgs = {
 };
 
 
+export type QueryLatestPhysicalExamArgs = {
+  physicalExamInput: PhysicalExamInput;
+};
+
+
 export type QueryLatestReviewOfSystemArgs = {
   reviewOfSystemInput: ReviewOfSystemInput;
 };
@@ -6018,6 +6069,11 @@ export type QueryPatientIllnessHistoryArgs = {
 
 export type QueryPatientSocialHistoryArgs = {
   patientSocialHistoryInput: PatientSocialHistoryInput;
+};
+
+
+export type QueryPhysicalExamArgs = {
+  physicalExamInput: PhysicalExamInput;
 };
 
 
@@ -6710,6 +6766,16 @@ export type ShortUrlResponse = {
   shortUrl?: Maybe<ShortUrl>;
 };
 
+export type SingleScheduleInput = {
+  day: Scalars['String'];
+  doctorId?: Maybe<Scalars['String']>;
+  endAt: Scalars['String'];
+  facilityId?: Maybe<Scalars['String']>;
+  recurringEndDate?: Maybe<Scalars['DateTime']>;
+  servicesIds: Array<Scalars['String']>;
+  startAt: Scalars['String'];
+};
+
 export type Slots = {
   __typename?: 'Slots';
   endTime?: Maybe<Scalars['String']>;
@@ -7293,6 +7359,10 @@ export type UpdateBillingAddressInput = {
   state?: Maybe<Scalars['String']>;
   userId?: Maybe<Scalars['String']>;
   zipCode?: Maybe<Scalars['String']>;
+};
+
+export type UpdateBulkScheduleInput = {
+  schedules: Array<SingleScheduleInput>;
 };
 
 export type UpdateCptCodeInput = {
@@ -8808,6 +8878,27 @@ export type LatestReviewOfSystemQueryVariables = Exact<{
 
 export type LatestReviewOfSystemQuery = { __typename?: 'Query', latestReviewOfSystem: { __typename?: 'ReviewOfSystemPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, reviewOfSystem?: { __typename?: 'ReviewOfSystem', id: string, patientId?: string | null, templateIds?: Array<string> | null, appointmentId?: string | null, templates?: Array<{ __typename?: 'QuestionTemplate', id: string, name?: string | null, sections?: Array<{ __typename?: 'TemplateSections', id: string, name?: string | null, questions?: Array<{ __typename?: 'SectionQuestions', id: string, title?: string | null, answers?: Array<{ __typename?: 'QuestionAnswers', id: string, questionType?: string | null, name?: string | null, answerType?: string | null, options?: Array<{ __typename?: 'SelectorType', id?: string | null, name?: string | null }> | null }> | null }> | null }> | null }> | null, answers?: Array<{ __typename?: 'AnswerResponses', id: string, value?: string | null, answerId?: string | null, answer?: { __typename?: 'QuestionAnswers', name?: string | null, questionType?: string | null } | null }> | null } | null } };
 
+export type CreatePhysicalExamHistoryMutationVariables = Exact<{
+  createPhysicalExamInput: CreatePhysicalExamInput;
+}>;
+
+
+export type CreatePhysicalExamHistoryMutation = { __typename?: 'Mutation', createPhysicalExam: { __typename?: 'PhysicalExamPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, physicalExam?: { __typename?: 'PhysicalExam', id: string } | null } };
+
+export type PhysicalExamQueryVariables = Exact<{
+  physicalExamInput: PhysicalExamInput;
+}>;
+
+
+export type PhysicalExamQuery = { __typename?: 'Query', physicalExam: { __typename?: 'PhysicalExamPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, physicalExam?: { __typename?: 'PhysicalExam', id: string, patientId?: string | null, templateIds?: Array<string> | null, appointmentId?: string | null, templates?: Array<{ __typename?: 'QuestionTemplate', id: string, name?: string | null, sections?: Array<{ __typename?: 'TemplateSections', id: string, name?: string | null, questions?: Array<{ __typename?: 'SectionQuestions', id: string, title?: string | null, answers?: Array<{ __typename?: 'QuestionAnswers', id: string, questionType?: string | null, name?: string | null, answerType?: string | null, options?: Array<{ __typename?: 'SelectorType', id?: string | null, name?: string | null }> | null }> | null }> | null }> | null }> | null, answers?: Array<{ __typename?: 'AnswerResponses', id: string, value?: string | null, answerId?: string | null, answer?: { __typename?: 'QuestionAnswers', name?: string | null, questionType?: string | null } | null }> | null } | null } };
+
+export type LatestPhysicalExamQueryVariables = Exact<{
+  physicalExamInput: PhysicalExamInput;
+}>;
+
+
+export type LatestPhysicalExamQuery = { __typename?: 'Query', latestPhysicalExam: { __typename?: 'PhysicalExamPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, physicalExam?: { __typename?: 'PhysicalExam', id: string, patientId?: string | null, templateIds?: Array<string> | null, appointmentId?: string | null, templates?: Array<{ __typename?: 'QuestionTemplate', id: string, name?: string | null, sections?: Array<{ __typename?: 'TemplateSections', id: string, name?: string | null, questions?: Array<{ __typename?: 'SectionQuestions', id: string, title?: string | null, answers?: Array<{ __typename?: 'QuestionAnswers', id: string, questionType?: string | null, name?: string | null, answerType?: string | null, options?: Array<{ __typename?: 'SelectorType', id?: string | null, name?: string | null }> | null }> | null }> | null }> | null }> | null, answers?: Array<{ __typename?: 'AnswerResponses', id: string, value?: string | null, answerId?: string | null, answer?: { __typename?: 'QuestionAnswers', name?: string | null, questionType?: string | null } | null }> | null } | null } };
+
 export type FindAllPatientProblemsQueryVariables = Exact<{
   patientProblemInput: PatientProblemInput;
 }>;
@@ -9791,6 +9882,13 @@ export type GetPatientProviderQueryVariables = Exact<{
 
 export type GetPatientProviderQuery = { __typename?: 'Query', getPatientProvider: { __typename?: 'PatientDoctorPayload', response?: { __typename?: 'ResponsePayload', name?: string | null, error?: string | null, status?: number | null, message?: string | null } | null, provider?: { __typename?: 'DoctorPatient', id: string, doctorId?: string | null, patientId?: string | null, currentProvider?: boolean | null, otherRelation?: string | null, relation?: DoctorPatientRelationType | null, createdAt: string, updatedAt: string, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null, email?: string | null, speciality?: Speciality | null, contacts?: Array<{ __typename?: 'Contact', id: string, name?: string | null, city?: string | null, email?: string | null, phone?: string | null, primaryContact?: boolean | null }> | null } | null } | null } };
 
+export type GetPatientPrimaryProviderQueryVariables = Exact<{
+  getPatient: GetPatient;
+}>;
+
+
+export type GetPatientPrimaryProviderQuery = { __typename?: 'Query', getPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, patient?: { __typename?: 'Patient', id: string, primaryDoctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null } | null } };
+
 export type CreatePatientConsentMutationVariables = Exact<{
   createPatientConsentInputs: CreatePatientConsentInputs;
 }>;
@@ -9944,11 +10042,18 @@ export type FindAllPermissionQueryVariables = Exact<{
 export type FindAllPermissionQuery = { __typename?: 'Query', findAllPermissions: { __typename?: 'PermissionsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, permissions?: Array<{ __typename?: 'Permission', id: string, name?: string | null, moduleType?: string | null, status?: boolean | null } | null> | null } };
 
 export type CreateScheduleMutationVariables = Exact<{
-  createScheduleInput: Array<CreateScheduleInput> | CreateScheduleInput;
+  createScheduleInput: CreateScheduleInput;
 }>;
 
 
 export type CreateScheduleMutation = { __typename?: 'Mutation', createSchedule: { __typename?: 'SchedulePayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type UpdateBulkScheduleMutationVariables = Exact<{
+  updateBulkScheduleInput: UpdateBulkScheduleInput;
+}>;
+
+
+export type UpdateBulkScheduleMutation = { __typename?: 'Mutation', updateBulkSchedule: { __typename?: 'SchedulePayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
 
 export type UpdateScheduleMutationVariables = Exact<{
   updateScheduleInput: UpdateScheduleInput;
@@ -14732,6 +14837,195 @@ export function useLatestReviewOfSystemLazyQuery(baseOptions?: Apollo.LazyQueryH
 export type LatestReviewOfSystemQueryHookResult = ReturnType<typeof useLatestReviewOfSystemQuery>;
 export type LatestReviewOfSystemLazyQueryHookResult = ReturnType<typeof useLatestReviewOfSystemLazyQuery>;
 export type LatestReviewOfSystemQueryResult = Apollo.QueryResult<LatestReviewOfSystemQuery, LatestReviewOfSystemQueryVariables>;
+export const CreatePhysicalExamHistoryDocument = gql`
+    mutation CreatePhysicalExamHistory($createPhysicalExamInput: CreatePhysicalExamInput!) {
+  createPhysicalExam(createPhysicalExamInput: $createPhysicalExamInput) {
+    response {
+      status
+      message
+    }
+    physicalExam {
+      id
+    }
+  }
+}
+    `;
+export type CreatePhysicalExamHistoryMutationFn = Apollo.MutationFunction<CreatePhysicalExamHistoryMutation, CreatePhysicalExamHistoryMutationVariables>;
+
+/**
+ * __useCreatePhysicalExamHistoryMutation__
+ *
+ * To run a mutation, you first call `useCreatePhysicalExamHistoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePhysicalExamHistoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createPhysicalExamHistoryMutation, { data, loading, error }] = useCreatePhysicalExamHistoryMutation({
+ *   variables: {
+ *      createPhysicalExamInput: // value for 'createPhysicalExamInput'
+ *   },
+ * });
+ */
+export function useCreatePhysicalExamHistoryMutation(baseOptions?: Apollo.MutationHookOptions<CreatePhysicalExamHistoryMutation, CreatePhysicalExamHistoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreatePhysicalExamHistoryMutation, CreatePhysicalExamHistoryMutationVariables>(CreatePhysicalExamHistoryDocument, options);
+      }
+export type CreatePhysicalExamHistoryMutationHookResult = ReturnType<typeof useCreatePhysicalExamHistoryMutation>;
+export type CreatePhysicalExamHistoryMutationResult = Apollo.MutationResult<CreatePhysicalExamHistoryMutation>;
+export type CreatePhysicalExamHistoryMutationOptions = Apollo.BaseMutationOptions<CreatePhysicalExamHistoryMutation, CreatePhysicalExamHistoryMutationVariables>;
+export const PhysicalExamDocument = gql`
+    query PhysicalExam($physicalExamInput: PhysicalExamInput!) {
+  physicalExam(physicalExamInput: $physicalExamInput) {
+    response {
+      status
+      message
+    }
+    physicalExam {
+      id
+      patientId
+      templateIds
+      templates {
+        id
+        name
+        sections {
+          id
+          name
+          questions {
+            id
+            title
+            answers {
+              id
+              questionType
+              name
+              answerType
+              options {
+                id
+                name
+              }
+            }
+          }
+        }
+      }
+      appointmentId
+      answers {
+        id
+        value
+        answerId
+        answer {
+          name
+          questionType
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __usePhysicalExamQuery__
+ *
+ * To run a query within a React component, call `usePhysicalExamQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePhysicalExamQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePhysicalExamQuery({
+ *   variables: {
+ *      physicalExamInput: // value for 'physicalExamInput'
+ *   },
+ * });
+ */
+export function usePhysicalExamQuery(baseOptions: Apollo.QueryHookOptions<PhysicalExamQuery, PhysicalExamQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<PhysicalExamQuery, PhysicalExamQueryVariables>(PhysicalExamDocument, options);
+      }
+export function usePhysicalExamLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PhysicalExamQuery, PhysicalExamQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<PhysicalExamQuery, PhysicalExamQueryVariables>(PhysicalExamDocument, options);
+        }
+export type PhysicalExamQueryHookResult = ReturnType<typeof usePhysicalExamQuery>;
+export type PhysicalExamLazyQueryHookResult = ReturnType<typeof usePhysicalExamLazyQuery>;
+export type PhysicalExamQueryResult = Apollo.QueryResult<PhysicalExamQuery, PhysicalExamQueryVariables>;
+export const LatestPhysicalExamDocument = gql`
+    query LatestPhysicalExam($physicalExamInput: PhysicalExamInput!) {
+  latestPhysicalExam(physicalExamInput: $physicalExamInput) {
+    response {
+      status
+      message
+    }
+    physicalExam {
+      id
+      patientId
+      templateIds
+      templates {
+        id
+        name
+        sections {
+          id
+          name
+          questions {
+            id
+            title
+            answers {
+              id
+              questionType
+              name
+              answerType
+              options {
+                id
+                name
+              }
+            }
+          }
+        }
+      }
+      appointmentId
+      answers {
+        id
+        value
+        answerId
+        answer {
+          name
+          questionType
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useLatestPhysicalExamQuery__
+ *
+ * To run a query within a React component, call `useLatestPhysicalExamQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLatestPhysicalExamQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLatestPhysicalExamQuery({
+ *   variables: {
+ *      physicalExamInput: // value for 'physicalExamInput'
+ *   },
+ * });
+ */
+export function useLatestPhysicalExamQuery(baseOptions: Apollo.QueryHookOptions<LatestPhysicalExamQuery, LatestPhysicalExamQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<LatestPhysicalExamQuery, LatestPhysicalExamQueryVariables>(LatestPhysicalExamDocument, options);
+      }
+export function useLatestPhysicalExamLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LatestPhysicalExamQuery, LatestPhysicalExamQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<LatestPhysicalExamQuery, LatestPhysicalExamQueryVariables>(LatestPhysicalExamDocument, options);
+        }
+export type LatestPhysicalExamQueryHookResult = ReturnType<typeof useLatestPhysicalExamQuery>;
+export type LatestPhysicalExamLazyQueryHookResult = ReturnType<typeof useLatestPhysicalExamLazyQuery>;
+export type LatestPhysicalExamQueryResult = Apollo.QueryResult<LatestPhysicalExamQuery, LatestPhysicalExamQueryVariables>;
 export const FindAllPatientProblemsDocument = gql`
     query FindAllPatientProblems($patientProblemInput: PatientProblemInput!) {
   findAllPatientProblem(patientProblemInput: $patientProblemInput) {
@@ -22046,6 +22340,52 @@ export function useGetPatientProviderLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GetPatientProviderQueryHookResult = ReturnType<typeof useGetPatientProviderQuery>;
 export type GetPatientProviderLazyQueryHookResult = ReturnType<typeof useGetPatientProviderLazyQuery>;
 export type GetPatientProviderQueryResult = Apollo.QueryResult<GetPatientProviderQuery, GetPatientProviderQueryVariables>;
+export const GetPatientPrimaryProviderDocument = gql`
+    query GetPatientPrimaryProvider($getPatient: GetPatient!) {
+  getPatient(getPatient: $getPatient) {
+    response {
+      status
+      message
+    }
+    patient {
+      id
+      primaryDoctor {
+        id
+        firstName
+        lastName
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPatientPrimaryProviderQuery__
+ *
+ * To run a query within a React component, call `useGetPatientPrimaryProviderQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPatientPrimaryProviderQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPatientPrimaryProviderQuery({
+ *   variables: {
+ *      getPatient: // value for 'getPatient'
+ *   },
+ * });
+ */
+export function useGetPatientPrimaryProviderQuery(baseOptions: Apollo.QueryHookOptions<GetPatientPrimaryProviderQuery, GetPatientPrimaryProviderQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPatientPrimaryProviderQuery, GetPatientPrimaryProviderQueryVariables>(GetPatientPrimaryProviderDocument, options);
+      }
+export function useGetPatientPrimaryProviderLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPatientPrimaryProviderQuery, GetPatientPrimaryProviderQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPatientPrimaryProviderQuery, GetPatientPrimaryProviderQueryVariables>(GetPatientPrimaryProviderDocument, options);
+        }
+export type GetPatientPrimaryProviderQueryHookResult = ReturnType<typeof useGetPatientPrimaryProviderQuery>;
+export type GetPatientPrimaryProviderLazyQueryHookResult = ReturnType<typeof useGetPatientPrimaryProviderLazyQuery>;
+export type GetPatientPrimaryProviderQueryResult = Apollo.QueryResult<GetPatientPrimaryProviderQuery, GetPatientPrimaryProviderQueryVariables>;
 export const CreatePatientConsentDocument = gql`
     mutation CreatePatientConsent($createPatientConsentInputs: CreatePatientConsentInputs!) {
   createPatientConsent(createPatientConsentInputs: $createPatientConsentInputs) {
@@ -23021,7 +23361,7 @@ export type FindAllPermissionQueryHookResult = ReturnType<typeof useFindAllPermi
 export type FindAllPermissionLazyQueryHookResult = ReturnType<typeof useFindAllPermissionLazyQuery>;
 export type FindAllPermissionQueryResult = Apollo.QueryResult<FindAllPermissionQuery, FindAllPermissionQueryVariables>;
 export const CreateScheduleDocument = gql`
-    mutation CreateSchedule($createScheduleInput: [CreateScheduleInput!]!) {
+    mutation CreateSchedule($createScheduleInput: CreateScheduleInput!) {
   createSchedule(createScheduleInput: $createScheduleInput) {
     response {
       error
@@ -23057,6 +23397,43 @@ export function useCreateScheduleMutation(baseOptions?: Apollo.MutationHookOptio
 export type CreateScheduleMutationHookResult = ReturnType<typeof useCreateScheduleMutation>;
 export type CreateScheduleMutationResult = Apollo.MutationResult<CreateScheduleMutation>;
 export type CreateScheduleMutationOptions = Apollo.BaseMutationOptions<CreateScheduleMutation, CreateScheduleMutationVariables>;
+export const UpdateBulkScheduleDocument = gql`
+    mutation UpdateBulkSchedule($updateBulkScheduleInput: UpdateBulkScheduleInput!) {
+  updateBulkSchedule(updateBulkScheduleInput: $updateBulkScheduleInput) {
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type UpdateBulkScheduleMutationFn = Apollo.MutationFunction<UpdateBulkScheduleMutation, UpdateBulkScheduleMutationVariables>;
+
+/**
+ * __useUpdateBulkScheduleMutation__
+ *
+ * To run a mutation, you first call `useUpdateBulkScheduleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateBulkScheduleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateBulkScheduleMutation, { data, loading, error }] = useUpdateBulkScheduleMutation({
+ *   variables: {
+ *      updateBulkScheduleInput: // value for 'updateBulkScheduleInput'
+ *   },
+ * });
+ */
+export function useUpdateBulkScheduleMutation(baseOptions?: Apollo.MutationHookOptions<UpdateBulkScheduleMutation, UpdateBulkScheduleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateBulkScheduleMutation, UpdateBulkScheduleMutationVariables>(UpdateBulkScheduleDocument, options);
+      }
+export type UpdateBulkScheduleMutationHookResult = ReturnType<typeof useUpdateBulkScheduleMutation>;
+export type UpdateBulkScheduleMutationResult = Apollo.MutationResult<UpdateBulkScheduleMutation>;
+export type UpdateBulkScheduleMutationOptions = Apollo.BaseMutationOptions<UpdateBulkScheduleMutation, UpdateBulkScheduleMutationVariables>;
 export const UpdateScheduleDocument = gql`
     mutation UpdateSchedule($updateScheduleInput: UpdateScheduleInput!) {
   updateSchedule(updateScheduleInput: $updateScheduleInput) {

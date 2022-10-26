@@ -13,20 +13,21 @@ import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
 // constants, reducers, graphql block
 import { ATTACHMENT_TITLES, CONFIRMATION_MODAL_TYPE, ITEM_MODULE, UPFRONT_PAYMENT_TYPES } from "../constants";
 import {
-  AddVaccineInput, AddVaccineProductInput, AllDoctorPayload, Allergies, AppointmentPayload, AppointmentsPayload, AppointmentStatus, Attachment,
-  AttachmentPayload, AttachmentType, BillingPayload, CodeType, Copay, CreateAppointmentInput, CreateContactInput,
-  CreateCptCodeInput, CreateCptFeeScheduleInput, CreateCvxCodeInput, CreateDoctorItemInput, CreateExternalAppointmentItemInput,
-  CreateFeeScheduleInput, CreateIcdCodeInput, CreateMvxCodeInput, CreatePatientAllergyInput, CreatePatientItemInput,
-  CreatePatientMedicationInput, CreatePracticeItemInput, CreateProblemInput, CreateScheduleInput, CreateServiceInput,
-  CreateStaffItemInput, Cvx, DependentQuestions, Doctor, DoctorPatient, FacilitiesPayload, FamilyHistory,
-  FetchBillingClaimStatusesInput, FieldsInputs, FormElement, FormTabsInputs, IcdCodes, IcdCodesWithSnowMedCode,
-  LabTests, LabTestsPayload, LoginUserInput, LoincCodePayload, Medications, Patient, PatientAllergies,
-  PatientIllnessHistoryPayload, PatientMedication, PatientPayload, PatientProblems, PatientProviderPayload,
-  PatientsPayload, PatientVitals, PermissionsPayload, PolicyEligibilityWithPatientPayload, Practice, PracticePayload,
-  QuestionAnswers, Questions, ReactionsPayload, ResponsePayloadResponse, ReviewOfSystemPayload, RolesPayload, Schedule,
-  SectionsInputs, ServicesPayload, Staff, SurgicalHistory, TriageNotes, TriageNotesPayload, TwoFactorInput,
-  UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, User,
-  UsersFormsElements, VaccineProduct, VerifyCodeInput
+  AddVaccineInput, AddVaccineProductInput, AllDoctorPayload, Allergies, AppointmentPayload, AppointmentsPayload,
+  AppointmentStatus, Attachment, AttachmentPayload, AttachmentType, BillingPayload, CodeType, Copay,
+  CreateAppointmentInput, CreateContactInput, CreateCptCodeInput, CreateCptFeeScheduleInput, CreateCvxCodeInput,
+  CreateDoctorItemInput, CreateExternalAppointmentItemInput, CreateFeeScheduleInput, CreateIcdCodeInput,
+  CreateMvxCodeInput, CreatePatientAllergyInput, CreatePatientItemInput, CreatePatientMedicationInput,
+  CreatePracticeItemInput, CreateProblemInput, CreateServiceInput, CreateStaffItemInput, Cvx, DependentQuestions,
+  Doctor, DoctorPatient, FacilitiesPayload, FamilyHistory, FetchBillingClaimStatusesInput, FieldsInputs,
+  FormElement, FormTabsInputs, IcdCodes, IcdCodesWithSnowMedCode, LabTests, LabTestsPayload, LoginUserInput,
+  LoincCodePayload, Medications, Patient, PatientAllergies, PatientIllnessHistoryPayload, PatientMedication,
+  PatientPayload, PatientProblems, PatientProviderPayload, PatientsPayload, PatientVitals, PermissionsPayload,
+  PolicyEligibilityWithPatientPayload, Practice, PracticePayload, QuestionAnswers, Questions, ReactionsPayload,
+  ResponsePayloadResponse, ReviewOfSystemPayload, RolesPayload, Schedule, SectionsInputs, ServicesPayload,
+  SingleScheduleInput, Staff, SurgicalHistory, TriageNotes, TriageNotesPayload, TwoFactorInput, User,
+  UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput,
+  UsersFormsElements, VaccineProduct, VerifyCodeInput, SectionQuestions
 } from "../generated/graphql";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
 import { Action as BillingAction, State as BillingState } from "../reducers/billingReducer";
@@ -631,7 +632,7 @@ export type ExtendedStaffInputProps = Omit<
   & { facilityId: SelectorOption } & { practiceId: SelectorOption } & { roleType: SelectorOption }
   & { gender: SelectorOption } & { providerIds: SelectorOption };
 
-export type ScheduleInputProps = Omit<CreateScheduleInput, "servicesIds" | "day">
+export type ScheduleInputProps = Omit<SingleScheduleInput, "servicesIds" | "day">
   & { serviceId: multiOptionType[] | multiOptionType } & { day: SelectorOption[] | SelectorOption }
   & { shouldHaveRecursion: boolean };
 
@@ -1020,6 +1021,7 @@ export interface LabOrderCreateProps {
   labTestsToEdit?: LabTests[]
   orderNumber?: string;
   setCurrentTest?: Function
+  fetchData?: Function
 }
 
 export interface LabOrdersTableProps {
@@ -1286,6 +1288,12 @@ export interface CopayFields {
 
 export interface ClaimStatusFields {
   statusName?: string
+}
+
+export type TemplateQuestionCardType = {
+  question: SectionQuestions,
+  handleSubmit?: Function,
+  shouldDisableEdit?: boolean
 }
 
 export interface InsuranceCreateInput {
@@ -2499,4 +2507,10 @@ export type AnswerChipsProps = {
   colors: string[]
   handleSubmit?: Function
   shouldDisableEdit?: boolean
+}
+
+export type PatientPrimaryProviderProps = {
+  patientId: string,
+  setPrimaryProvider?: (provider: string) => void
+  label?: string
 }

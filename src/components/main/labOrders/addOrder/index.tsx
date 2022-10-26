@@ -14,14 +14,13 @@ import { createLabOrdersSchema } from '../../../../validationSchemas';
 import { convertDateFromUnix, generateString, getFormatDateString, setRecord } from '../../../../utils';
 import { LabOrderCreateProps, LabOrdersCreateFormInput, ParamsType } from '../../../../interfacesTypes';
 import {
-  CREATE, EDIT_LAB_ORDER, LAB_ORDER_CREATE_SUCCESS, LAB_ORDER_SIDEDRAWER_STEPS,
-  NEW_LAB_ORDER, NOT_FOUND_EXCEPTION, UPDATE, USER_NOT_FOUND_EXCEPTION_MESSAGE
+  CREATE, EDIT_LAB_ORDER, LAB_ORDER_CREATE_SUCCESS, NEW_LAB_ORDER, NOT_FOUND_EXCEPTION, UPDATE,
+  USER_NOT_FOUND_EXCEPTION_MESSAGE
 } from '../../../../constants';
 import { LabTestStatus, useCreateLabTestMutation, useRemoveLabTestMutation, useUpdateLabTestMutation } from '../../../../generated/graphql';
 
-export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo, toggleSideDrawer, isEdit, labTestsToEdit, orderNumber }): JSX.Element => {
-  const [activeStep, setActiveStep] = useState(0);
-  const [currentTest, setCurrentTest] = useState(0)
+export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo, toggleSideDrawer, isEdit, labTestsToEdit, orderNumber, fetchData }): JSX.Element => {
+
   const [testsToRemove, setTestsToRemove] = useState<string[]>([])
   const [accessionNumber, setAccessionNumber] = useState('')
   const [isLoading, setIsLoading] = useState(isEdit)
@@ -32,48 +31,8 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
     mode: "all",
     resolver: yupResolver(createLabOrdersSchema())
   });
-  const { watch, trigger, handleSubmit, setValue } = methods
+  const { watch, handleSubmit, setValue } = methods
   const { testFieldValues } = watch()
-
-  const handleStep = async (step: number) => {
-    const isValid = await trigger()
-    if (isValid) {
-      const stepArray = Array(LAB_ORDER_SIDEDRAWER_STEPS.length).fill(null).map((_, i) => i)
-      const testFieldValuesArray = Array(testFieldValues.length).fill(null).map((_, i) => i)
-
-      if (activeStep === 1 && currentTest === 0) {
-        step > activeStep ? testFieldValuesArray.includes(currentTest + 1) ? setCurrentTest(currentTest + 1) : setActiveStep(step) : setActiveStep(step)
-        return
-      }
-
-      if (activeStep === 1 && currentTest > 0) {
-        step < activeStep ? setCurrentTest(currentTest - 1) : testFieldValuesArray.includes(currentTest + 1) ? setCurrentTest(currentTest + 1) : setActiveStep(step)
-        return
-      }
-
-
-      stepArray.includes(step) && setActiveStep(step)
-    }
-
-  };
-
-  const getStepContent = (step: number) => {
-    switch (step) {
-      case 0:
-        return <LabOrderComponent
-          setTestsToRemove={setTestsToRemove}
-          appointmentInfo={appointmentInfo}
-          handleStep={handleStep}
-          setCurrentTest={setCurrentTest}
-        />
-      // case 1:
-      //   return <TestsComponent currentTest={currentTest} />
-      // case 2:
-      //   return <PaymentsComponent />
-      default:
-        return 'Unknown step';
-    }
-  }
 
   const [createLabTest, { loading: createLabTestLoading }] = useCreateLabTestMutation({
     onError({ message }) {
@@ -86,6 +45,7 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
     onCompleted(data) {
       if (data) {
         !isEdit && Alert.success(LAB_ORDER_CREATE_SUCCESS);
+        fetchData && fetchData()
         toggleSideDrawer && toggleSideDrawer()
       }
     }
@@ -108,6 +68,7 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
 
     onCompleted() {
       Alert.success('Lab Order Updated Successfully');
+      fetchData && fetchData()
       toggleSideDrawer && toggleSideDrawer()
     }
   });
@@ -315,8 +276,6 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
     })
   }
 
-  // const isFinalStep = LAB_ORDER_SIDEDRAWER_STEPS.length === activeStep + 1 && currentTest + 1 === testFieldValues?.length
-
   if (createLabTestLoading) {
     return <Loader loading loaderText='Creating Lab Order' />
   }
@@ -339,47 +298,24 @@ export const AddLabOrdersComponent: FC<LabOrderCreateProps> = ({ appointmentInfo
           >
             <Typography variant='h3'>{isEdit ? EDIT_LAB_ORDER : NEW_LAB_ORDER}</Typography>
 
-            {/* <Box display='flex' alignItems='center'>
-              {activeStep > 0 && <Button variant="outlined" color="secondary" onClick={() => handleStep(activeStep - 1)}>{BACK_TEXT}</Button>}
-              <Box p={1} />
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                onClick={() => isFinalStep ? handleSubmit(onSubmit)() : handleStep(activeStep + 1)}
-              >
-                {isFinalStep ? SUBMIT : NEXT}
-              </Button>
-            </Box> */}
           </Box>
-
-          {/* <Box className={labOrderClasses.labOrderBox}>
-            <Stepper alternativeLabel activeStep={activeStep} connector={<CheckInConnector />}>
-              {LAB_ORDER_SIDEDRAWER_STEPS.map((label, index) => (
-                <Step key={label}>
-                  <StepLabel onClick={testFieldValues?.length ? () => { setActiveStep(index); setCurrentTest(0) } : () => { }} StepIconComponent={CheckInStepIcon}>
-                    <Box ml={0} display='flex' alignItems='center' className='pointer-cursor'>
-                      {label}
-                      <Box p={0.5} />
-                      {!(LAB_ORDER_SIDEDRAWER_STEPS.length - 1 === index) ? <ChevronRight /> : ''}
-                    </Box>
-                  </StepLabel>
-                </Step>
-              ))}
-            </Stepper>
-          </Box> */}
 
           <Box p={1} />
 
           <Box maxHeight="calc(100vh - 170px)" className="overflowY-auto">
-            <Typography>{getStepContent(activeStep)}</Typography>
+
+            <LabOrderComponent
+              setTestsToRemove={setTestsToRemove}
+              appointmentInfo={appointmentInfo}
+            />
           </Box>
 
-          <Box display="flex" justifyContent="center">
+          <Box display="flex" justifyContent="center" py={2}>
             <Button
               type="submit"
               variant="contained"
               color="primary"
+              disabled={!testFieldValues?.length}
               onClick={() => handleSubmit(onSubmit)()}
             >
               {isEdit ? UPDATE : CREATE}

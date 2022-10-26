@@ -1,23 +1,24 @@
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, colors, Typography } from "@material-ui/core";
 import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { ExpandMore } from "@material-ui/icons";
 import { useParams } from "react-router-dom";
 //components
 import Alert from "../../../../common/Alert";
-//constants
-import { ExpandMore } from "@material-ui/icons";
-import { NEXT, QuestionType, REVIEW_OF_SYSTEM_TEXT, ROS_TEMPLATES, TemplateType } from "../../../../../constants";
-import { QuestionTemplate, useCreateReviewOfSystemHistoryMutation, useGetPatientChartingTemplateLazyQuery, useReviewOfSystemLazyQuery } from '../../../../../generated/graphql';
-import { multiOptionType, ParamsType, PatientHistoryProps } from "../../../../../interfacesTypes";
-import { Action, ActionType, initialState, patientHistoryReducer, State } from "../../../../../reducers/patientHistoryReducer";
 import CardComponent from "../../../../common/CardComponent";
 import ChartingTemplateSelector from "../../../../common/Selector/ChartingTemplateSelector";
-import { useChartingStyles } from '../../../../../styles/chartingStyles';
 import TableLoader from "../../../../common/TableLoader";
 import QuestionCard from "./QuestionCard";
+//constants
+import { NEXT, PE_TEMPLATES, QuestionType, REVIEW_OF_SYSTEM_TEXT, TemplateType } from "../../../../../constants";
+import { QuestionTemplate, useCreatePhysicalExamHistoryMutation, useGetPatientChartingTemplateLazyQuery, usePhysicalExamLazyQuery } from '../../../../../generated/graphql';
+import { multiOptionType, ParamsType, PatientHistoryProps } from "../../../../../interfacesTypes";
+import { Action, ActionType, initialState, patientHistoryReducer, State } from "../../../../../reducers/patientHistoryReducer";
+import { useChartingStyles } from '../../../../../styles/chartingStyles';
 import { renderMultiTemplates } from "../../../../../utils";
 
-const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, handleStep }): JSX.Element => {
+
+const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, handleStep }): JSX.Element => {
   const methods = useForm();
   const chartingClasses = useChartingStyles();
   const { id: patientId, appointmentId } = useParams<ParamsType>()
@@ -31,12 +32,12 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
   const { itemId, templates } = state;
   const { handleSubmit, setValue } = methods;
 
-  const [createReviewOfSystem] = useCreateReviewOfSystemHistoryMutation({
+  const [createPhysicalExam] = useCreatePhysicalExamHistoryMutation({
     onCompleted: (data) => {
-      const { createReviewOfSystem } = data || {}
-      const { response, reviewOfSystem } = createReviewOfSystem || {}
+      const { createPhysicalExam } = data || {}
+      const { response, physicalExam } = createPhysicalExam || {}
       const { status } = response || {}
-      const { id } = reviewOfSystem || {}
+      const { id } = physicalExam || {}
       if (status === 200 && id) {
         id && dispatch({ type: ActionType.SET_ITEM_ID, itemId: id })
         // message && Alert.success(message)
@@ -70,14 +71,14 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
     }
   });
 
-  const [patientReviewOfSystem, { loading: getLoading }] = useReviewOfSystemLazyQuery({
+  const [patientPhysicalExam, { loading: getLoading }] = usePhysicalExamLazyQuery({
     onCompleted: (data) => {
-      const { reviewOfSystem: dataResponse } = data || {}
-      const { response, reviewOfSystem } = dataResponse || {}
+      const { physicalExam: dataResponse } = data || {}
+      const { response, physicalExam } = dataResponse || {}
       const { status } = response || {}
 
       if (status === 200) {
-        const { id, answers, templates } = reviewOfSystem || {}
+        const { id, answers, templates } = physicalExam || {}
         id && dispatch({ type: ActionType.SET_ITEM_ID, itemId: id })
 
         dispatch({ type: ActionType.SET_TEMPLATES, templates: templates as QuestionTemplate[] })
@@ -89,7 +90,7 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
           const { questionType } = answer || {}
           if (questionType === QuestionType.SELECT) {
             setValue(`${answerId}.select`, true)
-            setValue(`${answerId}.value`, { id: "able", name: "able" })
+            setValue(`${answerId}.value`, { id: value, name: value })
             return
           }
           setValue(`${answerId}.select`, true)
@@ -100,20 +101,20 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
     onError: () => { }
   })
 
-  const fetchPatientReviewOfSystem = useCallback(async () => {
-    appointmentId && await patientReviewOfSystem({
+  const fetchPatientPhysicalExam = useCallback(async () => {
+    appointmentId && await patientPhysicalExam({
       variables: {
-        reviewOfSystemInput: {
+        physicalExamInput: {
           appointmentId: appointmentId
         }
       }
     })
 
-  }, [patientReviewOfSystem, appointmentId])
+  }, [patientPhysicalExam, appointmentId])
 
   useEffect(() => {
-    appointmentId && fetchPatientReviewOfSystem()
-  }, [appointmentId, fetchPatientReviewOfSystem])
+    fetchPatientPhysicalExam()
+  }, [fetchPatientPhysicalExam])
 
   const fetchPatientChartingTemplates = useCallback(async (ids: string[]) => {
     try {
@@ -154,9 +155,9 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
         value?: string
       }[])
 
-      await createReviewOfSystem({
+      createPhysicalExam({
         variables: {
-          createReviewOfSystemInput: {
+          createPhysicalExamInput: {
             answerResponses: answerResponses,
             appointmentId: appointmentId,
             patientId: patientId,
@@ -191,13 +192,13 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
           {!loading ? <>
             <Box px={2} mt={3}>
               <ChartingTemplateSelector
-                label={ROS_TEMPLATES}
+                label={PE_TEMPLATES}
                 name="hpiTemplates"
                 disabled={shouldDisableEdit}
                 addEmpty
                 isEdit
                 defaultValues={renderMultiTemplates(templates as QuestionTemplate[])}
-                templateType={TemplateType.REVIEW_OF_SYSTEM}
+                templateType={TemplateType.PHYSICAL_EXAM}
                 onSelect={(multiOption: multiOptionType[]) => fetchPatientChartingTemplates(multiOption.map(value => value.value))}
               />
             </Box>
@@ -249,4 +250,4 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
   )
 }
 
-export default ReviewOfSystem
+export default PhysicalExam

@@ -1,6 +1,6 @@
 // packages block
-import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
+import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import {
   Box, Card, colors, Grid, Typography, Button, CircularProgress, FormGroup, FormControlLabel, Checkbox,
@@ -14,25 +14,30 @@ import LabOrdersResultSubForm from './LabOrdersResultSubForm';
 import history from '../../../../history';
 import { GREY, GREY_THREE } from '../../../../theme';
 import { getFormatDateString, renderItem, setRecord } from '../../../../utils';
-import { PatientProviderSelector } from '../../../common/Selector/PatientProviderSelector';
-import { GeneralFormProps, LabOrderResultsFormInput, LabOrdersResultOption1, LabOrdersResultOption2, ParamsType, SelectorOption } from "../../../../interfacesTypes";
+import {
+  GeneralFormProps, LabOrderResultsFormInput, LabOrdersResultOption1, LabOrdersResultOption2, ParamsType,
+  SelectorOption
+} from "../../../../interfacesTypes";
 import {
   ACCESSION_NUMBER, DESCRIPTION, DOCTOR_SIGNOFF, LAB_TEXT, LOINC_CODE, NOT_FOUND_EXCEPTION,
-  ORDERS_RESULT_INITIAL_VALUES_1, ORDERS_RESULT_INITIAL_VALUES_2, OTHER_OPTION,
-  RESULTS, SAVE_TEXT, TESTS, USER_NOT_FOUND_EXCEPTION_MESSAGE, VENDOR_NAME,
+  ORDERS_RESULT_INITIAL_VALUES_1, ORDERS_RESULT_INITIAL_VALUES_2, OTHER_OPTION, RESULTS, SAVE_TEXT, TESTS,
+  USER_NOT_FOUND_EXCEPTION_MESSAGE, VENDOR_NAME,
 } from '../../../../constants';
 import {
-  AbnormalFlag, LabTestStatus, useFindLabTestsByOrderNumLazyQuery,
-  useRemoveLabTestObservationMutation, useUpdateLabTestMutation, useUpdateLabTestObservationMutation
+  AbnormalFlag, LabTestStatus, useFindLabTestsByOrderNumLazyQuery, useRemoveLabTestObservationMutation,
+  useUpdateLabTestMutation, useUpdateLabTestObservationMutation
 } from '../../../../generated/graphql';
+import { PatientPrimaryProvider } from '../../../common/renderItem/PatientPrimaryProvider';
 
 const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
   const { orderNum, patientId, appointmentId } = useParams<ParamsType>();
   const [resultsToRemove, setResultsToRemove] = useState<string[]>([])
   const [doctorSignOff, setDoctorSignOff] = useState(false);
   const [accessionNumber, setAccessionNumber] = useState<string>('');
+  const [primaryProvider, setPrimaryProvider] = useState<string>('');
   const methods = useForm<LabOrderResultsFormInput>({ mode: "all" });
   const { handleSubmit, setValue, control } = methods;
+  const { fields: resultFields } = useFieldArray({ control: control, name: "loinsCodeFields" });
 
   const [updateLabTest] = useUpdateLabTestMutation({
     onError({ message }) {
@@ -66,7 +71,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
   });
 
   const onSubmit: SubmitHandler<LabOrderResultsFormInput> = async (values) => {
-    const { assignedProvider, collectedDate, receivedDate, labName, venderName } = values ?? {}
+    const { collectedDate, receivedDate, labName, venderName } = values ?? {}
 
     if (resultsToRemove.length) {
       resultsToRemove.forEach(async (resultId) => {
@@ -94,7 +99,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
               receivedDate: getFormatDateString(receivedDate, 'MM-DD-YYYY'),
               labName: labName?.id ?? '',
               vendorName: venderName ?? '',
-              ...(assignedProvider?.id && { doctorId: assignedProvider?.id ?? '' })
+              ...(primaryProvider && { doctorId: primaryProvider })
             },
           }
         }
@@ -143,8 +148,6 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
       })
     })
   }
-
-  const { fields: resultFields } = useFieldArray({ control: control, name: "loinsCodeFields" });
 
   const [findLabTestsByOrderNum] = useFindLabTestsByOrderNumLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -239,6 +242,8 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
     setDoctorSignOff(checked);
   };
 
+  const primaryProviderHandler = (providerId: string) => setPrimaryProvider(providerId)
+
   return (
     <>
       <FormProvider {...methods}>
@@ -259,7 +264,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
                 </Grid>
 
                 <Grid item md={3} sm={12} xs={12}>
-                  <PatientProviderSelector patientId={patientId ?? ''} />
+                  <PatientPrimaryProvider patientId={patientId || ''} setPrimaryProvider={primaryProviderHandler} />
                 </Grid>
 
                 <Grid item md={3} sm={12} xs={12}>

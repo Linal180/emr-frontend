@@ -1,21 +1,28 @@
 // packages block
-import { Box, Button, Card, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
 import { Add } from '@material-ui/icons';
-import { Pagination } from "@material-ui/lab";
-import { ChangeEvent, FC, Reducer, useCallback, useEffect, useMemo, useReducer } from "react";
-import { FormProvider, useForm } from "react-hook-form";
 import { useParams } from 'react-router';
+import { Pagination } from "@material-ui/lab";
+import { FormProvider, useForm } from "react-hook-form";
+import { ChangeEvent, FC, Reducer, useCallback, useEffect, useMemo, useReducer } from "react";
+import { Box, Button, Card, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
 // components block
-import history from "../../../../history";
-import { AddLabOrdersComponent } from "../../../main/labOrders/addOrder";
-import ResultDownloadLink from "../../../main/reports/labResult/ResultDownloadLink";
 import Alert from "../../Alert";
-import NoDataFoundComponent from "../../NoDataFoundComponent";
 import Search from "../../Search";
 import Selector from "../../Selector";
 import SideDrawer from "../../SideDrawer";
-// constant, utils and styles block
+import TableLoader from '../../TableLoader';
+import NoDataFoundComponent from "../../NoDataFoundComponent";
+import { AddLabOrdersComponent } from "../../../main/labOrders/addOrder";
+import LabTestModal from "../../../main/reports/labResultsListing/LabTestModal";
+import ResultDownloadLink from "../../../main/reports/labResult/ResultDownloadLink";
+// constant,history, utils and styles block
+import history from "../../../../history";
+import { useTableStyles } from "../../../../styles/tableStyles";
+import { useChartingStyles } from '../../../../styles/chartingStyles';
 import { OutlinedAddIcon, PrintGrayIcon } from "../../../../assets/svgs";
+import { appointmentStatus, convertDateFromUnix, formatValue, renderTh } from "../../../../utils";
+import { Action, ActionType, initialState, labReducer, State } from "../../../../reducers/labReducer";
+import { LabOrderInput, LabOrdersTableProps, ParamsType, SelectorOption } from "../../../../interfacesTypes";
 import {
   ADD_LAB_ORDERS_RESULTS_ROUTE, APPOINTMENT, DATE, EMPTY_OPTION, LAB_ORDERS_LIMIT, LAB_TEST_STATUSES, MANUAL_ENTRY, NEXT, NOT_FOUND_EXCEPTION,
   ORDER_NUM, RESULTS, RESULTS_ENTERED, STATUS, TESTS, USER_NOT_FOUND_EXCEPTION_MESSAGE
@@ -23,12 +30,6 @@ import {
 import {
   LabTestPayload, LabTests, LabTestsPayload, LabTestStatus, useFindAllLabTestLazyQuery, useUpdateLabTestsByOrderNumMutation
 } from "../../../../generated/graphql";
-import { LabOrderInput, LabOrdersTableProps, ParamsType, SelectorOption } from "../../../../interfacesTypes";
-import { Action, ActionType, initialState, labReducer, State } from "../../../../reducers/labReducer";
-import { useChartingStyles } from '../../../../styles/chartingStyles';
-import { useTableStyles } from "../../../../styles/tableStyles";
-import { appointmentStatus, convertDateFromUnix, formatValue, renderTh } from "../../../../utils";
-import LabTestModal from "../../../main/reports/labResultsListing/LabTestModal";
 
 const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisableEdit, handleStep }): JSX.Element => {
   const classes = useTableStyles();
@@ -83,7 +84,7 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisabl
 
   useEffect(() => {
     fetchLabTests()
-  }, [page, fetchLabTests])
+  }, [fetchLabTests])
 
   const transformedLabOrders = useMemo(() => {
     if (!labOrders?.length) {
@@ -155,6 +156,7 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisabl
     dispatch({ type: ActionType.SET_ORDER_NUM, orderNum: '' })
     dispatch({ type: ActionType.SET_LAB_TEST_IDS, labTestIds: [] })
   }
+
   const toggleSideDrawer = () => dispatch({ type: ActionType.SET_DRAWER_OPENED, drawerOpened: !drawerOpened });
 
   const handleReload = () => {
@@ -163,7 +165,7 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisabl
     dispatch({ type: ActionType.SET_LAB_TESTS_TO_EDIT, labTestsToEdit: [] })
     dispatch({ type: ActionType.SET_SHOULD_REFETCH, shouldRefetch: true })
   }
-  
+
   const handleLabOrderEdit = (orderNumber: string, labOrder: LabTests[]) => {
     dispatch({ type: ActionType.SET_LAB_TESTS_TO_EDIT, labTestsToEdit: labOrder })
     dispatch({ type: ActionType.SET_ORDER_NUM, orderNum: orderNumber })
@@ -211,21 +213,6 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisabl
                   </Box>
                 </Box>
 
-
-                {drawerOpened && <SideDrawer
-                  drawerOpened={drawerOpened}
-                  toggleSideDrawer={handleReload}
-                >
-                  <AddLabOrdersComponent
-                    toggleSideDrawer={handleReload}
-                    isEdit={!!labTestsToEdit?.length}
-                    labTestsToEdit={labTestsToEdit}
-                    orderNumber={orderNum}
-                    appointmentInfo={appointmentInfo}
-                  />
-                </SideDrawer>}
-
-
                 <Box className="table-overflow">
                   <Table aria-label="customized table" className={classes.table}>
                     <TableHead>
@@ -241,91 +228,96 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisabl
                     </TableHead>
 
                     <TableBody>
-                      {Object.values(transformedLabOrders).map((labOrders) => {
-                        const { appointment, createdAt, labTestStatus, orderNumber, testObservations } = labOrders[0] as LabTestPayload['labTest'] ?? {}
-                        const { appointmentType, scheduleStartDateTime } = appointment ?? {}
+                      {loading ?
+                        <TableRow>
+                          <TableCell colSpan={10}>
+                            <TableLoader numberOfRows={10} numberOfColumns={7} />
+                          </TableCell>
+                        </TableRow>
+                        : Object.values(transformedLabOrders).map((labOrders) => {
+                          const { appointment, createdAt, labTestStatus, orderNumber, testObservations } = labOrders[0] as LabTestPayload['labTest'] ?? {}
+                          const { appointmentType, scheduleStartDateTime } = appointment ?? {}
 
-                        return (
-                          <TableRow>
-                            <TableCell scope="row">
-                              <Box className={shouldDisableEdit ? "" : "pointer-cursor"} onClick={shouldDisableEdit ? () => { } : () => handleLabOrderEdit(orderNumber || '', labOrders)}>
-                                <Typography color='secondary'>
-                                  {orderNumber}
-                                </Typography>
-                              </Box>
-                            </TableCell>
-                            <TableCell scope="row">
-                              <Typography>
-                                <b>
-                                  {appointmentType?.name ? `${appointmentType?.name ?? ''}` : '--'}
-                                </b>
-                                <br />
-                                {appointmentType?.name ? convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm A') : ''}
-                              </Typography>
-
-                            </TableCell>
-                            <TableCell scope="row">
-                              <ul>
-                                {labOrders.map((labOrder: LabTestPayload['labTest']) => (
-                                  <li>{labOrder?.test?.component?.slice(0, 20) ?? '- -'}...</li>
-                                ))}
-                              </ul>
-                            </TableCell>
-                            <TableCell scope="row">{convertDateFromUnix(createdAt, 'MM-DD-YYYY')}</TableCell>
-                            <TableCell scope="row">
-                              {isEdit && orderNum === orderNumber ? <>
-                                <Selector
-                                  name="status"
-                                  label=""
-                                  value={EMPTY_OPTION}
-                                  options={LAB_TEST_STATUSES}
-                                  onSelect={({ id }: SelectorOption) => onSelectStatus(id)}
-                                  onOutsideClick={clearEdit}
-                                />
-                              </>
-                                :
-                                <Box className={classes.status} component='span' color={textColor}
-                                  onClick={() => handleEdit(orderNumber || '', labTestStatus || '', (labOrders)?.map((labOrder: LabTestPayload['labTest']) => labOrder?.id || ''))}
-                                >
-                                  {formatValue(labTestStatus ?? '')}
+                          return (
+                            <TableRow>
+                              <TableCell scope="row">
+                                <Box className={shouldDisableEdit ? "" : "pointer-cursor"} onClick={shouldDisableEdit ? () => { } : () => handleLabOrderEdit(orderNumber || '', labOrders)}>
+                                  <Typography color='secondary'>
+                                    {orderNumber}
+                                  </Typography>
                                 </Box>
-                              }
-                            </TableCell>
-                            <TableCell scope="row">
-                              {testObservations?.length ? convertDateFromUnix(testObservations?.[0]?.createdAt, 'MM-DD-YYYY') : '- -'}
-                            </TableCell>
-                            <TableCell scope="row">
-                              <Box display="flex" alignItems="center">
-                                <IconButton size='small' onClick={() => history.push(appointmentId ? `${ADD_LAB_ORDERS_RESULTS_ROUTE}/${id}/${orderNumber}/${appointmentId}` : `${ADD_LAB_ORDERS_RESULTS_ROUTE}/${id}/${orderNumber}`)}>
-                                  <OutlinedAddIcon />
-                                </IconButton>
+                              </TableCell>
+                              <TableCell scope="row">
+                                <Typography>
+                                  <b>
+                                    {appointmentType?.name ? `${appointmentType?.name ?? ''}` : '--'}
+                                  </b>
+                                  <br />
+                                  {appointmentType?.name ? convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm A') : ''}
+                                </Typography>
 
-                                {/* <IconButton size='small'>
+                              </TableCell>
+                              <TableCell scope="row">
+                                <ul>
+                                  {labOrders.map((labOrder: LabTestPayload['labTest']) => (
+                                    <li>{labOrder?.test?.component?.slice(0, 20) ?? '- -'}...</li>
+                                  ))}
+                                </ul>
+                              </TableCell>
+                              <TableCell scope="row">{convertDateFromUnix(createdAt, 'MM-DD-YYYY')}</TableCell>
+                              <TableCell scope="row">
+                                {isEdit && orderNum === orderNumber ? <>
+                                  <Selector
+                                    name="status"
+                                    label=""
+                                    value={EMPTY_OPTION}
+                                    options={LAB_TEST_STATUSES}
+                                    onSelect={({ id }: SelectorOption) => onSelectStatus(id)}
+                                    onOutsideClick={clearEdit}
+                                  />
+                                </>
+                                  :
+                                  <Box className={classes.status} component='span' color={textColor}
+                                    onClick={() => handleEdit(orderNumber || '', labTestStatus || '', (labOrders)?.map((labOrder: LabTestPayload['labTest']) => labOrder?.id || ''))}
+                                  >
+                                    {formatValue(labTestStatus ?? '')}
+                                  </Box>
+                                }
+                              </TableCell>
+                              <TableCell scope="row">
+                                {testObservations?.length ? convertDateFromUnix(testObservations?.[0]?.createdAt, 'MM-DD-YYYY') : '- -'}
+                              </TableCell>
+                              <TableCell scope="row">
+                                <Box display="flex" alignItems="center">
+                                  <IconButton size='small' onClick={() => history.push(appointmentId ? `${ADD_LAB_ORDERS_RESULTS_ROUTE}/${id}/${orderNumber}/${appointmentId}` : `${ADD_LAB_ORDERS_RESULTS_ROUTE}/${id}/${orderNumber}`)}>
+                                    <OutlinedAddIcon />
+                                  </IconButton>
+
+                                  {/* <IconButton size='small'>
                                   <Box width={20}>
                                     <EyeIcon />
                                   </Box>
                               </IconButton> */}
 
-                                <ResultDownloadLink
-                                  orderNumber={orderNumber || ''}
-                                  shouldRefetch={shouldRefetch}
-                                  setShouldRefetch={() => dispatch({ type: ActionType.SET_SHOULD_REFETCH, shouldRefetch: false })}
-                                />
+                                  <ResultDownloadLink
+                                    orderNumber={orderNumber || ''}
+                                    shouldRefetch={shouldRefetch}
+                                    setShouldRefetch={() => dispatch({ type: ActionType.SET_SHOULD_REFETCH, shouldRefetch: false })}
+                                  />
 
-                                <Box>
-                                  <IconButton size='small' onClick={() => {
-                                    dispatch({ type: ActionType.SET_IS_STICKER_MODAL_OPEN, isStickerModalOpen: true });
-                                    dispatch({ type: ActionType.SET_STICKER_ORDER, stickerOrder: orderNumber || '' })
-                                  }}>
-                                    <PrintGrayIcon />
-                                  </IconButton>
+                                  <Box>
+                                    <IconButton size='small' onClick={() => {
+                                      dispatch({ type: ActionType.SET_IS_STICKER_MODAL_OPEN, isStickerModalOpen: true });
+                                      dispatch({ type: ActionType.SET_STICKER_ORDER, stickerOrder: orderNumber || '' })
+                                    }}>
+                                      <PrintGrayIcon />
+                                    </IconButton>
+                                  </Box>
                                 </Box>
-                              </Box>
-                            </TableCell>
-                          </TableRow>
-                        )
-                      })
-                        // )
+                              </TableCell>
+                            </TableRow>
+                          )
+                        })
                       }
                     </TableBody>
                   </Table>
@@ -359,6 +351,20 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisabl
         isOpen={isStickerModalOpen}
         labTests={labOrders?.filter((labOrder) => labOrder?.orderNumber === stickerOrder)}
       />}
+
+      {drawerOpened && <SideDrawer
+        drawerOpened={drawerOpened}
+        toggleSideDrawer={handleReload}
+      >
+        <AddLabOrdersComponent
+          toggleSideDrawer={handleReload}
+          isEdit={!!labTestsToEdit?.length}
+          labTestsToEdit={labTestsToEdit}
+          orderNumber={orderNum}
+          appointmentInfo={appointmentInfo}
+          fetchData={fetchLabTests}
+        />
+      </SideDrawer>}
     </>
   );
 };

@@ -5,14 +5,15 @@ import { Box, Card, colors, Grid, Typography, Button, CircularProgress, } from "
 import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
 // components block
-import LabOrdersSpecimenTypeForm from './LabOrdersSpecimenTypeForm';
+import Alert from '../../../common/Alert';
 import Selector from '../../../common/Selector';
-import AppointmentSelector from '../../../common/Selector/AppointmentSelector';
-import DiagnosesSelector from '../../../common/Selector/DiagnosesSelector';
-import TestsSelector from '../../../common/Selector/TestSelector';
 import TimePicker from '../../../common/TimePicker';
 import DatePicker from '../../../common/DatePicker';
 import InputController from '../../../../controller';
+import TestsSelector from '../../../common/Selector/TestSelector';
+import LabOrdersSpecimenTypeForm from './LabOrdersSpecimenTypeForm';
+import DiagnosesSelector from '../../../common/Selector/DiagnosesSelector';
+import AppointmentSelector from '../../../common/Selector/AppointmentSelector';
 // interfaces, graphql, constants block
 import { LabOrderCreateProps, LabOrdersCreateFormInput, ParamsType } from "../../../../interfacesTypes";
 import {
@@ -22,7 +23,6 @@ import {
 } from '../../../../constants';
 import { createLabOrdersSchema } from '../../../../validationSchemas';
 import { LabTestStatus, useCreateLabTestMutation } from '../../../../generated/graphql';
-import Alert from '../../../common/Alert';
 import { generateString, getFormatDateString, renderItem, setRecord } from '../../../../utils';
 
 const LabOrdersCreateForm: FC<LabOrderCreateProps> = ({ appointmentInfo, handleStep }): JSX.Element => {
