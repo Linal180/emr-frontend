@@ -25,7 +25,7 @@ import { isFacilityAdmin, isPracticeAdmin, isSuperAdmin, mediaType } from '../..
 import { Action, ActionType, agreementReducer, initialState, State } from '../../../reducers/agreementReducer';
 import { CreateAgreementFormProps, FormForwardRef, GeneralFormProps, ParamsType } from '../../../interfacesTypes';
 import {
-  AttachmentType, useCreateAgreementMutation, useFetchAgreementLazyQuery, useUpdateAgreementMutation
+  AttachmentType, useCreateAgreementMutation, useFetchAgreementLazyQuery, useRemoveAgreementMutation, useUpdateAgreementMutation
 } from '../../../generated/graphql';
 import {
   AGREEMENTS, AGREEMENTS_BREAD, AGREEMENTS_EDIT_BREAD, AGREEMENTS_NEW_BREAD, AGREEMENTS_ROUTE, AGREEMENT_BODY,
@@ -60,6 +60,20 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
   });
   const { reset, handleSubmit, setValue, formState: { errors } } = methods
   const validated = !!Object.keys(errors).length
+
+  const [removeAgreement, { loading: deleteAgreementLoading }] = useRemoveAgreementMutation({
+    onError: () => { },
+
+    onCompleted: (data) => {
+      const { removeAgreement } = data;
+      const { response } = removeAgreement || {}
+      const { status } = response || {}
+
+      if (status === 200) {
+        dispatch({ type: ActionType.SET_AGREEMENT_ID, agreementId: '' })
+      }
+    }
+  });
 
   const [createAgreement, { loading: createAgreementLoading }] = useCreateAgreementMutation({
     onError({ message }) {
@@ -200,6 +214,7 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
   const onUploading = (open: boolean, errMsg?: string) => {
     dispatch({ type: ActionType.SET_UPLOADING, uploading: open })
     if (!open && errMsg) {
+      removeAgreement({ variables: { agreementId } })
       Alert.error(errMsg);
     } else if (!open) {
       Alert.success(CREATE_AGREEMENT_MESSAGE);
@@ -230,11 +245,11 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
 
             <Box display="flex" alignItems="center">
               <Button type="submit" variant="contained" color="primary"
-                disabled={createAgreementLoading || updateAgreementLoading || uploading}
+                disabled={createAgreementLoading || updateAgreementLoading || uploading || deleteAgreementLoading}
               >
                 {SAVE_TEXT}
 
-                {(createAgreementLoading || updateAgreementLoading || uploading) &&
+                {(createAgreementLoading || updateAgreementLoading || uploading || deleteAgreementLoading) &&
                   <CircularProgress size={20} color="inherit" />
                 }
               </Button>
