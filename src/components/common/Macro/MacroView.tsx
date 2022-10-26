@@ -223,7 +223,7 @@ const withCustomSlate = (editor: Editor) => {
             match: (n) =>
               !Editor.isEditor(n) &&
               SlateElement.isElement(n) &&
-              ["drop-down-item", "date", "time"].includes((n as any).type)
+              ["drop-down-item", "date", "time", "datetime"].includes((n as any).type)
           });
           return;
         }
@@ -239,6 +239,8 @@ const Element = (props: any) => {
     case "drop-down-item":
       return <CheckListItemElement {...props} />;
     case "date":
+      return <DateElement {...props} />;
+    case "datetime":
       return <DateElement {...props} />;
     case "time":
       return <TimeElement {...props} />;
