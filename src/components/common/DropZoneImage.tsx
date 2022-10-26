@@ -23,7 +23,7 @@ import {
 const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
   imageModuleType, isEdit, attachmentId, itemId, handleClose, setAttachments, isDisabled, attachment,
   reload, title, providerName, filesLimit, attachmentMetadata, attachmentName, acceptableFilesType,
-  setFiles: setAttachmentFiles, numberOfFiles, cameraOpen, setCameraOpen, onUploading
+  setFiles: setAttachmentFiles, numberOfFiles, cameraOpen, setCameraOpen, onUploading,
 }, ref): JSX.Element => {
   const classes = useDropzoneStyles();
   const { logoutUser } = useContext(AuthContext)
@@ -181,9 +181,9 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
             logoutUser()
           }
         }
-      }).then(data => { }).catch(error => {
+      }).catch(({ message }: { message?: string }) => {
         setLoading(false);
-        onUploading && onUploading(false)
+        onUploading && onUploading(false, message)
         handleModalClose();
         // Alert.error(SOMETHING_WENT_WRONG);  //Attachment is uploaded successfully, But it still come in error
       });
