@@ -19,6 +19,7 @@ export interface State {
   viewAgreementBeforeAgreeing: boolean
   agreements: AgreementsPayload['agreements']
   cameraOpen: boolean;
+  uploading: boolean;
 }
 
 export const initialState: State = {
@@ -39,7 +40,8 @@ export const initialState: State = {
   signatureRequired: false,
   descriptionType: 'Text Editor',
   viewAgreementBeforeAgreeing: false,
-  cameraOpen: false
+  cameraOpen: false,
+  uploading: false
 }
 
 export enum ActionType {
@@ -48,6 +50,7 @@ export enum ActionType {
   SET_PAGES = 'setPages',
   SET_IS_LOADED = 'setIsLoaded',
   SET_WITH_FILE = 'setWithFile',
+  SET_UPLOADING = 'setUploading',
   SET_AGREEMENTS = 'setAgreements',
   SET_BODY_STATUS = 'setBodyStatus',
   SET_CAMERA_OPEN = 'setCameraOpen',
@@ -67,6 +70,7 @@ export type Action =
   | { type: ActionType.SET_PAGE, page: number }
   | { type: ActionType.SET_PAGES, pages: number }
   | { type: ActionType.SET_FILES, files: File[] }
+  | { type: ActionType.SET_UPLOADING, uploading: boolean }
   | { type: ActionType.SET_IS_LOADED, isLoaded: boolean }
   | { type: ActionType.SET_WITH_FILE, withFile: boolean }
   | { type: ActionType.SET_CAMERA_OPEN, cameraOpen: boolean }
@@ -191,6 +195,12 @@ export const agreementReducer = (state: State, action: Action): State => {
       return {
         ...state,
         cameraOpen: action.cameraOpen
+      }
+
+    case ActionType.SET_UPLOADING:
+      return {
+        ...state,
+        uploading: action.uploading
       }
   }
 };

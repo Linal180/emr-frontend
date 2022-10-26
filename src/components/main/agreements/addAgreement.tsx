@@ -25,7 +25,7 @@ import { isFacilityAdmin, isPracticeAdmin, isSuperAdmin, mediaType } from '../..
 import { Action, ActionType, agreementReducer, initialState, State } from '../../../reducers/agreementReducer';
 import { CreateAgreementFormProps, FormForwardRef, GeneralFormProps, ParamsType } from '../../../interfacesTypes';
 import {
-  AttachmentType, useCreateAgreementMutation, useFetchAgreementLazyQuery, useUpdateAgreementMutation
+  AttachmentType, useCreateAgreementMutation, useFetchAgreementLazyQuery, useRemoveAgreementMutation, useUpdateAgreementMutation
 } from '../../../generated/graphql';
 import {
   AGREEMENTS, AGREEMENTS_BREAD, AGREEMENTS_EDIT_BREAD, AGREEMENTS_NEW_BREAD, AGREEMENTS_ROUTE, AGREEMENT_BODY,
@@ -37,14 +37,13 @@ import {
 const AddAgreementComponent: FC<GeneralFormProps> = () => {
   const { id } = useParams<ParamsType>()
   const { user } = useContext(AuthContext)
-
   const classes = useTableStyles()
   const descriptionTypes = ['Text Editor', 'File Upload'];
 
   const { roles, facility } = user || {};
   const [state, dispatch] = useReducer<Reducer<State, Action>>(agreementReducer, initialState)
   const { agreementId, agreementBody, signatureRequired, viewAgreementBeforeAgreeing,
-    descriptionType, isLoaded, withFile, files, cameraOpen
+    descriptionType, isLoaded, withFile, files, cameraOpen, uploading
   } = state
 
   const { id: facilityId, practice } = facility || {};
@@ -62,6 +61,20 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
   const { reset, handleSubmit, setValue, formState: { errors } } = methods
   const validated = !!Object.keys(errors).length
 
+  const [removeAgreement, { loading: deleteAgreementLoading }] = useRemoveAgreementMutation({
+    onError: () => { },
+
+    onCompleted: (data) => {
+      const { removeAgreement } = data;
+      const { response } = removeAgreement || {}
+      const { status } = response || {}
+
+      if (status === 200) {
+        dispatch({ type: ActionType.SET_AGREEMENT_ID, agreementId: '' })
+      }
+    }
+  });
+
   const [createAgreement, { loading: createAgreementLoading }] = useCreateAgreementMutation({
     onError({ message }) {
       Alert.error(message)
@@ -76,9 +89,6 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
         if (status && status === 200) {
           agreement && dispatch({ type: ActionType.SET_AGREEMENT_ID, agreementId: agreement.id })
           dropZoneRef.current?.submit()
-          Alert.success(CREATE_AGREEMENT_MESSAGE);
-          reset()
-          history.push(AGREEMENTS_ROUTE)
         }
       }
     }
@@ -201,6 +211,19 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
   const onEditorChange = (editor: ClassicEditor) =>
     dispatch({ type: ActionType.SET_AGREEMENT_BODY, agreementBody: editor.getData() });
 
+  const onUploading = (open: boolean, errMsg?: string) => {
+    dispatch({ type: ActionType.SET_UPLOADING, uploading: open })
+    if (!open && errMsg) {
+      removeAgreement({ variables: { agreementId } })
+      Alert.error(errMsg);
+    } else if (!open) {
+      Alert.success(CREATE_AGREEMENT_MESSAGE);
+      reset()
+      history.push(AGREEMENTS_ROUTE)
+    }
+
+  }
+
   return (
     <>
       <FormProvider {...methods}>
@@ -222,11 +245,11 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
 
             <Box display="flex" alignItems="center">
               <Button type="submit" variant="contained" color="primary"
-                disabled={createAgreementLoading || updateAgreementLoading}
+                disabled={createAgreementLoading || updateAgreementLoading || uploading || deleteAgreementLoading}
               >
                 {SAVE_TEXT}
 
-                {(createAgreementLoading || updateAgreementLoading) &&
+                {(createAgreementLoading || updateAgreementLoading || uploading || deleteAgreementLoading) &&
                   <CircularProgress size={20} color="inherit" />
                 }
               </Button>
@@ -304,6 +327,7 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
                         setFiles={(files: File[]) => dispatch({ type: ActionType.SET_FILES, files: files })}
                         acceptableFilesType={mediaType(ATTACHMENT_TITLES.Agreement)}
                         cameraOpen={cameraOpen}
+                        onUploading={onUploading}
                         setCameraOpen={(value) => dispatch({ type: ActionType.SET_CAMERA_OPEN, cameraOpen: value })}
                       />
 
