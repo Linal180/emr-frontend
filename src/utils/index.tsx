@@ -32,7 +32,7 @@ import {
   LOCK_ROUTE, LOGIN_ROUTE, MISSING, N_A, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE,
   SUPER_ADMIN, TABLE_SELECTOR_MODULES, TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE,
   ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES, ASC, CALENDAR_ROUTE, SYSTEM_ROLES, LAB_RESULTS_ROUTE,
-  CLAIM_FEED_ROUTE, CREATE_CLAIM, UPDATE_CLAIM, SUBMIT_CLAIM, CLAIM_STATUS_ROUTE, areaChartOne, areaChartTwo, BLOOD_PRESSURE_RANGES, Heart_RATE_RANGES, CANCEL_TIME_EXPIRED_MESSAGE
+  CLAIM_FEED_ROUTE, CREATE_CLAIM, UPDATE_CLAIM, SUBMIT_CLAIM, CLAIM_STATUS_ROUTE, areaChartOne, areaChartTwo, BLOOD_PRESSURE_RANGES, Heart_RATE_RANGES, CANCEL_TIME_EXPIRED_MESSAGE, TemplateType
 } from "../constants";
 import {
   AllDoctorPayload, AllergySeverity, AppointmentCreateType, AppointmentsPayload, AppointmentStatus,
@@ -2568,7 +2568,7 @@ export const formatNumber = (str: string) => {
   };
   return ""
 }
-export const transformedEndDate = (endDate: string) =>{
+export const transformedEndDate = (endDate: string) => {
   return endDate ? moment(endDate).format("MM-DD-YYYY") : ''
 }
 
@@ -2641,7 +2641,7 @@ export const getMacroTextInitialValue = (strValue: string) => {
 
     const plainTextValue = {
       type: "paragraph",
-      children: [{ text: value.length ? value : type === 'paragraph' ? optionData?.[0] : '' }]
+      children: [{ text: value.length ? value : type === 'paragraph' ? optionData?.[0] || '' : '' }]
     };
     plainTextValue && accObj.push(plainTextValue);
 
@@ -2669,4 +2669,20 @@ export const getMacroTextInitialValue = (strValue: string) => {
   }[]);
 
   return finalResult
-} 
+}
+
+export const getTemplateLabel = (labelValue: TemplateType) => {
+  switch (labelValue) {
+    case TemplateType.HPI:
+      return 'Hpi'
+
+    case TemplateType.PHYSICAL_EXAM:
+      return 'Physical Exam'
+
+    case TemplateType.REVIEW_OF_SYSTEM:
+      return 'Review Of System'
+
+    default:
+      return ''
+  }
+}

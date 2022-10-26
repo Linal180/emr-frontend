@@ -21,6 +21,10 @@ const MacroView: FC<MacroViewTypes> = ({ itemId, setItemId, notes, type }) => {
   const [macros, setMacros] = useState<MacrosPayload['macros']>()
 
   const [fetchAllMacros] = useFetchAllMacrosLazyQuery({
+    onError() {
+      setMacros([])
+    },
+
     onCompleted: (data) => {
       const { fetchAllMacros } = data || {}
       const { macros, response } = fetchAllMacros || {}
@@ -36,11 +40,12 @@ const MacroView: FC<MacroViewTypes> = ({ itemId, setItemId, notes, type }) => {
       variables: {
         macroInput: {
           paginationOptions: { limit: 40, page: 1 },
+          section: type,
           searchString
         }
       }
     })
-  }, [fetchAllMacros, searchString])
+  }, [fetchAllMacros, searchString, type])
 
   useEffect(() => {
     findAllMacros()
@@ -164,8 +169,6 @@ const MacroView: FC<MacroViewTypes> = ({ itemId, setItemId, notes, type }) => {
           editor={editor}
           value={value}
           onChange={async (changeValue: any) => {
-            const content = JSON.stringify(changeValue)
-            await localStorage.setItem('content', content)
             handleNotesSave(JSON.stringify(changeValue))
             return setValue(changeValue);
           }}
@@ -240,7 +243,6 @@ const Element = (props: any) => {
     case "time":
       return <TimeElement {...props} />;
     default:
-
       return (
         <span
           {...attributes}

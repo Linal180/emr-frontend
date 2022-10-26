@@ -3,6 +3,7 @@ query FetchAllMacros($macroInput: MacroPaginationInput!) {
     macros {
       id
       expansion
+      section
       shortcut
     }
 
@@ -14,6 +15,69 @@ query FetchAllMacros($macroInput: MacroPaginationInput!) {
     pagination {
       page
       totalPages
+    }
+  }
+}
+
+query GetMacro($getMacroInput: GetMacroInput!) {
+  getMacro(getMacroInput: $getMacroInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    macro {
+      id
+      expansion
+      shortcut
+      section
+    }
+  }
+}
+
+
+# mutation
+
+
+mutation RemoveMacro($removeMacroInput: RemoveMacroInput!) {
+  removeMacro(removeMacroInput: $removeMacroInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    macro {
+      id
+    }
+  }
+}
+
+mutation CreateMacro($createMacroInput: CreateMacroInput!) {
+  createMacro(createMacroInput: $createMacroInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    macro {
+      id
+    }
+  }
+}
+
+mutation UpdateMacro($updateMacroInput: UpdateMacroInput!) {
+  updateMacro(updateMacroInput: $updateMacroInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    macro {
+      id
     }
   }
 }

@@ -21,7 +21,7 @@ import {
   SpecimenTypeOption, StepLabelType, TestOption, UpFrontPaymentTypeProps
 } from "../interfacesTypes";
 import {
-  formatValue, getFormattedDate, getStandardTime, mapEnum, mapEnumWithCode, setRecord, sortingValue
+  formatValue, getFormattedDate, getStandardTime, getTemplateLabel, mapEnum, mapEnumWithCode, setRecord, sortingValue
 } from "../utils";
 
 // regex
@@ -688,11 +688,13 @@ export const VACCINE_PRODUCT_DESCRIPTION =
 export const CLINICAL_TEXT = "Clinical";
 export const FORM_BUILDER = "Form Builder";
 export const AUDIT_LOG = "Audit Log";
+export const MACROS = "Macros";
 export const FORM_FIELDS = "Form Fields";
 export const NO_TEMPLATE = "No Template Found";
 export const SELECT_TEMPLATE = "Select Template";
 export const FORM_BUILDER_DESCRIPTION = "Design your form by drag and drop";
 export const AUDIT_LOG_DESCRIPTION = "View all logs of different activities";
+export const MACRO_DESCRIPTION = "View and create macros";
 export const MISCELLANEOUS_SETTINGS = "Miscellaneous Settings";
 export const TIME_ZONE = "Time Zone Settings";
 export const TIME_ZONE_DESCRIPTION = "Set time zones";
@@ -850,6 +852,7 @@ export const TEXT = "text";
 export const PLAN = "Plan";
 export const NONE = "None";
 export const NAME = "Name";
+export const SECTION = "Section";
 export const ROLE = "Role";
 export const UNIT = "Unit";
 export const INFO = "Info";
@@ -1124,6 +1127,9 @@ export const PAGE_NOT_FOUND = "Page Not Found";
 export const ARRIVAL_STATUS = "Arrival Status";
 export const LONG_DESCRIPTION = "Long Description";
 export const SHORT_DESCRIPTION = "Short Description";
+export const SHORT_CUT = "Shortcut";
+export const MACRO_TEXT = "Macro Text";
+export const MACRO = "Macro";
 export const EXP_REIMBURSEMENT = "Exp Reimb";
 export const SERVICE_FEE_CHARGE = "Service Fee (Charge)";
 export const PATIENT_INFORMATION = "Patient Information";
@@ -1618,6 +1624,7 @@ export const DELETE_CPT_CODE_DESCRIPTION = "Confirm to delete CPT code";
 export const DELETE_NDC_CODE_DESCRIPTION = "Confirm to delete NDC code";
 export const DELETE_VACCINE_PRODUCT_DESCRIPTION = "Confirm to delete Vaccine Product";
 export const DELETE_CVX_CODE_DESCRIPTION = "Confirm to delete CVX code";
+export const DELETE_MACRO_DESCRIPTION = "Confirm to delete Macro";
 export const DELETE_ALLERGY_DESCRIPTION = "Confirm to delete allergy";
 export const CHOOSE_YOUR_PAYMENT_METHOD = "Choose your Payment Method";
 export const NEXT_SCHEDULED_APPOINTMENT = "Next Scheduled Appointment";
@@ -1718,6 +1725,7 @@ export const PATIENTS_ROUTE = "/patients";
 export const SEND_SMS_ROUTE = `/send-sms`;
 export const INVOICES_ROUTE = "/invoices";
 export const AUDIT_LOG_ROUTE = "/audit-log";
+export const MACROS_ROUTE = "/macros";
 export const SIGNATURE_ROUTE = "/signature";
 export const CLAIM_FEED_ROUTE = "/claim-feed";
 export const SUPER_BILL_ROUTE = "/super-bill";
@@ -2183,7 +2191,6 @@ export const MAPPED_PATIENT_PAYMENT_TYPE = mapEnum<typeof PatientPaymentType>(Pa
 export const MAPPED_ONSET_DATE_TYPE = mapEnum<typeof OnsetDateType>(OnsetDateType)
 
 export const MAPPED_OTHER_DATE_TYPE = mapEnum<typeof OtherDateType>(OtherDateType)
-
 
 
 export const MAPPED_APPOINTMENT_STATUS: SelectorOption[] = [
@@ -2873,6 +2880,21 @@ export const APPOINTMENT_SETTINGS_ITEMS = [
   },
 ];
 
+export const MAPPED_SECTION = [
+  {
+    label: getTemplateLabel(TemplateType.HPI),
+    value: TemplateType.HPI
+  },
+  {
+    label: getTemplateLabel(TemplateType.PHYSICAL_EXAM),
+    value: TemplateType.PHYSICAL_EXAM
+  },
+  {
+    label: getTemplateLabel(TemplateType.REVIEW_OF_SYSTEM),
+    value: TemplateType.REVIEW_OF_SYSTEM
+  },
+]
+
 export const CLINICAL_ITEMS = [
   {
     name: FORM_BUILDER,
@@ -2883,6 +2905,11 @@ export const CLINICAL_ITEMS = [
     name: AUDIT_LOG,
     link: AUDIT_LOG_ROUTE,
     desc: AUDIT_LOG_DESCRIPTION,
+  },
+  {
+    name: MACROS,
+    link: MACROS_ROUTE,
+    desc: MACRO_DESCRIPTION,
   },
 ];
 

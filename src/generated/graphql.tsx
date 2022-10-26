@@ -1455,6 +1455,12 @@ export type CreateLabTestObservationItemInput = {
   resultValue: Scalars['String'];
 };
 
+export type CreateMacroInput = {
+  expansion?: Maybe<Scalars['String']>;
+  section?: Maybe<Array<Scalars['String']>>;
+  shortcut?: Maybe<Scalars['String']>;
+};
+
 export type CreateModifierInput = {
   description?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
@@ -3102,6 +3108,7 @@ export type Mvx = {
 export type MacroPaginationInput = {
   paginationOptions: PaginationInput;
   searchString?: Maybe<Scalars['String']>;
+  section?: Maybe<Scalars['String']>;
 };
 
 export type MacroPayload = {
@@ -3116,8 +3123,9 @@ export type Macros = {
   expansion?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   providers?: Maybe<Scalars['String']>;
-  section?: Maybe<Scalars['String']>;
+  section?: Maybe<Array<Scalars['String']>>;
   shortcut?: Maybe<Scalars['String']>;
+  systematic?: Maybe<Scalars['Boolean']>;
   updatedAt?: Maybe<Scalars['String']>;
 };
 
@@ -3208,6 +3216,7 @@ export type Mutation = {
   createLabTestObservation: LabTestObservationPayload;
   createLiveClaimFeed: Array<LiveClaimFeed>;
   createLoincCode: LoincCodePayload;
+  createMacro: MacroPayload;
   createModifier: ModifierPayload;
   createMvxCode: MvxPayload;
   createNdcCode: NdcPayload;
@@ -3254,6 +3263,7 @@ export type Mutation = {
   removeIcdCode: IcdCodePayload;
   removeLabTest: LabTestPayload;
   removeLabTestObservation: LabTestObservationPayload;
+  removeMacro: MacroPayload;
   removeModifier: ModifierPayload;
   removeMvxCode: MvxPayload;
   removeNdcCode: NdcPayload;
@@ -3307,6 +3317,7 @@ export type Mutation = {
   updateLabTestObservation: LabTestObservationPayload;
   updateLabTestsByOrderNum: LabTestsPayload;
   updateLoincCode: LoincCodePayload;
+  updateMacro: MacroPayload;
   updateModifier: ModifierPayload;
   updateMvxCode: MvxPayload;
   updateNdcCode: NdcPayload;
@@ -3533,6 +3544,11 @@ export type MutationCreateLabTestObservationArgs = {
 
 export type MutationCreateLoincCodeArgs = {
   loincCodeInput: LoincCodeInput;
+};
+
+
+export type MutationCreateMacroArgs = {
+  createMacroInput: CreateMacroInput;
 };
 
 
@@ -3763,6 +3779,11 @@ export type MutationRemoveLabTestArgs = {
 
 export type MutationRemoveLabTestObservationArgs = {
   removeLabTestObservation: RemoveLabTestObservation;
+};
+
+
+export type MutationRemoveMacroArgs = {
+  removeMacroInput: RemoveMacroInput;
 };
 
 
@@ -4023,6 +4044,11 @@ export type MutationUpdateLabTestsByOrderNumArgs = {
 
 export type MutationUpdateLoincCodeArgs = {
   updateLoincCodeInput: UpdateLoincCodeInput;
+};
+
+
+export type MutationUpdateMacroArgs = {
+  updateMacroInput: UpdateMacroInput;
 };
 
 
@@ -6348,6 +6374,10 @@ export type RemoveLabTestObservation = {
   id: Scalars['String'];
 };
 
+export type RemoveMacroInput = {
+  id: Scalars['String'];
+};
+
 export type RemoveModifierInput = {
   id: Scalars['String'];
 };
@@ -7708,6 +7738,13 @@ export type UpdateLoincCodeInput = {
   component?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   loincNum?: Maybe<Scalars['String']>;
+};
+
+export type UpdateMacroInput = {
+  expansion?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  section?: Maybe<Array<Scalars['String']>>;
+  shortcut?: Maybe<Scalars['String']>;
 };
 
 export type UpdateModifierInput = {
@@ -9813,7 +9850,35 @@ export type FetchAllMacrosQueryVariables = Exact<{
 }>;
 
 
-export type FetchAllMacrosQuery = { __typename?: 'Query', fetchAllMacros: { __typename?: 'MacrosPayload', macros: Array<{ __typename?: 'Macros', id: string, expansion?: string | null, shortcut?: string | null }>, response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
+export type FetchAllMacrosQuery = { __typename?: 'Query', fetchAllMacros: { __typename?: 'MacrosPayload', macros: Array<{ __typename?: 'Macros', id: string, expansion?: string | null, section?: Array<string> | null, shortcut?: string | null }>, response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
+
+export type GetMacroQueryVariables = Exact<{
+  getMacroInput: GetMacroInput;
+}>;
+
+
+export type GetMacroQuery = { __typename?: 'Query', getMacro: { __typename?: 'MacroPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, macro?: { __typename?: 'Macros', id: string, expansion?: string | null, shortcut?: string | null, section?: Array<string> | null } | null } };
+
+export type RemoveMacroMutationVariables = Exact<{
+  removeMacroInput: RemoveMacroInput;
+}>;
+
+
+export type RemoveMacroMutation = { __typename?: 'Mutation', removeMacro: { __typename?: 'MacroPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, macro?: { __typename?: 'Macros', id: string } | null } };
+
+export type CreateMacroMutationVariables = Exact<{
+  createMacroInput: CreateMacroInput;
+}>;
+
+
+export type CreateMacroMutation = { __typename?: 'Mutation', createMacro: { __typename?: 'MacroPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, macro?: { __typename?: 'Macros', id: string } | null } };
+
+export type UpdateMacroMutationVariables = Exact<{
+  updateMacroInput: UpdateMacroInput;
+}>;
+
+
+export type UpdateMacroMutation = { __typename?: 'Mutation', updateMacro: { __typename?: 'MacroPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, macro?: { __typename?: 'Macros', id: string } | null } };
 
 export type FindAllModifiersQueryVariables = Exact<{
   findAllModifierInput: FindAllModifierInput;
@@ -21245,6 +21310,7 @@ export const FetchAllMacrosDocument = gql`
     macros {
       id
       expansion
+      section
       shortcut
     }
     response {
@@ -21286,6 +21352,171 @@ export function useFetchAllMacrosLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type FetchAllMacrosQueryHookResult = ReturnType<typeof useFetchAllMacrosQuery>;
 export type FetchAllMacrosLazyQueryHookResult = ReturnType<typeof useFetchAllMacrosLazyQuery>;
 export type FetchAllMacrosQueryResult = Apollo.QueryResult<FetchAllMacrosQuery, FetchAllMacrosQueryVariables>;
+export const GetMacroDocument = gql`
+    query GetMacro($getMacroInput: GetMacroInput!) {
+  getMacro(getMacroInput: $getMacroInput) {
+    response {
+      status
+      error
+      message
+    }
+    macro {
+      id
+      expansion
+      shortcut
+      section
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetMacroQuery__
+ *
+ * To run a query within a React component, call `useGetMacroQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMacroQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMacroQuery({
+ *   variables: {
+ *      getMacroInput: // value for 'getMacroInput'
+ *   },
+ * });
+ */
+export function useGetMacroQuery(baseOptions: Apollo.QueryHookOptions<GetMacroQuery, GetMacroQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMacroQuery, GetMacroQueryVariables>(GetMacroDocument, options);
+      }
+export function useGetMacroLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMacroQuery, GetMacroQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMacroQuery, GetMacroQueryVariables>(GetMacroDocument, options);
+        }
+export type GetMacroQueryHookResult = ReturnType<typeof useGetMacroQuery>;
+export type GetMacroLazyQueryHookResult = ReturnType<typeof useGetMacroLazyQuery>;
+export type GetMacroQueryResult = Apollo.QueryResult<GetMacroQuery, GetMacroQueryVariables>;
+export const RemoveMacroDocument = gql`
+    mutation RemoveMacro($removeMacroInput: RemoveMacroInput!) {
+  removeMacro(removeMacroInput: $removeMacroInput) {
+    response {
+      status
+      error
+      message
+    }
+    macro {
+      id
+    }
+  }
+}
+    `;
+export type RemoveMacroMutationFn = Apollo.MutationFunction<RemoveMacroMutation, RemoveMacroMutationVariables>;
+
+/**
+ * __useRemoveMacroMutation__
+ *
+ * To run a mutation, you first call `useRemoveMacroMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveMacroMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeMacroMutation, { data, loading, error }] = useRemoveMacroMutation({
+ *   variables: {
+ *      removeMacroInput: // value for 'removeMacroInput'
+ *   },
+ * });
+ */
+export function useRemoveMacroMutation(baseOptions?: Apollo.MutationHookOptions<RemoveMacroMutation, RemoveMacroMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveMacroMutation, RemoveMacroMutationVariables>(RemoveMacroDocument, options);
+      }
+export type RemoveMacroMutationHookResult = ReturnType<typeof useRemoveMacroMutation>;
+export type RemoveMacroMutationResult = Apollo.MutationResult<RemoveMacroMutation>;
+export type RemoveMacroMutationOptions = Apollo.BaseMutationOptions<RemoveMacroMutation, RemoveMacroMutationVariables>;
+export const CreateMacroDocument = gql`
+    mutation CreateMacro($createMacroInput: CreateMacroInput!) {
+  createMacro(createMacroInput: $createMacroInput) {
+    response {
+      status
+      error
+      message
+    }
+    macro {
+      id
+    }
+  }
+}
+    `;
+export type CreateMacroMutationFn = Apollo.MutationFunction<CreateMacroMutation, CreateMacroMutationVariables>;
+
+/**
+ * __useCreateMacroMutation__
+ *
+ * To run a mutation, you first call `useCreateMacroMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMacroMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMacroMutation, { data, loading, error }] = useCreateMacroMutation({
+ *   variables: {
+ *      createMacroInput: // value for 'createMacroInput'
+ *   },
+ * });
+ */
+export function useCreateMacroMutation(baseOptions?: Apollo.MutationHookOptions<CreateMacroMutation, CreateMacroMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateMacroMutation, CreateMacroMutationVariables>(CreateMacroDocument, options);
+      }
+export type CreateMacroMutationHookResult = ReturnType<typeof useCreateMacroMutation>;
+export type CreateMacroMutationResult = Apollo.MutationResult<CreateMacroMutation>;
+export type CreateMacroMutationOptions = Apollo.BaseMutationOptions<CreateMacroMutation, CreateMacroMutationVariables>;
+export const UpdateMacroDocument = gql`
+    mutation UpdateMacro($updateMacroInput: UpdateMacroInput!) {
+  updateMacro(updateMacroInput: $updateMacroInput) {
+    response {
+      status
+      error
+      message
+    }
+    macro {
+      id
+    }
+  }
+}
+    `;
+export type UpdateMacroMutationFn = Apollo.MutationFunction<UpdateMacroMutation, UpdateMacroMutationVariables>;
+
+/**
+ * __useUpdateMacroMutation__
+ *
+ * To run a mutation, you first call `useUpdateMacroMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateMacroMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateMacroMutation, { data, loading, error }] = useUpdateMacroMutation({
+ *   variables: {
+ *      updateMacroInput: // value for 'updateMacroInput'
+ *   },
+ * });
+ */
+export function useUpdateMacroMutation(baseOptions?: Apollo.MutationHookOptions<UpdateMacroMutation, UpdateMacroMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateMacroMutation, UpdateMacroMutationVariables>(UpdateMacroDocument, options);
+      }
+export type UpdateMacroMutationHookResult = ReturnType<typeof useUpdateMacroMutation>;
+export type UpdateMacroMutationResult = Apollo.MutationResult<UpdateMacroMutation>;
+export type UpdateMacroMutationOptions = Apollo.BaseMutationOptions<UpdateMacroMutation, UpdateMacroMutationVariables>;
 export const FindAllModifiersDocument = gql`
     query FindAllModifiers($findAllModifierInput: FindAllModifierInput!) {
   findAllModifiers(findAllModifierInput: $findAllModifierInput) {
