@@ -1,37 +1,37 @@
+import { Box, Button, Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 import { ChangeEvent, FC, Fragment, Reducer, useCallback, useEffect, useReducer } from 'react';
-import { Box, Button, Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core';
 //components
-import NdcCodeForm from '../mvxForm'
 import Alert from '../../../common/Alert';
-import Search from '../../../common/Search';
-import TableLoader from '../../../common/TableLoader';
 import ConfirmationModal from '../../../common/ConfirmationModal';
 import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
+import Search from '../../../common/Search';
+import TableLoader from '../../../common/TableLoader';
+import MacroForm from '../MacroForm';
 //constants, styles, svgs
-import { getPageNumber, isLast, renderTh } from '../../../../utils';
-import { useTableStyles } from '../../../../styles/tableStyles';
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from '../../../../assets/svgs';
-import { State, Action, ActionType, initialState, mvxCodeReducer } from '../../../../reducers/mvxCodeReducer';
-import { FindAllMvxPayload, useFindAllMvxLazyQuery, useRemoveMvxCodeMutation } from '../../../../generated/graphql';
-import { ACTIONS, ADD_NEW_TEXT, CODE, DASHES, DELETE_NDC_CODE_DESCRIPTION, EIGHT_PAGE_LIMIT, MVX_TEXT, NAME, NDC_TEXT, NOTES, PAGE_LIMIT, STATUS } from '../../../../constants';
+import {
+  ACTIONS, ADD_NEW_TEXT, CVX_TEXT, DASHES, DELETE_MACRO_DESCRIPTION, DESCRIPTION, EIGHT_PAGE_LIMIT, MACRO, NAME, PAGE_LIMIT, SECTION, TemplateType
+} from '../../../../constants';
+import { MacrosPayload, useFetchAllMacrosLazyQuery, useRemoveMacroMutation } from '../../../../generated/graphql';
+import { Action, ActionType, initialState, macrosReducer, State } from '../../../../reducers/macrosReducer';
+import { useTableStyles } from '../../../../styles/tableStyles';
+import { getPageNumber, getTemplateLabel, isLast, renderTh } from '../../../../utils';
 
-
-const MvxTable: FC = (): JSX.Element => {
-
+const CvxTable: FC = (): JSX.Element => {
   const classes = useTableStyles();
-  const [state, dispatch] = useReducer<Reducer<State, Action>>(mvxCodeReducer, initialState);
-  const { searchQuery, data, openDelete, isOpen, itemId, page, totalPages, delId } = state;
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(macrosReducer, initialState);
+  const { searchQuery, data, openDelete, isOpen, itemId, page, totalPages, delId, systematic } = state;
 
-  const [findAllMvxCodes, { loading, error }] = useFindAllMvxLazyQuery({
+  const [fetchAllMacros, { loading, error }] = useFetchAllMacrosLazyQuery({
     onCompleted: (data) => {
-      const { findAllMvx } = data || {}
-      const { mvxs, pagination, response } = findAllMvx || {}
+      const { fetchAllMacros } = data || {}
+      const { macros, pagination, response } = fetchAllMacros || {}
       const { status } = response || {}
       if (status === 200) {
         const { totalPages } = pagination || {}
-        if (!!mvxs?.length) {
-          dispatch({ type: ActionType.SET_DATA, data: mvxs as FindAllMvxPayload['mvxs'] })
+        if (!!macros?.length) {
+          dispatch({ type: ActionType.SET_DATA, data: macros as MacrosPayload['macros'] })
           totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
         } else {
           dispatch({ type: ActionType.SET_DATA, data: [] });
@@ -45,9 +45,9 @@ const MvxTable: FC = (): JSX.Element => {
     }
   })
 
-  const [removeMvxCode, { loading: delLoading }] = useRemoveMvxCodeMutation({
+  const [removeMacro, { loading: delLoading }] = useRemoveMacroMutation({
     onCompleted: async (resData) => {
-      const { removeMvxCode: { response } } = resData;
+      const { removeMacro: { response } } = resData;
 
       if (response) {
         const { status, message } = response
@@ -58,7 +58,7 @@ const MvxTable: FC = (): JSX.Element => {
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
           if (!!data && (data.length > 1 || isLast(data?.length, page))) {
-            await fetchAllMvxCodes()
+            await findAllMacros()
           } else {
             dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, isLast?.length || 0) })
           }
@@ -93,8 +93,8 @@ const MvxTable: FC = (): JSX.Element => {
   };
 
   const handleDelete = async () => {
-    delId && await removeMvxCode({
-      variables: { removeMvxCodeInput: { id: delId } }
+    delId && await removeMacro({
+      variables: { removeMacroInput: { id: delId } }
     })
   }
 
@@ -105,23 +105,28 @@ const MvxTable: FC = (): JSX.Element => {
   });
 
 
-  const fetchAllMvxCodes = useCallback(async () => {
+  const findAllMacros = useCallback(async () => {
     try {
-      await findAllMvxCodes({ variables: { findAllMvxInput: { paginationOptions: { limit: PAGE_LIMIT, page }, searchQuery } } })
+      await fetchAllMacros({ variables: { macroInput: { paginationOptions: { limit: PAGE_LIMIT, page }, searchString: searchQuery } } })
     } catch (error) { }
-  }, [findAllMvxCodes, page, searchQuery])
+  }, [fetchAllMacros, page, searchQuery])
 
   useEffect(() => {
-    fetchAllMvxCodes()
-  }, [fetchAllMvxCodes])
+    findAllMacros()
+  }, [findAllMacros])
 
+
+  const fetchData = () => {
+    dispatch({ type: ActionType.SET_PAGE, page: 1 })
+    findAllMacros()
+  }
 
   return (
     <Fragment>
       <Grid container spacing={3}>
         <Grid item md={12} sm={12} xs={12}>
           <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
-            <Typography variant='h3'>{MVX_TEXT}</Typography>
+            <Typography variant='h3'>{MACRO}</Typography>
             <Button
               variant='contained' color='primary'
               startIcon={<Box width={20}><AddWhiteIcon /></Box>}
@@ -140,10 +145,9 @@ const MvxTable: FC = (): JSX.Element => {
               <Table aria-label="customized table" className={classes.table}>
                 <TableHead>
                   <TableRow>
-                    {renderTh(CODE)}
                     {renderTh(NAME)}
-                    {renderTh(STATUS)}
-                    {renderTh(NOTES)}
+                    {renderTh(DESCRIPTION)}
+                    {renderTh(SECTION)}
                     {renderTh(ACTIONS)}
                   </TableRow>
                 </TableHead>
@@ -155,24 +159,27 @@ const MvxTable: FC = (): JSX.Element => {
                     </TableCell>
                   </TableRow>
                 ) : <TableBody>
-                  {data?.map((mvx) => {
-                    const { id, manufacturerName, mvxCode, notes, mvxStatus, systematic } = mvx ?? {}
+                  {data?.map((macro) => {
+                    const { id, expansion, shortcut, section } = macro ?? {}
                     return (
-                      <TableRow>
+                      <TableRow id={id}>
                         <TableCell scope="row">
-                          <Typography>{mvxCode ?? DASHES}</Typography>
+                          <Typography>{shortcut ?? DASHES}</Typography>
                         </TableCell>
 
                         <TableCell scope="row">
-                          <Typography>{manufacturerName ?? DASHES}</Typography>
+                          <Box maxWidth={300}>
+                            <Typography>{expansion ?? DASHES}</Typography>
+                          </Box>
                         </TableCell>
 
-                        <TableCell scope="row">
-                          <Typography>{mvxStatus ?? DASHES}</Typography>
-                        </TableCell>
 
                         <TableCell scope="row">
-                          <Typography>{notes ?? DASHES}</Typography>
+                          <Typography>{section?.map((sectionValue) => {
+                            return (
+                              <li>{getTemplateLabel(sectionValue as TemplateType)}</li>
+                            )
+                          }) || DASHES}</Typography>
                         </TableCell>
 
                         <TableCell scope="row">
@@ -209,20 +216,21 @@ const MvxTable: FC = (): JSX.Element => {
       </Grid>
 
       <ConfirmationModal
-        title={NDC_TEXT}
+        title={CVX_TEXT}
         isOpen={openDelete}
         isLoading={delLoading}
-        description={DELETE_NDC_CODE_DESCRIPTION}
+        description={DELETE_MACRO_DESCRIPTION}
         handleDelete={handleDelete}
         setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
       />
-      {isOpen && <NdcCodeForm
+      {isOpen && <MacroForm
         id={itemId}
         open={isOpen}
         isEdit={!!itemId}
         handleClose={handleModalClose}
         dispatcher={dispatch}
-        fetch={() => fetchAllMvxCodes()}
+        fetch={() => fetchData()}
+        systematic={systematic}
       />}
 
       {totalPages > 1 && !loading && (
@@ -240,4 +248,4 @@ const MvxTable: FC = (): JSX.Element => {
   )
 }
 
-export default MvxTable
+export default CvxTable

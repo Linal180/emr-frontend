@@ -40,6 +40,7 @@ import {
   NDC_TEXT, ROUTE, SITE_TEXT, UNITS, ADMINISTRATION_DATE, CODE, UPFRONT_PAYMENT_TYPES, STOP_DATE, NO_SPACE_REGEX,
   PRIORITY, NDC_REGEX, MVX_CODE_REGEX, STATUS, ONLY_NUMBERS_REGEX, CVX_TEXT, MVX_TEXT, NDC_VALIDATION_MESSAGE, SIG, NUMBERS_WITHOUT_DDECIMAL_REGEX, NO_DECIMAL_REQUIRED,
   ONSET_AGE_TEXT,
+  SECTION,
 } from "../constants";
 import { Copay, PatientPaymentType, ProblemType } from "../generated/graphql";
 
@@ -994,7 +995,7 @@ export const createLabOrdersSchema = (isSpecimenForm?: boolean) => (
         // .test('', DIAGNOSES_VALIDATION_MESSAGE, (value) => !!value && value.length > 0),
       })
     ).test('', TESTS_FIELD_VALIDATION_MESSAGE, (value) => !!value && value.length > 0),
-    primaryProviderId: selectorSchema(PRIMARY_PROVIDER, !isSpecimenForm),
+    // primaryProviderId: selectorSchema(PRIMARY_PROVIDER, !isSpecimenForm),
   })
 )
 
@@ -1311,8 +1312,8 @@ export const CptCodeSchema = yup.object({
   code: requiredMatches(CODE, invalidMessage(CODE), NO_SPACE_REGEX),
   shortDescription: yup.string().required(requiredMessage(DESCRIPTION)),
   priority: positiveNumber(PRIORITY, false).when({
-    is :  (val: string) => !!val,
-    then : yup.string().matches(NUMBERS_WITHOUT_DDECIMAL_REGEX, NO_DECIMAL_REQUIRED)
+    is: (val: string) => !!val,
+    then: yup.string().matches(NUMBERS_WITHOUT_DDECIMAL_REGEX, NO_DECIMAL_REQUIRED)
   }).test('len', invalidMessage(PRIORITY), (val) => val ? val.length <= 6 : true)
 })
 
@@ -1332,6 +1333,14 @@ export const CvxCodeSchema = yup.object({
   name: yup.string().required(requiredMessage(NAME)),
   shortDescription: yup.string().required(requiredMessage(DESCRIPTION)),
   status: selectorSchema(STATUS),
+})
+
+export const macroSchema = yup.object({
+  expansion: yup.string().required(requiredMessage(DESCRIPTION)),
+  shortcut: requiredMatches(DESCRIPTION, invalidMessage(DESCRIPTION), NO_SPACE_REGEX),
+  section: yup.array().of(
+    multiOptionSchema(SECTION, true)
+  ).test('', requiredMessage(SECTION), (value: any) => !!value && value.length > 0)
 })
 
 export const VaccineProductSchema = yup.object({

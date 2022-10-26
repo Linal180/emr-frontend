@@ -82,6 +82,7 @@ query PatientIllnessHistory(
     patientIllnessHistory {
       id
       patientId
+      notes
       templates {
         id
         name
@@ -136,6 +137,7 @@ query LatestPatientIllnessHistory(
     patientIllnessHistory {
       id
       patientId
+      notes
       templates {
         id
         name
@@ -202,6 +204,7 @@ query ReviewOfSystem($reviewOfSystemInput: ReviewOfSystemInput!) {
       id
       patientId
       templateIds
+      notes
       templates {
         id
         name
@@ -319,6 +322,7 @@ query PhysicalExam($physicalExamInput: PhysicalExamInput!) {
       id
       patientId
       templateIds
+      notes
       templates {
         id
         name
@@ -406,6 +410,45 @@ query LatestPhysicalExam($physicalExamInput: PhysicalExamInput!) {
           questionType
         }
       }
+    }
+  }
+}
+
+mutation UpdatePENotes($updateNotes: UpdateNotes!) {
+  updatePENotes(updateNotes: $updateNotes) {
+    response {
+      status
+      message
+    }
+
+    physicalExam {
+      id
+    }
+  }
+}
+
+mutation UpdateHPINotes($updateNotes: UpdateNotes!) {
+  updateHPINotes(updateNotes: $updateNotes) {
+    response {
+      status
+      message
+    }
+
+    patientIllnessHistory {
+      id
+    }
+  }
+}
+
+mutation UpdateROSNotes($updateNotes: UpdateNotes!) {
+  updateROSNotes(updateNotes: $updateNotes) {
+    response {
+      status
+      message
+    }
+
+    reviewOfSystem {
+      id
     }
   }
 }

@@ -1,18 +1,18 @@
 // packages block
+import clsx from 'clsx';
 import { FC, useState } from 'react';
+import { Check } from '@material-ui/icons';
 import { Box, Card, Divider, Grid, Step, StepIconProps, StepLabel, Stepper, Typography, } from '@material-ui/core';
 // component block
 import LabOrdersComponent from '../orderListing';
+import EditLabOrdersComponent from '../editOrder';
+import ResultsLabOrdersComponent from '../results';
 import PageHeader from '../../../common/PageHeader';
 import LabOrdersCreateForm from '../addOrder/LabOrdersCreateForm';
 import LabOrdersProviderForm from '../addOrder/LabOrdersProviderForm';
 // constants block
-import clsx from 'clsx';
-import { Check } from '@material-ui/icons';
 import { LAB_ORDER, LAB_ORDER_STEPS } from '../../../../constants';
 import { CheckInConnector, useCheckInStepIconStyles } from '../../../../styles/checkInStyles';
-import EditLabOrdersComponent from '../editOrder';
-import ResultsLabOrdersComponent from '../results';
 
 const CheckInStepIcon = (props: StepIconProps) => {
   const classes = useCheckInStepIconStyles();
