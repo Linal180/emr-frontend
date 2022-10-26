@@ -108,7 +108,8 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
               const patientData = data as unknown as MediaPatientDataType;
 
               if (patientData) {
-                const { patient: { attachments: patientAttachment } } = patientData || {};
+                const { patient } = patientData || {};
+                const { attachments: patientAttachment } = patient || {}
                 patientAttachment && setAttachments(patientAttachment)
                 setLoading(false);
                 handleModalClose();
@@ -121,7 +122,8 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
               const doctorData = data as unknown as MediaDoctorDataType
 
               if (doctorData) {
-                const { doctor: { attachments: doctorAttachments } } = doctorData || {};
+                const { doctor } = doctorData || {};
+                const { attachments: doctorAttachments } = doctor || {}
                 doctorAttachments && setAttachments(doctorAttachments)
                 setLoading(false);
                 handleModalClose();
@@ -134,7 +136,8 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
               const staffData = data as unknown as MediaStaffDataType
 
               if (staffData) {
-                const { staff: { attachments: staffAttachments } } = staffData || {};
+                const { staff } = staffData || {};
+                const { attachments: staffAttachments } = staff || {}
                 staffAttachments && setAttachments(staffAttachments)
                 setLoading(false);
                 handleModalClose();
@@ -147,8 +150,9 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
               const userData = data as unknown as MediaUserDataType
 
               if (userData) {
-                const { user: { attachments: staffAttachments } } = userData || {};
-                staffAttachments && setAttachments(staffAttachments)
+                const { user } = userData || {};
+                const { attachments: userAttachments } = user || {}
+                userAttachments && setAttachments(userAttachments)
                 setLoading(false);
                 handleModalClose();
                 reload()
@@ -160,7 +164,8 @@ const DropzoneImage = forwardRef<FormForwardRef, DropzoneImageType>(({
               const practiceData = data as unknown as MediaPracticeDataType
 
               if (practiceData) {
-                const { practice: { attachments: practiceAttachments } } = practiceData || {};
+                const { practice } = practiceData || {};
+                const { attachments: practiceAttachments } = practice || {}
                 practiceAttachments && setAttachments(practiceAttachments)
                 setLoading(false);
                 handleModalClose();
