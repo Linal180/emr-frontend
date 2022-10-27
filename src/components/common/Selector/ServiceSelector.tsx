@@ -138,8 +138,9 @@ const ServicesSelector: FC<ServiceSelectorInterface> = ({
                       onSelect && onSelect(newValue)
                       return field.onChange(newValue)
                     }}
-                    onInputChange={(query: string) => {
-                      (query.length > 2 || query.length === 0) && fetchAllServices(query)
+                    onInputChange={(query: string, { action }) => {
+                      ((query.length > 2 || query.length === 0) && action === 'input-change') && fetchAllServices(query)
+                      action === 'input-blur' && fetchAllServices(query)
                     }}
                     className={message ? `selectorClassTwoError diagnosesSelectorClass` : `selectorClassTwo diagnosesSelectorClass`}
                   />

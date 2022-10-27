@@ -92,6 +92,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     whiteSpace: 'wrap',
     textOverflow: 'ellipsis',
+    wordWrap: "break-word",
   },
   fieldRow1: {
     display: 'flex',
@@ -200,8 +201,8 @@ const ResultDoc = ({ labTest, attachmentUrl }: { labTest: LabTestsPayload['labTe
   const facilityPrimaryContact = facilityContacts?.find((facilityContact) => facilityContact?.primaryContact)
   const { phone: facilityPhone, address, city, state, zipCode } = facilityPrimaryContact || {}
   const { firstName: dFirstName, lastName: dLastName } = primaryProvider || {}
-  const doctorFullName = `${dFirstName} ${dLastName}`
-  const patientFullName = `${firstName} ${lastName}`
+  const doctorFullName = `${dFirstName || ''} ${dLastName || ''}`
+  const patientFullName = `${firstName || ""} ${lastName || ''}`
   const diagnoses = labTest?.find((test) => test?.diagnoses?.[0]?.code)?.diagnoses
 
   return (
@@ -287,41 +288,41 @@ const ResultDoc = ({ labTest, attachmentUrl }: { labTest: LabTestsPayload['labTe
               </View>
 
               <View style={[styles.fieldRow2, styles.w100]}>
-                <Text style={[styles.fieldTitle,styles.minWidth80]}>{FACILITY}:</Text>
+                <Text style={[styles.fieldTitle, styles.minWidth80]}>{FACILITY}:</Text>
                 <Text style={styles.fieldText}>{facilityName}</Text>
               </View>
 
               <View style={styles.fieldRow2}>
-                <Text style={[styles.fieldTitle,styles.minWidth100]}>{CLIA_ID_NUMBER}:</Text>
+                <Text style={[styles.fieldTitle, styles.minWidth100]}>{CLIA_ID_NUMBER}:</Text>
                 <Text style={styles.fieldText}>{cliaIdNumber || N_A}</Text>
               </View>
 
               <View style={styles.fieldRow2}>
                 <View style={styles.fieldRow3}>
-                  <Text style={[styles.fieldTitle,styles.minWidth80]}>{PRIMARY_CARE}:</Text>
+                  <Text style={[styles.fieldTitle, styles.minWidth80]}>{PRIMARY_CARE}:</Text>
                   <Text style={styles.fieldText}>{PRIMARY}</Text>
                 </View>
 
                 <View style={styles.fieldRow3}>
-                  <Text style={[styles.fieldTitle,styles.minWidth80]}>{URGENT_CARE}:</Text>
+                  <Text style={[styles.fieldTitle, styles.minWidth80]}>{URGENT_CARE}:</Text>
                   <Text style={styles.fieldText}>{PRIMARY}</Text>
                 </View>
               </View>
 
               <View style={styles.fieldRow2}>
                 <View style={styles.fieldRow3}>
-                  <Text style={[styles.fieldTitle,styles.minWidth80]}>{ATTENDING}:</Text>
+                  <Text style={[styles.fieldTitle, styles.minWidth80]}>{ATTENDING}:</Text>
                   <Text style={styles.fieldText}>Dr. {doctorFullName}</Text>
                 </View>
 
                 <View style={styles.fieldRow3}>
-                  <Text style={[styles.fieldTitle,styles.minWidth80]}>{TEL}:</Text>
+                  <Text style={[styles.fieldTitle, styles.minWidth80]}>{TEL}:</Text>
                   <Text style={styles.fieldText}>{formatPhone(facilityPhone)}</Text>
                 </View>
               </View>
 
               <View style={[styles.fieldRow2, styles.w100]}>
-                <Text style={[styles.fieldTitle,styles.minWidth80]}>{ADDRESS}:</Text>
+                <Text style={[styles.fieldTitle, styles.minWidth80]}>{ADDRESS}:</Text>
                 <Text style={styles.fieldText}>{formatAddress(address, city, state, zipCode)} </Text>
               </View>
             </View>
@@ -435,7 +436,7 @@ const ResultDoc = ({ labTest, attachmentUrl }: { labTest: LabTestsPayload['labTe
             </View>
           </View>
 
-          <Image src={qrCodeUrl} style={[styles.w20, styles.mt15]}/>
+          <Image src={qrCodeUrl} style={[styles.w20, styles.mt15]} />
         </View>
       </Page>
     </Document>
