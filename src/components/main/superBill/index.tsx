@@ -3,17 +3,15 @@ import { useCallback, useEffect, useState } from 'react';
 // component block
 import Loader from '../../common/Loader';
 // constants, history, styling block
-import { Document, Link, Page, PDFViewer, StyleSheet, Text, View } from '@react-pdf/renderer';
+import { Document, Page, PDFViewer, StyleSheet, Text, View } from '@react-pdf/renderer';
 import { useParams } from 'react-router';
 import {
-  APPOINTMENT_DATE, BILLING_CODE, CLINIC, DATE, DATE_OF_BIRTH, DATE_OF_VISIT, DIAGNOSIS,
-  DIAGNOSIS_CODE, DIS, DOS, EMAIL, FEE, INSURANCE_BALANCE_DUE, INSURANCE_PAID, MODS, OFFICE_PHONE, PATIENT_ADDRESS, PATIENT_BALANCE_DUE, PATIENT_INFORMATION,
-  PATIENT_NAME, PATIENT_PAID, PATIENT_PHONE, PATIENT_RECEIPT, PATIENT_RECEIPT_AUTHORIZE_TEXT, PATIENT_SIGNATURE,
-  PLACE_OF_SERVICE_CODE, PROVIDER_INFORMATION, PROVIDER_SIGNATURE, QTY, TOTAL_CHARGES, TOTAL_DISCOUNTS, TOTAL_TEXT, TREATMENT
+  ADDRESS, BALANCE_DUE, CODE, COPAY_TEXT, DEDUCTIBLE, DOB_TEXT, DOS, INSURANCE_NAME, INSURANCE_TYPE, MEMBER_ID, NAME,
+  PATIENT_NAME, PHONE, PROCEDURE_CODES, SEX,
 } from '../../../constants';
 import { CodeType, SuperBillPayload, useGetSuperBillInfoLazyQuery } from '../../../generated/graphql';
 import { ParamsType } from '../../../interfacesTypes';
-import { formatAddress, formatPhone, formatToLeadingCode, getDateWithDayAndTime, getFormatDateString, getNumberFromChar } from '../../../utils';
+import { formatAddress, formatPhone, getFormatDateString, } from '../../../utils';
 
 // Create styles
 const styles = StyleSheet.create({
@@ -41,16 +39,25 @@ const styles = StyleSheet.create({
     fontSize: '16px',
     marginLeft: '5px',
   },
+  fieldTitleHeader: {
+    padding: '0px 5px',
+    textTransform: 'uppercase',
+    fontWeight: 'bold',
+    fontSize: '14px',
+  },
   fieldTitle: {
-    fontSize: '16px',
+    fontSize: '14px',
     fontWeight: 'bold',
     minHeight: '20px',
+    maxWidth: '90%',
+    wordWrap: 'break-word',
   },
   fieldText: {
     minHeight: '20px',
-    maxWidth: '90%',
+    maxWidth: '95%',
     overflow: 'hidden',
-    fontSize: '14px',
+    wordWrap: 'break-word',
+    // border: '1px solid red',
   },
   fieldTitle2: {
     fontSize: '18px',
@@ -62,10 +69,17 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     fontSize: '14px',
   },
+  fieldRow2: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+  },
   fieldRow3: {
     display: 'flex',
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'baseline',
+    // border: '1px solid red',
   },
   borderStyle: {
     borderStyle: 'solid',
@@ -81,6 +95,9 @@ const styles = StyleSheet.create({
   },
   borderRightWidth: {
     borderRightWidth: 1
+  },
+  w5: {
+    width: '5%',
   },
   w10: {
     width: '10%',
@@ -111,6 +128,9 @@ const styles = StyleSheet.create({
   },
   ml10: {
     marginLeft: '10px',
+  },
+  p10: {
+    padding: '10px',
   },
   textCenter: {
     textAlign: 'center',
@@ -173,454 +193,173 @@ const SuperBillComponent = (): JSX.Element => {
 
   return (
     <>
-      <PDFViewer style={{ width: "100%", height: `calc(100vh - 140px)`, }}>
+      <PDFViewer style={{ width: "100%", height: `calc(100vh - 140px)` }}>
         <Document>
           <Page style={styles.page} size="A3" wrap>
             <View style={styles.table}>
               {/* header-title */}
-              <View style={styles.tableRow}>
+              {/* <View style={styles.tableRow}>
                 <View style={[styles.w100]}>
                   <Text style={styles.title}>{PATIENT_RECEIPT}</Text>
                 </View>
               </View>
 
-              {/* spacing-row */}
               <View style={styles.tableRow}>
                 <View style={{ height: '20px' }}></View>
-              </View>
+              </View> */}
 
               {/* appointment-date */}
-              <View style={styles.tableRow}>
+              {/* <View style={styles.tableRow}>
                 <View style={[styles.w100]}>
                   <View style={styles.fieldRow3}>
-                    <Text style={styles.headerTitle}>{APPOINTMENT_DATE}:</Text>
+                    <Text style={styles.headerText}>{APPOINTMENT_DATE} :</Text>
                     <Text style={styles.headerText}>{getDateWithDayAndTime(scheduleStartDateTime || '')}</Text>
                   </View>
                 </View>
-              </View>
+              </View> */}
 
               {/* spacing-row */}
-              <View style={styles.tableRow}>
+              {/* <View style={styles.tableRow}>
                 <View style={{ height: '20px' }}></View>
-              </View>
+              </View> */}
 
               {/* 1st-row */}
-              <View style={styles.tableRow}>
-                <View style={[styles.w100]}>
-                  <View style={[styles.bgLightGrey, styles.borderStyle, styles.borderTopWidth, styles.borderBottomWidth]}>
-                    <Text style={styles.fieldTitle2}>{PROVIDER_INFORMATION}</Text>
-                  </View>
-                </View>
-              </View>
-
-              {/* spacing-row */}
-              <View style={styles.tableRow}>
-                <View style={{ height: '10px' }}>
-                </View>
-              </View>
-
-              {/* 1.1-row */}
-              <View style={styles.tableRow}>
-                <View style={[styles.w33]}>
-                  <Text style={[styles.fieldTitle]}>{CLINIC}</Text>
-                  <Text style={styles.fieldText}>{practiceName}</Text>
-                </View>
-
-                <View style={[styles.w33]}>
-                  <Text style={[styles.fieldTitle]}>{PLACE_OF_SERVICE_CODE}</Text>
-                  <Text style={styles.fieldText}>{formatToLeadingCode(serviceCode || '')}</Text>
-                </View>
-
-                <View style={[styles.w33]}>
-                  <View style={styles.fieldRow3}>
-                    <Text style={[styles.fieldTitle]}>{OFFICE_PHONE} :</Text>
-                    <Text style={[styles.fieldText, styles.ml10]}>{formatPhone(providerPhone || '')}</Text>
+              <View style={[styles.tableRow]}>
+                <View style={[styles.w30,]}>
+                  <View>
+                    <Text style={[styles.fieldTitle]}>{PATIENT_NAME}</Text>
+                    <Text style={[styles.fieldText]}>{patientFirstName} {patientLastName}</Text>
                   </View>
 
                   <View style={styles.fieldRow3}>
-                    <Text style={[styles.fieldTitle]}>{EMAIL} :</Text>
-                    <Text style={[styles.fieldText, styles.ml10]}><Link src={providerEmail ? `mailto:${providerEmail}` : ''} style={{ textDecoration: "none" }} >{providerEmail}</Link></Text>
-                  </View>
-                </View>
-              </View>
-
-              {/* spacing-row */}
-              <View style={styles.tableRow}>
-                <View style={{ height: '30px' }}>
-                </View>
-              </View>
-
-              {/* 2nd-row */}
-              <View style={styles.tableRow}>
-                <View style={[styles.w100]}>
-                  <View style={[styles.bgLightGrey, styles.borderStyle, styles.borderTopWidth, styles.borderBottomWidth]}>
-                    <Text style={styles.fieldTitle2}>{PATIENT_INFORMATION}</Text>
-                  </View>
-                </View>
-              </View>
-
-              {/* spacing-row */}
-              <View style={styles.tableRow}>
-                <View style={{ height: '10px' }}>
-                </View>
-              </View>
-
-              {/* 2.1-row */}
-              <View style={styles.tableRow}>
-                <View style={[styles.w33]}>
-                  <View style={styles.fieldRow3}>
-                    <Text style={[styles.fieldTitle]}>{PATIENT_NAME} :</Text>
-                    <Text style={[styles.fieldText, styles.ml10]}>{patientFirstName} {patientLastName}</Text>
-                  </View>
-
-                  <View style={styles.fieldRow3}>
-                    <Text style={[styles.fieldTitle]}>{DATE_OF_BIRTH} :</Text>
+                    <Text style={[styles.fieldTitle]}>{DOB_TEXT} :</Text>
                     <Text style={[styles.fieldText, styles.ml10]}>{getFormatDateString(dob, 'MMM DD, YYYY')}</Text>
                   </View>
-                </View>
 
-                <View style={[styles.w33]}>
-                  <Text style={[styles.fieldTitle]}>{PATIENT_ADDRESS} :</Text>
-                  <Text style={[styles.fieldText]}>{formatAddress(patientAddress, patientCity, patientState, patientZipCode)}</Text>
-                </View>
-
-                <View style={[styles.w33]}>
                   <View style={styles.fieldRow3}>
-                    <Text style={[styles.fieldTitle]}>{PATIENT_PHONE} :</Text>
+                    <Text style={[styles.fieldTitle]}>{SEX} :</Text>
+                    <Text style={[styles.fieldText, styles.ml10]}>{'Male'}</Text>
+                  </View>
+
+                  <View style={styles.fieldRow3}>
+                    <Text style={[styles.fieldTitle]}>{PHONE} :</Text>
                     <Text style={[styles.fieldText, styles.ml10]}>{formatPhone(patientPhone || '')}</Text>
                   </View>
+
+                  <View style={styles.fieldRow3}>
+                    <Text style={[styles.fieldTitle]}>{ADDRESS} :</Text>
+                    <Text style={[styles.fieldText, styles.ml10]}>{formatAddress(patientAddress, patientCity, patientState, patientZipCode)}</Text>
+                  </View>
+                </View>
+
+                <View style={[styles.w5,]}></View>
+
+                <View style={[styles.w30,]}>
+                  <View>
+                    <Text style={[styles.fieldTitle]}>{'Physician Name'}</Text>
+                    <Text style={[styles.fieldText]}>{patientFirstName} {patientLastName}</Text>
+                  </View>
+
+                  <View>
+                    <Text style={[styles.fieldTitle]}>{INSURANCE_NAME}</Text>
+                    <Text style={[styles.fieldText]}></Text>
+                  </View>
+
+                  <View style={styles.fieldRow3}>
+                    <Text style={[styles.fieldTitle]}>{INSURANCE_TYPE} :</Text>
+                    <Text style={[styles.fieldText, styles.ml10]}></Text>
+                  </View>
+
+                  <View style={styles.fieldRow3}>
+                    <Text style={[styles.fieldTitle]}>{MEMBER_ID} :</Text>
+                    <Text style={[styles.fieldText, styles.ml10]}></Text>
+                  </View>
+                </View>
+
+                <View style={[styles.w5,]}></View>
+
+                <View style={[styles.w30,]}>
+                 <View style={styles.fieldRow3}>
+                    <Text style={[styles.fieldTitle]}>{DOS} :</Text>
+                    <Text style={[styles.fieldText, styles.ml10]}>09/21/2022</Text>
+                  </View>
+
+                  <View style={styles.fieldRow3}>
+                    <Text style={[styles.fieldTitle]}>{BALANCE_DUE} :</Text>
+                    <Text style={[styles.fieldText, styles.ml10]}>$0.00</Text>
+                  </View>
+
+                  <View style={styles.fieldRow3}>
+                    <Text style={[styles.fieldTitle]}>{DEDUCTIBLE} :</Text>
+                    <Text style={[styles.fieldText, styles.ml10]}></Text>
+                  </View>
+
+                  <View style={styles.fieldRow3}>
+                    <Text style={[styles.fieldTitle]}>{COPAY_TEXT} :</Text>
+                    <Text style={[styles.fieldText, styles.ml10]}>$0.00</Text>
+                  </View>
                 </View>
               </View>
 
               {/* spacing-row */}
               <View style={styles.tableRow}>
-                <View style={{ height: '50px' }}>
+                <View style={{ height: '20px' }}>
                 </View>
               </View>
 
-              {/* Diagnosis */}
+              {/* Codes */}
               <View style={styles.tableRow}>
                 <View style={[styles.w100]}>
-                  <Text style={styles.headerTitle}>{DIAGNOSIS} :</Text>
+                  <Text style={styles.headerTitle}>{PROCEDURE_CODES} :</Text>
                 </View>
               </View>
 
               {/* spacing-row */}
               <View style={styles.tableRow}>
-                <View style={{ height: '10px' }}>
+                <View style={{ height: '20px' }}>
                 </View>
               </View>
 
-              {/* 3rd-row */}
+              {/* codes-row */}
               <View style={[styles.tableRow,]}>
-                <View style={[styles.w10, styles.borderStyle, styles.borderRightWidth, styles.borderLeftWidth]}>
+                <View style={[styles.w30, styles.borderStyle, styles.borderRightWidth, styles.borderLeftWidth, styles.borderBottomWidth]}>
                   <View style={[styles.bgLightGrey, styles.textCenter, styles.borderStyle, styles.borderTopWidth, styles.borderBottomWidth]}>
-                    <Text style={[styles.fieldTitle]}>{'#'}</Text>
+                    <Text style={[styles.fieldTitle]}>{NAME}</Text>
+                  </View>
+                  <View style={[styles.p10]}>
+                    <Text style={[styles.fieldText]}>text here text here text here</Text>
                   </View>
                 </View>
 
-                <View style={[styles.w30, styles.borderStyle, styles.borderRightWidth,]}>
+                <View style={[styles.w20, styles.borderStyle, styles.borderRightWidth, styles.borderBottomWidth]}>
                   <View style={[styles.bgLightGrey, styles.textCenter, styles.borderStyle, styles.borderTopWidth, styles.borderBottomWidth]}>
-                    <Text style={styles.fieldTitle}>{DATE_OF_VISIT}</Text>
+                    <Text style={styles.fieldTitle}>{CODE}</Text>
+                  </View>
+                  <View style={[styles.p10]}>
+                    <Text style={[styles.fieldText]}>code here</Text>
                   </View>
                 </View>
 
-                <View style={[styles.w60, styles.borderStyle, styles.borderRightWidth,]}>
+                <View style={[styles.w30, styles.borderStyle, styles.borderRightWidth, styles.borderBottomWidth]}>
                   <View style={[styles.bgLightGrey, styles.textCenter, styles.borderStyle, styles.borderTopWidth, styles.borderBottomWidth]}>
-                    <Text style={styles.fieldTitle}>{DIAGNOSIS_CODE}</Text>
+                    <Text style={[styles.fieldTitle]}>{NAME}</Text>
+                  </View>
+                  <View style={[styles.p10]}>
+                    <Text style={[styles.fieldText]}>text here text here text here</Text>
                   </View>
                 </View>
-              </View>
 
-              {/* 3.1-row */}
-              {
-                diagnosesCodes.length ? diagnosesCodes.map((diagnose, i) => {
-                  return (
-                    <View style={[styles.tableRow, styles.borderStyle, styles.borderBottomWidth]}>
-                      <View style={[styles.w10, styles.textCenter, styles.borderStyle, styles.borderRightWidth, styles.borderLeftWidth]}>
-                        <Text style={[styles.fieldText2]}>{i + 1}</Text>
-                      </View>
-
-                      <View style={[styles.w30, styles.textCenter, styles.borderStyle, styles.borderRightWidth,]}>
-                        <Text style={[styles.fieldText2]}>{getFormatDateString(claimDate, 'MM/DD/YYYY')}</Text>
-                      </View>
-
-                      <View style={[styles.w60, styles.textCenter, styles.borderStyle, styles.borderRightWidth,]}>
-                        <Text style={[styles.fieldText2]}>{diagnose?.code}: {diagnose?.description}</Text>
-                      </View>
-                    </View>
-                  )
-                }) : <View><Text style={[styles.fieldText2]}>No Diagnose Added</Text></View>
-              }
-
-              {/* spacing-row */}
-              <View style={styles.tableRow}>
-                <View style={{ height: '30px' }}>
-                </View>
-              </View>
-
-              {/* Treatment */}
-              <View style={styles.tableRow}>
-                <View style={[styles.w100]}>
-                  <Text style={styles.headerTitle}>{TREATMENT} :</Text>
-                </View>
-              </View>
-
-              {/* spacing-row */}
-              <View style={styles.tableRow}>
-                <View style={{ height: '10px' }}>
-                </View>
-              </View>
-
-              {/* 4th-row */}
-              <View style={[styles.tableRow,]}>
-                <View style={[styles.w10, styles.borderStyle, styles.borderRightWidth, styles.borderLeftWidth]}>
+                <View style={[styles.w20, styles.borderStyle, styles.borderRightWidth, styles.borderBottomWidth]}>
                   <View style={[styles.bgLightGrey, styles.textCenter, styles.borderStyle, styles.borderTopWidth, styles.borderBottomWidth]}>
-                    <Text style={[styles.fieldTitle]}>{DOS}</Text>
+                    <Text style={styles.fieldTitle}>{CODE}</Text>
                   </View>
-                </View>
-
-                <View style={[styles.w30, styles.borderStyle, styles.borderRightWidth,]}>
-                  <View style={[styles.bgLightGrey, styles.textCenter, styles.borderStyle, styles.borderTopWidth, styles.borderBottomWidth]}>
-                    <Text style={styles.fieldTitle}>{BILLING_CODE}</Text>
-                  </View>
-                </View>
-
-                <View style={[styles.w10, styles.borderStyle, styles.borderRightWidth,]}>
-                  <View style={[styles.bgLightGrey, styles.textCenter, styles.borderStyle, styles.borderTopWidth, styles.borderBottomWidth]}>
-                    <Text style={styles.fieldTitle}>{MODS}</Text>
-                  </View>
-                </View>
-
-                <View style={[styles.w10, styles.borderStyle, styles.borderRightWidth,]}>
-                  <View style={[styles.bgLightGrey, styles.textCenter, styles.borderStyle, styles.borderTopWidth, styles.borderBottomWidth]}>
-                    <Text style={styles.fieldTitle}>{'Dx Ptrs'}</Text>
-                  </View>
-                </View>
-
-                <View style={[styles.w10, styles.borderStyle, styles.borderRightWidth,]}>
-                  <View style={[styles.bgLightGrey, styles.textCenter, styles.borderStyle, styles.borderTopWidth, styles.borderBottomWidth]}>
-                    <Text style={styles.fieldTitle}>{QTY}</Text>
-                  </View>
-                </View>
-
-                <View style={[styles.w10, styles.borderStyle, styles.borderRightWidth,]}>
-                  <View style={[styles.bgLightGrey, styles.textCenter, styles.borderStyle, styles.borderTopWidth, styles.borderBottomWidth]}>
-                    <Text style={styles.fieldTitle}>{FEE}</Text>
-                  </View>
-                </View>
-
-                <View style={[styles.w10, styles.borderStyle, styles.borderRightWidth,]}>
-                  <View style={[styles.bgLightGrey, styles.textCenter, styles.borderStyle, styles.borderTopWidth, styles.borderBottomWidth]}>
-                    <Text style={styles.fieldTitle}>{DIS}</Text>
-                  </View>
-                </View>
-
-                <View style={[styles.w10, styles.borderStyle, styles.borderRightWidth,]}>
-                  <View style={[styles.bgLightGrey, styles.textCenter, styles.borderStyle, styles.borderTopWidth, styles.borderBottomWidth]}>
-                    <Text style={styles.fieldTitle}>{TOTAL_TEXT}</Text>
+                  <View style={[styles.p10]}>
+                    <Text style={[styles.fieldText, styles.textCenter]}>code here</Text>
                   </View>
                 </View>
               </View>
 
-              {/* 4.1-row */}
-              {treatmentCodes.length ?
-                treatmentCodes?.map((treatmentCode) => {
-                  const { m1, m2, m3, m4, code, description, diagPointer, unit, price } = treatmentCode || {}
-                  const diag1 = diagPointer ? String(getNumberFromChar(diagPointer, 0)) : ''
-                  const diag2 = diagPointer ? String(getNumberFromChar(diagPointer, 1)) : ''
-                  const diag3 = diagPointer ? String(getNumberFromChar(diagPointer, 3)) : ''
-                  const diag4 = diagPointer ? String(getNumberFromChar(diagPointer, 4)) : ''
-                  return (
-                    <View style={[styles.tableRow, styles.borderStyle, styles.borderBottomWidth]}>
-                      <View style={[styles.w10, styles.textCenter, styles.borderStyle, styles.borderRightWidth, styles.borderLeftWidth]}>
-                        <Text style={[styles.fieldText2]}>{getFormatDateString(claimDate, 'MM/DD/YYYY')}</Text>
-                      </View>
-
-                      <View style={[styles.w30, styles.textCenter, styles.borderStyle, styles.borderRightWidth,]}>
-                        <Text style={[styles.fieldText2]}>{code}: {description}</Text>
-                      </View>
-
-                      <View style={[styles.w10, styles.textCenter, styles.borderStyle, styles.borderRightWidth,]}>
-                        <Text style={[styles.fieldText2]}>{m1}:{m2}:{m3}:{m4}</Text>
-                      </View>
-
-                      <View style={[styles.w10, styles.textCenter, styles.borderStyle, styles.borderRightWidth,]}>
-                        <Text style={[styles.fieldText2]}>{diag1 || 0}:{diag2 || 0}:{diag3 || 0}:{diag4 || 0}</Text>
-                      </View>
-
-                      <View style={[styles.w10, styles.textCenter, styles.borderStyle, styles.borderRightWidth,]}>
-                        <Text style={[styles.fieldText2]}>{unit}</Text>
-                      </View>
-
-                      <View style={[styles.w10, styles.textCenter, styles.borderStyle, styles.borderRightWidth,]}>
-                        <Text style={[styles.fieldText2]}>${Number(price) / Number(unit)}</Text>
-                      </View>
-
-                      <View style={[styles.w10, styles.textCenter, styles.borderStyle, styles.borderRightWidth,]}>
-                        <Text style={[styles.fieldText2]}>{'$0.00'}</Text>
-                      </View>
-
-                      <View style={[styles.w10, styles.textCenter, styles.borderStyle, styles.borderRightWidth,]}>
-                        <Text style={[styles.fieldText2]}>${price}</Text>
-                      </View>
-                    </View>
-                  )
-                }) : <View><Text style={[styles.fieldText2]}>No Treatment Added</Text></View>
-              }
-
-              {/* spacing-row */}
-              <View style={styles.tableRow}>
-                <View style={{ height: '30px' }}>
-                </View>
-              </View>
-
-              {/* Bill-row */}
-              <View style={[styles.tableRow]}>
-                <View style={[styles.w40]}>
-                  <Text style={[styles.fieldTitle2]}>{TOTAL_CHARGES}</Text>
-                </View>
-
-                <View style={[styles.w20]}>
-                  <Text style={[styles.headerText, styles.textRight]}>{totalCharges ? `$${totalCharges}` : `$${0}`}</Text>
-                </View>
-              </View>
-
-              {/* spacing-row */}
-              <View style={styles.tableRow}>
-                <View style={{ height: '10px' }}>
-                </View>
-              </View>
-
-              <View style={[styles.tableRow]}>
-                <View style={[styles.w40]}>
-                  <Text style={[styles.fieldTitle2]}>{TOTAL_DISCOUNTS}</Text>
-                </View>
-
-                <View style={[styles.w20]}>
-                  <Text style={[styles.headerText, styles.textRight]}>{'$0.00'}</Text>
-                </View>
-              </View>
-
-              {/* spacing-row */}
-              <View style={styles.tableRow}>
-                <View style={{ height: '10px' }}>
-                </View>
-              </View>
-
-              <View style={[styles.tableRow]}>
-                <View style={[styles.w40]}>
-                  <Text style={[styles.fieldTitle2]}>{PATIENT_PAID}</Text>
-                </View>
-
-                <View style={[styles.w20]}>
-                  <Text style={[styles.headerText, styles.textRight]}>{'$0.00'}</Text>
-                </View>
-              </View>
-
-              {/* spacing-row */}
-              <View style={styles.tableRow}>
-                <View style={{ height: '10px' }}>
-                </View>
-              </View>
-
-              <View style={[styles.tableRow]}>
-                <View style={[styles.w40]}>
-                  <Text style={[styles.fieldTitle2]}>{INSURANCE_PAID}</Text>
-                </View>
-
-                <View style={[styles.w20]}>
-                  <Text style={[styles.headerText, styles.textRight]}>{'$0.00'}</Text>
-                </View>
-              </View>
-
-              {/* spacing-row */}
-              <View style={styles.tableRow}>
-                <View style={{ height: '10px' }}>
-                </View>
-              </View>
-
-              <View style={[styles.tableRow]}>
-                <View style={[styles.w40]}>
-                  <Text style={[styles.fieldTitle2]}>{PATIENT_BALANCE_DUE}</Text>
-                </View>
-
-                <View style={[styles.w20]}>
-                  <Text style={[styles.headerText, styles.textRight]}>{totalCharges ? `$${totalCharges}` : `$${0}`}</Text>
-                </View>
-              </View>
-
-              {/* spacing-row */}
-              <View style={styles.tableRow}>
-                <View style={{ height: '10px' }}>
-                </View>
-              </View>
-
-              <View style={[styles.tableRow]}>
-                <View style={[styles.w40]}>
-                  <Text style={[styles.fieldTitle2]}>{INSURANCE_BALANCE_DUE}</Text>
-                </View>
-
-                <View style={[styles.w20]}>
-                  <Text style={[styles.headerText, styles.textRight]}>{'$0.00'}</Text>
-                </View>
-              </View>
-
-              {/* spacing-row */}
-              <View style={styles.tableRow}>
-                <View style={{ height: '40px' }}>
-                </View>
-              </View>
-
-              <View style={[styles.tableRow]}>
-                <View style={[styles.w100]}>
-                  <Text style={[styles.fieldTitle]}>{PATIENT_RECEIPT_AUTHORIZE_TEXT}</Text>
-                </View>
-              </View>
-
-              {/* spacing-row */}
-              <View style={styles.tableRow}>
-                <View style={{ height: '30px' }}>
-                </View>
-              </View>
-
-              <View style={[styles.tableRow]}>
-                <View style={[styles.w50]}>
-                  <View style={styles.fieldRow3}>
-                    <Text style={[styles.fieldTitle]}>{DATE} :</Text>
-                    <Text style={[styles.fieldText, styles.ml10]}>{'___________________________'}</Text>
-                  </View>
-                </View>
-
-                <View style={[styles.w50]}>
-                  <View style={styles.fieldRow3}>
-                    <Text style={[styles.fieldTitle]}>{PATIENT_SIGNATURE}</Text>
-                    <Text style={[styles.fieldText, styles.ml10]}>{'___________________________'}</Text>
-                  </View>
-                </View>
-              </View>
-
-              {/* spacing-row */}
-              <View style={styles.tableRow}>
-                <View style={{ height: '10px' }}>
-                </View>
-              </View>
-
-              <View style={[styles.tableRow]}>
-                <View style={[styles.w50]}>
-                  <View style={styles.fieldRow3}>
-                    <Text style={[styles.fieldTitle]}>{DATE} :</Text>
-                    <Text style={[styles.fieldText, styles.ml10]}>{'___________________________'}</Text>
-                  </View>
-                </View>
-
-                <View style={[styles.w50]}>
-                  <View style={styles.fieldRow3}>
-                    <Text style={[styles.fieldTitle]}>{PROVIDER_SIGNATURE}</Text>
-                    <Text style={[styles.fieldText, styles.ml10]}>{'___________________________'}</Text>
-                  </View>
-                </View>
-              </View>
+              <View><Text style={[styles.fieldText2]}>No Code Added</Text></View>
             </View>
           </Page>
         </Document>
