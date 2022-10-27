@@ -63,7 +63,7 @@ const ChartingTemplateSelector: FC<ChartingTemplateSelectorProps> = ({
   useEffect(() => {
     if (isEdit) {
       if (defaultValues) {
-        setOptions(defaultValues)
+        // setOptions(defaultValues)
         setValues(defaultValues)
       }
     }

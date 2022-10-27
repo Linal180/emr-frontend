@@ -1,5 +1,5 @@
 import { Box } from "@material-ui/core";
-import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
+import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router";
 import { createEditor, Editor, Element as SlateElement, Point, Range, Transforms } from "slate";
 import { withHistory } from "slate-history";
@@ -11,6 +11,7 @@ import { GREY } from "../../../theme";
 import { getMacroTextInitialValue } from "../../../utils";
 
 const MacroView: FC<MacroViewTypes> = ({ itemId, setItemId, notes, type }) => {
+  const observer = useRef<any>();
   const { appointmentId, id: patientId } = useParams<ParamsType>()
   const [value, setValue] = useState([{
     type: 'paragraph',
@@ -18,34 +19,38 @@ const MacroView: FC<MacroViewTypes> = ({ itemId, setItemId, notes, type }) => {
   }])
   const [searchString, setSearchString] = useState('')
   const [shouldShowList, setShouldShowList] = useState(false)
+  const [pages, setPages] = useState(0)
+  const [page, setPage] = useState(1)
   const [macros, setMacros] = useState<MacrosPayload['macros']>()
 
-  const [fetchAllMacros] = useFetchAllMacrosLazyQuery({
+  const [fetchAllMacros, { loading: fetchAllMacrosLoading }] = useFetchAllMacrosLazyQuery({
     onError() {
-      setMacros([])
+      // setMacros([])
     },
 
     onCompleted: (data) => {
       const { fetchAllMacros } = data || {}
-      const { macros, response } = fetchAllMacros || {}
+      const { macros: userMacros, response, pagination } = fetchAllMacros || {}
       const { status } = response || {}
       if (status === 200) {
-        setMacros(macros)
+        const { totalPages } = pagination || {}
+        totalPages && setPages(totalPages)
+        setMacros([...(macros || []), ...userMacros])
       }
     }
   })
 
-  const findAllMacros = useCallback(async () => {
+  const findAllMacros = useCallback(async (page?: number, searchQuery?: string) => {
     await fetchAllMacros({
       variables: {
         macroInput: {
-          paginationOptions: { limit: 40, page: 1 },
+          paginationOptions: { limit: 5, page: page || 1 },
           section: type,
-          searchString
+          searchString: searchQuery || ''
         }
       }
     })
-  }, [fetchAllMacros, searchString, type])
+  }, [fetchAllMacros, type])
 
   useEffect(() => {
     findAllMacros()
@@ -162,6 +167,26 @@ const MacroView: FC<MacroViewTypes> = ({ itemId, setItemId, notes, type }) => {
     setShouldShowList(false)
   }
 
+  const lastElementRef = useCallback((node) => {
+
+    if (fetchAllMacrosLoading) return;
+    if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && page <= pages) {
+        setPage(page + 1)
+        if (searchString.length > 2 || searchString.length === 0) {
+          findAllMacros(page + 1, searchString)
+        }
+        else {
+          findAllMacros(page + 1)
+        }
+      }
+    });
+    if (node) observer.current.observe(node);
+  },
+    [fetchAllMacrosLoading, findAllMacros, page, pages, searchString]
+  );
+
   if (value) {
     return (
       <Box pb={1}>
@@ -184,10 +209,20 @@ const MacroView: FC<MacroViewTypes> = ({ itemId, setItemId, notes, type }) => {
             />
           </Box>
 
-          <Box mx={2} maxWidth={300} maxHeight={300} position="absolute" className="z-index overflow-auto">
+          <Box mx={2} maxWidth={300} maxHeight={150} position="absolute" className="z-index overflow-auto">
             {shouldShowList &&
               <ul className="macro-ul word-wrap">
-                {macros?.map((macro) => {
+                {macros?.map((macro, i) => {
+                  if (i === macros?.length - 1) {
+                    return (
+                      <div
+                        ref={lastElementRef}
+                        onClick={() => handleMacroClick(editor, macro)}
+                      >
+                        {macro?.shortcut}
+                      </div>
+                    )
+                  }
                   return (
                     <li className="pointer-cursor" onClick={() => handleMacroClick(editor, macro)}>{macro?.shortcut}</li>
                   )
