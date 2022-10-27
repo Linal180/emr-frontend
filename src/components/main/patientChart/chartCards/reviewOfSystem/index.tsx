@@ -1,17 +1,16 @@
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, colors, Typography } from "@material-ui/core";
-import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Card, colors, Typography } from "@material-ui/core";
 import { ExpandMore } from "@material-ui/icons";
+import { FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 //components
 import Alert from "../../../../common/Alert";
-import TableLoader from "../../../../common/TableLoader";
 import MacroView from "../../../../common/Macro/MacroView";
-import QuestionCard from "./QuestionCard";
 import ChartingTemplateSelector from "../../../../common/Selector/ChartingTemplateSelector";
-import CardComponent from "../../../../common/CardComponent";
+import TableLoader from "../../../../common/TableLoader";
+import QuestionCard from "./QuestionCard";
 //constants
-import { NEXT, QuestionType, REVIEW_OF_SYSTEM_TEXT, ROS_TEMPLATES, TemplateType } from "../../../../../constants";
+import { ALL_NORMAL, CLEAR_TEXT, NEXT, NORMAL, QuestionType, REVIEW_OF_SYSTEM_TEXT, ROS_TEMPLATES, TemplateType } from "../../../../../constants";
 import { QuestionTemplate, useCreateReviewOfSystemHistoryMutation, useGetPatientChartingTemplateLazyQuery, useReviewOfSystemLazyQuery } from '../../../../../generated/graphql';
 import { multiOptionType, ParamsType, PatientHistoryProps } from "../../../../../interfacesTypes";
 import { Action, ActionType, initialState, patientHistoryReducer, State } from "../../../../../reducers/patientHistoryReducer";
@@ -25,12 +24,14 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
 
   const [expanded, setExpanded] = useState<string | false>('panel1');
 
-  const handleChange = (panel: string) => (_: ChangeEvent<{}>, isExpanded: boolean) =>
-    setExpanded(isExpanded ? panel : false);
+  const handleChange = (panel: string) => {
+    setExpanded(expanded === panel ? '' : panel)
+  };
 
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientHistoryReducer, initialState);
   const { itemId, templates, notes } = state;
-  const { handleSubmit, setValue } = methods;
+  const { handleSubmit, setValue, watch } = methods;
+  const values = watch()
 
   const [createReviewOfSystem] = useCreateReviewOfSystemHistoryMutation({
     onCompleted: (data) => {
@@ -172,6 +173,46 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
 
   const loading = findPatientChartingTemplateLoading || getLoading;
 
+  const handleClear = (answerIds?: string[]) => {
+    if (answerIds) {
+      answerIds.forEach((answerId) => {
+        const value = values[answerId]
+        if (value) {
+          setValue(answerId, {
+            ...value,
+            select: false
+          })
+        }
+      })
+      handleSubmit(onSubmit)()
+      return
+    }
+    const objectValues = Object.keys(values).filter((value) => value !== 'hpiTemplates')
+
+    objectValues.forEach((value) => {
+      setValue(value, {
+        ...values[value],
+        select: false
+      })
+    })
+
+    handleSubmit(onSubmit)()
+  }
+
+  const handleNormal = (answerIds?: string[]) => {
+    if (answerIds) {
+      answerIds.forEach((answerId) => {
+        const value = values[answerId]
+        setValue(answerId, {
+          ...(value || {}),
+          select: true
+        })
+      })
+      handleSubmit(onSubmit)()
+      return
+    }
+  }
+
   return (
     <>
       <Box p={2} display='flex' justifyContent='space-between' alignItems='center' flexWrap="wrap" borderBottom={`1px solid ${colors.grey[300]}`}>
@@ -210,23 +251,96 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
             />
             {templates?.map((template, i) => {
               const { sections, name } = template || {}
+              const clearAnswerIds = sections?.reduce<string[]>((acc, section) => {
+                const { questions } = section || {}
+                const answers = questions?.reduce<string[]>((acc, question) => {
+                  const answerValues = question?.answers?.map((answer) => answer.id || '') || []
+                  acc.push(...answerValues)
+                  return acc
+                }, []) || []
+                acc.push(...answers)
+                return acc
+              }, [])
+
+              const normalAnswerIds = sections?.reduce<string[]>((acc, section) => {
+                const { questions } = section || {}
+                const answers = questions?.reduce<string[]>((acc, question) => {
+                  const answerValues = question?.answers?.map((answer) => answer.answerType === 'normal' ? answer.id : '')?.filter(value => !!value) || []
+                  acc.push(...answerValues)
+                  return acc
+                }, []) || []
+                acc.push(...answers)
+                return acc
+              }, [])
               return (
                 <Box px={1}>
-                  <Accordion expanded={expanded === `panel${i + 1}`} onChange={handleChange(`panel${i + 1}`)} className={chartingClasses.accordion}>
+                  <Accordion expanded={expanded === `panel${i + 1}`} className={chartingClasses.accordion}>
                     <AccordionSummary
                       expandIcon={<ExpandMore />}
                       aria-controls="panel1a-content"
                       id="panel1a-header"
+                      IconButtonProps={{
+                        onClick: () => handleChange(`panel${i + 1}`)
+                      }}
                     >
-                      <Typography variant="h4" color="textPrimary">{name}</Typography>
+                      <Box width="100%" display="flex" justifyContent="space-between" alignItems="center">
+                        <Typography variant="h4" color="textPrimary">{name}</Typography>
+                        <Box display="flex" alignItems="center">
+                          <Box mx={1}>
+                            <Button color="primary" onClick={() => handleNormal(normalAnswerIds)}>
+                              {ALL_NORMAL}
+                            </Button>
+                          </Box>
+
+                          <Box mx={1}>
+                            <Button className="danger" onClick={() => handleClear(clearAnswerIds)}>
+                              {CLEAR_TEXT}
+                            </Button>
+                          </Box>
+                        </Box>
+                      </Box>
                     </AccordionSummary>
 
                     <AccordionDetails>
                       <Box maxHeight="calc(100vh - 180px)" className="overflowY-auto">
                         {sections?.map((section) => {
                           const { id, name, questions } = section || {}
+                          const answerIds = questions?.reduce<string[]>((acc, question) => {
+                            const answerValues = question?.answers?.map((answer) => answer.id || '') || []
+                            acc.push(...answerValues)
+                            return acc
+                          }, [])
+
+                          const normalAnswerIds = questions?.reduce<string[]>((acc, question) => {
+                            const answerValues = question?.answers?.map((answer) => answer.answerType === 'normal' ? answer.id : '')?.filter(value => !!value) || []
+                            acc.push(...answerValues)
+                            return acc
+                          }, [])
                           return (
-                            <CardComponent cardTitle={name || ''} key={id}>
+                            <Card>
+                              <Box
+                                width="100%" pr={3} mb={3}
+                                display="flex"
+                                justifyContent="space-between"
+                                alignItems="center"
+                                borderBottom={`1px solid ${colors.grey[300]}`}
+                              >
+                                <Typography variant="h4" color="textPrimary">{name}</Typography>
+                                <Box display="flex" alignItems="center">
+                                  <Box mx={1}>
+                                    <Button color="primary" onClick={() => handleNormal(normalAnswerIds)}>
+                                      {NORMAL}
+                                    </Button>
+                                  </Box>
+
+                                  <Box mx={1}>
+                                    <Button className="danger" onClick={() => handleClear(answerIds)}>
+                                      {CLEAR_TEXT}
+                                    </Button>
+                                  </Box>
+                                </Box>
+                              </Box>
+                              {/* // <CardComponent cardTitle={name || ''} key={id}> */}
                               {questions?.map((question, index) => {
                                 return (
                                   <>
@@ -240,7 +354,8 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
                                   </>
                                 )
                               })}
-                            </CardComponent>
+                              {/* // </CardComponent> */}
+                            </Card>
                           )
                         })}
                       </Box>
