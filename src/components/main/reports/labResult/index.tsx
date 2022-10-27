@@ -1,12 +1,11 @@
 //packages block
-import { PDFViewer } from "@react-pdf/renderer";
+import { BlobProvider, PDFViewer } from "@react-pdf/renderer";
 import { useCallback, useEffect, useState } from "react";
+import { Document, Page } from 'react-pdf/dist/umd/entry.webpack';
 import { useParams } from "react-router";
-import { Box, Typography } from "@material-ui/core";
 //components
-import ResultDoc from "./ResultDoc";
 import Device from "./Device";
-import ResultDownloadLink from "./ResultDownloadLink";
+import ResultDoc from "./ResultDoc";
 //constants, types, utils
 import { LabTestsPayload, useFindLabResultInfoLazyQuery } from "../../../../generated/graphql";
 import { ParamsType } from "../../../../interfacesTypes";
@@ -59,12 +58,17 @@ function LabResultDetail() {
       {({ isMobile }) => {
         if (isMobile) {
           return (
-            <Box textAlign='center' pt={5} width='100%'>
-              <Typography color="error" variant="h5">Unable to view Pdf, Press the button to download it.</Typography>
-              <Box mt={2}>
-                <ResultDownloadLink orderNumber={orderNum || ''} />
-              </Box>
-            </Box>
+            <BlobProvider document={<ResultDoc labTest={labTest} attachmentUrl={url} />}>
+              {({ blob, url, loading }) => {
+                return loading ? <></> : (
+                  <Document file={url}
+                    renderMode="canvas">
+                    <Page pageNumber={1}
+                      width={window.innerWidth} />
+                  </Document>
+                );
+              }}
+            </BlobProvider>
           );
         }
         return (

@@ -14,7 +14,7 @@ const ResultsLabOrdersComponent: FC = (): JSX.Element => {
   return (
     <>
       <Box display="flex">
-        <BackButton to={appointmentId ? `/appointments/${appointmentId}/${patientId}/check-in` : `/patients/${patientId}/details/1`} />
+        <BackButton to={appointmentId ? `/appointments/${appointmentId}/${patientId}/check-in` : `/patients/${patientId}/details/10`} />
 
         <Box ml={2}>
           <PageHeader
