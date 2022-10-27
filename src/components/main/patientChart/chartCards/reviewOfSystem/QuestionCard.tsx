@@ -68,7 +68,7 @@ const QuestionCard: FC<{ question: SectionQuestions, handleSubmit?: Function, sh
 
   return (
     <Box>
-      <Box pb={2} mb={2} borderBottom={`1px solid ${colors.grey[300]}`}>
+      <Box pb={2} mb={2} borderBottom={`1px solid ${colors.grey[300]}`} display="flex" justifyContent="space-between" alignItems="center">
         <Typography variant='h6'>{title}</Typography>
       </Box>
 

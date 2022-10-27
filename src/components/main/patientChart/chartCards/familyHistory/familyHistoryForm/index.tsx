@@ -1,7 +1,7 @@
 import { useParams } from 'react-router';
 import { AddCircleOutline } from '@material-ui/icons';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { FC, Fragment, Reducer, useCallback, useEffect, useReducer } from "react";
+import { FC, Fragment, Reducer, useCallback, useEffect, useReducer, useRef } from "react";
 import { FormProvider, useForm, useFieldArray, SubmitHandler } from "react-hook-form";
 import {
   Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid,
@@ -35,6 +35,7 @@ import { useChartingStyles } from '../../../../../../styles/chartingStyles';
 const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({
   handleClose, isOpen, isEdit, id: familyHistoryId, fetchFamilyHistory: fetchFamilyHistories
 }): JSX.Element => {
+  const observer = useRef<any>();
   const { id } = useParams<ParamsType>()
   const methods = useForm<FamilyHistoryFormType>({
     defaultValues: {
@@ -47,7 +48,7 @@ const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({
   const chartingClasses = useChartingStyles()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(familyHistoryFormReducer, initialState);
 
-  const { problem: stateProblem, searchQuery, searchedData } = state || {}
+  const { problem: stateProblem, searchQuery, searchedData, page, totalPages } = state || {}
   const { watch, control, setValue, handleSubmit, reset } = methods;
   const { problem, familyRelative: fields } = watch();
   const { id: problemId, name } = problem || {}
@@ -66,11 +67,14 @@ const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({
         const { searchIcdCodes } = data;
 
         if (searchIcdCodes) {
-          const { icdCodes } = searchIcdCodes
+          const { icdCodes, pagination } = searchIcdCodes;
+
+          const { totalPages } = pagination || {}
+          dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: totalPages || 0 })
 
           icdCodes && dispatch({
             type: ActionType.SET_SEARCHED_DATA,
-            searchedData: icdCodes as IcdCodesPayload['icdCodes']
+            searchedData: [...(searchedData || []), ...(icdCodes || [])] as IcdCodesPayload['icdCodes']
           })
         }
       }
@@ -241,30 +245,49 @@ const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({
   }, [familyHistoryId, fetchFamilyHistory, isEdit])
 
 
-  const handleICDSearch = useCallback(async (query: string) => {
+  const handleICDSearch = useCallback(async (page?: number, searchQuery?: string) => {
     try {
-      const queryString = query
 
       await searchIcdCodes({
         variables: {
           searchIcdCodesInput: {
-            searchTerm: queryString,
-            paginationOptions: { page: 1, limit: INITIAL_PAGE_LIMIT }
+            searchTerm: searchQuery || '',
+            paginationOptions: { page: page || 1, limit: INITIAL_PAGE_LIMIT }
           }
         }
       })
     } catch (error) { }
   }, [searchIcdCodes])
 
-  const handleSearch = useCallback(async (query: string) => {
+  const handleSearch = async (query: string) => {
     dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
 
-    if (query.length > 2) {
-      handleICDSearch(query)
-    } else {
+    if (query.length > 2 || query.length === 0) {
       dispatch({ type: ActionType.SET_SEARCHED_DATA, searchedData: [] })
+      dispatch({ type: ActionType.SET_PAGE, page: 1 })
+      await handleICDSearch(1, query)
     }
-  }, [handleICDSearch])
+  }
+
+  const lastElementRef = useCallback((node) => {
+
+    if (searchIcdCodesLoading) return;
+    if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && page <= totalPages) {
+        dispatch({ type: ActionType.SET_PAGE, page: page + 1 })
+        if (searchQuery.length > 2 || searchQuery.length === 0) {
+          handleICDSearch(page + 1, searchQuery)
+        }
+        else {
+          handleICDSearch(page + 1)
+        }
+      }
+    });
+    if (node) observer.current.observe(node);
+  },
+    [searchIcdCodesLoading, page, totalPages, handleICDSearch, searchQuery]
+  );
 
   const renderSearchData = useCallback(() => {
     return (
@@ -281,8 +304,10 @@ const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({
               const { code, description } = item as IcdCodesWithSnowMedCode || {}
 
               return (
-                <Box key={`${code}`} my={0.2} className={chartingClasses.hoverClass}
+                <div key={`${code}`} className={chartingClasses.hoverClass}
                   onClick={() => onProblemSelect(item)}
+                  ref={lastElementRef}
+                  style={{ marginTop: 1, marginBottom: 1 }}
                 >
                   <Box display="flex" flexDirection="column" px={2}>
                     <Typography variant='body1'>{description}</Typography>
@@ -292,7 +317,7 @@ const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({
                     </Typography>
                   </Box>
 
-                </Box>
+                </div>
               )
             }) : <Box color={GREY_SEVEN} margin='auto' textAlign='center'>
               <NoDataIcon />
@@ -303,7 +328,11 @@ const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({
         }
       </Box>
     )
-  }, [chartingClasses.hoverClass, searchIcdCodesLoading, searchedData, onProblemSelect])
+  }, [searchIcdCodesLoading, searchedData, chartingClasses.hoverClass, lastElementRef, onProblemSelect])
+
+  useEffect(() => {
+    handleICDSearch()
+  }, [handleICDSearch])
 
   const loading = createLoading || getLoading || updateLoading
 
