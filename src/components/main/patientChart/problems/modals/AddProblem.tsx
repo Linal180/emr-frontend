@@ -137,10 +137,9 @@ const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
 
                 if (i === searchedData.length - 1) {
                   return (
-                    <div key={`${code} | ${description} | ${snoMedCode?.id}`} className={chartingClasses.hoverClass}
+                    <div key={`${code} | ${description} | ${snoMedCode?.id}`} className={`${chartingClasses.hoverClass} my-2`}
                       onClick={() => item && handleOpenForm(item as IcdCodesWithSnowMedCode)}
                       ref={lastElementRef}
-                      style={{ marginTop: 1, marginBottom: 1 }}
                     >
                       <Box display="flex" flexDirection="column" px={2}>
                         <Typography variant='body1'>{description}</Typography>

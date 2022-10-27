@@ -1012,3 +1012,8 @@ input[type=number] {
 .MuiTableRow-head {
   vertical-align: baseline !important;
 }
+
+.my-2{
+  margin-top: 1px;
+  margin-bottom: 1px;
+}

@@ -1,5 +1,5 @@
 // packages block
-import { FC, Reducer, useCallback, useReducer } from "react";
+import { FC, Reducer, useCallback, useEffect, useReducer, useRef } from "react";
 import {
   Box, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton, InputBase, Typography
 } from "@material-ui/core";
@@ -10,16 +10,17 @@ import { GREY_SEVEN } from "../../../../../theme";
 import { AddVaccineProps } from "../../../../../interfacesTypes";
 import { NoDataIcon, SearchIcon } from "../../../../../assets/svgs";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
+import { useSearchAllVaccineProductsLazyQuery, VaccineProduct } from "../../../../../generated/graphql";
 import { ADD_VACCINE_TEXT, INITIAL_PAGE_LIMIT, NO_RECORDS, SEARCH_FOR_VACCINES } from "../../../../../constants";
 import { Action, ActionType, vaccinesReducer, initialState, State } from "../../../../../reducers/vaccinesReducer";
-import { FindAllVaccineProductsPayload, useSearchAllVaccineProductsLazyQuery, VaccineProduct } from "../../../../../generated/graphql";
 
 const AddVaccine: FC<AddVaccineProps> = ({ isOpen = false, handleModalClose, fetch }) => {
 
-  const chartingClasses = useChartingStyles()
+  const chartingClasses = useChartingStyles();
+  const observer = useRef<any>();
 
-  const [{ isSubModalOpen, selectedItem, searchQuery, searchedData }, dispatch] =
-    useReducer<Reducer<State, Action>>(vaccinesReducer, initialState)
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(vaccinesReducer, initialState)
+  const { isSubModalOpen, selectedItem, searchQuery, searchedData, page, totalPages } = state
 
   const closeSearchMenu = () => {
     dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: false })
@@ -39,24 +40,27 @@ const AddVaccine: FC<AddVaccineProps> = ({ isOpen = false, handleModalClose, fet
         const { findAllVaccineProducts } = data;
 
         if (findAllVaccineProducts) {
-          const { vaccineProducts } = findAllVaccineProducts
+          const { vaccineProducts, pagination } = findAllVaccineProducts
+
+          const { totalPages } = pagination || {}
+          dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: totalPages || 0 })
 
           vaccineProducts && dispatch({
             type: ActionType.SET_SEARCHED_DATA,
-            searchedData: vaccineProducts as FindAllVaccineProductsPayload['vaccineProducts']
+            searchedData: [...(searchedData || []), ...(vaccineProducts ?? [])] as VaccineProduct[]
           })
         }
       }
     }
   });
 
-  const handleCvxSearch = useCallback(async (searchQuery: string) => {
+  const handleCvxSearch = useCallback(async (page?: number, searchQuery?: string) => {
     try {
       await searchVaccineProduct({
         variables: {
           findAllVaccineProductsInput: {
             searchQuery,
-            paginationOptions: { page: 1, limit: INITIAL_PAGE_LIMIT }
+            paginationOptions: { page: page || 1, limit: INITIAL_PAGE_LIMIT }
           }
         }
       })
@@ -72,7 +76,7 @@ const AddVaccine: FC<AddVaccineProps> = ({ isOpen = false, handleModalClose, fet
     })
 
     if (query.length > 2 || query.length === 0) {
-      handleCvxSearch(query)
+      handleCvxSearch(1, query)
     }
   }, [handleCvxSearch])
 
@@ -80,6 +84,23 @@ const AddVaccine: FC<AddVaccineProps> = ({ isOpen = false, handleModalClose, fet
     dispatch({ type: ActionType.SET_SELECTED_ITEM, selectedItem: item })
     dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: true })
   };
+
+  const lastElementRef = useCallback((node) => {
+    if (searchIcdCodesLoading) return;
+    if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && page <= totalPages) {
+        dispatch({ type: ActionType.SET_PAGE, page: page + 1 })
+        if (searchQuery.length > 2 || searchQuery.length === 0) {
+          handleCvxSearch(page + 1, searchQuery)
+        }
+        else {
+          handleCvxSearch(page + 1)
+        }
+      }
+    });
+    if (node) observer.current.observe(node);
+  }, [searchIcdCodesLoading, page, totalPages, handleCvxSearch, searchQuery]);
 
   const renderSearchData = useCallback(() => {
     return (
@@ -98,15 +119,16 @@ const AddVaccine: FC<AddVaccineProps> = ({ isOpen = false, handleModalClose, fet
               const { manufacturerName } = mvx || {}
 
               return (
-                <Box key={`${cvxCode} | ${name}`} my={0.2} className={chartingClasses.hoverClass}
+                <div key={`${cvxCode} | ${name}`} className={`${chartingClasses.hoverClass} my-2`}
                   onClick={() => item && handleOpenForm(item as VaccineProduct)}
+                  ref={lastElementRef}
                 >
                   <Box display="flex" flexDirection="column" px={2}>
                     <Typography variant='body1'>{cvxName ? `${name} | ${cvxName}` : name}</Typography>
                     <Typography variant='caption'>{manufacturerName ? `${shortDescription || ""} |  ${manufacturerName}` : shortDescription || ''}</Typography>
                   </Box>
 
-                </Box>
+                </div>
               )
             }) : <Box color={GREY_SEVEN} margin='auto' textAlign='center'>
               <NoDataIcon />
@@ -117,8 +139,11 @@ const AddVaccine: FC<AddVaccineProps> = ({ isOpen = false, handleModalClose, fet
         }
       </Box>
     )
-  }, [chartingClasses.hoverClass, searchIcdCodesLoading, searchedData])
+  }, [chartingClasses.hoverClass, lastElementRef, searchIcdCodesLoading, searchedData])
 
+  useEffect(() => {
+    handleCvxSearch()
+  }, [handleCvxSearch])
 
   return (
     <Dialog fullWidth maxWidth="sm" open={isOpen} onClose={handleModalClose}>
