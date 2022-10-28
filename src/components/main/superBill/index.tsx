@@ -183,7 +183,6 @@ const SuperBillComponent = (): JSX.Element => {
     return R;
   }, [cptCodes])
 
-  console.log("transformedCptCodes", transformedCptCodes)
 
   if (getSuperBillInfoLoading) {
     return <Loader loading loaderText='Fetching Super Bill Info...' />

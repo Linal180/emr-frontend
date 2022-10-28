@@ -210,7 +210,6 @@ const CoverageDetailsComponent = () => {
                 <TableBody>
                   {detailCoverageInfo && Object.keys(detailCoverageInfo).map((coverageKey, index) => {
                     const coverageInfo = detailCoverageInfo[coverageKey]
-                    console.log("coverageKey", coverageKey)
                     return (
                       <Fragment key={index}>
                         <TableRow className='border-bottom'>
