@@ -633,6 +633,7 @@ export type MacroViewTypes = {
   setItemId: Function;
   notes: string
   type: TemplateType
+  handleNotesUpdate?: Function
 }
 
 export type ExtendedStaffInputProps = Omit<
@@ -1225,6 +1226,8 @@ export type AssessmentPlanProblemsProps = {
   setAssessmentProblems: Function
   shouldDisableEdit?: boolean
   isSigned?: boolean
+  notes?: string
+  setNotes?: Function
 }
 
 export type AssessmentPlanMedicationProps = {
