@@ -94,6 +94,8 @@ import { NDC } from "../pages/main/ndc";
 import { MVXCodeComponent } from "../pages/main/mvx";
 import { CVXCodeComponent } from "../pages/main/cvx";
 import { VaccineProduct } from "../pages/main/vaccineProduct";
+import { Macros } from "../pages/main/macros";
+import { RoomComponent } from "../pages/main/room";
 // constants, contexts and utils
 import { AuthContext } from "../context";
 import { isFacilityAdmin, isOnlyDoctor, isPracticeAdmin, isSuperAdmin } from "../utils";
@@ -111,9 +113,9 @@ import {
   PUBLIC_FORM_BUILDER_FAIL_ROUTE, PUBLIC_FORM_BUILDER_ROUTE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, RESET_PASSWORD_ROUTE,
   ROLES_ROUTE, ROOT_ROUTE, SETTINGS_ROUTE, SET_PASSWORD_ROUTE, SIGNATURE_ROUTE, SLOT_CONFIRMATION, STAFF_ROUTE,
   LAB_RESULTS_INFO, SUPER_BILL_ROUTE, TWO_FA_AUTHENTICATION_ROUTE, CHART_ROUTE, SEND_SMS_ROUTE, ADD_TEST_SPECIMEN_ROUTE,
-  INSURANCE_ELIGIBILITY_ROUTE, ICD_10_ROUTE, CPT_CODE_ROUTE, NDC_ROUTE, MVX_ROUTE, CVX_ROUTE, VACCINE_PRODUCT_ROUTE, MACROS_ROUTE
+  INSURANCE_ELIGIBILITY_ROUTE, ICD_10_ROUTE, CPT_CODE_ROUTE, NDC_ROUTE, MVX_ROUTE, CVX_ROUTE, VACCINE_PRODUCT_ROUTE, MACROS_ROUTE, ROOM_ROUTE
 } from "../constants";
-import { Macros } from "../pages/main/macros";
+
 
 
 const Routes: FC = (): JSX.Element => {
@@ -226,6 +228,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={CVX_ROUTE} component={CVXCodeComponent} />
       <PrivateRoute exact path={MACROS_ROUTE} component={Macros} />
       <PrivateRoute exact path={VACCINE_PRODUCT_ROUTE} component={VaccineProduct} />
+      <PrivateRoute exact path={ROOM_ROUTE} component={RoomComponent} />
 
       <PublicRoute path={MAINTENANCE_ROUTE} component={Maintenance} allow exact />
 
