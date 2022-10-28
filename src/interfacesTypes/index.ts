@@ -27,7 +27,7 @@ import {
   ResponsePayloadResponse, ReviewOfSystemPayload, RolesPayload, Schedule, SectionsInputs, ServicesPayload,
   SingleScheduleInput, Staff, SurgicalHistory, TriageNotes, TriageNotesPayload, TwoFactorInput, User,
   UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput,
-  UsersFormsElements, VaccineProduct, VerifyCodeInput, SectionQuestions, CreateMacroInput
+  UsersFormsElements, VaccineProduct, VerifyCodeInput, SectionQuestions, CreateMacroInput, CreateRoomInput
 } from "../generated/graphql";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
 import { Action as BillingAction, State as BillingState } from "../reducers/billingReducer";
@@ -54,6 +54,7 @@ import { Action as MvxCodeAction } from "../reducers/mvxCodeReducer";
 import { Action as CvxCodeAction } from "../reducers/cvxCodeReducer";
 import { Action as MacroAction } from "../reducers/macrosReducer";
 import { Action as VaccineProductAction } from "../reducers/vaccineProductReducer";
+import { Action as RoomAction } from "../reducers/roomReducer";
 
 export type Order = 'ASC' | 'DESC';
 type Key = string | number | undefined;
@@ -633,6 +634,7 @@ export type MacroViewTypes = {
   setItemId: Function;
   notes: string
   type: TemplateType
+  handleNotesUpdate?: Function
 }
 
 export type ExtendedStaffInputProps = Omit<
@@ -1225,6 +1227,8 @@ export type AssessmentPlanProblemsProps = {
   setAssessmentProblems: Function
   shouldDisableEdit?: boolean
   isSigned?: boolean
+  notes?: string
+  setNotes?: Function
 }
 
 export type AssessmentPlanMedicationProps = {
@@ -2435,6 +2439,7 @@ export type ICD10FormType = Pick<CreateIcdCodeInput, 'code' | 'description'> & {
 export type CptCodeFormType = Pick<CreateCptCodeInput, 'code' | 'shortDescription'> & { priority: string };
 export type NdcCodeFormType = { code: string, description: string };
 export type MvxCodeFormType = Pick<CreateMvxCodeInput, 'manufacturerName' | 'mvxCode' | 'notes'> & { mvxStatus: SelectorOption }
+export type RoomFormType = Pick<CreateRoomInput, 'name' | 'number'> & { facility: SelectorOption }
 export type CvxCodeFormType = Pick<CreateCvxCodeInput, 'name' | 'cvxCode' | 'shortDescription' | 'notes'> & { cptCode: SelectorOption, status: SelectorOption }
 export type VaccineProductFormType = Pick<AddVaccineProductInput, 'name'> & {
   cvx: SelectorOption, mvx: SelectorOption, ndcCode: SelectorOption, status: SelectorOption
@@ -2480,6 +2485,16 @@ export type MvxCodeFormProps = {
   fetch?: Function;
   id?: string;
   dispatcher?: Dispatch<MvxCodeAction>
+  handleClose: (open: boolean) => void
+  systematic?: boolean
+}
+
+export type RoomFormProps = {
+  open: boolean;
+  isEdit: boolean;
+  fetch?: Function;
+  id?: string;
+  dispatcher?: Dispatch<RoomAction>
   handleClose: (open: boolean) => void
   systematic?: boolean
 }

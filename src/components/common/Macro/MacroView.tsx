@@ -10,7 +10,7 @@ import { MacroViewTypes, ParamsType } from "../../../interfacesTypes";
 import { GREY } from "../../../theme";
 import { getMacroTextInitialValue } from "../../../utils";
 
-const MacroView: FC<MacroViewTypes> = ({ itemId, setItemId, notes, type }) => {
+const MacroView: FC<MacroViewTypes> = ({ itemId, setItemId, notes, type, handleNotesUpdate }) => {
   const observer = useRef<any>();
   const { appointmentId, id: patientId } = useParams<ParamsType>()
   const [value, setValue] = useState([{
@@ -162,7 +162,9 @@ const MacroView: FC<MacroViewTypes> = ({ itemId, setItemId, notes, type }) => {
   const handleMacroClick = (editor: Editor, macro: MacroPayload['macro']) => {
     const macroValue = getMacroTextInitialValue(macro?.expansion || '')
     const transformedValues = value.filter((transformedValue) => !transformedValue.children[0].text.includes('.'))
-    handleNotesSave(JSON.stringify([...transformedValues, ...macroValue]))
+    handleNotesUpdate ?
+      handleNotesUpdate(JSON.stringify([...transformedValues, ...macroValue])) :
+      handleNotesSave(JSON.stringify([...transformedValues, ...macroValue]))
     editor.children = [...transformedValues, ...macroValue]
     setShouldShowList(false)
   }
@@ -194,7 +196,7 @@ const MacroView: FC<MacroViewTypes> = ({ itemId, setItemId, notes, type }) => {
           editor={editor}
           value={value}
           onChange={async (changeValue: any) => {
-            handleNotesSave(JSON.stringify(changeValue))
+            handleNotesUpdate ? handleNotesUpdate(JSON.stringify(changeValue)) : handleNotesSave(JSON.stringify(changeValue))
             return setValue(changeValue);
           }}
         >

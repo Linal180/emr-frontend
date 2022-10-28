@@ -3,17 +3,19 @@ import { AddCircleOutline } from '@material-ui/icons';
 import moment from 'moment';
 import { Reducer, useReducer } from 'react';
 import { useParams } from 'react-router';
-import { ASSESSMENT_PLAN } from '../../../../../constants';
-import { IcdCodesWithSnowMedCode, useAddPatientProblemMutation, useUpdatePatientProblemSignedMutation } from '../../../../../generated/graphql';
+import { ASSESSMENT_PLAN, TemplateType } from '../../../../../constants';
+import { IcdCodesWithSnowMedCode, useAddPatientProblemMutation, useUpdatePatientProblemNotesMutation, useUpdatePatientProblemSignedMutation } from '../../../../../generated/graphql';
 import { AssessmentMedication, AssessmentPlanProblemsProps, ParamsType } from '../../../../../interfacesTypes';
 import { Action, ActionType, chartReducer, initialState, State } from '../../../../../reducers/chartReducer';
 import { useChartingStyles } from '../../../../../styles/chartingStyles';
 import Alert from '../../../../common/Alert';
+import MacroView from '../../../../common/Macro/MacroView';
 import NoDataFoundComponent from '../../../../common/NoDataFoundComponent';
 import AppointmentReasonModal from '../AppointmentReason/AppointmentReasonModal';
 import AssessmentPlanMedication from './AssessmentPlanMedication';
 
-function AssessmentPlanProblems({ fetchProblems, assessmentProblems: problems, setAssessmentProblems, shouldDisableEdit, isSigned }: AssessmentPlanProblemsProps) {
+function AssessmentPlanProblems({ fetchProblems, assessmentProblems: problems, setAssessmentProblems, shouldDisableEdit, isSigned, notes, setNotes }:
+  AssessmentPlanProblemsProps) {
   const classes = useChartingStyles()
   const { id: patientId, appointmentId } = useParams<ParamsType>()
   // const { control, setValue, watch } = useFormContext<AssessmentProblems>()
@@ -66,6 +68,18 @@ function AssessmentPlanProblems({ fetchProblems, assessmentProblems: problems, s
 
     onCompleted(data) {
       const { updatePatientProblemSigned: { response } } = data;
+
+      if (response) { }
+    }
+  });
+
+  const [updatePatientProblemNotes] = useUpdatePatientProblemNotesMutation({
+    onError({ message }) {
+      Alert.error(message)
+    },
+
+    onCompleted(data) {
+      const { updatePatientProblemNotes: { response } } = data;
 
       if (response) { }
     }
@@ -150,12 +164,31 @@ function AssessmentPlanProblems({ fetchProblems, assessmentProblems: problems, s
     Alert.success('Diagnoses Ordered Successfully')
   }
 
+  const handleNotesUpdate = async (notes: string) => {
+    await Promise.all(
+      problems.map(async (problem) => {
+        const { problemId } = problem
+        return await updatePatientProblemNotes({
+          variables: {
+            updateProblemNotesInput: {
+              id: problemId,
+              notes: notes
+            }
+          }
+        })
+      })
+    )
+
+    setNotes && setNotes(notes || '')
+
+  }
+
   return (
     <>
       <Card>
         <Box pb={2} className={classes.cardBox} px={2} py={1} display='flex' justifyContent='space-between' alignItems='center'
           flexWrap='wrap' borderBottom={`1px solid ${colors.grey[300]}`}>
-          <Box display='flex'flexWrap='wrap' alignItems='center'>
+          <Box display='flex' flexWrap='wrap' alignItems='center'>
             <Typography variant='h3'>{ASSESSMENT_PLAN}</Typography>
 
             {!(shouldDisableEdit || isSigned) && <Box ml={1} display="flex" alignItems="center" justifyContent="flex-end">
@@ -176,6 +209,16 @@ function AssessmentPlanProblems({ fetchProblems, assessmentProblems: problems, s
             </Box>
           </Box>
         </Box>
+
+        <Box m={2} />
+
+        {!!problems?.length && <MacroView
+          notes={notes || ''}
+          itemId=''
+          setItemId={() => { }}
+          type={TemplateType.ASSESSMENT_PLAN}
+          handleNotesUpdate={handleNotesUpdate}
+        />}
       </Card>
 
       <Box m={2} />

@@ -1,19 +1,20 @@
 // packages block
-import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
-import { FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
 import { Controller, useFormContext } from "react-hook-form";
+import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
+import { FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
+//components
+import AutocompleteTextField from "../AutocompleteTextField";
 // utils and interfaces/types block
-import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
 import { AuthContext } from "../../../context";
-import { FacilitiesPayload, useFindAllFacilityListLazyQuery } from "../../../generated/graphql";
 import { FacilitySelectorProps } from "../../../interfacesTypes";
+import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
+import { FacilitiesPayload, useFindAllFacilityListLazyQuery } from "../../../generated/graphql";
 import { Action, ActionType, facilityReducer, initialState, State } from "../../../reducers/facilityReducer";
 import {
   isFacilityAdmin, isPracticeAdmin, isSuperAdmin, isUser, renderFacilities, renderLoading,
   requiredLabel, sortingValue
 } from "../../../utils";
-import AutocompleteTextField from "../AutocompleteTextField";
 
 const FacilitySelector: FC<FacilitySelectorProps> = ({
   name, label, disabled, isRequired, addEmpty, onSelect, loading

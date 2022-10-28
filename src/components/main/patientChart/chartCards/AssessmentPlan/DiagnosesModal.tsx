@@ -105,11 +105,11 @@ const DiagnosesModal: FC<DiagnosesModalModalProps> = ({ isOpen = false, handleMo
     switch (tabName) {
 
       case ORDERS_TABS[0]:
-        await handleMedicationSearch('')
-        break;
-
-      case ORDERS_TABS[1]:
         await handleLabTestsSearch('')
+        break;
+        
+        case ORDERS_TABS[1]:
+        await handleMedicationSearch('')
         break;
 
       case ORDERS_TABS[2]:
@@ -117,7 +117,7 @@ const DiagnosesModal: FC<DiagnosesModalModalProps> = ({ isOpen = false, handleMo
         break;
 
       default:
-        await handleMedicationSearch('')
+        await handleLabTestsSearch('')
         break;
     }
   }, [handleLabTestsSearch, handleMedicationSearch])
@@ -272,32 +272,32 @@ const DiagnosesModal: FC<DiagnosesModalModalProps> = ({ isOpen = false, handleMo
     switch (tab) {
 
       case ORDERS_TABS[0]:
-        return renderSearchData()
-
-      case ORDERS_TABS[1]:
         return renderLabTestSearchData()
+        
+        case ORDERS_TABS[1]:
+        return renderSearchData()
 
       case ORDERS_TABS[2]:
         return renderImagingSearchData()
 
       default:
-        return renderSearchData()
+        return renderLabTestSearchData()
     }
   }
 
   const renderTabSearchPlaceholder = (): string => {
     switch (tab) {
       case ORDERS_TABS[0]:
-        return SEARCH_FOR_MEDICATIONS
-
-      case ORDERS_TABS[1]:
         return SEARCH_FOR_TESTS
+        
+        case ORDERS_TABS[1]:
+        return SEARCH_FOR_MEDICATIONS
 
       case ORDERS_TABS[2]:
         return SEARCH_FOR_IMAGING
 
       default:
-        return SEARCH_FOR_MEDICATIONS
+        return SEARCH_FOR_TESTS
     }
   }
 

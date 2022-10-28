@@ -14,8 +14,7 @@ function AssessmentPlanMedication({ index, problem, setAssessmentProblems, asses
   const { id: patientId, appointmentId } = useParams<ParamsType>()
   const { medications, problemId, icdCodes, tests } = problem || {}
   const { code, description } = icdCodes
-  const [state, dispatch] =
-    useReducer<Reducer<State, Action>>(chartReducer, initialState)
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(chartReducer, initialState)
   const { medicationIndex, isSubModalOpen, testIndex } = state
 
   const handleChildModalClose = () => {

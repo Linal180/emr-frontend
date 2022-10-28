@@ -537,8 +537,8 @@ export const TO_CHART = "To Chart";
 export const SAVE_TEXT = "Save";
 export const HCFA_1500_FORM = "HCFA - 1500 Form"
 export const CLEAR_TEXT = "Clear";
-export const ALL_NORMAL="All Normal"
-export const NORMAL="Normal"
+export const ALL_NORMAL = "All Normal"
+export const NORMAL = "Normal"
 export const PUBLISH = "Publish";
 export const PUBLISHED = "Published";
 export const NOT_PUBLISHED = "Not Published";
@@ -558,6 +558,7 @@ export const ADMINISTER_BY = "Administer By";
 export const SITE_TEXT = "Site";
 export const NDC_TEXT = "NDC";
 export const MVX_TEXT = "MVX";
+export const ROOM_TEXT = "Room";
 export const CVX_TEXT = "CVX";
 export const VACCINE_PRODUCT_TEXT = "Vaccine Product";
 export const VIS_GIVEN_TEXT = "VIS Given";
@@ -573,6 +574,10 @@ export const UPDATE_MEDICATION = "Update Medication"
 export const ALLERGIES_TEXT = "Allergies";
 export const ALLERGY_TEXT = "Allergy";
 export const CARE_PLAN_TEXT = "Care Plan";
+export const CARE_PROGRAM_TEXT = "Care Programs";
+export const RECENT_EVENT_SUMMARY = "Recent Event Summary";
+export const GOALS_TEXT = "Goals";
+export const NONE_RECORDED_TEXT = "None Recorded";
 export const MEDICATIONS_TEXT = "Medications";
 export const SOCIAL_HISTORY_TEXT = "Social History";
 export const PATIENT_HISTORY_ILLNESS_TEXT = "History of Patient Illness";
@@ -854,6 +859,7 @@ export const TEXT = "text";
 export const PLAN = "Plan";
 export const NONE = "None";
 export const NAME = "Name";
+export const NUMBER_TEXT = "Number";
 export const SECTION = "Section";
 export const ROLE = "Role";
 export const UNIT = "Unit";
@@ -905,9 +911,14 @@ export const LOGOUT_TEXT = "Logout";
 export const INITIAL_PAGE_LIMIT = 5;
 export const TIME_FROM = "TIME:FROM";
 export const INSURANCE = "Insurance";
+export const INSURANCE_NAME = "Insurance Name";
+export const INSURANCE_TYPE = "Insurance Type";
+export const PROCEDURE_CODES = "Procedure Codes";
 export const NO_INSURANCE = "No Insurance";
 export const INTERNATIONAL_TRAVELER = "International Traveler";
 export const CONTRACT = "Contract";
+export const BALANCE_DUE = "Balance Due";
+export const DEDUCTIBLE = "Deductible";
 export const MODIFIERS = "Modifiers";
 export const ROLE_NAME = "Role name";
 export const CHILDHOOD = "Childhood";
@@ -1351,6 +1362,7 @@ export const INSURANCE_ELIGIBILITY_TEXT = "Insurance Eligibility";
 export const AGREEMENTS_DESCRIPTION = "Create Agreements for patients";
 export const CLAIM_STATUSES_DESCRIPTION = "Create Claim Statuses for Billing";
 export const INSURANCE_ELIGIBILITY_DESCRIPTION = "Check the patient's insurance eligibility";
+export const ROOM_DESCRIPTION = "Add Room for your facility";
 export const PATIENT_RECEIPT_AUTHORIZE_TEXT = "I authorize the release of any medical information necessary to process this claim."
 export const LAB_ORDERS = "Lab Orders";
 export const SIGNATURE_DATE = "DATE:"
@@ -1624,6 +1636,7 @@ export const DELETE_VACCINE_DESCRIPTION = "Confirm to delete vaccine";
 export const DELETE_ICD_10_DESCRIPTION = "Confirm to delete icd-10";
 export const DELETE_CPT_CODE_DESCRIPTION = "Confirm to delete CPT code";
 export const DELETE_NDC_CODE_DESCRIPTION = "Confirm to delete NDC code";
+export const DELETE_ROOM_DESCRIPTION = "Confirm to delete room";
 export const DELETE_VACCINE_PRODUCT_DESCRIPTION = "Confirm to delete Vaccine Product";
 export const DELETE_CVX_CODE_DESCRIPTION = "Confirm to delete CVX code";
 export const DELETE_MACRO_DESCRIPTION = "Confirm to delete Macro";
@@ -1788,6 +1801,7 @@ export const NDC_ROUTE = `/ndc-code`;
 export const MVX_ROUTE = `/mvx-code`;
 export const CVX_ROUTE = `/cvx-code`;
 export const VACCINE_PRODUCT_ROUTE = `/vaccine-product`;
+export const ROOM_ROUTE = `/room`;
 
 // Facility Routes
 export const BILLING_PROFILE_ROUTE = "billing-profile";
@@ -2720,7 +2734,8 @@ export enum ITEM_MODULE {
 export enum TemplateType {
   HPI = 'hpi',
   REVIEW_OF_SYSTEM = 'reviewOfSystem',
-  PHYSICAL_EXAM = "physicalExam"
+  PHYSICAL_EXAM = "physicalExam",
+  ASSESSMENT_PLAN = "assessmentPlan"
 }
 
 export enum TABLE_SELECTOR_MODULES {
@@ -2894,6 +2909,10 @@ export const MAPPED_SECTION = [
   {
     label: getTemplateLabel(TemplateType.REVIEW_OF_SYSTEM),
     value: TemplateType.REVIEW_OF_SYSTEM
+  },
+  {
+    label: getTemplateLabel(TemplateType.ASSESSMENT_PLAN),
+    value: TemplateType.ASSESSMENT_PLAN
   },
 ]
 
@@ -3538,6 +3557,11 @@ export const MISCELLANEOUS_SETTINGS_ITEMS = [
     name: INSURANCE_ELIGIBILITY_TEXT,
     link: INSURANCE_ELIGIBILITY_ROUTE,
     desc: INSURANCE_ELIGIBILITY_DESCRIPTION,
+  },
+  {
+    name: ROOM_TEXT,
+    link: ROOM_ROUTE,
+    desc: ROOM_DESCRIPTION,
   }
 ];
 
@@ -4823,4 +4847,4 @@ export const STATUS_MAPPED = [
   }
 ]
 export const PROBLEMS_TABS = ['Common Terms']
-export const ORDERS_TABS = ['Medications', 'Lab Order', 'Imaging']
+export const ORDERS_TABS = ['Lab Order', 'Medications', 'Imaging']

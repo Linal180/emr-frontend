@@ -7,6 +7,7 @@ import PageHeader from "../../common/PageHeader";
 import CardComponent from "../../common/CardComponent";
 // constants block
 import { AuthContext } from "../../../context";
+import { useSettingStyles } from "../../../styles/settingStyles";
 import { isBiller, isFacilityAdmin, isOnlyDoctor, isSuperAdmin } from "../../../utils";
 import {
   PRACTICE_MANAGEMENT_DESCRIPTION, PRACTICE_DETAILS, PROVIDER_DETAILS, PROVIDER_DETAILS_DESCRIPTION,
@@ -15,10 +16,9 @@ import {
   PRACTICE_SETTINGS_ITEMS, SERVICES, USERS_MANAGEMENT, USER_MENU_ITEMS, FACILITIES_ROUTE, SETTINGS_TEXT,
   FACILITY_DETAILS_TEXT, FACILITY_DETAILS_DESCRIPTION, PROVIDER_PROFILE_DESCRIPTION, CLINICAL_TEXT,
   DOCTORS_ROUTE, FACILITY_MANAGEMENT, FACILITY_SERVICES_ROUTE, FACILITY_SCHEDULE, FACILITY_SCHEDULE_DESCRIPTION,
-  DOCTOR_PROFILE_TEXT, CLINICAL_ITEMS, MISCELLANEOUS_SETTINGS, FFE_SCHEDULE, CLAIM_STATUSES, INVENTORY_ITEMS, INVENTORY,
-
+  DOCTOR_PROFILE_TEXT, CLINICAL_ITEMS, MISCELLANEOUS_SETTINGS, FFE_SCHEDULE, CLAIM_STATUSES, INVENTORY_ITEMS,
+  INVENTORY,
 } from "../../../constants";
-import { useSettingStyles } from "../../../styles/settingStyles";
 
 export const SettingsComponent = () => {
   const { user, currentDoctor, userPermissions } = useContext(AuthContext)

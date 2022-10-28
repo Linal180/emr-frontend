@@ -2689,6 +2689,9 @@ export const getTemplateLabel = (labelValue: TemplateType) => {
     case TemplateType.REVIEW_OF_SYSTEM:
       return 'Review Of System'
 
+    case TemplateType.ASSESSMENT_PLAN:
+      return 'Assessment & Plan'
+
     default:
       return ''
   }
