@@ -1,14 +1,21 @@
-import { Box, Card, colors, Typography } from '@material-ui/core'
-import { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
+import { useCallback, useEffect, useState } from 'react'
+import { Box, Card, colors, Typography } from '@material-ui/core'
 //components blocks
-import AppointmentReason from './AppointmentReason'
 import TriageNoteTab from './TriageNotesListing'
+import AppointmentReason from './AppointmentReason'
 //constants, style, interface, graphql
 import { useChartingStyles } from '../../../../../styles/chartingStyles'
-import { ALLERGIES_TEXT, DASHES, DIAGNOSES, INTAKE, MEDICATIONS, PATIENT_HISTORY_ILLNESS_TEXT, REVIEW_OF_SYSTEM_TEXT } from '../../../../../constants'
 import { ParamsType, PatientChartingReview, ReviewTabProps } from '../../../../../interfacesTypes'
-import { PatientIllnessHistoryPayload, PatientVitals, ReviewOfSystemPayload, useGetPatientChartingReviewLazyQuery, usePatientIllnessHistoryLazyQuery, useReviewOfSystemLazyQuery } from '../../../../../generated/graphql'
+import {
+  ALLERGIES_TEXT, CARE_PLAN_TEXT, CARE_PROGRAM_TEXT, DASHES, DIAGNOSES, GOALS_TEXT, INTAKE, MEDICATIONS,
+  NONE_RECORDED_TEXT,
+  PATIENT_HISTORY_ILLNESS_TEXT, RECENT_EVENT_SUMMARY, REVIEW_OF_SYSTEM_TEXT
+} from '../../../../../constants'
+import {
+  PatientIllnessHistoryPayload, PatientVitals, ReviewOfSystemPayload, useGetPatientChartingReviewLazyQuery,
+  usePatientIllnessHistoryLazyQuery, useReviewOfSystemLazyQuery
+} from '../../../../../generated/graphql'
 
 
 function ReviewTab({ shouldShowCheckout, handleStepChange, shouldDisableEdit, shouldShowAdd, shouldShowExamDetails }: ReviewTabProps) {
@@ -47,22 +54,18 @@ function ReviewTab({ shouldShowCheckout, handleStepChange, shouldDisableEdit, sh
     }
   })
 
-  const fetchPatientChartingView = useCallback(() => {
-    try {
-      getPatientChartingReview({
-        variables: {
-          patientChartingReviewInput: {
-            appointmentId,
-            patientId
-          }
-        }
-      })
-    } catch (error) { }
-  }, [appointmentId, getPatientChartingReview, patientId])
+  const [getPatientIllnessHistory] = usePatientIllnessHistoryLazyQuery({
+    onCompleted: (data) => {
+      const { patientIllnessHistory: dataResponse } = data || {}
+      const { response, patientIllnessHistory } = dataResponse || {}
+      const { status } = response || {}
 
-  useEffect(() => {
-    fetchPatientChartingView()
-  }, [fetchPatientChartingView])
+      if (status === 200) {
+        setPatientIllnessHistory(patientIllnessHistory as PatientIllnessHistoryPayload['patientIllnessHistory'])
+      }
+    },
+    onError: () => { }
+  })
 
   const [patientReviewOfSystem] = useReviewOfSystemLazyQuery({
     onCompleted: (data) => {
@@ -78,6 +81,19 @@ function ReviewTab({ shouldShowCheckout, handleStepChange, shouldDisableEdit, sh
     onError: () => { }
   })
 
+  const fetchPatientChartingView = useCallback(() => {
+    try {
+      getPatientChartingReview({
+        variables: {
+          patientChartingReviewInput: {
+            appointmentId,
+            patientId
+          }
+        }
+      })
+    } catch (error) { }
+  }, [appointmentId, getPatientChartingReview, patientId])
+
   const fetchPatientReviewOfSystem = useCallback(async () => {
     appointmentId && await patientReviewOfSystem({
       variables: {
@@ -88,19 +104,6 @@ function ReviewTab({ shouldShowCheckout, handleStepChange, shouldDisableEdit, sh
     })
 
   }, [patientReviewOfSystem, appointmentId])
-
-  const [getPatientIllnessHistory] = usePatientIllnessHistoryLazyQuery({
-    onCompleted: (data) => {
-      const { patientIllnessHistory: dataResponse } = data || {}
-      const { response, patientIllnessHistory } = dataResponse || {}
-      const { status } = response || {}
-
-      if (status === 200) {
-        setPatientIllnessHistory(patientIllnessHistory as PatientIllnessHistoryPayload['patientIllnessHistory'])
-      }
-    },
-    onError: () => { }
-  })
 
   const fetchPatientIllnessHistory = useCallback(async () => {
     appointmentId && await getPatientIllnessHistory({
@@ -119,6 +122,10 @@ function ReviewTab({ shouldShowCheckout, handleStepChange, shouldDisableEdit, sh
       fetchPatientReviewOfSystem()
     }
   }, [fetchPatientIllnessHistory, fetchPatientReviewOfSystem, shouldShowExamDetails])
+
+  useEffect(() => {
+    fetchPatientChartingView()
+  }, [fetchPatientChartingView])
 
   const { patientAllergies, patientMedications, patientProblems, patientVitals } = patientChartingReview || {}
 
@@ -164,7 +171,7 @@ function ReviewTab({ shouldShowCheckout, handleStepChange, shouldDisableEdit, sh
             <Typography variant='h4'>{DIAGNOSES}</Typography>
             <Box p={0.5} />
             {!singlePatientProblems?.length ? <Box mb={1}>
-              <Typography variant='body2'>{'None Recorded'}</Typography>
+              <Typography variant='body2'>{NONE_RECORDED_TEXT}</Typography>
             </Box> : singlePatientProblems.map(problem => {
               const { ICDCode } = problem
               return (
@@ -178,7 +185,7 @@ function ReviewTab({ shouldShowCheckout, handleStepChange, shouldDisableEdit, sh
             <Typography variant='h4'>{MEDICATIONS}</Typography>
             <Box p={0.5} />
             {!patientMedications?.length ? <Box mb={1}>
-              <Typography variant='body2'>{'None Recorded'}</Typography>
+              <Typography variant='body2'>{NONE_RECORDED_TEXT}</Typography>
             </Box> : patientMedications.map(patientMedication => {
               const { medication } = patientMedication || {}
               const { fullName } = medication || {}
@@ -193,7 +200,7 @@ function ReviewTab({ shouldShowCheckout, handleStepChange, shouldDisableEdit, sh
             <Typography variant='h4'>{ALLERGIES_TEXT}</Typography>
             <Box p={0.5} />
             {!patientAllergies?.length ? <Box mb={1}>
-              <Typography variant='body2'>{'None Recorded'}</Typography>
+              <Typography variant='body2'>{NONE_RECORDED_TEXT}</Typography>
             </Box> : patientAllergies.map(patientAllergy => {
               const { allergy } = patientAllergy || {}
               const { name } = allergy || {}
@@ -261,6 +268,44 @@ function ReviewTab({ shouldShowCheckout, handleStepChange, shouldDisableEdit, sh
         </Card>
         <Box m={3} />
       </>}
+
+      <Card>
+        <Box pb={2} className={classes.cardBox}>
+          <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" borderBottom={`1px solid ${colors.grey[300]}`}>
+            <Typography variant='h3'>{CARE_PLAN_TEXT}</Typography>
+          </Box>
+
+          <Box m={2}>
+            <Box py={1} borderBottom={`1px solid ${colors.grey[300]}`}>
+              <Typography variant='h4'>{CARE_PROGRAM_TEXT}</Typography>
+            </Box>
+            <Box mt={1} />
+
+            <Typography variant='body2'>{NONE_RECORDED_TEXT}</Typography>
+
+          </Box>
+
+          <Box m={2}>
+            <Box py={1} borderBottom={`1px solid ${colors.grey[300]}`}>
+              <Typography variant='h4'>{RECENT_EVENT_SUMMARY}</Typography>
+            </Box>
+            <Box mt={1} />
+
+            <Typography variant='body2'>{NONE_RECORDED_TEXT}</Typography>
+
+          </Box>
+
+          <Box m={2}>
+            <Box py={1} borderBottom={`1px solid ${colors.grey[300]}`}>
+              <Typography variant='h4'>{GOALS_TEXT}</Typography>
+            </Box>
+            <Box mt={1} />
+
+            <Typography variant='body2'>{NONE_RECORDED_TEXT}</Typography>
+
+          </Box>
+        </Box>
+      </Card>
 
     </div>
   )
