@@ -3331,6 +3331,7 @@ export type Mutation = {
   updatePatientMedication: PatientMedicationPayload;
   updatePatientNoteInfo: PatientPayload;
   updatePatientProblem: PatientProblemPayload;
+  updatePatientProblemNotes: PatientProblemPayload;
   updatePatientProblemSigned: PatientProblemPayload;
   updatePatientProfile: PatientPayload;
   updatePatientProvider: PatientPayload;
@@ -4105,6 +4106,11 @@ export type MutationUpdatePatientProblemArgs = {
 };
 
 
+export type MutationUpdatePatientProblemNotesArgs = {
+  updateProblemNotesInput: UpdateProblemNotesInput;
+};
+
+
 export type MutationUpdatePatientProblemSignedArgs = {
   updateProblemSignedInput: UpdateProblemSignedInput;
 };
@@ -4675,6 +4681,7 @@ export type PatientProblemPayload = {
 export type PatientProblems = {
   __typename?: 'PatientProblems';
   ICDCode?: Maybe<IcdCodes>;
+  apNotes?: Maybe<Scalars['String']>;
   appointment?: Maybe<Appointment>;
   appointmentId?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
@@ -7998,6 +8005,11 @@ export type UpdateProblemInput = {
   problemType?: Maybe<ProblemType>;
 };
 
+export type UpdateProblemNotesInput = {
+  id?: Maybe<Scalars['String']>;
+  notes?: Maybe<Scalars['String']>;
+};
+
 export type UpdateProblemSignedInput = {
   id?: Maybe<Scalars['String']>;
   isSigned?: Maybe<Scalars['Boolean']>;
@@ -9055,7 +9067,7 @@ export type FindAllPatientProblemsWithMedicationQueryVariables = Exact<{
 }>;
 
 
-export type FindAllPatientProblemsWithMedicationQuery = { __typename?: 'Query', findAllPatientProblem: { __typename?: 'PatientProblemsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null, page?: number | null } | null, patientProblems?: Array<{ __typename?: 'PatientProblems', id: string, problemType: ProblemType, forOrders?: boolean | null, isSigned?: boolean | null, problemSeverity: ProblemSeverity, problemStartDate?: string | null, note?: string | null, appointmentId?: string | null, ICDCode?: { __typename: 'ICDCodes', id: string, code: string, description?: string | null } | null, patientMedications?: Array<{ __typename?: 'PatientMedication', id: string, isSigned?: boolean | null, medication?: { __typename?: 'Medications', id: string, fullName?: string | null, termType?: string | null, rxNumber?: string | null, createdAt?: string | null, updatedAt?: string | null } | null }> | null, labTests?: Array<{ __typename?: 'LabTests', id: string, isSigned?: boolean | null, test?: { __typename?: 'LoincCodes', id: string, component?: string | null } | null }> | null, snowMedCode?: { __typename?: 'SnoMedCodes', id: string, referencedComponentId?: string | null } | null } | null> | null } };
+export type FindAllPatientProblemsWithMedicationQuery = { __typename?: 'Query', findAllPatientProblem: { __typename?: 'PatientProblemsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null, page?: number | null } | null, patientProblems?: Array<{ __typename?: 'PatientProblems', id: string, problemType: ProblemType, forOrders?: boolean | null, isSigned?: boolean | null, problemSeverity: ProblemSeverity, problemStartDate?: string | null, apNotes?: string | null, note?: string | null, appointmentId?: string | null, ICDCode?: { __typename: 'ICDCodes', id: string, code: string, description?: string | null } | null, patientMedications?: Array<{ __typename?: 'PatientMedication', id: string, isSigned?: boolean | null, medication?: { __typename?: 'Medications', id: string, fullName?: string | null, termType?: string | null, rxNumber?: string | null, createdAt?: string | null, updatedAt?: string | null } | null }> | null, labTests?: Array<{ __typename?: 'LabTests', id: string, isSigned?: boolean | null, test?: { __typename?: 'LoincCodes', id: string, component?: string | null } | null }> | null, snowMedCode?: { __typename?: 'SnoMedCodes', id: string, referencedComponentId?: string | null } | null } | null> | null } };
 
 export type GetPatientProblemQueryVariables = Exact<{
   getPatientProblem: GetPatientProblem;
@@ -9084,6 +9096,13 @@ export type UpdatePatientProblemSignedMutationVariables = Exact<{
 
 
 export type UpdatePatientProblemSignedMutation = { __typename?: 'Mutation', updatePatientProblemSigned: { __typename?: 'PatientProblemPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null } };
+
+export type UpdatePatientProblemNotesMutationVariables = Exact<{
+  updateProblemNotesInput: UpdateProblemNotesInput;
+}>;
+
+
+export type UpdatePatientProblemNotesMutation = { __typename?: 'Mutation', updatePatientProblemNotes: { __typename?: 'PatientProblemPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null } };
 
 export type RemovePatientProblemMutationVariables = Exact<{
   removeProblem: RemoveProblem;
@@ -15389,6 +15408,7 @@ export const FindAllPatientProblemsWithMedicationDocument = gql`
       isSigned
       problemSeverity
       problemStartDate
+      apNotes
       note
       ICDCode {
         __typename
@@ -15620,6 +15640,42 @@ export function useUpdatePatientProblemSignedMutation(baseOptions?: Apollo.Mutat
 export type UpdatePatientProblemSignedMutationHookResult = ReturnType<typeof useUpdatePatientProblemSignedMutation>;
 export type UpdatePatientProblemSignedMutationResult = Apollo.MutationResult<UpdatePatientProblemSignedMutation>;
 export type UpdatePatientProblemSignedMutationOptions = Apollo.BaseMutationOptions<UpdatePatientProblemSignedMutation, UpdatePatientProblemSignedMutationVariables>;
+export const UpdatePatientProblemNotesDocument = gql`
+    mutation UpdatePatientProblemNotes($updateProblemNotesInput: UpdateProblemNotesInput!) {
+  updatePatientProblemNotes(updateProblemNotesInput: $updateProblemNotesInput) {
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+export type UpdatePatientProblemNotesMutationFn = Apollo.MutationFunction<UpdatePatientProblemNotesMutation, UpdatePatientProblemNotesMutationVariables>;
+
+/**
+ * __useUpdatePatientProblemNotesMutation__
+ *
+ * To run a mutation, you first call `useUpdatePatientProblemNotesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePatientProblemNotesMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePatientProblemNotesMutation, { data, loading, error }] = useUpdatePatientProblemNotesMutation({
+ *   variables: {
+ *      updateProblemNotesInput: // value for 'updateProblemNotesInput'
+ *   },
+ * });
+ */
+export function useUpdatePatientProblemNotesMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePatientProblemNotesMutation, UpdatePatientProblemNotesMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdatePatientProblemNotesMutation, UpdatePatientProblemNotesMutationVariables>(UpdatePatientProblemNotesDocument, options);
+      }
+export type UpdatePatientProblemNotesMutationHookResult = ReturnType<typeof useUpdatePatientProblemNotesMutation>;
+export type UpdatePatientProblemNotesMutationResult = Apollo.MutationResult<UpdatePatientProblemNotesMutation>;
+export type UpdatePatientProblemNotesMutationOptions = Apollo.BaseMutationOptions<UpdatePatientProblemNotesMutation, UpdatePatientProblemNotesMutationVariables>;
 export const RemovePatientProblemDocument = gql`
     mutation RemovePatientProblem($removeProblem: RemoveProblem!) {
   removePatientProblem(removeProblem: $removeProblem) {

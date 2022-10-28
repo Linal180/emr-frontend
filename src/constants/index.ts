@@ -537,8 +537,8 @@ export const TO_CHART = "To Chart";
 export const SAVE_TEXT = "Save";
 export const HCFA_1500_FORM = "HCFA - 1500 Form"
 export const CLEAR_TEXT = "Clear";
-export const ALL_NORMAL="All Normal"
-export const NORMAL="Normal"
+export const ALL_NORMAL = "All Normal"
+export const NORMAL = "Normal"
 export const PUBLISH = "Publish";
 export const PUBLISHED = "Published";
 export const NOT_PUBLISHED = "Not Published";
@@ -2729,7 +2729,8 @@ export enum ITEM_MODULE {
 export enum TemplateType {
   HPI = 'hpi',
   REVIEW_OF_SYSTEM = 'reviewOfSystem',
-  PHYSICAL_EXAM = "physicalExam"
+  PHYSICAL_EXAM = "physicalExam",
+  ASSESSMENT_PLAN = "assessmentPlan"
 }
 
 export enum TABLE_SELECTOR_MODULES {
@@ -2903,6 +2904,10 @@ export const MAPPED_SECTION = [
   {
     label: getTemplateLabel(TemplateType.REVIEW_OF_SYSTEM),
     value: TemplateType.REVIEW_OF_SYSTEM
+  },
+  {
+    label: getTemplateLabel(TemplateType.ASSESSMENT_PLAN),
+    value: TemplateType.ASSESSMENT_PLAN
   },
 ]
 

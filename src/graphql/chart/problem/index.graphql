@@ -59,6 +59,7 @@ query FindAllPatientProblemsWithMedication(
       isSigned
       problemSeverity
       problemStartDate
+      apNotes
       note
 
       ICDCode {
@@ -155,6 +156,15 @@ mutation UpdatePatientProblem($updateProblemInput: UpdateProblemInput!) {
 
 mutation UpdatePatientProblemSigned($updateProblemSignedInput: UpdateProblemSignedInput!) {
   updatePatientProblemSigned(updateProblemSignedInput: $updateProblemSignedInput) {
+    response {
+      status
+      message
+    }
+  }
+}
+
+mutation UpdatePatientProblemNotes($updateProblemNotesInput: UpdateProblemNotesInput!) {
+  updatePatientProblemNotes(updateProblemNotesInput: $updateProblemNotesInput) {
     response {
       status
       message
