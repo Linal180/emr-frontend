@@ -41,6 +41,7 @@ import {
   PRIORITY, NDC_REGEX, MVX_CODE_REGEX, STATUS, ONLY_NUMBERS_REGEX, CVX_TEXT, MVX_TEXT, NDC_VALIDATION_MESSAGE, SIG, NUMBERS_WITHOUT_DDECIMAL_REGEX, NO_DECIMAL_REQUIRED,
   ONSET_AGE_TEXT,
   SECTION,
+  NUMBER_TEXT,
 } from "../constants";
 import { Copay, PatientPaymentType, ProblemType } from "../generated/graphql";
 
@@ -1349,4 +1350,10 @@ export const VaccineProductSchema = yup.object({
   cvx: selectorSchema(CVX_TEXT),
   mvx: selectorSchema(MVX_TEXT),
   // ndcCode: selectorSchema(NDC_TEXT),
+})
+
+export const RoomSchema = yup.object({
+  name: yup.string().required(requiredMessage(NAME)),
+  number: yup.string().required(requiredMessage(NUMBER_TEXT)),
+  facility: selectorSchema(FACILITY),
 })

@@ -1,37 +1,46 @@
-import { Box, Button, Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
-import { ChangeEvent, FC, Fragment, Reducer, useCallback, useEffect, useReducer } from 'react';
+import { ChangeEvent, FC, Fragment, Reducer, useCallback, useContext, useEffect, useReducer } from 'react';
+import { Box, Button, Grid, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core';
 //components
+import RoomForm from '../roomForm'
 import Alert from '../../../common/Alert';
-import ConfirmationModal from '../../../common/ConfirmationModal';
-import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
 import Search from '../../../common/Search';
 import TableLoader from '../../../common/TableLoader';
-import MacroForm from '../MacroForm';
+import ConfirmationModal from '../../../common/ConfirmationModal';
+import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
 //constants, styles, svgs
-import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from '../../../../assets/svgs';
-import {
-  ACTIONS, ADD_NEW_TEXT, DASHES, DELETE_MACRO_DESCRIPTION, DESCRIPTION, EIGHT_PAGE_LIMIT, MACRO, NAME, PAGE_LIMIT, SECTION, TemplateType
-} from '../../../../constants';
-import { MacrosPayload, useFetchAllMacrosLazyQuery, useRemoveMacroMutation } from '../../../../generated/graphql';
-import { Action, ActionType, initialState, macrosReducer, State } from '../../../../reducers/macrosReducer';
+import { AuthContext } from '../../../../context';
+import { getPageNumber, isLast, isPracticeAdmin, isSuperAdmin, renderTh } from '../../../../utils';
 import { useTableStyles } from '../../../../styles/tableStyles';
-import { getPageNumber, getTemplateLabel, isLast, renderTh } from '../../../../utils';
+import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from '../../../../assets/svgs';
+import { State, Action, ActionType, initialState, roomReducer } from '../../../../reducers/roomReducer';
+import { Room, useFindAllRoomLazyQuery, useRemoveRoomMutation } from '../../../../generated/graphql';
+import {
+  ACTIONS, ADD_NEW_TEXT, DASHES, DELETE_ROOM_DESCRIPTION, EIGHT_PAGE_LIMIT, ROOM_TEXT, NAME,
+  PAGE_LIMIT, FACILITY, NUMBER_TEXT
+} from '../../../../constants';
 
-const CvxTable: FC = (): JSX.Element => {
+const RoomTable: FC = (): JSX.Element => {
+  const { user } = useContext(AuthContext)
+
   const classes = useTableStyles();
-  const [state, dispatch] = useReducer<Reducer<State, Action>>(macrosReducer, initialState);
-  const { searchQuery, data, openDelete, isOpen, itemId, page, totalPages, delId, systematic } = state;
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(roomReducer, initialState);
+  const { searchQuery, data, openDelete, isOpen, itemId, page, totalPages, delId } = state;
+  const { roles, facility } = user || {};
 
-  const [fetchAllMacros, { loading, error }] = useFetchAllMacrosLazyQuery({
+
+  const isSuper = isSuperAdmin(roles);
+  const isPracticeUser = isPracticeAdmin(roles);
+
+  const [findAllRooms, { loading, error }] = useFindAllRoomLazyQuery({
     onCompleted: (data) => {
-      const { fetchAllMacros } = data || {}
-      const { macros, pagination, response } = fetchAllMacros || {}
+      const { findAllRoom } = data || {}
+      const { rooms, pagination, response } = findAllRoom || {}
       const { status } = response || {}
       if (status === 200) {
         const { totalPages } = pagination || {}
-        if (!!macros?.length) {
-          dispatch({ type: ActionType.SET_DATA, data: macros as MacrosPayload['macros'] })
+        if (!!rooms?.length) {
+          dispatch({ type: ActionType.SET_DATA, data: rooms as Room[] })
           totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
         } else {
           dispatch({ type: ActionType.SET_DATA, data: [] });
@@ -45,9 +54,9 @@ const CvxTable: FC = (): JSX.Element => {
     }
   })
 
-  const [removeMacro, { loading: delLoading }] = useRemoveMacroMutation({
+  const [removeRoom, { loading: delLoading }] = useRemoveRoomMutation({
     onCompleted: async (resData) => {
-      const { removeMacro: { response } } = resData;
+      const { removeRoom: { response } } = resData;
 
       if (response) {
         const { status, message } = response
@@ -58,7 +67,7 @@ const CvxTable: FC = (): JSX.Element => {
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
           if (!!data && (data.length > 1 || isLast(data?.length, page))) {
-            await findAllMacros()
+            await fetchAllRooms()
           } else {
             dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, isLast?.length || 0) })
           }
@@ -93,8 +102,8 @@ const CvxTable: FC = (): JSX.Element => {
   };
 
   const handleDelete = async () => {
-    delId && await removeMacro({
-      variables: { removeMacroInput: { id: delId } }
+    delId && await removeRoom({
+      variables: { removeRoomInput: { id: delId } }
     })
   }
 
@@ -105,28 +114,31 @@ const CvxTable: FC = (): JSX.Element => {
   });
 
 
-  const findAllMacros = useCallback(async () => {
+  const fetchAllRooms = useCallback(async () => {
     try {
-      await fetchAllMacros({ variables: { macroInput: { paginationOptions: { limit: PAGE_LIMIT, page }, searchString: searchQuery } } })
+
+      const inputs = isSuper ? {} : isPracticeUser ? { practiceId: facility?.practiceId } : { practiceId: facility?.practiceId, facilityId: facility?.id }
+
+      await findAllRooms({
+        variables: {
+          findAllRoomInput:
+            { paginationOptions: { limit: PAGE_LIMIT, page }, searchString: searchQuery, ...inputs }
+        }
+      })
     } catch (error) { }
-  }, [fetchAllMacros, page, searchQuery])
+  }, [facility, findAllRooms, isPracticeUser, isSuper, page, searchQuery])
 
   useEffect(() => {
-    findAllMacros()
-  }, [findAllMacros])
+    fetchAllRooms()
+  }, [fetchAllRooms])
 
-
-  const fetchData = () => {
-    dispatch({ type: ActionType.SET_PAGE, page: 1 })
-    findAllMacros()
-  }
 
   return (
     <Fragment>
       <Grid container spacing={3}>
         <Grid item md={12} sm={12} xs={12}>
           <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center">
-            <Typography variant='h3'>{MACRO}</Typography>
+            <Typography variant='h3'>{ROOM_TEXT}</Typography>
             <Button
               variant='contained' color='primary'
               startIcon={<Box width={20}><AddWhiteIcon /></Box>}
@@ -146,8 +158,8 @@ const CvxTable: FC = (): JSX.Element => {
                 <TableHead>
                   <TableRow>
                     {renderTh(NAME)}
-                    {renderTh(DESCRIPTION)}
-                    {renderTh(SECTION)}
+                    {renderTh(NUMBER_TEXT)}
+                    {renderTh(FACILITY)}
                     {renderTh(ACTIONS)}
                   </TableRow>
                 </TableHead>
@@ -159,39 +171,33 @@ const CvxTable: FC = (): JSX.Element => {
                     </TableCell>
                   </TableRow>
                 ) : <TableBody>
-                  {data?.map((macro) => {
-                    const { id, expansion, shortcut, section } = macro ?? {}
+                  {data?.map((room, index) => {
+                    const { id, name, number, facility } = room ?? {}
+                    const { id: facilityId, name: facilityName } = facility || {}
                     return (
-                      <TableRow id={id}>
+                      <TableRow key={`${id}-${facilityId}-${index}`}>
                         <TableCell scope="row">
-                          <Typography>{shortcut ?? DASHES}</Typography>
+                          <Typography>{name ?? DASHES}</Typography>
                         </TableCell>
 
                         <TableCell scope="row">
-                          <Box maxWidth={300}>
-                            <Typography>{expansion ?? DASHES}</Typography>
-                          </Box>
+                          <Typography>{number ?? DASHES}</Typography>
                         </TableCell>
 
-
                         <TableCell scope="row">
-                          <Typography>{section?.map((sectionValue) => {
-                            return (
-                              <li>{getTemplateLabel(sectionValue as TemplateType)}</li>
-                            )
-                          }) || DASHES}</Typography>
+                          <Typography>{facilityName ?? DASHES}</Typography>
                         </TableCell>
 
                         <TableCell scope="row">
                           <Box display='flex' alignItems='center'>
 
-                            <Box className={`${classes.iconsBackground} ${systematic ? 'disable-icon' : ''}`}>
+                            <Box className={`${classes.iconsBackground} `}>
                               <Button onClick={() => id && handleEdit(id)}>
                                 <EditOutlinedIcon />
                               </Button>
                             </Box>
 
-                            <Box className={`${classes.iconsBackground} ${systematic ? 'disable-icon' : ''}`}>
+                            <Box className={`${classes.iconsBackground} `}>
                               <Button onClick={() => id && onDeleteClick(id)}>
                                 <TrashOutlinedSmallIcon />
                               </Button>
@@ -216,21 +222,20 @@ const CvxTable: FC = (): JSX.Element => {
       </Grid>
 
       <ConfirmationModal
-        title={MACRO}
+        title={ROOM_TEXT}
         isOpen={openDelete}
         isLoading={delLoading}
-        description={DELETE_MACRO_DESCRIPTION}
+        description={DELETE_ROOM_DESCRIPTION}
         handleDelete={handleDelete}
         setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
       />
-      {isOpen && <MacroForm
+      {isOpen && <RoomForm
         id={itemId}
         open={isOpen}
         isEdit={!!itemId}
         handleClose={handleModalClose}
         dispatcher={dispatch}
-        fetch={() => fetchData()}
-        systematic={systematic}
+        fetch={() => fetchAllRooms()}
       />}
 
       {totalPages > 1 && !loading && (
@@ -248,4 +253,4 @@ const CvxTable: FC = (): JSX.Element => {
   )
 }
 
-export default CvxTable
+export default RoomTable

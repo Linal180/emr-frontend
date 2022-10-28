@@ -626,6 +626,7 @@ export type CptCodes = {
   cvxCodes?: Maybe<Array<Cvx>>;
   description?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  isDeleted?: Maybe<Scalars['Boolean']>;
   longDescription?: Maybe<Scalars['String']>;
   priority?: Maybe<Scalars['Int']>;
   shortDescription?: Maybe<Scalars['String']>;
@@ -1669,6 +1670,12 @@ export type CreateReviewOfSystemInput = {
   templateIds?: Maybe<Array<Scalars['String']>>;
 };
 
+export type CreateRoomInput = {
+  facilityId?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  number?: Maybe<Scalars['String']>;
+};
+
 export type CreateScheduleInput = {
   schedules: Array<SingleScheduleInput>;
 };
@@ -2061,6 +2068,7 @@ export type Facility = {
   practice?: Maybe<Practice>;
   practiceId?: Maybe<Scalars['String']>;
   practiceType?: Maybe<PracticeType>;
+  rooms?: Maybe<Array<Room>>;
   schedule?: Maybe<Array<Schedule>>;
   serviceCode?: Maybe<ServiceCode>;
   services?: Maybe<Array<Service>>;
@@ -2316,6 +2324,19 @@ export type FindAllQuestionTemplatesPayload = {
   pagination?: Maybe<PaginationPayload>;
   response?: Maybe<ResponsePayload>;
   templates: Array<QuestionTemplate>;
+};
+
+export type FindAllRoomInput = {
+  facilityId?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+  searchString?: Maybe<Scalars['String']>;
+};
+
+export type FindAllRoomPayload = {
+  __typename?: 'FindAllRoomPayload';
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayloadResponse>;
+  rooms?: Maybe<Array<Room>>;
 };
 
 export type FindAllSectionsInput = {
@@ -2660,6 +2681,10 @@ export type GetRole = {
   id?: Maybe<Scalars['String']>;
 };
 
+export type GetRoomInput = {
+  id: Scalars['String'];
+};
+
 export type GetSchedule = {
   id: Scalars['String'];
 };
@@ -2733,6 +2758,7 @@ export type IcdCodes = {
   createdAt?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  isDeleted?: Maybe<Scalars['Boolean']>;
   priority?: Maybe<Scalars['Int']>;
   systematic?: Maybe<Scalars['Boolean']>;
   updatedAt?: Maybe<Scalars['String']>;
@@ -2745,6 +2771,7 @@ export type IcdCodesWithSnowMedCode = {
   createdAt?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  isDeleted?: Maybe<Scalars['Boolean']>;
   priority?: Maybe<Scalars['Int']>;
   snoMedCode?: Maybe<SnoMedCodes>;
   systematic?: Maybe<Scalars['Boolean']>;
@@ -3231,6 +3258,7 @@ export type Mutation = {
   createPractice: PracticePayload;
   createReviewOfSystem: ReviewOfSystemPayload;
   createRole: RolePayload;
+  createRoom: RoomPayload;
   createSchedule: SchedulePayload;
   createService: ServicePayload;
   createShortUrl: ShortUrlResponse;
@@ -3276,6 +3304,7 @@ export type Mutation = {
   removePermission: PermissionPayload;
   removePractice: PracticePayload;
   removeRole: RolePayload;
+  removeRoom: RoomPayload;
   removeSchedule: SchedulePayload;
   removeService: ServicePayload;
   removeStaff: StaffPayload;
@@ -3328,6 +3357,7 @@ export type Mutation = {
   updatePatientMedication: PatientMedicationPayload;
   updatePatientNoteInfo: PatientPayload;
   updatePatientProblem: PatientProblemPayload;
+  updatePatientProblemNotes: PatientProblemPayload;
   updatePatientProblemSigned: PatientProblemPayload;
   updatePatientProfile: PatientPayload;
   updatePatientProvider: PatientPayload;
@@ -3339,6 +3369,7 @@ export type Mutation = {
   updatePractice: PracticePayload;
   updateROSNotes: ReviewOfSystemPayload;
   updateRole: RolePayload;
+  updateRoom: RoomPayload;
   updateSchedule: SchedulePayload;
   updateService: ServicePayload;
   updateStaff: StaffPayload;
@@ -3622,6 +3653,11 @@ export type MutationCreateRoleArgs = {
 };
 
 
+export type MutationCreateRoomArgs = {
+  createRoomInput: CreateRoomInput;
+};
+
+
 export type MutationCreateScheduleArgs = {
   createScheduleInput: CreateScheduleInput;
 };
@@ -3844,6 +3880,11 @@ export type MutationRemovePracticeArgs = {
 
 export type MutationRemoveRoleArgs = {
   removeRole: RemoveRole;
+};
+
+
+export type MutationRemoveRoomArgs = {
+  removeRoomInput: RemoveRoomInput;
 };
 
 
@@ -4102,6 +4143,11 @@ export type MutationUpdatePatientProblemArgs = {
 };
 
 
+export type MutationUpdatePatientProblemNotesArgs = {
+  updateProblemNotesInput: UpdateProblemNotesInput;
+};
+
+
 export type MutationUpdatePatientProblemSignedArgs = {
   updateProblemSignedInput: UpdateProblemSignedInput;
 };
@@ -4154,6 +4200,11 @@ export type MutationUpdateRosNotesArgs = {
 
 export type MutationUpdateRoleArgs = {
   updateRoleItemInput: UpdateRoleItemInput;
+};
+
+
+export type MutationUpdateRoomArgs = {
+  updateRoomInput: UpdateRoomInput;
 };
 
 
@@ -4382,6 +4433,7 @@ export type Patient = {
   prefferedName?: Maybe<Scalars['String']>;
   previousFirstName?: Maybe<Scalars['String']>;
   previouslastName?: Maybe<Scalars['String']>;
+  primaryContact?: Maybe<Contact>;
   primaryDoctor?: Maybe<Doctor>;
   privacyNotice: Scalars['Boolean'];
   profileAttachment?: Maybe<Scalars['String']>;
@@ -4671,6 +4723,7 @@ export type PatientProblemPayload = {
 export type PatientProblems = {
   __typename?: 'PatientProblems';
   ICDCode?: Maybe<IcdCodes>;
+  apNotes?: Maybe<Scalars['String']>;
   appointment?: Maybe<Appointment>;
   appointmentId?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
@@ -4779,6 +4832,13 @@ export type PatientsPayload = {
   pagination?: Maybe<PaginationPayload>;
   patients?: Maybe<Array<Maybe<Patient>>>;
   response?: Maybe<ResponsePayload>;
+};
+
+export type PaymentInfo = {
+  __typename?: 'PaymentInfo';
+  copay?: Maybe<Scalars['String']>;
+  deductible?: Maybe<Scalars['String']>;
+  previous?: Maybe<Scalars['String']>;
 };
 
 export type PaymentInput = {
@@ -5327,6 +5387,7 @@ export type Query = {
   findAllPractices: PracticesPayload;
   findAllPublicFacility: FacilitiesPayload;
   findAllReactions: ReactionsPayload;
+  findAllRoom: FindAllRoomPayload;
   findAllSchedules: SchedulesPayload;
   findAllSections: FindAllSectionsPayload;
   findAllServices: ServicesPayload;
@@ -5403,6 +5464,7 @@ export type Query = {
   getPracticesUser: PracticeUsersPayload;
   getPublicForm: FormPayload;
   getRole: RolePayload;
+  getRoom: RoomPayload;
   getSchedule: SchedulePayload;
   getService: ServicePayload;
   getShortUrl: ShortUrlResponse;
@@ -5700,6 +5762,11 @@ export type QueryFindAllPublicFacilityArgs = {
 
 export type QueryFindAllReactionsArgs = {
   reactionInput: ReactionInput;
+};
+
+
+export type QueryFindAllRoomArgs = {
+  findAllRoomInput: FindAllRoomInput;
 };
 
 
@@ -6063,6 +6130,11 @@ export type QueryGetRoleArgs = {
 };
 
 
+export type QueryGetRoomArgs = {
+  getRoomInput: GetRoomInput;
+};
+
+
 export type QueryGetScheduleArgs = {
   getSchedule: GetSchedule;
 };
@@ -6418,6 +6490,10 @@ export type RemoveRole = {
   id?: Maybe<Scalars['String']>;
 };
 
+export type RemoveRoomInput = {
+  id: Scalars['String'];
+};
+
 export type RemoveSchedule = {
   id: Scalars['String'];
 };
@@ -6560,6 +6636,23 @@ export type RolesPayload = {
   pagination?: Maybe<PaginationPayload>;
   response?: Maybe<ResponsePayload>;
   roles?: Maybe<Array<Maybe<Role>>>;
+};
+
+export type Room = {
+  __typename?: 'Room';
+  createdAt: Scalars['String'];
+  facility?: Maybe<Facility>;
+  facilityId?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  number?: Maybe<Scalars['String']>;
+  updatedAt: Scalars['String'];
+};
+
+export type RoomPayload = {
+  __typename?: 'RoomPayload';
+  response?: Maybe<ResponsePayloadResponse>;
+  room?: Maybe<Room>;
 };
 
 /** The patient's sexual orientation type assigned */
@@ -7086,8 +7179,10 @@ export type SuperBillPayload = {
   __typename?: 'SuperBillPayload';
   appointmentInfo?: Maybe<Appointment>;
   billingInfo?: Maybe<Billing>;
+  cptCodes?: Maybe<Array<CptCodes>>;
   insuranceDetail?: Maybe<Policy>;
   patientInfo?: Maybe<Patient>;
+  paymentInfo?: Maybe<PaymentInfo>;
   policyHolderInfo?: Maybe<PolicyHolder>;
   providerInfo?: Maybe<Doctor>;
   response?: Maybe<ResponsePayload>;
@@ -7985,6 +8080,11 @@ export type UpdateProblemInput = {
   problemType?: Maybe<ProblemType>;
 };
 
+export type UpdateProblemNotesInput = {
+  id?: Maybe<Scalars['String']>;
+  notes?: Maybe<Scalars['String']>;
+};
+
 export type UpdateProblemSignedInput = {
   id?: Maybe<Scalars['String']>;
   isSigned?: Maybe<Scalars['Boolean']>;
@@ -8000,6 +8100,13 @@ export type UpdateRoleItemInput = {
   description?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
   role?: Maybe<Scalars['String']>;
+};
+
+export type UpdateRoomInput = {
+  facilityId?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  number?: Maybe<Scalars['String']>;
 };
 
 export type UpdateScheduleInput = {
@@ -8743,7 +8850,7 @@ export type GetSuperBillInfoQueryVariables = Exact<{
 }>;
 
 
-export type GetSuperBillInfoQuery = { __typename?: 'Query', getSuperBillInfo: { __typename?: 'SuperBillPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, appointmentInfo?: { __typename?: 'Appointment', scheduleStartDateTime?: string | null } | null, providerInfo?: { __typename?: 'Doctor', firstName?: string | null, lastName?: string | null, npi?: string | null, facility?: { __typename?: 'Facility', serviceCode?: ServiceCode | null, practice?: { __typename?: 'Practice', name: string } | null } | null, contacts?: Array<{ __typename?: 'Contact', primaryContact?: boolean | null, phone?: string | null, address?: string | null, email?: string | null }> | null } | null, insuranceDetail?: { __typename?: 'Policy', memberId?: string | null, groupNumber?: string | null, insurance?: { __typename?: 'Insurance', payerId: string, payerName: string } | null } | null, policyHolderInfo?: { __typename?: 'PolicyHolder', firstName?: string | null, lastName?: string | null } | null, billingInfo?: { __typename?: 'Billing', claimDate?: string | null, codes?: Array<{ __typename?: 'Code', code?: string | null, codeType: CodeType, description?: string | null, price?: string | null, diagPointer?: string | null, m1?: string | null, m2?: string | null, m3?: string | null, m4?: string | null, unit?: string | null }> | null } | null, patientInfo?: { __typename?: 'Patient', firstName?: string | null, lastName?: string | null, dob?: string | null, contacts?: Array<{ __typename?: 'Contact', primaryContact?: boolean | null, address?: string | null, phone?: string | null, city?: string | null, state?: string | null, zipCode?: string | null }> | null } | null } };
+export type GetSuperBillInfoQuery = { __typename?: 'Query', getSuperBillInfo: { __typename?: 'SuperBillPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, appointmentInfo?: { __typename?: 'Appointment', scheduleStartDateTime?: string | null } | null, providerInfo?: { __typename?: 'Doctor', firstName?: string | null, lastName?: string | null } | null, insuranceDetail?: { __typename?: 'Policy', orderOfBenefit?: OrderOfBenefitType | null, memberId?: string | null, groupNumber?: string | null, insurance?: { __typename?: 'Insurance', payerId: string, payerName: string } | null } | null, policyHolderInfo?: { __typename?: 'PolicyHolder', firstName?: string | null, lastName?: string | null } | null, patientInfo?: { __typename?: 'Patient', firstName?: string | null, lastName?: string | null, dob?: string | null, contacts?: Array<{ __typename?: 'Contact', primaryContact?: boolean | null, address?: string | null, phone?: string | null, city?: string | null, state?: string | null, zipCode?: string | null }> | null } | null, cptCodes?: Array<{ __typename?: 'CPTCodes', id: string, code?: string | null, shortDescription?: string | null }> | null, paymentInfo?: { __typename?: 'PaymentInfo', deductible?: string | null, previous?: string | null, copay?: string | null } | null } };
 
 export type FindAllLiveClaimFeedsQueryVariables = Exact<{
   liveClaimFeedInput: LiveClaimFeedInput;
@@ -9042,7 +9149,7 @@ export type FindAllPatientProblemsWithMedicationQueryVariables = Exact<{
 }>;
 
 
-export type FindAllPatientProblemsWithMedicationQuery = { __typename?: 'Query', findAllPatientProblem: { __typename?: 'PatientProblemsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null, page?: number | null } | null, patientProblems?: Array<{ __typename?: 'PatientProblems', id: string, problemType: ProblemType, forOrders?: boolean | null, isSigned?: boolean | null, problemSeverity: ProblemSeverity, problemStartDate?: string | null, note?: string | null, appointmentId?: string | null, ICDCode?: { __typename: 'ICDCodes', id: string, code: string, description?: string | null } | null, patientMedications?: Array<{ __typename?: 'PatientMedication', id: string, isSigned?: boolean | null, medication?: { __typename?: 'Medications', id: string, fullName?: string | null, termType?: string | null, rxNumber?: string | null, createdAt?: string | null, updatedAt?: string | null } | null }> | null, labTests?: Array<{ __typename?: 'LabTests', id: string, isSigned?: boolean | null, test?: { __typename?: 'LoincCodes', id: string, component?: string | null } | null }> | null, snowMedCode?: { __typename?: 'SnoMedCodes', id: string, referencedComponentId?: string | null } | null } | null> | null } };
+export type FindAllPatientProblemsWithMedicationQuery = { __typename?: 'Query', findAllPatientProblem: { __typename?: 'PatientProblemsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null, page?: number | null } | null, patientProblems?: Array<{ __typename?: 'PatientProblems', id: string, problemType: ProblemType, forOrders?: boolean | null, isSigned?: boolean | null, problemSeverity: ProblemSeverity, problemStartDate?: string | null, apNotes?: string | null, note?: string | null, appointmentId?: string | null, ICDCode?: { __typename: 'ICDCodes', id: string, code: string, description?: string | null } | null, patientMedications?: Array<{ __typename?: 'PatientMedication', id: string, isSigned?: boolean | null, medication?: { __typename?: 'Medications', id: string, fullName?: string | null, termType?: string | null, rxNumber?: string | null, createdAt?: string | null, updatedAt?: string | null } | null }> | null, labTests?: Array<{ __typename?: 'LabTests', id: string, isSigned?: boolean | null, test?: { __typename?: 'LoincCodes', id: string, component?: string | null } | null }> | null, snowMedCode?: { __typename?: 'SnoMedCodes', id: string, referencedComponentId?: string | null } | null } | null> | null } };
 
 export type GetPatientProblemQueryVariables = Exact<{
   getPatientProblem: GetPatientProblem;
@@ -9071,6 +9178,13 @@ export type UpdatePatientProblemSignedMutationVariables = Exact<{
 
 
 export type UpdatePatientProblemSignedMutation = { __typename?: 'Mutation', updatePatientProblemSigned: { __typename?: 'PatientProblemPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null } };
+
+export type UpdatePatientProblemNotesMutationVariables = Exact<{
+  updateProblemNotesInput: UpdateProblemNotesInput;
+}>;
+
+
+export type UpdatePatientProblemNotesMutation = { __typename?: 'Mutation', updatePatientProblemNotes: { __typename?: 'PatientProblemPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null } };
 
 export type RemovePatientProblemMutationVariables = Exact<{
   removeProblem: RemoveProblem;
@@ -10206,6 +10320,41 @@ export type FindAllPermissionQueryVariables = Exact<{
 
 
 export type FindAllPermissionQuery = { __typename?: 'Query', findAllPermissions: { __typename?: 'PermissionsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, permissions?: Array<{ __typename?: 'Permission', id: string, name?: string | null, moduleType?: string | null, status?: boolean | null } | null> | null } };
+
+export type GetRoomQueryVariables = Exact<{
+  getRoomInput: GetRoomInput;
+}>;
+
+
+export type GetRoomQuery = { __typename?: 'Query', getRoom: { __typename?: 'RoomPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, room?: { __typename?: 'Room', id: string, name?: string | null, number?: string | null, facility?: { __typename?: 'Facility', id: string, name: string } | null } | null } };
+
+export type FindAllRoomQueryVariables = Exact<{
+  findAllRoomInput: FindAllRoomInput;
+}>;
+
+
+export type FindAllRoomQuery = { __typename?: 'Query', findAllRoom: { __typename?: 'FindAllRoomPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, rooms?: Array<{ __typename?: 'Room', id: string, name?: string | null, number?: string | null, facility?: { __typename?: 'Facility', id: string, name: string } | null }> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
+
+export type CreateRoomMutationVariables = Exact<{
+  createRoomInput: CreateRoomInput;
+}>;
+
+
+export type CreateRoomMutation = { __typename?: 'Mutation', createRoom: { __typename?: 'RoomPayload', response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null, room?: { __typename?: 'Room', id: string } | null } };
+
+export type UpdateRoomMutationVariables = Exact<{
+  updateRoomInput: UpdateRoomInput;
+}>;
+
+
+export type UpdateRoomMutation = { __typename?: 'Mutation', updateRoom: { __typename?: 'RoomPayload', response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null, room?: { __typename?: 'Room', id: string } | null } };
+
+export type RemoveRoomMutationVariables = Exact<{
+  removeRoomInput: RemoveRoomInput;
+}>;
+
+
+export type RemoveRoomMutation = { __typename?: 'Mutation', removeRoom: { __typename?: 'RoomPayload', response?: { __typename?: 'ResponsePayloadResponse', error?: string | null, status?: number | null, message?: string | null } | null, room?: { __typename?: 'Room', id: string } | null } };
 
 export type CreateScheduleMutationVariables = Exact<{
   createScheduleInput: CreateScheduleInput;
@@ -13050,48 +13199,21 @@ export const GetSuperBillInfoDocument = gql`
       scheduleStartDateTime
     }
     providerInfo {
-      facility {
-        practice {
-          name
-        }
-        serviceCode
-      }
-      contacts {
-        primaryContact
-        phone
-        address
-        email
-      }
       firstName
       lastName
-      npi
     }
     insuranceDetail {
       insurance {
         payerId
         payerName
       }
+      orderOfBenefit
       memberId
       groupNumber
     }
     policyHolderInfo {
       firstName
       lastName
-    }
-    billingInfo {
-      claimDate
-      codes {
-        code
-        codeType
-        description
-        price
-        diagPointer
-        m1
-        m2
-        m3
-        m4
-        unit
-      }
     }
     patientInfo {
       firstName
@@ -13105,6 +13227,16 @@ export const GetSuperBillInfoDocument = gql`
         zipCode
       }
       dob
+    }
+    cptCodes {
+      id
+      code
+      shortDescription
+    }
+    paymentInfo {
+      deductible
+      previous
+      copay
     }
   }
 }
@@ -15393,6 +15525,7 @@ export const FindAllPatientProblemsWithMedicationDocument = gql`
       isSigned
       problemSeverity
       problemStartDate
+      apNotes
       note
       ICDCode {
         __typename
@@ -15624,6 +15757,42 @@ export function useUpdatePatientProblemSignedMutation(baseOptions?: Apollo.Mutat
 export type UpdatePatientProblemSignedMutationHookResult = ReturnType<typeof useUpdatePatientProblemSignedMutation>;
 export type UpdatePatientProblemSignedMutationResult = Apollo.MutationResult<UpdatePatientProblemSignedMutation>;
 export type UpdatePatientProblemSignedMutationOptions = Apollo.BaseMutationOptions<UpdatePatientProblemSignedMutation, UpdatePatientProblemSignedMutationVariables>;
+export const UpdatePatientProblemNotesDocument = gql`
+    mutation UpdatePatientProblemNotes($updateProblemNotesInput: UpdateProblemNotesInput!) {
+  updatePatientProblemNotes(updateProblemNotesInput: $updateProblemNotesInput) {
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+export type UpdatePatientProblemNotesMutationFn = Apollo.MutationFunction<UpdatePatientProblemNotesMutation, UpdatePatientProblemNotesMutationVariables>;
+
+/**
+ * __useUpdatePatientProblemNotesMutation__
+ *
+ * To run a mutation, you first call `useUpdatePatientProblemNotesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePatientProblemNotesMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePatientProblemNotesMutation, { data, loading, error }] = useUpdatePatientProblemNotesMutation({
+ *   variables: {
+ *      updateProblemNotesInput: // value for 'updateProblemNotesInput'
+ *   },
+ * });
+ */
+export function useUpdatePatientProblemNotesMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePatientProblemNotesMutation, UpdatePatientProblemNotesMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdatePatientProblemNotesMutation, UpdatePatientProblemNotesMutationVariables>(UpdatePatientProblemNotesDocument, options);
+      }
+export type UpdatePatientProblemNotesMutationHookResult = ReturnType<typeof useUpdatePatientProblemNotesMutation>;
+export type UpdatePatientProblemNotesMutationResult = Apollo.MutationResult<UpdatePatientProblemNotesMutation>;
+export type UpdatePatientProblemNotesMutationOptions = Apollo.BaseMutationOptions<UpdatePatientProblemNotesMutation, UpdatePatientProblemNotesMutationVariables>;
 export const RemovePatientProblemDocument = gql`
     mutation RemovePatientProblem($removeProblem: RemoveProblem!) {
   removePatientProblem(removeProblem: $removeProblem) {
@@ -23860,6 +24029,226 @@ export function useFindAllPermissionLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type FindAllPermissionQueryHookResult = ReturnType<typeof useFindAllPermissionQuery>;
 export type FindAllPermissionLazyQueryHookResult = ReturnType<typeof useFindAllPermissionLazyQuery>;
 export type FindAllPermissionQueryResult = Apollo.QueryResult<FindAllPermissionQuery, FindAllPermissionQueryVariables>;
+export const GetRoomDocument = gql`
+    query GetRoom($getRoomInput: GetRoomInput!) {
+  getRoom(getRoomInput: $getRoomInput) {
+    response {
+      status
+      error
+      message
+    }
+    room {
+      id
+      name
+      number
+      facility {
+        id
+        name
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetRoomQuery__
+ *
+ * To run a query within a React component, call `useGetRoomQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRoomQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetRoomQuery({
+ *   variables: {
+ *      getRoomInput: // value for 'getRoomInput'
+ *   },
+ * });
+ */
+export function useGetRoomQuery(baseOptions: Apollo.QueryHookOptions<GetRoomQuery, GetRoomQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetRoomQuery, GetRoomQueryVariables>(GetRoomDocument, options);
+      }
+export function useGetRoomLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRoomQuery, GetRoomQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetRoomQuery, GetRoomQueryVariables>(GetRoomDocument, options);
+        }
+export type GetRoomQueryHookResult = ReturnType<typeof useGetRoomQuery>;
+export type GetRoomLazyQueryHookResult = ReturnType<typeof useGetRoomLazyQuery>;
+export type GetRoomQueryResult = Apollo.QueryResult<GetRoomQuery, GetRoomQueryVariables>;
+export const FindAllRoomDocument = gql`
+    query FindAllRoom($findAllRoomInput: FindAllRoomInput!) {
+  findAllRoom(findAllRoomInput: $findAllRoomInput) {
+    response {
+      status
+      error
+      message
+    }
+    rooms {
+      id
+      name
+      number
+      facility {
+        id
+        name
+      }
+    }
+    pagination {
+      page
+      totalPages
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllRoomQuery__
+ *
+ * To run a query within a React component, call `useFindAllRoomQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllRoomQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllRoomQuery({
+ *   variables: {
+ *      findAllRoomInput: // value for 'findAllRoomInput'
+ *   },
+ * });
+ */
+export function useFindAllRoomQuery(baseOptions: Apollo.QueryHookOptions<FindAllRoomQuery, FindAllRoomQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllRoomQuery, FindAllRoomQueryVariables>(FindAllRoomDocument, options);
+      }
+export function useFindAllRoomLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllRoomQuery, FindAllRoomQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllRoomQuery, FindAllRoomQueryVariables>(FindAllRoomDocument, options);
+        }
+export type FindAllRoomQueryHookResult = ReturnType<typeof useFindAllRoomQuery>;
+export type FindAllRoomLazyQueryHookResult = ReturnType<typeof useFindAllRoomLazyQuery>;
+export type FindAllRoomQueryResult = Apollo.QueryResult<FindAllRoomQuery, FindAllRoomQueryVariables>;
+export const CreateRoomDocument = gql`
+    mutation CreateRoom($createRoomInput: CreateRoomInput!) {
+  createRoom(createRoomInput: $createRoomInput) {
+    response {
+      error
+      status
+      message
+    }
+    room {
+      id
+    }
+  }
+}
+    `;
+export type CreateRoomMutationFn = Apollo.MutationFunction<CreateRoomMutation, CreateRoomMutationVariables>;
+
+/**
+ * __useCreateRoomMutation__
+ *
+ * To run a mutation, you first call `useCreateRoomMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateRoomMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createRoomMutation, { data, loading, error }] = useCreateRoomMutation({
+ *   variables: {
+ *      createRoomInput: // value for 'createRoomInput'
+ *   },
+ * });
+ */
+export function useCreateRoomMutation(baseOptions?: Apollo.MutationHookOptions<CreateRoomMutation, CreateRoomMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateRoomMutation, CreateRoomMutationVariables>(CreateRoomDocument, options);
+      }
+export type CreateRoomMutationHookResult = ReturnType<typeof useCreateRoomMutation>;
+export type CreateRoomMutationResult = Apollo.MutationResult<CreateRoomMutation>;
+export type CreateRoomMutationOptions = Apollo.BaseMutationOptions<CreateRoomMutation, CreateRoomMutationVariables>;
+export const UpdateRoomDocument = gql`
+    mutation UpdateRoom($updateRoomInput: UpdateRoomInput!) {
+  updateRoom(updateRoomInput: $updateRoomInput) {
+    response {
+      error
+      status
+      message
+    }
+    room {
+      id
+    }
+  }
+}
+    `;
+export type UpdateRoomMutationFn = Apollo.MutationFunction<UpdateRoomMutation, UpdateRoomMutationVariables>;
+
+/**
+ * __useUpdateRoomMutation__
+ *
+ * To run a mutation, you first call `useUpdateRoomMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateRoomMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateRoomMutation, { data, loading, error }] = useUpdateRoomMutation({
+ *   variables: {
+ *      updateRoomInput: // value for 'updateRoomInput'
+ *   },
+ * });
+ */
+export function useUpdateRoomMutation(baseOptions?: Apollo.MutationHookOptions<UpdateRoomMutation, UpdateRoomMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateRoomMutation, UpdateRoomMutationVariables>(UpdateRoomDocument, options);
+      }
+export type UpdateRoomMutationHookResult = ReturnType<typeof useUpdateRoomMutation>;
+export type UpdateRoomMutationResult = Apollo.MutationResult<UpdateRoomMutation>;
+export type UpdateRoomMutationOptions = Apollo.BaseMutationOptions<UpdateRoomMutation, UpdateRoomMutationVariables>;
+export const RemoveRoomDocument = gql`
+    mutation RemoveRoom($removeRoomInput: RemoveRoomInput!) {
+  removeRoom(removeRoomInput: $removeRoomInput) {
+    response {
+      error
+      status
+      message
+    }
+    room {
+      id
+    }
+  }
+}
+    `;
+export type RemoveRoomMutationFn = Apollo.MutationFunction<RemoveRoomMutation, RemoveRoomMutationVariables>;
+
+/**
+ * __useRemoveRoomMutation__
+ *
+ * To run a mutation, you first call `useRemoveRoomMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveRoomMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeRoomMutation, { data, loading, error }] = useRemoveRoomMutation({
+ *   variables: {
+ *      removeRoomInput: // value for 'removeRoomInput'
+ *   },
+ * });
+ */
+export function useRemoveRoomMutation(baseOptions?: Apollo.MutationHookOptions<RemoveRoomMutation, RemoveRoomMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveRoomMutation, RemoveRoomMutationVariables>(RemoveRoomDocument, options);
+      }
+export type RemoveRoomMutationHookResult = ReturnType<typeof useRemoveRoomMutation>;
+export type RemoveRoomMutationResult = Apollo.MutationResult<RemoveRoomMutation>;
+export type RemoveRoomMutationOptions = Apollo.BaseMutationOptions<RemoveRoomMutation, RemoveRoomMutationVariables>;
 export const CreateScheduleDocument = gql`
     mutation CreateSchedule($createScheduleInput: CreateScheduleInput!) {
   createSchedule(createScheduleInput: $createScheduleInput) {

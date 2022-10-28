@@ -1,0 +1,90 @@
+query GetRoom($getRoomInput: GetRoomInput!) {
+  getRoom(getRoomInput: $getRoomInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    room {
+      id
+      name
+      number
+
+      facility {
+        id
+        name
+      }
+    }
+  }
+}
+
+query FindAllRoom($findAllRoomInput: FindAllRoomInput!) {
+  findAllRoom(findAllRoomInput: $findAllRoomInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    rooms {
+      id
+      name
+      number
+
+      facility {
+        id
+        name
+      }
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+  }
+}
+
+# mutations
+
+mutation CreateRoom($createRoomInput: CreateRoomInput!) {
+  createRoom(createRoomInput: $createRoomInput) {
+    response {
+      error
+      status
+      message
+    }
+
+    room {
+      id
+    }
+  }
+}
+
+mutation UpdateRoom($updateRoomInput: UpdateRoomInput!) {
+  updateRoom(updateRoomInput: $updateRoomInput) {
+    response {
+      error
+      status
+      message
+    }
+
+    room {
+      id
+    }
+  }
+}
+
+mutation RemoveRoom($removeRoomInput: RemoveRoomInput!) {
+  removeRoom(removeRoomInput: $removeRoomInput) {
+    response {
+      error
+      status
+      message
+    }
+
+    room {
+      id
+    }
+  }
+}
