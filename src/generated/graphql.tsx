@@ -626,6 +626,7 @@ export type CptCodes = {
   cvxCodes?: Maybe<Array<Cvx>>;
   description?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  isDeleted?: Maybe<Scalars['Boolean']>;
   longDescription?: Maybe<Scalars['String']>;
   priority?: Maybe<Scalars['Int']>;
   shortDescription?: Maybe<Scalars['String']>;
@@ -2733,6 +2734,7 @@ export type IcdCodes = {
   createdAt?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  isDeleted?: Maybe<Scalars['Boolean']>;
   priority?: Maybe<Scalars['Int']>;
   systematic?: Maybe<Scalars['Boolean']>;
   updatedAt?: Maybe<Scalars['String']>;
@@ -2745,6 +2747,7 @@ export type IcdCodesWithSnowMedCode = {
   createdAt?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  isDeleted?: Maybe<Scalars['Boolean']>;
   priority?: Maybe<Scalars['Int']>;
   snoMedCode?: Maybe<SnoMedCodes>;
   systematic?: Maybe<Scalars['Boolean']>;
@@ -4382,6 +4385,7 @@ export type Patient = {
   prefferedName?: Maybe<Scalars['String']>;
   previousFirstName?: Maybe<Scalars['String']>;
   previouslastName?: Maybe<Scalars['String']>;
+  primaryContact?: Maybe<Contact>;
   primaryDoctor?: Maybe<Doctor>;
   privacyNotice: Scalars['Boolean'];
   profileAttachment?: Maybe<Scalars['String']>;
@@ -4779,6 +4783,13 @@ export type PatientsPayload = {
   pagination?: Maybe<PaginationPayload>;
   patients?: Maybe<Array<Maybe<Patient>>>;
   response?: Maybe<ResponsePayload>;
+};
+
+export type PaymentInfo = {
+  __typename?: 'PaymentInfo';
+  copay?: Maybe<Scalars['String']>;
+  deductible?: Maybe<Scalars['String']>;
+  previous?: Maybe<Scalars['String']>;
 };
 
 export type PaymentInput = {
@@ -7086,8 +7097,10 @@ export type SuperBillPayload = {
   __typename?: 'SuperBillPayload';
   appointmentInfo?: Maybe<Appointment>;
   billingInfo?: Maybe<Billing>;
+  cptCodes?: Maybe<Array<CptCodes>>;
   insuranceDetail?: Maybe<Policy>;
   patientInfo?: Maybe<Patient>;
+  paymentInfo?: Maybe<PaymentInfo>;
   policyHolderInfo?: Maybe<PolicyHolder>;
   providerInfo?: Maybe<Doctor>;
   response?: Maybe<ResponsePayload>;
@@ -8743,7 +8756,7 @@ export type GetSuperBillInfoQueryVariables = Exact<{
 }>;
 
 
-export type GetSuperBillInfoQuery = { __typename?: 'Query', getSuperBillInfo: { __typename?: 'SuperBillPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, appointmentInfo?: { __typename?: 'Appointment', scheduleStartDateTime?: string | null } | null, providerInfo?: { __typename?: 'Doctor', firstName?: string | null, lastName?: string | null, npi?: string | null, facility?: { __typename?: 'Facility', serviceCode?: ServiceCode | null, practice?: { __typename?: 'Practice', name: string } | null } | null, contacts?: Array<{ __typename?: 'Contact', primaryContact?: boolean | null, phone?: string | null, address?: string | null, email?: string | null }> | null } | null, insuranceDetail?: { __typename?: 'Policy', memberId?: string | null, groupNumber?: string | null, insurance?: { __typename?: 'Insurance', payerId: string, payerName: string } | null } | null, policyHolderInfo?: { __typename?: 'PolicyHolder', firstName?: string | null, lastName?: string | null } | null, billingInfo?: { __typename?: 'Billing', claimDate?: string | null, codes?: Array<{ __typename?: 'Code', code?: string | null, codeType: CodeType, description?: string | null, price?: string | null, diagPointer?: string | null, m1?: string | null, m2?: string | null, m3?: string | null, m4?: string | null, unit?: string | null }> | null } | null, patientInfo?: { __typename?: 'Patient', firstName?: string | null, lastName?: string | null, dob?: string | null, contacts?: Array<{ __typename?: 'Contact', primaryContact?: boolean | null, address?: string | null, phone?: string | null, city?: string | null, state?: string | null, zipCode?: string | null }> | null } | null } };
+export type GetSuperBillInfoQuery = { __typename?: 'Query', getSuperBillInfo: { __typename?: 'SuperBillPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, appointmentInfo?: { __typename?: 'Appointment', scheduleStartDateTime?: string | null } | null, providerInfo?: { __typename?: 'Doctor', firstName?: string | null, lastName?: string | null } | null, insuranceDetail?: { __typename?: 'Policy', orderOfBenefit?: OrderOfBenefitType | null, memberId?: string | null, groupNumber?: string | null, insurance?: { __typename?: 'Insurance', payerId: string, payerName: string } | null } | null, policyHolderInfo?: { __typename?: 'PolicyHolder', firstName?: string | null, lastName?: string | null } | null, patientInfo?: { __typename?: 'Patient', firstName?: string | null, lastName?: string | null, dob?: string | null, contacts?: Array<{ __typename?: 'Contact', primaryContact?: boolean | null, address?: string | null, phone?: string | null, city?: string | null, state?: string | null, zipCode?: string | null }> | null } | null, cptCodes?: Array<{ __typename?: 'CPTCodes', id: string, code?: string | null, shortDescription?: string | null }> | null, paymentInfo?: { __typename?: 'PaymentInfo', deductible?: string | null, previous?: string | null, copay?: string | null } | null } };
 
 export type FindAllLiveClaimFeedsQueryVariables = Exact<{
   liveClaimFeedInput: LiveClaimFeedInput;
@@ -13050,48 +13063,21 @@ export const GetSuperBillInfoDocument = gql`
       scheduleStartDateTime
     }
     providerInfo {
-      facility {
-        practice {
-          name
-        }
-        serviceCode
-      }
-      contacts {
-        primaryContact
-        phone
-        address
-        email
-      }
       firstName
       lastName
-      npi
     }
     insuranceDetail {
       insurance {
         payerId
         payerName
       }
+      orderOfBenefit
       memberId
       groupNumber
     }
     policyHolderInfo {
       firstName
       lastName
-    }
-    billingInfo {
-      claimDate
-      codes {
-        code
-        codeType
-        description
-        price
-        diagPointer
-        m1
-        m2
-        m3
-        m4
-        unit
-      }
     }
     patientInfo {
       firstName
@@ -13105,6 +13091,16 @@ export const GetSuperBillInfoDocument = gql`
         zipCode
       }
       dob
+    }
+    cptCodes {
+      id
+      code
+      shortDescription
+    }
+    paymentInfo {
+      deductible
+      previous
+      copay
     }
   }
 }

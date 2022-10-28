@@ -181,24 +181,8 @@ query GetSuperBillInfo($superBillInput: SuperBillInput!) {
     }
 
     providerInfo {
-      facility {
-        practice {
-          name
-        }
-
-        serviceCode
-      }
-
-      contacts {
-        primaryContact
-        phone
-        address
-        email
-      }
-
       firstName
       lastName
-      npi
     }
 
     insuranceDetail {
@@ -206,6 +190,7 @@ query GetSuperBillInfo($superBillInput: SuperBillInput!) {
         payerId
         payerName
       }
+      orderOfBenefit
 
       memberId
       groupNumber
@@ -214,23 +199,6 @@ query GetSuperBillInfo($superBillInput: SuperBillInput!) {
     policyHolderInfo {
       firstName
       lastName
-    }
-
-    billingInfo {
-      claimDate
-
-      codes {
-        code
-        codeType
-        description
-        price
-        diagPointer
-        m1
-        m2
-        m3
-        m4
-        unit
-      }
     }
 
     patientInfo {
@@ -247,6 +215,18 @@ query GetSuperBillInfo($superBillInput: SuperBillInput!) {
       }
 
       dob
+    }
+
+    cptCodes {
+      id
+      code
+      shortDescription
+    }
+
+    paymentInfo {
+      deductible
+      previous
+      copay
     }
   }
 }
