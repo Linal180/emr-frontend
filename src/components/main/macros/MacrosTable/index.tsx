@@ -11,7 +11,7 @@ import MacroForm from '../MacroForm';
 //constants, styles, svgs
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from '../../../../assets/svgs';
 import {
-  ACTIONS, ADD_NEW_TEXT, CVX_TEXT, DASHES, DELETE_MACRO_DESCRIPTION, DESCRIPTION, EIGHT_PAGE_LIMIT, MACRO, NAME, PAGE_LIMIT, SECTION, TemplateType
+  ACTIONS, ADD_NEW_TEXT, DASHES, DELETE_MACRO_DESCRIPTION, DESCRIPTION, EIGHT_PAGE_LIMIT, MACRO, NAME, PAGE_LIMIT, SECTION, TemplateType
 } from '../../../../constants';
 import { MacrosPayload, useFetchAllMacrosLazyQuery, useRemoveMacroMutation } from '../../../../generated/graphql';
 import { Action, ActionType, initialState, macrosReducer, State } from '../../../../reducers/macrosReducer';
@@ -216,7 +216,7 @@ const CvxTable: FC = (): JSX.Element => {
       </Grid>
 
       <ConfirmationModal
-        title={CVX_TEXT}
+        title={MACRO}
         isOpen={openDelete}
         isLoading={delLoading}
         description={DELETE_MACRO_DESCRIPTION}
