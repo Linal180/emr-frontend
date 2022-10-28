@@ -74,9 +74,13 @@ const CoverageDetailsComponent = () => {
   }, [fetchPolicyEligibility])
 
   const getDetailCoverageInfo = useCallback((policyCoverages: PolicyCoverage[], key: keyof PolicyCoverage) => {
-    return policyCoverages?.reduce<Record<string, PolicyCoverage[]>>((acc, value) => {
+    const policyCoverageDetail = policyCoverages?.reduce<Record<string, PolicyCoverage[]>>((acc, value) => {
       const { [key]: keyToFilter } = value || {}
       const description = keyToFilter as string
+      if (description === 'Urgent Care' || description === 'Primary Care') {
+        return acc
+      }
+
       if (acc[description]) {
         acc[description] = [...acc[description], value]
         return acc
@@ -84,6 +88,24 @@ const CoverageDetailsComponent = () => {
       acc[description] = [value]
       return acc
     }, {})
+
+    const urgentCareInfo = policyCoverages?.reduce<Record<string, PolicyCoverage[]>>((acc, value) => {
+      const { [key]: keyToFilter } = value || {}
+      const description = keyToFilter as string
+      if (description === 'Urgent Care' || description === 'Primary Care') {
+        if (acc[description]) {
+          acc[description] = [...acc[description], value]
+          return acc
+        }
+        acc[description] = [value]
+        return acc
+      }
+
+      return acc
+    }, {})
+
+    return { ...urgentCareInfo, ...policyCoverageDetail  }
+
   }, [])
 
   const coverageSummary = useMemo(() => {
@@ -188,7 +210,7 @@ const CoverageDetailsComponent = () => {
                 <TableBody>
                   {detailCoverageInfo && Object.keys(detailCoverageInfo).map((coverageKey, index) => {
                     const coverageInfo = detailCoverageInfo[coverageKey]
-
+                    console.log("coverageKey", coverageKey)
                     return (
                       <Fragment key={index}>
                         <TableRow className='border-bottom'>

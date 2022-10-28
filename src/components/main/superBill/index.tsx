@@ -1,17 +1,17 @@
 // packages block
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 // component block
 import Loader from '../../common/Loader';
 // constants, history, styling block
 import { Document, Page, PDFViewer, StyleSheet, Text, View } from '@react-pdf/renderer';
 import { useParams } from 'react-router';
 import {
-  ADDRESS, BALANCE_DUE, CODE, COPAY_TEXT, DEDUCTIBLE, DOB_TEXT, DOS, INSURANCE_NAME, INSURANCE_TYPE, MEMBER_ID, NAME,
-  PATIENT_NAME, PHONE, PROCEDURE_CODES, SEX,
+  ADDRESS, BALANCE_DUE, CODE, COPAY_TEXT, DASHES, DEDUCTIBLE, DOB_TEXT, DOS, INSURANCE_NAME, INSURANCE_TYPE, MEMBER_ID, NAME,
+  PATIENT_NAME, PHONE, PROCEDURE_CODES, SEX
 } from '../../../constants';
-import { CodeType, SuperBillPayload, useGetSuperBillInfoLazyQuery } from '../../../generated/graphql';
+import { SuperBillPayload, useGetSuperBillInfoLazyQuery } from '../../../generated/graphql';
 import { ParamsType } from '../../../interfacesTypes';
-import { formatAddress, formatPhone, getFormatDateString, } from '../../../utils';
+import { formatAddress, formatPhone, getDateWithDayAndTime, getFormatDateString } from '../../../utils';
 
 // Create styles
 const styles = StyleSheet.create({
@@ -24,6 +24,10 @@ const styles = StyleSheet.create({
   },
   tableRow: {
     flexDirection: "row",
+  },
+  tableColumn: {
+    flexDirection: "row",
+    flexWrap: 'wrap',
   },
   title: {
     minHeight: '30px',
@@ -79,7 +83,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'baseline',
-    // border: '1px solid red',
   },
   borderStyle: {
     borderStyle: 'solid',
@@ -129,6 +132,9 @@ const styles = StyleSheet.create({
   ml10: {
     marginLeft: '10px',
   },
+  mt20: {
+    marginTop: '20px',
+  },
   p10: {
     padding: '10px',
   },
@@ -168,28 +174,28 @@ const SuperBillComponent = (): JSX.Element => {
     appointmentId && fetchBillingDetails()
   }, [appointmentId, fetchBillingDetails])
 
+  const { patientInfo, appointmentInfo, providerInfo, insuranceDetail, cptCodes, paymentInfo } = superBillInfo || {}
+
+  const transformedCptCodes = useMemo(() => {
+    var R = [];
+    for (var i = 0; i < (cptCodes?.length || 0); i += 10)
+      R.push(cptCodes?.slice(i, i + 10));
+    return R;
+  }, [cptCodes])
+
+  console.log("transformedCptCodes", transformedCptCodes)
+
   if (getSuperBillInfoLoading) {
     return <Loader loading loaderText='Fetching Super Bill Info...' />
   }
 
-  const { patientInfo, appointmentInfo, providerInfo, billingInfo } = superBillInfo || {}
+  const { insurance, orderOfBenefit, memberId } = insuranceDetail || {}
+  const { payerName } = insurance || {}
   const { scheduleStartDateTime } = appointmentInfo || {}
-  const { facility, contacts: providerContacts } = providerInfo || {}
-  const { email: providerEmail, phone: providerPhone } = providerContacts?.find((providerContact) => providerContact?.primaryContact) || {}
-  const { practice, serviceCode } = facility || {}
-  const { name: practiceName } = practice || {}
+  const { firstName: doctorFirstName, lastName: doctorLastName } = providerInfo || {}
   const { firstName: patientFirstName, lastName: patientLastName, contacts: patientContacts, dob } = patientInfo || {}
   const { address: patientAddress, state: patientState, zipCode: patientZipCode, phone: patientPhone, city: patientCity } = patientContacts?.find((providerContact) => providerContact?.primaryContact) || {}
-  const { codes, claimDate } = billingInfo || {}
-  const diagnosesCodes = codes?.filter((code) => code.codeType === CodeType.Icd_10Code) ?? []
-  const treatmentCodes = codes?.filter((code) => code.codeType === CodeType.CptCode) ?? []
-
-  const totalCharges = codes?.reduce((acc, code) => {
-    if (code.codeType === CodeType.CptCode) {
-      return acc += Number(code?.price || 0)
-    }
-    return acc
-  }, 0)
+  const { copay, deductible, previous } = paymentInfo || {}
 
   return (
     <>
@@ -257,46 +263,46 @@ const SuperBillComponent = (): JSX.Element => {
                 <View style={[styles.w30,]}>
                   <View>
                     <Text style={[styles.fieldTitle]}>{'Physician Name'}</Text>
-                    <Text style={[styles.fieldText]}>{patientFirstName} {patientLastName}</Text>
+                    <Text style={[styles.fieldText]}>{doctorFirstName} {doctorLastName}</Text>
                   </View>
 
                   <View>
                     <Text style={[styles.fieldTitle]}>{INSURANCE_NAME}</Text>
-                    <Text style={[styles.fieldText]}></Text>
+                    <Text style={[styles.fieldText]}>{payerName || DASHES}</Text>
                   </View>
 
                   <View style={styles.fieldRow3}>
                     <Text style={[styles.fieldTitle]}>{INSURANCE_TYPE} :</Text>
-                    <Text style={[styles.fieldText, styles.ml10]}></Text>
+                    <Text style={[styles.fieldText, styles.ml10]}>{orderOfBenefit}</Text>
                   </View>
 
                   <View style={styles.fieldRow3}>
                     <Text style={[styles.fieldTitle]}>{MEMBER_ID} :</Text>
-                    <Text style={[styles.fieldText, styles.ml10]}></Text>
+                    <Text style={[styles.fieldText, styles.ml10]}>{memberId || DASHES}</Text>
                   </View>
                 </View>
 
                 <View style={[styles.w5,]}></View>
 
                 <View style={[styles.w30,]}>
-                 <View style={styles.fieldRow3}>
+                  <View style={styles.fieldRow3}>
                     <Text style={[styles.fieldTitle]}>{DOS} :</Text>
-                    <Text style={[styles.fieldText, styles.ml10]}>09/21/2022</Text>
+                    <Text style={[styles.fieldText, styles.ml10]}>{getDateWithDayAndTime(scheduleStartDateTime || '')}</Text>
                   </View>
 
                   <View style={styles.fieldRow3}>
                     <Text style={[styles.fieldTitle]}>{BALANCE_DUE} :</Text>
-                    <Text style={[styles.fieldText, styles.ml10]}>$0.00</Text>
+                    <Text style={[styles.fieldText, styles.ml10]}>{previous || DASHES}</Text>
                   </View>
 
                   <View style={styles.fieldRow3}>
                     <Text style={[styles.fieldTitle]}>{DEDUCTIBLE} :</Text>
-                    <Text style={[styles.fieldText, styles.ml10]}></Text>
+                    <Text style={[styles.fieldText, styles.ml10]}>{deductible ? `$${deductible}` : DASHES}</Text>
                   </View>
 
                   <View style={styles.fieldRow3}>
                     <Text style={[styles.fieldTitle]}>{COPAY_TEXT} :</Text>
-                    <Text style={[styles.fieldText, styles.ml10]}>$0.00</Text>
+                    <Text style={[styles.fieldText, styles.ml10]}>{copay ? `$${copay}` : DASHES}</Text>
                   </View>
                 </View>
               </View>
@@ -316,31 +322,48 @@ const SuperBillComponent = (): JSX.Element => {
 
               {/* spacing-row */}
               <View style={styles.tableRow}>
-                <View style={{ height: '20px' }}>
+                <View style={{ height: '0px' }}>
                 </View>
               </View>
 
               {/* codes-row */}
-              <View style={[styles.tableRow,]}>
-                <View style={[styles.w30, styles.borderStyle, styles.borderRightWidth, styles.borderLeftWidth, styles.borderBottomWidth]}>
-                  <View style={[styles.bgLightGrey, styles.textCenter, styles.borderStyle, styles.borderTopWidth, styles.borderBottomWidth]}>
-                    <Text style={[styles.fieldTitle]}>{NAME}</Text>
-                  </View>
-                  <View style={[styles.p10]}>
-                    <Text style={[styles.fieldText]}>text here text here text here</Text>
-                  </View>
-                </View>
+              <View style={[styles.tableColumn,]}>
+                {transformedCptCodes?.map((cptCodes) => {
+                  return (
+                    <>
+                      <View style={[styles.w30]}>
+                        <View style={[styles.mt20, styles.bgLightGrey, styles.textCenter, styles.borderStyle, styles.borderTopWidth, styles.borderBottomWidth]}>
+                          <Text style={[styles.fieldTitle]}>{NAME}</Text>
+                        </View>
+                        {cptCodes?.slice(0, 25)?.map((code) => {
+                          const { shortDescription } = code || {}
+                          return (
+                            <View style={[styles.p10]}>
+                              <Text style={[styles.fieldText]}>{shortDescription}</Text>
+                            </View>
+                          )
+                        })}
 
-                <View style={[styles.w20, styles.borderStyle, styles.borderRightWidth, styles.borderBottomWidth]}>
-                  <View style={[styles.bgLightGrey, styles.textCenter, styles.borderStyle, styles.borderTopWidth, styles.borderBottomWidth]}>
-                    <Text style={styles.fieldTitle}>{CODE}</Text>
-                  </View>
-                  <View style={[styles.p10]}>
-                    <Text style={[styles.fieldText]}>code here</Text>
-                  </View>
-                </View>
+                      </View>
+                      <View style={[styles.w20]}>
+                        <View style={[styles.mt20, styles.bgLightGrey, styles.textCenter, styles.borderStyle, styles.borderTopWidth, styles.borderBottomWidth]}>
+                          <Text style={styles.fieldTitle}>{CODE}</Text>
+                        </View>
+                        {cptCodes?.slice(0, 25)?.map((code) => {
+                          const { code: codeName } = code || {}
+                          return (
+                            <View style={[styles.p10]}>
+                              <Text style={[styles.fieldText, styles.textCenter]}>{codeName}</Text>
+                            </View>
+                          )
+                        })}
+                      </View>
+                    </>
+                  )
+                })}
 
-                <View style={[styles.w30, styles.borderStyle, styles.borderRightWidth, styles.borderBottomWidth]}>
+
+                {/* <View style={[styles.w30, styles.borderStyle, styles.borderRightWidth, styles.borderBottomWidth]}>
                   <View style={[styles.bgLightGrey, styles.textCenter, styles.borderStyle, styles.borderTopWidth, styles.borderBottomWidth]}>
                     <Text style={[styles.fieldTitle]}>{NAME}</Text>
                   </View>
@@ -356,10 +379,10 @@ const SuperBillComponent = (): JSX.Element => {
                   <View style={[styles.p10]}>
                     <Text style={[styles.fieldText, styles.textCenter]}>code here</Text>
                   </View>
-                </View>
+                </View> */}
               </View>
 
-              <View><Text style={[styles.fieldText2]}>No Code Added</Text></View>
+              {!transformedCptCodes?.length && <View><Text style={[styles.fieldText2]}>No Code Added</Text></View>}
             </View>
           </Page>
         </Document>
