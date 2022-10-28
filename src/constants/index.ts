@@ -537,8 +537,8 @@ export const TO_CHART = "To Chart";
 export const SAVE_TEXT = "Save";
 export const HCFA_1500_FORM = "HCFA - 1500 Form"
 export const CLEAR_TEXT = "Clear";
-export const ALL_NORMAL="All Normal"
-export const NORMAL="Normal"
+export const ALL_NORMAL = "All Normal"
+export const NORMAL = "Normal"
 export const PUBLISH = "Publish";
 export const PUBLISHED = "Published";
 export const NOT_PUBLISHED = "Not Published";
@@ -4832,4 +4832,4 @@ export const STATUS_MAPPED = [
   }
 ]
 export const PROBLEMS_TABS = ['Common Terms']
-export const ORDERS_TABS = ['Medications', 'Lab Order', 'Imaging']
+export const ORDERS_TABS = ['Lab Order', 'Medications', 'Imaging']
