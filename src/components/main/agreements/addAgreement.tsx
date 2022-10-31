@@ -88,7 +88,12 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
 
         if (status && status === 200) {
           agreement && dispatch({ type: ActionType.SET_AGREEMENT_ID, agreementId: agreement.id })
-          dropZoneRef.current?.submit()
+          if (descriptionType === descriptionTypes[1]) { dropZoneRef.current?.submit() }
+          else {
+            Alert.success(CREATE_AGREEMENT_MESSAGE);
+            reset()
+            history.push(AGREEMENTS_ROUTE)
+          }
         }
       }
     }
@@ -106,11 +111,13 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
         const { status } = response
 
         if (status && status === 200) {
-          Alert.success(UPDATE_AGREEMENT_MESSAGE);
           agreement && dispatch({ type: ActionType.SET_AGREEMENT_ID, agreementId: agreement.id })
-          dropZoneRef.current?.submit()
-          reset()
-          history.push(AGREEMENTS_ROUTE)
+          if (descriptionType === descriptionTypes[1]) { dropZoneRef.current?.submit() }
+          else {
+            Alert.success(UPDATE_AGREEMENT_MESSAGE);
+            reset()
+            history.push(AGREEMENTS_ROUTE)
+          }
         }
       }
     }
@@ -185,6 +192,7 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
         });
       }
     }
+
     if ((descriptionType === descriptionTypes[0] && !agreementBody.length)) {
       dispatch({ type: ActionType.SET_BODY_STATUS, bodyStatus: true })
       return Alert.error(AGREEMENT_BODY_REQUIRED)
@@ -217,7 +225,7 @@ const AddAgreementComponent: FC<GeneralFormProps> = () => {
       removeAgreement({ variables: { agreementId } })
       Alert.error(errMsg);
     } else if (!open) {
-      Alert.success(CREATE_AGREEMENT_MESSAGE);
+      Alert.success(id ? UPDATE_AGREEMENT_MESSAGE : CREATE_AGREEMENT_MESSAGE);
       reset()
       history.push(AGREEMENTS_ROUTE)
     }
