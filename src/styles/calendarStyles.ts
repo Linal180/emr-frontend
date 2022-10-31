@@ -18,7 +18,8 @@ export const useCalendarStyles = makeStyles(() =>
     },
 
     cardContainer: {
-      minWidth: '520px',
+      width: '100%',
+      maxWidth: '520px',
       backgroundColor: WHITE,
       transform: "none",
       transition: `transform 400ms cubic-bezier(0, 0, 0.2, 1) 0ms`,

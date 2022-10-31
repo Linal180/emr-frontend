@@ -2,7 +2,7 @@
 import {
   Box, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton, InputBase, Typography
 } from "@material-ui/core";
-import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
+import { FC, Reducer, useCallback, useEffect, useReducer, useRef } from "react";
 // components block
 import MedicationModal from "./MedicationModal";
 // constants, interfaces, utils block 
@@ -12,16 +12,16 @@ import {
 } from "../../../../../constants";
 import { Medications, MedicationsPayload, useFindAllMedicationsLazyQuery } from "../../../../../generated/graphql";
 import { AddMedicationModalProps } from "../../../../../interfacesTypes";
-import {
-  Action, ActionType, chartReducer, initialState, State
-} from "../../../../../reducers/chartReducer";
+import { Action, ActionType, chartReducer, initialState, State } from "../../../../../reducers/chartReducer";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
 import { GREY_SEVEN } from "../../../../../theme";
 
 const AddMedication: FC<AddMedicationModalProps> = ({ isOpen = false, handleModalClose, fetch, handleAdd, alreadyAddedMedications }) => {
+  const observer = useRef<any>();
   const chartingClasses = useChartingStyles()
-  const [{ isSubModalOpen, selectedItem, searchQuery, searchedData }, dispatch] =
-    useReducer<Reducer<State, Action>>(chartReducer, initialState)
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(chartReducer, initialState);
+
+  const { isSubModalOpen, selectedItem, searchQuery, searchedData, page, totalPages } = state
 
   const closeSearchMenu = () => {
     dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: false })
@@ -41,26 +41,25 @@ const AddMedication: FC<AddMedicationModalProps> = ({ isOpen = false, handleModa
         const { findAllMedications } = data;
 
         if (findAllMedications) {
-          const { medications } = findAllMedications
-
+          const { medications, pagination } = findAllMedications;
+          const { totalPages } = pagination || {}
+          dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: totalPages || 0 })
           medications && dispatch({
             type: ActionType.SET_SEARCHED_DATA,
-            searchedData: medications as MedicationsPayload['medications']
+            searchedData: [...(searchedData || []), ...(medications ?? [])] as MedicationsPayload['medications']
           })
         }
       }
     }
   });
 
-  const handleMedicationSearch = useCallback(async (query: string) => {
+  const handleMedicationSearch = useCallback(async (page?: number, searchString?: string) => {
     try {
-      const queryString = query
-
       await getMedications({
         variables: {
           medicationInput: {
-            searchString: queryString,
-            paginationOptions: { page: 1, limit: PAGE_LIMIT }
+            searchString,
+            paginationOptions: { page: page || 1, limit: PAGE_LIMIT }
           }
         }
       })
@@ -68,10 +67,28 @@ const AddMedication: FC<AddMedicationModalProps> = ({ isOpen = false, handleModa
   }, [getMedications])
 
   useEffect(() => {
-    handleMedicationSearch('')
+    handleMedicationSearch()
   }, [handleMedicationSearch])
 
-  const handleSearch = useCallback(async (query: string, tabName?: string) => {
+  const lastElementRef = useCallback((node) => {
+    if (searchIcdCodesLoading) return;
+    if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && page <= totalPages) {
+        dispatch({ type: ActionType.SET_PAGE, page: page + 1 })
+        if (searchQuery.length > 2 || searchQuery.length === 0) {
+          handleMedicationSearch(page + 1, searchQuery)
+        }
+        else {
+          handleMedicationSearch(page + 1)
+        }
+      }
+    });
+    if (node) observer.current.observe(node);
+  }, [searchIcdCodesLoading, page, totalPages, handleMedicationSearch, searchQuery]);
+
+  const handleSearch = useCallback(async (query: string) => {
+    
     dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
     dispatch({
       type: ActionType.SET_SEARCHED_DATA,
@@ -79,7 +96,7 @@ const AddMedication: FC<AddMedicationModalProps> = ({ isOpen = false, handleModa
     })
 
     if (query.length > 2 || query.length === 0) {
-      handleMedicationSearch(query)
+      handleMedicationSearch(1, query)
     }
   }, [handleMedicationSearch])
 
@@ -93,38 +110,40 @@ const AddMedication: FC<AddMedicationModalProps> = ({ isOpen = false, handleModa
       <Box maxHeight={280} minHeight={280} className="overflowY-auto" display="flex"
         flexDirection="column" alignItems="flex-start"
       >
-        {!!searchIcdCodesLoading ?
+        {searchedData && searchedData.length > 0 ?
+          <> {searchedData?.map(item => {
+            const { fullName, id } = item as Medications || {}
+            if (alreadyAddedMedications?.includes(id)) {
+              return <></>
+            }
+
+            return (
+              <div key={`${fullName}`} className={`${chartingClasses.hoverClass} ${chartingClasses.my2}`}
+                onClick={() => item && handleAdd ? handleAdd(item) : handleOpenForm(item as Medications)}
+                ref={lastElementRef}
+              >
+                <Box display="flex" flexDirection="column" px={2}>
+                  <Typography variant='body1'>{fullName}</Typography>
+                </Box>
+
+              </div>
+            )
+          })}</> : <Box color={GREY_SEVEN} margin='auto' textAlign='center'>
+            <NoDataIcon />
+            <Typography variant="h6">{NO_RECORDS}</Typography>
+
+            <Box p={1} />
+          </Box>
+        }
+
+        {!!searchIcdCodesLoading &&
           <Box alignSelf="center">
             <CircularProgress size={25} color="inherit" disableShrink />
           </Box>
-          :
-          (searchedData && searchedData.length > 0 ?
-            searchedData?.map(item => {
-              const { fullName, id } = item as Medications || {}
-              if (alreadyAddedMedications?.includes(id)) {
-                return <></>
-              }
-              
-              return (
-                <Box key={`${fullName}`} my={0.2} className={chartingClasses.hoverClass}
-                  onClick={() => item && handleAdd ? handleAdd(item) : handleOpenForm(item as Medications)}
-                >
-                  <Box display="flex" flexDirection="column" px={2}>
-                    <Typography variant='body1'>{fullName}</Typography>
-                  </Box>
-
-                </Box>
-              )
-            }) : <Box color={GREY_SEVEN} margin='auto' textAlign='center'>
-              <NoDataIcon />
-              <Typography variant="h6">{NO_RECORDS}</Typography>
-
-              <Box p={1} />
-            </Box>)
         }
       </Box>
     )
-  }, [alreadyAddedMedications, chartingClasses.hoverClass, handleAdd, searchIcdCodesLoading, searchedData])
+  }, [alreadyAddedMedications, chartingClasses.hoverClass, chartingClasses.my2, handleAdd, lastElementRef, searchIcdCodesLoading, searchedData])
 
 
   return (

@@ -280,7 +280,7 @@ const CheckInComponent = (): JSX.Element => {
       case 3:
         return <Exam />
       case 4:
-        return <SignOff handleStepChange={handleStep} />
+        return <SignOff handleStepChange={handleStep} appointmentInfo={appointment} />
       case 5:
         return <BillingComponent shouldDisableEdit={shouldDisableBillingEdit} />
       default:

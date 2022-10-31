@@ -169,6 +169,14 @@ export type ReviewTabProps = {
   shouldDisableEdit?: boolean
 }
 
+export type UserSearchModalProps = {
+  isOpen: boolean,
+  handleModalClose?: () => void,
+  handleAdd?: Function,
+  itemId?: string
+  setScribeItem?: Function
+}
+
 export type AppointmentReasonProps = {
   shouldShowAdd?: boolean
   isInTake?: boolean
@@ -1207,6 +1215,7 @@ export type AssessmentProblemType = {
   problemId: string
   isSigned: boolean
   forOrders: boolean
+  notes?: string
   icdCodes: {
     id: string,
     code: string,
@@ -1238,6 +1247,11 @@ export type AssessmentPlanMedicationProps = {
   setAssessmentProblems: Function
   shouldDisableEdit?: boolean
   isSigned?: boolean
+}
+
+export type SignOffProps = {
+  handleStepChange: Function
+  appointmentInfo?: AppointmentPayload['appointment']
 }
 
 export interface LabOrdersSpecimenTypeInput {

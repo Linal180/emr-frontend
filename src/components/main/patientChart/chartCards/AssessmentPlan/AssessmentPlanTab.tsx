@@ -10,7 +10,6 @@ function AssessmentPlanTab({ shouldDisableEdit }: { shouldDisableEdit?: boolean 
   const { id: patientId, appointmentId } = useParams<ParamsType>()
   const [assessmentProblems, setAssessmentProblems] = useState<AssessmentProblemType[]>([])
   const [isSigned, setIsSigned] = useState(false)
-  const [notes, setNotes] = useState('')
 
   const [findAllPatientProblems] = useFindAllPatientProblemsWithMedicationLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -33,14 +32,13 @@ function AssessmentPlanTab({ shouldDisableEdit }: { shouldDisableEdit?: boolean 
             if (patientProblems && status && status === 200) {
               const transformedPatientProblems = patientProblems.map((problem, index) => {
                 const { ICDCode, id: problemId, snowMedCode, patientMedications, forOrders, isSigned, labTests, apNotes } = problem || {}
-                setNotes(apNotes || '')
                 const { id: snoMedCodeId } = snowMedCode || {}
 
                 const icdCodes = {
                   id: ICDCode?.id || '',
                   code: ICDCode?.code || '',
                   description: ICDCode?.description || '',
-                  snoMedCodeId: snoMedCodeId || ''
+                  snoMedCodeId: snoMedCodeId || '',
                 }
 
                 const transformedPatientMedications = patientMedications?.map((patientMedication, subIndex) => {
@@ -87,7 +85,8 @@ function AssessmentPlanTab({ shouldDisableEdit }: { shouldDisableEdit?: boolean 
                   problemId: problemId || '',
                   medications: transformedPatientMedications,
                   tests: transformedPatientTests,
-                  forOrders: forOrders || false
+                  forOrders: forOrders || false,
+                  notes: apNotes || ''
                 }
               })
 
@@ -121,8 +120,6 @@ function AssessmentPlanTab({ shouldDisableEdit }: { shouldDisableEdit?: boolean 
         setAssessmentProblems={setAssessmentProblems}
         shouldDisableEdit={shouldDisableEdit}
         isSigned={isSigned}
-        notes={notes}
-        setNotes={setNotes}
       />
       <Box m={2} />
     </>

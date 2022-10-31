@@ -119,9 +119,7 @@ const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
       }
     });
     if (node) observer.current.observe(node);
-  },
-    [searchIcdCodesLoading, page, totalPages, handleICDSearch, searchQuery]
-  );
+  },[searchIcdCodesLoading, page, totalPages, handleICDSearch, searchQuery]);
 
   const renderSearchData = useCallback(() => {
     return (

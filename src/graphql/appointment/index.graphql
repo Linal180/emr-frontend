@@ -160,6 +160,7 @@ query GetAppointment($getAppointment: GetAppointment!) {
       secondaryInsurance
       scheduleEndDateTime
       scheduleStartDateTime
+      appointmentDate
       createdAt
       updatedAt
       billingStatus
@@ -167,6 +168,13 @@ query GetAppointment($getAppointment: GetAppointment!) {
       selfCheckIn
       checkInActiveStep
       appointmentCreateType
+      
+      scribe {
+        id
+        isScribed
+        firstName
+        lastName
+      }
 
       appointmentType {
         id
@@ -517,6 +525,57 @@ query GetPublicAppointment($getAppointmentWithToken: GetAppointmentWithToken!) {
         firstName
         lastName
       }
+    }
+  }
+}
+
+mutation UpdateScribe(
+  $updateScribeInput: UpdateScribeInput!
+) {
+  updateScribe(
+    updateScribeInput: $updateScribeInput
+  ) {
+    response {
+      status
+    }
+
+    scribe {
+      id
+    }
+  }
+}
+
+mutation CreateScribe(
+  $createScribeInput: CreateScribeInput!
+) {
+  createScribe(
+    createScribeInput: $createScribeInput
+  ) {
+    response {
+      status
+    }
+
+    scribe {
+      id
+    }
+  }
+}
+
+mutation updateScribeCheck(
+  $scribeCheckInput: ScribeCheckInput!
+) {
+  updateScribeCheck(
+    scribeCheckInput: $scribeCheckInput
+  ) {
+    response {
+      status
+    }
+
+    scribe {
+      id
+      firstName
+      lastName
+      isScribed
     }
   }
 }

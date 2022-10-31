@@ -167,16 +167,28 @@ const AppointmentReasonModal: FC<AddAppointmentReasonProps> = ({ isOpen = false,
             searchedData?.map((item, i) => {
               const { code, description, snoMedCode, id } = item as IcdCodesWithSnowMedCode || {}
               const { referencedComponentId } = snoMedCode || {}
+
               if (alreadyAddedProblems?.includes(id)) {
-                return <></>
+                return <div key={`${code} | ${description} | ${snoMedCode?.id}`}
+                  className={`${chartingClasses.hoverDisable} ${chartingClasses.my2}`}
+                  ref={i === searchedData.length - 1 ? lastElementRef : undefined}
+                >
+                  <Box display="flex" flexDirection="column" px={2}>
+                    <Typography variant='body1'>{description}</Typography>
+
+                    <Typography variant='caption'>
+                      {referencedComponentId ? `${SNOMED}: ${referencedComponentId} | ${ICD_10}: ${code}` : `ICD-10: ${code}`}
+                    </Typography>
+                  </Box>
+
+                </div>
               }
 
               if (i === searchedData.length - 1) {
                 return (
-                  <div key={`${code} | ${description} | ${snoMedCode?.id}`} className={chartingClasses.hoverClass}
+                  <div key={`${code} | ${description} | ${snoMedCode?.id}`} className={`${chartingClasses.hoverClass} ${chartingClasses.my2}`}
                     onClick={() => item && handleAdd ? handleAdd(item as IcdCodesWithSnowMedCode) : handleAddReason(item as IcdCodesWithSnowMedCode)}
                     ref={lastElementRef}
-                    style={{ marginTop: 1, marginBottom: 1 }}
                   >
                     <Box display="flex" flexDirection="column" px={2}>
                       <Typography variant='body1'>{description}</Typography>
@@ -218,7 +230,7 @@ const AppointmentReasonModal: FC<AddAppointmentReasonProps> = ({ isOpen = false,
 
       </Box>
     )
-  }, [alreadyAddedProblems, chartingClasses.hoverClass, handleAdd, handleAddReason, lastElementRef, searchIcdCodesLoading, searchedData])
+  }, [alreadyAddedProblems, chartingClasses.hoverClass, chartingClasses.hoverDisable, chartingClasses.my2, handleAdd, handleAddReason, lastElementRef, searchIcdCodesLoading, searchedData])
 
 
   return (

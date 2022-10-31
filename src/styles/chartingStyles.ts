@@ -288,9 +288,27 @@ export const useChartingStyles = makeStyles((theme) => ({
     }
   },
 
+  hoverDisable: {
+    padding: '5px 10px !important',
+    borderRadius: 4,
+    "&:hover": {
+      cursor: "not-allowed",
+      backgroundColor: GREY,
+    }
+  },
+
   tabPanelPadding: {
     "& .MuiTabPanel-root": {
       paddingTop: 0,
+    }
+  },
+  my2: {
+    marginTop: 1,
+    marginBottom: 1
+  },
+  checkBoxScribe: {
+    "& .MuiFormControlLabel-root": {
+      marginRight: 0,
     }
   }
 }));

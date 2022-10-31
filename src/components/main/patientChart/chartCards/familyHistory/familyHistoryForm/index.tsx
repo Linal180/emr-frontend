@@ -294,20 +294,15 @@ const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({
       <Box maxHeight={280} minHeight={280} className="overflowY-auto" display="flex"
         flexDirection="column" alignItems="flex-start"
       >
-        {!!searchIcdCodesLoading ?
-          <Box alignSelf="center">
-            <CircularProgress size={25} color="inherit" disableShrink />
-          </Box>
-          :
+        {
           (searchedData && searchedData.length > 0 ?
-            searchedData?.map(item => {
+            <>{searchedData?.map(item => {
               const { code, description } = item as IcdCodesWithSnowMedCode || {}
 
               return (
-                <div key={`${code}`} className={chartingClasses.hoverClass}
+                <div key={`${code}`} className={`${chartingClasses.hoverClass} my-2`}
                   onClick={() => onProblemSelect(item)}
                   ref={lastElementRef}
-                  style={{ marginTop: 1, marginBottom: 1 }}
                 >
                   <Box display="flex" flexDirection="column" px={2}>
                     <Typography variant='body1'>{description}</Typography>
@@ -319,13 +314,19 @@ const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({
 
                 </div>
               )
-            }) : <Box color={GREY_SEVEN} margin='auto' textAlign='center'>
+            })}</> : <Box color={GREY_SEVEN} margin='auto' textAlign='center'>
               <NoDataIcon />
               <Typography variant="h6">{NO_RECORDS}</Typography>
 
               <Box p={1} />
             </Box>)
         }
+
+        {!!searchIcdCodesLoading &&
+          <Box alignSelf="center">
+            <CircularProgress size={25} color="inherit" disableShrink />
+          </Box>}
+
       </Box>
     )
   }, [searchIcdCodesLoading, searchedData, chartingClasses.hoverClass, lastElementRef, onProblemSelect])

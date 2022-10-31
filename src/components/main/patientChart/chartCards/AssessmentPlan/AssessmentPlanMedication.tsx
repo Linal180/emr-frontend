@@ -1,21 +1,28 @@
 import { Box, IconButton, Typography } from '@material-ui/core'
 import { AddCircleOutline, RemoveCircleOutline } from '@material-ui/icons'
-import { Reducer, useReducer } from 'react'
+import { Reducer, useEffect, useReducer, useState } from 'react'
 import { useParams } from 'react-router'
 import { CrossIcon } from '../../../../../assets/svgs'
-import { LabTestStatus, LoincCodePayload, Medications, useAddPatientMedicationMutation, useCreateLabTestMutation, useRemoveLabTestMutation, useRemovePatientMedicationMutation, useRemovePatientProblemMutation } from '../../../../../generated/graphql'
+import { TemplateType } from '../../../../../constants'
+import { LabTestStatus, LoincCodePayload, Medications, useAddPatientMedicationMutation, useCreateLabTestMutation, useRemoveLabTestMutation, useRemovePatientMedicationMutation, useRemovePatientProblemMutation, useUpdatePatientProblemNotesMutation } from '../../../../../generated/graphql'
 import { AssessmentPlanMedicationProps, ParamsType } from '../../../../../interfacesTypes'
 import { Action, ActionType, chartReducer, initialState, State } from '../../../../../reducers/chartReducer'
 import { generateString } from '../../../../../utils'
 import Alert from '../../../../common/Alert'
+import MacroView from '../../../../common/Macro/MacroView'
 import DiagnosesModal from './DiagnosesModal'
 
 function AssessmentPlanMedication({ index, problem, setAssessmentProblems, assessmentProblems, shouldDisableEdit, isSigned }: AssessmentPlanMedicationProps) {
   const { id: patientId, appointmentId } = useParams<ParamsType>()
-  const { medications, problemId, icdCodes, tests } = problem || {}
+  const { medications, problemId, icdCodes, tests, notes } = problem || {}
   const { code, description } = icdCodes
   const [state, dispatch] = useReducer<Reducer<State, Action>>(chartReducer, initialState)
+  const [apNotes, setApNotes] = useState('')
   const { medicationIndex, isSubModalOpen, testIndex } = state
+
+  useEffect(() => {
+    setApNotes(notes || '')
+  }, [notes])
 
   const handleChildModalClose = () => {
     dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: false })
@@ -261,6 +268,18 @@ function AssessmentPlanMedication({ index, problem, setAssessmentProblems, asses
     }
   });
 
+  const [updatePatientProblemNotes] = useUpdatePatientProblemNotesMutation({
+    onError({ message }) {
+      Alert.error(message)
+    },
+
+    onCompleted(data) {
+      const { updatePatientProblemNotes: { response } } = data;
+
+      if (response) { }
+    }
+  });
+
   const handleProblemRemove = async (problemIndex: number) => {
     setAssessmentProblems(assessmentProblems.filter((_, indexToRemove) => indexToRemove !== problemIndex))
     const problem = assessmentProblems[problemIndex]
@@ -269,6 +288,17 @@ function AssessmentPlanMedication({ index, problem, setAssessmentProblems, asses
       variables: {
         removeProblem: {
           id: problem.problemId
+        }
+      }
+    })
+  }
+
+  const handleNotesUpdate = async (apNotes: string) => {
+    await updatePatientProblemNotes({
+      variables: {
+        updateProblemNotesInput: {
+          id: problemId,
+          notes: apNotes
         }
       }
     })
@@ -292,6 +322,17 @@ function AssessmentPlanMedication({ index, problem, setAssessmentProblems, asses
         </IconButton>
       </Box>}
     </Box>
+    
+    <Box m={2}/>
+
+    <MacroView
+      notes={apNotes || ''}
+      itemId=''
+      setItemId={() => { }}
+      type={TemplateType.ASSESSMENT_PLAN}
+      handleNotesUpdate={handleNotesUpdate}
+    />
+
     {!!medications?.length && <Typography>Medications</Typography>}
     {
       medications?.length ? medications?.map((medication, subIndex) => {
