@@ -139,11 +139,11 @@ function ReviewTab({ shouldShowCheckout, handleStepChange, shouldDisableEdit, sh
     <div>
       <AppointmentReason shouldShowAdd={shouldShowAdd} shouldShowCheckout={shouldShowCheckout} handleStepChange={handleStepChange} shouldDisableEdit={shouldDisableEdit} />
 
-      <Box mt={2} />
+      <Box mt={3} />
 
       {!shouldShowCheckout && <TriageNoteTab shouldDisableEdit={shouldDisableEdit} />}
 
-      <Box m={2} />
+      <Box m={3} />
 
       <Card>
         <Box pb={2} className={classes.cardBox}>
@@ -241,6 +241,7 @@ function ReviewTab({ shouldShowCheckout, handleStepChange, shouldDisableEdit, sh
           </Box>
         </Card>
         <Box m={3} />
+
         <Card>
           <Box pb={2} className={classes.cardBox}>
             <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" borderBottom={`1px solid ${colors.grey[300]}`}>
@@ -268,6 +269,8 @@ function ReviewTab({ shouldShowCheckout, handleStepChange, shouldDisableEdit, sh
         </Card>
         <Box m={3} />
       </>}
+
+      <Box m={3} />
 
       <Card>
         <Box pb={2} className={classes.cardBox}>

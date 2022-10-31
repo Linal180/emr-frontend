@@ -3,13 +3,12 @@ import { AddCircleOutline } from '@material-ui/icons';
 import moment from 'moment';
 import { Reducer, useReducer } from 'react';
 import { useParams } from 'react-router';
-import { ASSESSMENT_PLAN, TemplateType } from '../../../../../constants';
-import { IcdCodesWithSnowMedCode, useAddPatientProblemMutation, useUpdatePatientProblemNotesMutation, useUpdatePatientProblemSignedMutation } from '../../../../../generated/graphql';
+import { ASSESSMENT_PLAN } from '../../../../../constants';
+import { IcdCodesWithSnowMedCode, useAddPatientProblemMutation, useUpdatePatientProblemSignedMutation } from '../../../../../generated/graphql';
 import { AssessmentMedication, AssessmentPlanProblemsProps, ParamsType } from '../../../../../interfacesTypes';
 import { Action, ActionType, chartReducer, initialState, State } from '../../../../../reducers/chartReducer';
 import { useChartingStyles } from '../../../../../styles/chartingStyles';
 import Alert from '../../../../common/Alert';
-import MacroView from '../../../../common/Macro/MacroView';
 import NoDataFoundComponent from '../../../../common/NoDataFoundComponent';
 import AppointmentReasonModal from '../AppointmentReason/AppointmentReasonModal';
 import AssessmentPlanMedication from './AssessmentPlanMedication';
@@ -72,20 +71,6 @@ function AssessmentPlanProblems({ fetchProblems, assessmentProblems: problems, s
       if (response) { }
     }
   });
-
-  const [updatePatientProblemNotes] = useUpdatePatientProblemNotesMutation({
-    onError({ message }) {
-      Alert.error(message)
-    },
-
-    onCompleted(data) {
-      const { updatePatientProblemNotes: { response } } = data;
-
-      if (response) { }
-    }
-  });
-
-
 
   const handleProblemAdd = async (item: IcdCodesWithSnowMedCode) => {
     dispatch({ type: ActionType.SET_PROBLEM_INDEX, problemIndex: problems?.length })
@@ -164,25 +149,6 @@ function AssessmentPlanProblems({ fetchProblems, assessmentProblems: problems, s
     Alert.success('Diagnoses Ordered Successfully')
   }
 
-  const handleNotesUpdate = async (notes: string) => {
-    await Promise.all(
-      problems.map(async (problem) => {
-        const { problemId } = problem
-        return await updatePatientProblemNotes({
-          variables: {
-            updateProblemNotesInput: {
-              id: problemId,
-              notes: notes
-            }
-          }
-        })
-      })
-    )
-
-    setNotes && setNotes(notes || '')
-
-  }
-
   return (
     <>
       <Card>
@@ -212,13 +178,13 @@ function AssessmentPlanProblems({ fetchProblems, assessmentProblems: problems, s
 
         <Box m={2} />
 
-        {!!problems?.length && <MacroView
+        {/* {!!problems?.length && <MacroView
           notes={notes || ''}
           itemId=''
           setItemId={() => { }}
           type={TemplateType.ASSESSMENT_PLAN}
           handleNotesUpdate={handleNotesUpdate}
-        />}
+        />} */}
       </Card>
 
       <Box m={2} />

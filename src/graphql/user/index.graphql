@@ -74,7 +74,8 @@ query fetchAllUsers($userInput: UsersInput!) {
       id
       email
       facilityId
-
+      firstName
+      lastName
     }
 }
 }

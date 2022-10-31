@@ -69,6 +69,20 @@ export const useProfileDetailsStyles = makeStyles(() =>
       }
     },
 
+    profileImageNew: {
+      "&.MuiAvatar-root": {
+        height: 80,
+        width: 80,
+        borderRadius: 8,
+      },
+
+      "& > img": {
+        height: '100%',
+        width: '100%',
+        objectFit: 'cover',
+      }
+    },
+
     userName: {
       fontSize: 19,
       fontWeight: 700,

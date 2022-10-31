@@ -301,6 +301,7 @@ export type Appointment = {
   reviewOfSystem?: Maybe<ReviewOfSystem>;
   scheduleEndDateTime?: Maybe<Scalars['String']>;
   scheduleStartDateTime?: Maybe<Scalars['String']>;
+  scribe?: Maybe<Scribe>;
   secondaryInsurance?: Maybe<Scalars['String']>;
   selfCheckIn?: Maybe<Scalars['Boolean']>;
   status: AppointmentStatus;
@@ -1680,6 +1681,14 @@ export type CreateScheduleInput = {
   schedules: Array<SingleScheduleInput>;
 };
 
+export type CreateScribeInput = {
+  appointmentId?: Maybe<Scalars['String']>;
+  firstName?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
+  userId?: Maybe<Scalars['String']>;
+  userType?: Maybe<Scalars['String']>;
+};
+
 export type CreateServiceInput = {
   color: Scalars['String'];
   duration: Scalars['String'];
@@ -2329,6 +2338,7 @@ export type FindAllQuestionTemplatesPayload = {
 export type FindAllRoomInput = {
   facilityId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
+  practiceId?: Maybe<Scalars['String']>;
   searchString?: Maybe<Scalars['String']>;
 };
 
@@ -3260,6 +3270,7 @@ export type Mutation = {
   createRole: RolePayload;
   createRoom: RoomPayload;
   createSchedule: SchedulePayload;
+  createScribe: ScribePayload;
   createService: ServicePayload;
   createShortUrl: ShortUrlResponse;
   createStaff: StaffPayload;
@@ -3371,6 +3382,8 @@ export type Mutation = {
   updateRole: RolePayload;
   updateRoom: RoomPayload;
   updateSchedule: SchedulePayload;
+  updateScribe: ScribePayload;
+  updateScribeCheck: ScribePayload;
   updateService: ServicePayload;
   updateStaff: StaffPayload;
   updateSurgicalHistory: SurgicalHistoryPayload;
@@ -3660,6 +3673,11 @@ export type MutationCreateRoomArgs = {
 
 export type MutationCreateScheduleArgs = {
   createScheduleInput: CreateScheduleInput;
+};
+
+
+export type MutationCreateScribeArgs = {
+  createScribeInput: CreateScribeInput;
 };
 
 
@@ -4210,6 +4228,16 @@ export type MutationUpdateRoomArgs = {
 
 export type MutationUpdateScheduleArgs = {
   updateScheduleInput: UpdateScheduleInput;
+};
+
+
+export type MutationUpdateScribeArgs = {
+  updateScribeInput: UpdateScribeInput;
+};
+
+
+export type MutationUpdateScribeCheckArgs = {
+  scribeCheckInput: ScribeCheckInput;
 };
 
 
@@ -6646,6 +6674,7 @@ export type Room = {
   id: Scalars['String'];
   name?: Maybe<Scalars['String']>;
   number?: Maybe<Scalars['String']>;
+  practiceId?: Maybe<Scalars['String']>;
   updatedAt: Scalars['String'];
 };
 
@@ -6714,6 +6743,29 @@ export type SchedulesPayload = {
   pagination?: Maybe<PaginationPayload>;
   response?: Maybe<ResponsePayload>;
   schedules?: Maybe<Array<Maybe<Schedule>>>;
+};
+
+export type Scribe = {
+  __typename?: 'Scribe';
+  appointment?: Maybe<Appointment>;
+  firstName?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  isScribed?: Maybe<Scalars['Boolean']>;
+  lastName?: Maybe<Scalars['String']>;
+  userId?: Maybe<Scalars['String']>;
+  userType?: Maybe<Scalars['String']>;
+};
+
+export type ScribeCheckInput = {
+  appointmentId?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
+  isScribed?: Maybe<Scalars['Boolean']>;
+};
+
+export type ScribePayload = {
+  __typename?: 'ScribePayload';
+  response?: Maybe<ResponsePayload>;
+  scribe?: Maybe<Scribe>;
 };
 
 export type SearchIcdCodesInput = {
@@ -8120,6 +8172,15 @@ export type UpdateScheduleInput = {
   startAt?: Maybe<Scalars['String']>;
 };
 
+export type UpdateScribeInput = {
+  appointmentId?: Maybe<Scalars['String']>;
+  firstName?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  lastName?: Maybe<Scalars['String']>;
+  userId?: Maybe<Scalars['String']>;
+  userType?: Maybe<Scalars['String']>;
+};
+
 export type UpdateServiceInput = {
   color?: Maybe<Scalars['String']>;
   duration?: Maybe<Scalars['String']>;
@@ -8253,10 +8314,12 @@ export type User = {
   emailVerified: Scalars['Boolean'];
   facility?: Maybe<Facility>;
   facilityId?: Maybe<Scalars['String']>;
+  firstName: Scalars['String'];
   id: Scalars['String'];
   inviteAcceptedAt: Scalars['String'];
   inviteSentAt: Scalars['String'];
   isTwoFactorEnabled: Scalars['Boolean'];
+  lastName: Scalars['String'];
   phone?: Maybe<Scalars['String']>;
   roles?: Maybe<Array<Maybe<Role>>>;
   status: UserStatus;
@@ -8392,6 +8455,7 @@ export type UsersInput = {
   facilityId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
   role?: Maybe<Scalars['String']>;
+  roles?: Maybe<Array<Scalars['String']>>;
   searchString?: Maybe<Scalars['String']>;
   status?: Maybe<UserStatus>;
 };
@@ -8541,7 +8605,7 @@ export type GetAppointmentQueryVariables = Exact<{
 }>;
 
 
-export type GetAppointmentQuery = { __typename?: 'Query', getAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, appointment?: { __typename?: 'Appointment', id: string, notes?: string | null, reason?: string | null, token?: string | null, status: AppointmentStatus, patientId?: string | null, employment?: boolean | null, paymentType: PaymentType, autoAccident?: boolean | null, otherAccident?: boolean | null, primaryInsurance?: string | null, secondaryInsurance?: string | null, scheduleEndDateTime?: string | null, scheduleStartDateTime?: string | null, createdAt?: string | null, updatedAt?: string | null, billingStatus: BillingStatus, checkedInAt?: string | null, selfCheckIn?: boolean | null, checkInActiveStep?: string | null, appointmentCreateType?: AppointmentCreateType | null, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string, duration: string, serviceType: ServiceType } | null, provider?: { __typename?: 'Doctor', id: string, lastName?: string | null, firstName?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null } | null, facility?: { __typename?: 'Facility', id: string, name: string, practiceType?: PracticeType | null, serviceCode?: ServiceCode | null } | null, invoice?: { __typename?: 'Invoice', invoiceNo: string } | null } | null } };
+export type GetAppointmentQuery = { __typename?: 'Query', getAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, appointment?: { __typename?: 'Appointment', id: string, notes?: string | null, reason?: string | null, token?: string | null, status: AppointmentStatus, patientId?: string | null, employment?: boolean | null, paymentType: PaymentType, autoAccident?: boolean | null, otherAccident?: boolean | null, primaryInsurance?: string | null, secondaryInsurance?: string | null, scheduleEndDateTime?: string | null, scheduleStartDateTime?: string | null, appointmentDate?: string | null, createdAt?: string | null, updatedAt?: string | null, billingStatus: BillingStatus, checkedInAt?: string | null, selfCheckIn?: boolean | null, checkInActiveStep?: string | null, appointmentCreateType?: AppointmentCreateType | null, scribe?: { __typename?: 'Scribe', id: string, isScribed?: boolean | null, firstName?: string | null, lastName?: string | null } | null, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string, duration: string, serviceType: ServiceType } | null, provider?: { __typename?: 'Doctor', id: string, lastName?: string | null, firstName?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null } | null, facility?: { __typename?: 'Facility', id: string, name: string, practiceType?: PracticeType | null, serviceCode?: ServiceCode | null } | null, invoice?: { __typename?: 'Invoice', invoiceNo: string } | null } | null } };
 
 export type RemoveAppointmentMutationVariables = Exact<{
   removeAppointment: RemoveAppointment;
@@ -8640,6 +8704,27 @@ export type GetPublicAppointmentQueryVariables = Exact<{
 
 
 export type GetPublicAppointmentQuery = { __typename?: 'Query', getAppointmentWithToken: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, appointment?: { __typename?: 'Appointment', id: string, scheduleEndDateTime?: string | null, scheduleStartDateTime?: string | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null } | null } | null } };
+
+export type UpdateScribeMutationVariables = Exact<{
+  updateScribeInput: UpdateScribeInput;
+}>;
+
+
+export type UpdateScribeMutation = { __typename?: 'Mutation', updateScribe: { __typename?: 'ScribePayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null, scribe?: { __typename?: 'Scribe', id: string } | null } };
+
+export type CreateScribeMutationVariables = Exact<{
+  createScribeInput: CreateScribeInput;
+}>;
+
+
+export type CreateScribeMutation = { __typename?: 'Mutation', createScribe: { __typename?: 'ScribePayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null, scribe?: { __typename?: 'Scribe', id: string } | null } };
+
+export type UpdateScribeCheckMutationVariables = Exact<{
+  scribeCheckInput: ScribeCheckInput;
+}>;
+
+
+export type UpdateScribeCheckMutation = { __typename?: 'Mutation', updateScribeCheck: { __typename?: 'ScribePayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null, scribe?: { __typename?: 'Scribe', id: string, firstName?: string | null, lastName?: string | null, isScribed?: boolean | null } | null } };
 
 export type GetAttachmentsQueryVariables = Exact<{
   getAttachment: GetAttachment;
@@ -8946,7 +9031,7 @@ export type FindAllAllergiesQueryVariables = Exact<{
 }>;
 
 
-export type FindAllAllergiesQuery = { __typename?: 'Query', findAllAllergies: { __typename?: 'AllergiesPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, allergies?: Array<{ __typename?: 'Allergies', id: string, name?: string | null } | null> | null } };
+export type FindAllAllergiesQuery = { __typename?: 'Query', findAllAllergies: { __typename?: 'AllergiesPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, allergies?: Array<{ __typename?: 'Allergies', id: string, name?: string | null } | null> | null } };
 
 export type GetPatientChartingInfoQueryVariables = Exact<{
   patientChartingInfoInput: PatientChartingInfoInput;
@@ -9559,6 +9644,13 @@ export type FindAllDoctorQueryVariables = Exact<{
 
 
 export type FindAllDoctorQuery = { __typename?: 'Query', findAllDoctor: { __typename?: 'AllDoctorPayload', doctors?: Array<{ __typename?: 'Doctor', id: string, email?: string | null, lastName?: string | null, firstName?: string | null, speciality?: Speciality | null, contacts?: Array<{ __typename?: 'Contact', id: string, email?: string | null, phone?: string | null, primaryContact?: boolean | null }> | null, facility?: { __typename?: 'Facility', id: string, name: string } | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type FindAllScribeDoctorQueryVariables = Exact<{
+  doctorInput: DoctorInput;
+}>;
+
+
+export type FindAllScribeDoctorQuery = { __typename?: 'Query', findAllDoctor: { __typename?: 'AllDoctorPayload', doctors?: Array<{ __typename?: 'Doctor', id: string, lastName?: string | null, firstName?: string | null } | null> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
 
 export type CreateDoctorMutationVariables = Exact<{
   createDoctorInput: CreateDoctorInput;
@@ -10527,7 +10619,7 @@ export type FetchAllUsersQueryVariables = Exact<{
 }>;
 
 
-export type FetchAllUsersQuery = { __typename?: 'Query', fetchAllUsers: { __typename?: 'UsersPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, error?: string | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, users?: Array<{ __typename?: 'User', id: string, email: string, facilityId?: string | null } | null> | null } };
+export type FetchAllUsersQuery = { __typename?: 'Query', fetchAllUsers: { __typename?: 'UsersPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, error?: string | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, users?: Array<{ __typename?: 'User', id: string, email: string, facilityId?: string | null, firstName: string, lastName: string } | null> | null } };
 
 export type FindAllUserLogsQueryVariables = Exact<{
   userLogsInput: UserLogsInput;
@@ -11032,6 +11124,7 @@ export const GetAppointmentDocument = gql`
       secondaryInsurance
       scheduleEndDateTime
       scheduleStartDateTime
+      appointmentDate
       createdAt
       updatedAt
       billingStatus
@@ -11039,6 +11132,12 @@ export const GetAppointmentDocument = gql`
       selfCheckIn
       checkInActiveStep
       appointmentCreateType
+      scribe {
+        id
+        isScribed
+        firstName
+        lastName
+      }
       appointmentType {
         id
         name
@@ -11768,6 +11867,123 @@ export function useGetPublicAppointmentLazyQuery(baseOptions?: Apollo.LazyQueryH
 export type GetPublicAppointmentQueryHookResult = ReturnType<typeof useGetPublicAppointmentQuery>;
 export type GetPublicAppointmentLazyQueryHookResult = ReturnType<typeof useGetPublicAppointmentLazyQuery>;
 export type GetPublicAppointmentQueryResult = Apollo.QueryResult<GetPublicAppointmentQuery, GetPublicAppointmentQueryVariables>;
+export const UpdateScribeDocument = gql`
+    mutation UpdateScribe($updateScribeInput: UpdateScribeInput!) {
+  updateScribe(updateScribeInput: $updateScribeInput) {
+    response {
+      status
+    }
+    scribe {
+      id
+    }
+  }
+}
+    `;
+export type UpdateScribeMutationFn = Apollo.MutationFunction<UpdateScribeMutation, UpdateScribeMutationVariables>;
+
+/**
+ * __useUpdateScribeMutation__
+ *
+ * To run a mutation, you first call `useUpdateScribeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateScribeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateScribeMutation, { data, loading, error }] = useUpdateScribeMutation({
+ *   variables: {
+ *      updateScribeInput: // value for 'updateScribeInput'
+ *   },
+ * });
+ */
+export function useUpdateScribeMutation(baseOptions?: Apollo.MutationHookOptions<UpdateScribeMutation, UpdateScribeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateScribeMutation, UpdateScribeMutationVariables>(UpdateScribeDocument, options);
+      }
+export type UpdateScribeMutationHookResult = ReturnType<typeof useUpdateScribeMutation>;
+export type UpdateScribeMutationResult = Apollo.MutationResult<UpdateScribeMutation>;
+export type UpdateScribeMutationOptions = Apollo.BaseMutationOptions<UpdateScribeMutation, UpdateScribeMutationVariables>;
+export const CreateScribeDocument = gql`
+    mutation CreateScribe($createScribeInput: CreateScribeInput!) {
+  createScribe(createScribeInput: $createScribeInput) {
+    response {
+      status
+    }
+    scribe {
+      id
+    }
+  }
+}
+    `;
+export type CreateScribeMutationFn = Apollo.MutationFunction<CreateScribeMutation, CreateScribeMutationVariables>;
+
+/**
+ * __useCreateScribeMutation__
+ *
+ * To run a mutation, you first call `useCreateScribeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateScribeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createScribeMutation, { data, loading, error }] = useCreateScribeMutation({
+ *   variables: {
+ *      createScribeInput: // value for 'createScribeInput'
+ *   },
+ * });
+ */
+export function useCreateScribeMutation(baseOptions?: Apollo.MutationHookOptions<CreateScribeMutation, CreateScribeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateScribeMutation, CreateScribeMutationVariables>(CreateScribeDocument, options);
+      }
+export type CreateScribeMutationHookResult = ReturnType<typeof useCreateScribeMutation>;
+export type CreateScribeMutationResult = Apollo.MutationResult<CreateScribeMutation>;
+export type CreateScribeMutationOptions = Apollo.BaseMutationOptions<CreateScribeMutation, CreateScribeMutationVariables>;
+export const UpdateScribeCheckDocument = gql`
+    mutation updateScribeCheck($scribeCheckInput: ScribeCheckInput!) {
+  updateScribeCheck(scribeCheckInput: $scribeCheckInput) {
+    response {
+      status
+    }
+    scribe {
+      id
+      firstName
+      lastName
+      isScribed
+    }
+  }
+}
+    `;
+export type UpdateScribeCheckMutationFn = Apollo.MutationFunction<UpdateScribeCheckMutation, UpdateScribeCheckMutationVariables>;
+
+/**
+ * __useUpdateScribeCheckMutation__
+ *
+ * To run a mutation, you first call `useUpdateScribeCheckMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateScribeCheckMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateScribeCheckMutation, { data, loading, error }] = useUpdateScribeCheckMutation({
+ *   variables: {
+ *      scribeCheckInput: // value for 'scribeCheckInput'
+ *   },
+ * });
+ */
+export function useUpdateScribeCheckMutation(baseOptions?: Apollo.MutationHookOptions<UpdateScribeCheckMutation, UpdateScribeCheckMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateScribeCheckMutation, UpdateScribeCheckMutationVariables>(UpdateScribeCheckDocument, options);
+      }
+export type UpdateScribeCheckMutationHookResult = ReturnType<typeof useUpdateScribeCheckMutation>;
+export type UpdateScribeCheckMutationResult = Apollo.MutationResult<UpdateScribeCheckMutation>;
+export type UpdateScribeCheckMutationOptions = Apollo.BaseMutationOptions<UpdateScribeCheckMutation, UpdateScribeCheckMutationVariables>;
 export const GetAttachmentsDocument = gql`
     query GetAttachments($getAttachment: GetAttachment!) {
   getAttachments(getAttachment: $getAttachment) {
@@ -13877,6 +14093,10 @@ export const FindAllAllergiesDocument = gql`
     response {
       status
       message
+    }
+    pagination {
+      page
+      totalPages
     }
     allergies {
       id
@@ -18294,6 +18514,54 @@ export function useFindAllDoctorLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type FindAllDoctorQueryHookResult = ReturnType<typeof useFindAllDoctorQuery>;
 export type FindAllDoctorLazyQueryHookResult = ReturnType<typeof useFindAllDoctorLazyQuery>;
 export type FindAllDoctorQueryResult = Apollo.QueryResult<FindAllDoctorQuery, FindAllDoctorQueryVariables>;
+export const FindAllScribeDoctorDocument = gql`
+    query FindAllScribeDoctor($doctorInput: DoctorInput!) {
+  findAllDoctor(doctorInput: $doctorInput) {
+    doctors {
+      id
+      lastName
+      firstName
+    }
+    pagination {
+      page
+      totalPages
+    }
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllScribeDoctorQuery__
+ *
+ * To run a query within a React component, call `useFindAllScribeDoctorQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllScribeDoctorQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllScribeDoctorQuery({
+ *   variables: {
+ *      doctorInput: // value for 'doctorInput'
+ *   },
+ * });
+ */
+export function useFindAllScribeDoctorQuery(baseOptions: Apollo.QueryHookOptions<FindAllScribeDoctorQuery, FindAllScribeDoctorQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllScribeDoctorQuery, FindAllScribeDoctorQueryVariables>(FindAllScribeDoctorDocument, options);
+      }
+export function useFindAllScribeDoctorLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllScribeDoctorQuery, FindAllScribeDoctorQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllScribeDoctorQuery, FindAllScribeDoctorQueryVariables>(FindAllScribeDoctorDocument, options);
+        }
+export type FindAllScribeDoctorQueryHookResult = ReturnType<typeof useFindAllScribeDoctorQuery>;
+export type FindAllScribeDoctorLazyQueryHookResult = ReturnType<typeof useFindAllScribeDoctorLazyQuery>;
+export type FindAllScribeDoctorQueryResult = Apollo.QueryResult<FindAllScribeDoctorQuery, FindAllScribeDoctorQueryVariables>;
 export const CreateDoctorDocument = gql`
     mutation CreateDoctor($createDoctorInput: CreateDoctorInput!) {
   createDoctor(createDoctorInput: $createDoctorInput) {
@@ -25361,6 +25629,8 @@ export const FetchAllUsersDocument = gql`
       id
       email
       facilityId
+      firstName
+      lastName
     }
   }
 }

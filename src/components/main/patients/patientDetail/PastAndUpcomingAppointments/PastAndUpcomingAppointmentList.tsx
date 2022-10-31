@@ -131,32 +131,34 @@ const PastAndUpcomingAppointmentList: FC<PastAndUpcomingAppointmentListProps> = 
             </Box>
 
             {!past &&
-              <Box display="flex" my={2}>
-                {status === AppointmentStatus.Scheduled &&
-                  <Link to={`${APPOINTMENTS_ROUTE}/${id}`}>
-                    <Button type="submit" variant="outlined" color="default">{RE_SCHEDULE}</Button>
-                  </Link>
-                }
+              <Box display="flex" flexWrap="wrap" my={2}>
+                <Box p={1}>
+                  {status === AppointmentStatus.Scheduled &&
+                    <Link to={`${APPOINTMENTS_ROUTE}/${id}`}>
+                      <Button type="submit" variant="outlined" color="default">{RE_SCHEDULE}</Button>
+                    </Link>
+                  }
+                </Box>
 
-                <Box p={1} />
+                <Box p={1}>
+                  {status === AppointmentStatus.Scheduled && appointmentCreateType !== AppointmentCreateType.Telehealth && !checkedInAt &&
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      className="blue-button-New"
+                      onClick={() => id && handlePatientCheckIn(id)}
+                    >{CHECK_IN}</Button>
+                  }
 
-                {status === AppointmentStatus.Scheduled && appointmentCreateType !== AppointmentCreateType.Telehealth &&
-                  <Button
+                  {!isCancelled && checkedInAt && <Button
                     type="submit"
                     variant="contained"
                     className="blue-button-New"
-                    onClick={() => id && handlePatientCheckIn(id)}
-                  >{CHECK_IN}</Button>
-                }
+                    onClick={() => id && history.push(`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`)}
+                  >{VIEW_ENCOUNTER}</Button>}
+                </Box>
 
-                {!isCancelled && checkedInAt && <Button
-                  type="submit"
-                  variant="contained"
-                  className="blue-button-New"
-                  onClick={() => id && history.push(`${APPOINTMENTS_ROUTE}/${id}/${patientId}${CHECK_IN_ROUTE}`)}
-                >{VIEW_ENCOUNTER}</Button>}
-
-                <Box display="flex" pl={2} onClick={() => {
+                <Box display="flex" p={1} onClick={() => {
                   !!canBeCancelled ?
                     Alert.info(canBeCancelled) : onDeleteClick(token || '')
                 }}>

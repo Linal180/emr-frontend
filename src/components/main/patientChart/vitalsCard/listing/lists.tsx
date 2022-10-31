@@ -12,7 +12,7 @@ import {
 } from '../../../../../generated/graphql';
 import { ParamsType, VitalListingTableProps } from '../../../../../interfacesTypes';
 import { ActionType } from '../../../../../reducers/patientReducer';
-import { formatValue, getFormatDateString, renderTh, roundOffUpto2Decimal } from '../../../../../utils';
+import { formatValue, getFormatDateString, isAbnormalBloodPressureRate, isAbnormalBMI, isAbnormalHeadCircumference, isAbnormalOxygenSaturation, isAbnormalPain, isAbnormalPulseRate, isAbnormalRespiratoryRate, isAbnormalTemperature, renderTh, roundOffUpto2Decimal } from '../../../../../utils';
 
 export const VitalListingTable = ({
   patientStates, shouldDisableEdit, dispatcher }: VitalListingTableProps) => {
@@ -98,7 +98,7 @@ export const VitalListingTable = ({
                   scope="row"
                 >
 
-                  <Typography variant='body1' className='h-24'>{pulseRate || DASHES}</Typography>
+                  <Typography variant='body1' className={`h-24 ${isAbnormalPulseRate(pulseRate || '') ? 'danger' : ''}`}>{pulseRate || DASHES}</Typography>
                 </TableCell>
               })}
             </TableRow>
@@ -107,7 +107,7 @@ export const VitalListingTable = ({
               {patientVitals?.map((item, i) => {
                 const { id, respiratoryRate } = item || {};
                 return <TableCell key={`${id}-respiratoryRate-${i}-${respiratoryRate}`} scope="row">
-                  <Typography variant='body1' className='h-24'>{respiratoryRate || DASHES}</Typography>
+                  <Typography variant='body1' className={`h-24 ${isAbnormalRespiratoryRate(respiratoryRate || '') ? 'danger' : ''}`}>{respiratoryRate || DASHES}</Typography>
                 </TableCell>
               })}
             </TableRow>
@@ -116,7 +116,7 @@ export const VitalListingTable = ({
               {patientVitals?.map((item, i) => {
                 const { id, systolicBloodPressure, diastolicBloodPressure } = item || {};
                 return <TableCell key={`${id}-bloodPressure-${i}-${diastolicBloodPressure}`} scope="row">
-                  <Typography variant='body1' className='h-24'>
+                  <Typography variant='body1' className={`h-24 ${isAbnormalBloodPressureRate(systolicBloodPressure || '', diastolicBloodPressure || '') ? 'danger' : ''}`}>
                     {(systolicBloodPressure && `${systolicBloodPressure}/${diastolicBloodPressure}`) || DASHES}
                   </Typography>
                 </TableCell>
@@ -128,7 +128,7 @@ export const VitalListingTable = ({
                 const { id, oxygenSaturation } = item || {};
 
                 return <TableCell key={`${id}-oxygenSaturation-${i}-${oxygenSaturation}`} scope="row">
-                  <Typography variant='body1' className='h-24'>
+                  <Typography variant='body1' className={`h-24 ${isAbnormalOxygenSaturation(oxygenSaturation || '') ? 'danger' : ''}`}>
                     {oxygenSaturation || DASHES}
                   </Typography>
                 </TableCell>
@@ -166,7 +166,7 @@ export const VitalListingTable = ({
                 const { id, PatientBMI } = item || {};
 
                 return <TableCell key={`${id}-PatientBMI-${i}-${PatientBMI}`} scope="row">
-                  <Typography variant='body1' className='h-24'>
+                  <Typography variant='body1' className={`h-24 ${isAbnormalBMI(PatientBMI || '') ? 'danger' : ''}`}>
                     {roundOffUpto2Decimal(PatientBMI) || DASHES}
                   </Typography>
                 </TableCell>
@@ -178,7 +178,7 @@ export const VitalListingTable = ({
                 const { id, PainRange } = item || {};
 
                 return <TableCell key={`${id}-PainRange-${i}-${PainRange}`} scope="row">
-                  <Typography variant='body1' className='h-24'>
+                  <Typography variant='body1' className={`h-24 ${isAbnormalPain(PainRange || '') ? 'danger' : ''}`}>
                     {PainRange || DASHES}
                   </Typography>
                 </TableCell>
@@ -204,7 +204,7 @@ export const VitalListingTable = ({
                 const head = roundOffUpto2Decimal(getHeadValue(patientHeadCircumference || ''))
 
                 return <TableCell key={`${id}-headCircumference-${i}-${patientHeadCircumference}`} scope="row">
-                  <Typography variant='body1' className='h-24'>
+                  <Typography variant='body1' className={`h-24 ${isAbnormalHeadCircumference(head || '') ? 'danger' : ''}`}>
                     {head || DASHES}
                   </Typography>
                 </TableCell>
@@ -217,7 +217,7 @@ export const VitalListingTable = ({
                 const fever = roundOffUpto2Decimal(getFeverValue(patientTemperature || ''))
 
                 return <TableCell key={`${id}-patientTemperature-${i}-${patientTemperature}`} scope="row">
-                  <Typography variant='body1' className='h-24'>
+                  <Typography variant='body1' className={`h-24 ${isAbnormalTemperature(fever || '') ? 'danger' : ''}`}>
                     {fever || DASHES}
                   </Typography>
                 </TableCell>
