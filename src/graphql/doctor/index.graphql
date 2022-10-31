@@ -33,6 +33,27 @@ query FindAllDoctor($doctorInput: DoctorInput!) {
   }
 }
 
+query FindAllScribeDoctor($doctorInput: DoctorInput!) {
+  findAllDoctor(doctorInput: $doctorInput) {
+    doctors {
+      id
+      lastName
+      firstName
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+    
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
 mutation CreateDoctor($createDoctorInput: CreateDoctorInput!){
   createDoctor(createDoctorInput: $createDoctorInput){
     response {

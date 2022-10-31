@@ -113,12 +113,14 @@ const MacroView: FC<MacroViewTypes> = ({ itemId, setItemId, notes, type, handleN
   useEffect(() => {
     const textWith = value[0].children[0].text
     if (textWith.at(0) === '.') {
+      setMacros([])
+      findAllMacros(1, textWith.slice(1, textWith.length))
       setSearchString(textWith.slice(1, textWith.length))
       setShouldShowList(true)
     } else {
       setShouldShowList(false)
     }
-  }, [value])
+  }, [findAllMacros, value])
 
   const handleNotesSave = useCallback((value) => {
     try {
