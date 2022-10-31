@@ -2696,3 +2696,35 @@ export const getTemplateLabel = (labelValue: TemplateType) => {
       return ''
   }
 }
+
+export const isAbnormalPulseRate = (pulseRate: string) => {
+  return pulseRate ? Number(pulseRate) > 100 || Number(pulseRate) < 60 : false
+}
+
+export const isAbnormalRespiratoryRate = (respiratoryRate: string) => {
+  return respiratoryRate ? Number(respiratoryRate) > 25 || Number(respiratoryRate) < 12 : false
+}
+
+export const isAbnormalBloodPressureRate = (diastolic: string, systolic: string) => {
+  return diastolic ? Number(diastolic) > 180 && Number(systolic) > 120 : false
+}
+
+export const isAbnormalBMI = (bmi: string) => {
+  return bmi ? Number(bmi) > 25 : false
+}
+
+export const isAbnormalPain = (pain: string) => {
+  return pain ? Number(pain) > 7 : false
+}
+
+export const isAbnormalHeadCircumference = (headCircumference: string) => {
+  return headCircumference ? Number(headCircumference) > 14 : false
+}
+
+export const isAbnormalTemperature = (temperature: string) => {
+  return temperature ? Number(temperature) > 100.4 : false
+}
+
+export const isAbnormalOxygenSaturation = (oxygenSaturation: string) => {
+  return oxygenSaturation ? Number(oxygenSaturation) > 95 : false
+}
