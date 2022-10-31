@@ -1,5 +1,5 @@
 //packages import
-import { FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
+import { FC, Reducer, useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { Add as AddIcon } from '@material-ui/icons';
 import {
   Box, Button, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton, InputBase, Typography
@@ -20,12 +20,14 @@ import {
 } from "../../../../../generated/graphql";
 
 const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose, fetch }) => {
+  const observer = useRef<any>();
   const tabs = Object.keys(AllergyType)
   const chartingClasses = useChartingStyles()
   const [tab, setTab] = useState<string>(!!tabs ? tabs[0] : '');
 
-  const [{ isSubModalOpen, selectedItem, searchQuery, newRecord, searchedData, }, dispatch] =
-    useReducer<Reducer<State, Action>>(chartReducer, initialState)
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(chartReducer, initialState);
+
+  const { isSubModalOpen, selectedItem, searchQuery, newRecord, searchedData, page, totalPages } = state
 
   const closeSearchMenu = () => {
     dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: false })
@@ -45,15 +47,17 @@ const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
         const { findAllAllergies } = data;
 
         if (findAllAllergies) {
-          const { response, allergies } = findAllAllergies
+          const { response, allergies, pagination } = findAllAllergies
 
           if (response) {
             const { status } = response
 
             if (allergies && status && status === 200) {
+              const { totalPages } = pagination || {}
+              dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: totalPages || 0 })
               dispatch({
                 type: ActionType.SET_SEARCHED_DATA,
-                searchedData: allergies as AllergiesPayload['allergies']
+                searchedData: [...(searchedData || []), ...(allergies ?? [])] as AllergiesPayload['allergies']
               })
             }
           }
@@ -62,13 +66,13 @@ const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
     }
   });
 
-  const handleTabSearch = useCallback(async (type: string, query: string) => {
+  const handleTabSearch = useCallback(async (type: string, page?: number, query?: string) => {
     try {
       await findAllAllergies({
         variables: {
           allergyInput: {
             allergyName: query, allergyType: type.toLowerCase(),
-            paginationOptions: { page: 1, limit: query ? LIST_PAGE_LIMIT : INITIAL_PAGE_LIMIT }
+            paginationOptions: { page: page || 1, limit: query ? LIST_PAGE_LIMIT : INITIAL_PAGE_LIMIT }
           }
         }
       })
@@ -79,7 +83,8 @@ const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
     dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
 
     if (query.length > 2 || query.length === 0) {
-      handleTabSearch(tabName ? tabName : tab, query)
+      dispatch({ type: ActionType.SET_SEARCHED_DATA, searchedData: [] })
+      handleTabSearch(tabName ? tabName : tab, 1, query)
     }
   }, [handleTabSearch, tab])
 
@@ -113,47 +118,66 @@ const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
     </Box>
   );
 
+  const lastElementRef = useCallback((node) => {
+    debugger
+    if (findAllergiesLoading) return;
+    if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && page <= totalPages) {
+        dispatch({ type: ActionType.SET_PAGE, page: page + 1 })
+        if (searchQuery.length > 2 || searchQuery.length === 0) {
+          handleTabSearch(tab, page + 1, searchQuery)
+        }
+        else {
+          handleTabSearch(tab, page + 1)
+        }
+      }
+    });
+    if (node) observer.current.observe(node);
+  }, [findAllergiesLoading, page, totalPages, searchQuery, handleTabSearch, tab]);
+
   const renderSearchData = () =>
-    <Box maxHeight={280} minHeight={280} className="overflowY-auto" display="flex"
+    <Box maxHeight={160} minHeight={160} className="overflowY-auto" display="flex"
       flexDirection="column" alignItems="flex-start"
     >
-      {!!findAllergiesLoading ?
+      {searchedData && searchedData.length > 0 ?
+        <>{searchedData?.map((item, index) => {
+          const { id, name } = item as Allergies || {}
+
+          return (
+            <div key={`${id}-${name}-${index}`} className={`pointer-cursor ${chartingClasses?.my2}`}
+              onClick={() => item && handleOpenForm(item as Allergies)}
+              ref={lastElementRef}
+            >
+              <Typography variant='body1' className={chartingClasses.hoverClass}>{name}</Typography>
+            </div>
+          )
+        })} </> :
+        <Box color={GREY_SEVEN} margin='auto' textAlign='center'>
+          <NoDataIcon />
+
+          <Typography variant="h6">{NO_RECORDS}</Typography>
+
+          <Box p={1} />
+
+          {searchQuery &&
+            <Button type="submit" size='small' variant='contained' color='primary'
+              onClick={handleNewAllergy}
+              startIcon={<AddIcon />}
+            >
+              {ADD_ALLERGY}
+            </Button>}
+        </Box>
+      }
+
+      {!!findAllergiesLoading &&
         <Box alignSelf="center">
           <CircularProgress size={25} color="inherit" disableShrink />
-        </Box>
-        :
-        (searchedData && searchedData.length > 0 ?
-          searchedData?.map(item => {
-            const { name } = item as Allergies || {}
-
-            return (
-              <Box key={name} className='pointer-cursor' my={0.2}
-                onClick={() => item && handleOpenForm(item as Allergies)}
-              >
-                <Typography variant='body1' className={chartingClasses.hoverClass}>{name}</Typography>
-              </Box>
-            )
-          }) :
-          <Box color={GREY_SEVEN} margin='auto' textAlign='center'>
-            <NoDataIcon />
-
-            <Typography variant="h6">{NO_RECORDS}</Typography>
-
-            <Box p={1} />
-
-            {searchQuery &&
-              <Button type="submit" size='small' variant='contained' color='primary'
-                onClick={handleNewAllergy}
-                startIcon={<AddIcon />}
-              >
-                {ADD_ALLERGY}
-              </Button>}
-          </Box>)
-      }
+        </Box>}
     </Box>
 
   useEffect(() => {
-    handleTabSearch(Object.keys(AllergyType)[0], '')
+    handleTabSearch(Object.keys(AllergyType)[0])
   }, [handleTabSearch])
 
   return (
