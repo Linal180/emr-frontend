@@ -1207,6 +1207,7 @@ export type AssessmentProblemType = {
   problemId: string
   isSigned: boolean
   forOrders: boolean
+  notes?: string
   icdCodes: {
     id: string,
     code: string,
