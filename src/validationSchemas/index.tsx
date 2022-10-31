@@ -38,10 +38,8 @@ import {
   FEE_SCHEDULE, INVALID_BILL_FEE_MESSAGE, INVALID_UNIT_MESSAGE, BILLED_AMOUNT, UNIT, INVALID_AMOUNT_MESSAGE,
   PAYMENT_TYPE, APPOINTMENT_PAYMENT_TYPE, LAST_FOUR_DIGIT, PROBLEM_TEXT, FAMILY_RELATIVE, RELATIVE, MANUFACTURER_TEXT,
   NDC_TEXT, ROUTE, SITE_TEXT, UNITS, ADMINISTRATION_DATE, CODE, UPFRONT_PAYMENT_TYPES, STOP_DATE, NO_SPACE_REGEX,
-  PRIORITY, NDC_REGEX, MVX_CODE_REGEX, STATUS, ONLY_NUMBERS_REGEX, CVX_TEXT, MVX_TEXT, NDC_VALIDATION_MESSAGE, SIG, NUMBERS_WITHOUT_DDECIMAL_REGEX, NO_DECIMAL_REQUIRED,
-  ONSET_AGE_TEXT,
-  SECTION,
-  NUMBER_TEXT,
+  PRIORITY, NDC_REGEX, MVX_CODE_REGEX, STATUS, CVX_TEXT, MVX_TEXT, NDC_VALIDATION_MESSAGE, SIG, NO_DECIMAL_REQUIRED,
+  ONSET_AGE_TEXT, SECTION, NUMBER_TEXT,
 } from "../constants";
 import { Copay, PatientPaymentType, ProblemType } from "../generated/graphql";
 
@@ -1169,7 +1167,7 @@ export const createUpFrontPaymentSchema = (copays: Copay[]) => {
           then: selectorSchema('Type', false),
           otherwise: selectorSchema('Type', true)
         }),
-        amount: yup.string().required(requiredMessage(BILLED_AMOUNT)).matches(ONLY_NUMBERS_REGEX, INVALID_BILL_FEE_MESSAGE).min(0, INVALID_BILL_FEE_MESSAGE).typeError(requiredMessage(BILLED_AMOUNT))
+        amount: yup.string().required(requiredMessage(BILLED_AMOUNT)).matches(NUMBER_REGEX, INVALID_BILL_FEE_MESSAGE).min(0, INVALID_BILL_FEE_MESSAGE).typeError(requiredMessage(BILLED_AMOUNT))
       })
     ).test('', requiredMessage('Additional'), (value: any) => !!value && value.length > 0),
     [UPFRONT_PAYMENT_TYPES.Copay]: yup.array().of(
@@ -1178,13 +1176,13 @@ export const createUpFrontPaymentSchema = (copays: Copay[]) => {
         amount: yup.string().test('', 'Amount should be less than Due Amount', (value, { parent }) => {
           const { dueAmount } = parent || {}
           return parseInt(String(value) || '0') <= parseInt(dueAmount || '0')
-        }).required(requiredMessage(BILLED_AMOUNT)).matches(ONLY_NUMBERS_REGEX, INVALID_BILL_FEE_MESSAGE).min(0, INVALID_BILL_FEE_MESSAGE).typeError(requiredMessage(BILLED_AMOUNT)),
+        }).required(requiredMessage(BILLED_AMOUNT)).matches(NUMBER_REGEX, INVALID_BILL_FEE_MESSAGE).min(0, INVALID_BILL_FEE_MESSAGE).typeError(requiredMessage(BILLED_AMOUNT)),
       })
     ).test('', requiredMessage('Copay'), (value: any) => !!value && value.length > 0),
     [UPFRONT_PAYMENT_TYPES.Previous]: yup.array().of(
       yup.object().shape({
         type: selectorSchema('Type', false),
-        amount: yup.string().required(requiredMessage(BILLED_AMOUNT)).matches(ONLY_NUMBERS_REGEX, INVALID_BILL_FEE_MESSAGE).min(0, INVALID_BILL_FEE_MESSAGE).typeError(requiredMessage(BILLED_AMOUNT)),
+        amount: yup.string().required(requiredMessage(BILLED_AMOUNT)).matches(NUMBER_REGEX, INVALID_BILL_FEE_MESSAGE).min(0, INVALID_BILL_FEE_MESSAGE).typeError(requiredMessage(BILLED_AMOUNT)),
       })
     ).test('', requiredMessage('.Previous'), (value: any) => !!value && value.length > 0),
   })
@@ -1305,7 +1303,7 @@ export const ICDCodeSchema = yup.object({
   description: yup.string().required(requiredMessage(DESCRIPTION)),
   priority: positiveNumber(PRIORITY, false).when({
     is: (val: string) => !!val,
-    then: yup.string().matches(NUMBERS_WITHOUT_DDECIMAL_REGEX, NO_DECIMAL_REQUIRED)
+    then: yup.string().matches(NUMBER_REGEX, NO_DECIMAL_REQUIRED)
   }).test('len', invalidMessage(PRIORITY), (val) => val ? val.length <= 6 : true)
 })
 
@@ -1314,7 +1312,7 @@ export const CptCodeSchema = yup.object({
   shortDescription: yup.string().required(requiredMessage(DESCRIPTION)),
   priority: positiveNumber(PRIORITY, false).when({
     is: (val: string) => !!val,
-    then: yup.string().matches(NUMBERS_WITHOUT_DDECIMAL_REGEX, NO_DECIMAL_REQUIRED)
+    then: yup.string().matches(NUMBER_REGEX, NO_DECIMAL_REQUIRED)
   }).test('len', invalidMessage(PRIORITY), (val) => val ? val.length <= 6 : true)
 })
 
