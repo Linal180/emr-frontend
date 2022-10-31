@@ -292,5 +292,11 @@ export const useChartingStyles = makeStyles((theme) => ({
     "& .MuiTabPanel-root": {
       paddingTop: 0,
     }
+  },
+
+  checkBoxScribe: {
+    "&.MuiFormControlLabel-root": {
+      marginRight: 0,
+    }
   }
 }));
