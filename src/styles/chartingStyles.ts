@@ -295,7 +295,7 @@ export const useChartingStyles = makeStyles((theme) => ({
   },
 
   checkBoxScribe: {
-    "&.MuiFormControlLabel-root": {
+    "& .MuiFormControlLabel-root": {
       marginRight: 0,
     }
   }

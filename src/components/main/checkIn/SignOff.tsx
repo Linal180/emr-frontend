@@ -2,11 +2,16 @@ import { Box, Button, Card, Checkbox, colors, FormControlLabel, Typography } fro
 import { AddCircleOutline, ChevronRight } from '@material-ui/icons'
 import { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
-import { ASSESSMENT_PLAN, DASHES, EIGHT_PAGE_LIMIT, ENCOUNTER_INFORMATION, FOLLOWUP, PATIENT_HISTORY_ILLNESS_TEXT, REVIEW_OF_SYSTEM_TEXT, TO_CHECKOUT } from '../../../constants'
-import { PatientIllnessHistoryPayload, ReviewOfSystemPayload, ScribePayload, useFindAllPatientProblemsWithMedicationLazyQuery, usePatientIllnessHistoryLazyQuery, useReviewOfSystemLazyQuery, useUpdateScribeCheckMutation } from '../../../generated/graphql'
+import { 
+  ASSESSMENT_PLAN, DASHES, EIGHT_PAGE_LIMIT, ENCOUNTER_INFORMATION, FOLLOWUP, PATIENT_HISTORY_ILLNESS_TEXT, 
+  REVIEW_OF_SYSTEM_TEXT, TO_CHECKOUT 
+} from '../../../constants'
+import { 
+  PatientIllnessHistoryPayload, ReviewOfSystemPayload, ScribePayload, useFindAllPatientProblemsWithMedicationLazyQuery, 
+  usePatientIllnessHistoryLazyQuery, useReviewOfSystemLazyQuery, useUpdateScribeCheckMutation 
+} from '../../../generated/graphql'
 import { AssessmentProblemType, ParamsType, SignOffProps } from '../../../interfacesTypes'
 import { useChartingStyles } from '../../../styles/chartingStyles'
-import { BLUE } from '../../../theme'
 import UserSearchModal from '../../common/UserSearchModal'
 import ReviewTab from '../patientChart/chartCards/tabs/ReviewTab'
 
@@ -198,7 +203,7 @@ function SignOff({ handleStepChange, appointmentInfo }: SignOffProps) {
   }, [fetchPatientIllnessHistory])
 
   return (
-    <div>
+    <>
       <Card>
         <Box pb={2} className={classes.cardBox}>
           <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" borderBottom={`1px solid ${colors.grey[300]}`}>
@@ -243,9 +248,9 @@ function SignOff({ handleStepChange, appointmentInfo }: SignOffProps) {
               <Box display="flex" alignItems='center'>
                 Documented by scribe
                 {(isScribe) ?
-                  <Box display="flex">
+                  <Box display="flex" alignItems='center'>
                     , scribed by {
-                      !scribeFirstName ? <Box pb={1} display="flex" alignItems="center" justifyContent="flex-end">
+                      !scribeFirstName ? <Box display="flex" alignItems="center" justifyContent="flex-end">
                         <Button
                           onClick={() => setIsUsersModalOpen(true)}
                         >
@@ -253,8 +258,8 @@ function SignOff({ handleStepChange, appointmentInfo }: SignOffProps) {
                           <Box ml={1} />
                         </Button>
                       </Box> :
-                        <Box color={BLUE} pl={2} onClick={() => setIsUsersModalOpen(true)}>
-                          <Typography variant="h6">{scribeFirstName} {scribeLastName}</Typography>
+                        <Box pl={2}>
+                          <Button onClick={() => setIsUsersModalOpen(true)} size='small' variant='outlined' color='secondary'>{scribeFirstName} {scribeLastName}</Button>
                         </Box>
                     }
                   </Box> : ''}
@@ -263,9 +268,13 @@ function SignOff({ handleStepChange, appointmentInfo }: SignOffProps) {
           </Box>
         </Box>
       </Card>
+
       <Box m={3} />
+
       <ReviewTab shouldShowAdd={false} handleStepChange={handleStepChange} />
+
       <Box m={3} />
+
       <Card>
         <Box pb={2} className={classes.cardBox}>
           <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" borderBottom={`1px solid ${colors.grey[300]}`}>
@@ -319,7 +328,9 @@ function SignOff({ handleStepChange, appointmentInfo }: SignOffProps) {
           </Box>
         </Box>
       </Card>
+
       <Box m={3} />
+
       <Card>
         <Box pb={2} className={classes.cardBox}>
           <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" borderBottom={`1px solid ${colors.grey[300]}`}>
@@ -344,7 +355,9 @@ function SignOff({ handleStepChange, appointmentInfo }: SignOffProps) {
           </Box>
         </Box>
       </Card>
+
       <Box m={3} />
+
       <Card>
         <Box pb={2} className={classes.cardBox}>
           <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" borderBottom={`1px solid ${colors.grey[300]}`}>
@@ -370,7 +383,9 @@ function SignOff({ handleStepChange, appointmentInfo }: SignOffProps) {
           </Box>
         </Box>
       </Card>
+
       <Box m={3} />
+
       <Card>
         <Box pb={2} className={classes.cardBox}>
           <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" borderBottom={`1px solid ${colors.grey[300]}`}>
@@ -393,7 +408,7 @@ function SignOff({ handleStepChange, appointmentInfo }: SignOffProps) {
           setScribeItem={setScribeItem}
         />
       }
-    </div>
+    </>
   )
 }
 
