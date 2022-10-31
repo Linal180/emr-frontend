@@ -9031,7 +9031,7 @@ export type FindAllAllergiesQueryVariables = Exact<{
 }>;
 
 
-export type FindAllAllergiesQuery = { __typename?: 'Query', findAllAllergies: { __typename?: 'AllergiesPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, allergies?: Array<{ __typename?: 'Allergies', id: string, name?: string | null } | null> | null } };
+export type FindAllAllergiesQuery = { __typename?: 'Query', findAllAllergies: { __typename?: 'AllergiesPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, allergies?: Array<{ __typename?: 'Allergies', id: string, name?: string | null } | null> | null } };
 
 export type GetPatientChartingInfoQueryVariables = Exact<{
   patientChartingInfoInput: PatientChartingInfoInput;
@@ -14093,6 +14093,10 @@ export const FindAllAllergiesDocument = gql`
     response {
       status
       message
+    }
+    pagination {
+      page
+      totalPages
     }
     allergies {
       id

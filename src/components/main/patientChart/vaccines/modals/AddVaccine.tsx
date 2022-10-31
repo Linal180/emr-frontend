@@ -107,13 +107,9 @@ const AddVaccine: FC<AddVaccineProps> = ({ isOpen = false, handleModalClose, fet
       <Box maxHeight={280} minHeight={280} className="overflowY-auto" display="flex"
         flexDirection="column" alignItems="flex-start"
       >
-        {!!searchIcdCodesLoading ?
-          <Box alignSelf="center">
-            <CircularProgress size={25} color="inherit" disableShrink />
-          </Box>
-          :
-          (searchedData && searchedData.length > 0 ?
-            searchedData?.map(item => {
+        {
+          searchedData && searchedData.length > 0 ?
+            <>{searchedData?.map(item => {
               const { cvxCode, name, mvx, cvx } = item as VaccineProduct || {}
               const { shortDescription, name: cvxName } = cvx || {}
               const { manufacturerName } = mvx || {}
@@ -130,13 +126,18 @@ const AddVaccine: FC<AddVaccineProps> = ({ isOpen = false, handleModalClose, fet
 
                 </div>
               )
-            }) : <Box color={GREY_SEVEN} margin='auto' textAlign='center'>
+            })}</> : <Box color={GREY_SEVEN} margin='auto' textAlign='center'>
               <NoDataIcon />
               <Typography variant="h6">{NO_RECORDS}</Typography>
 
               <Box p={1} />
-            </Box>)
+            </Box>
         }
+
+        {!!searchIcdCodesLoading &&
+          <Box alignSelf="center">
+            <CircularProgress size={25} color="inherit" disableShrink />
+          </Box>}
       </Box>
     )
   }, [chartingClasses.hoverClass, lastElementRef, searchIcdCodesLoading, searchedData])
