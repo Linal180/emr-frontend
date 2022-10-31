@@ -189,7 +189,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
           />
 
           <Box className={classes.cardText}>
-            <Box pb={3} display="flex" justifyContent="space-between" alignItems="flex-start">
+            <Box pb={3} display="flex" justifyContent="space-between" alignItems="flex-start" flexWrap="wrap">
               <Box>
                 <Box maxWidth={300}>
                   <Typography variant='h4' noWrap>{patientName}</Typography>

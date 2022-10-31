@@ -8,7 +8,7 @@ import {
   PRIMARY, PRIMARY_CARE, RECEIVED_DATE, RESULTS, SPECIMEN, TEL, TESTS, URGENT_CARE,
 } from "../../../../constants";
 import { LabTestsPayload } from "../../../../generated/graphql";
-import { formatAddress, formatPhone } from "../../../../utils";
+import { formatAddress, formatPhone, formatValue } from "../../../../utils";
 
 // Create styles
 const styles = StyleSheet.create({
@@ -268,7 +268,7 @@ const ResultDoc = ({ labTest, attachmentUrl }: { labTest: LabTestsPayload['labTe
 
               <View style={styles.fieldRow1}>
                 <Text style={[styles.fieldTitle, styles.minWidth60]}>{GENDER}:</Text>
-                <Text style={styles.fieldText}>{gender}</Text>
+                <Text style={styles.fieldText}>{formatValue(gender || '')}</Text>
               </View>
 
               <View style={styles.fieldRow1}>
