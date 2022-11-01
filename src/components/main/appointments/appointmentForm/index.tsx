@@ -381,7 +381,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           cancelAppStatus ?
             Alert.info(CANCELLED_APPOINTMENT_EDIT_MESSAGE)
             : await updateAppointment({
-              variables: { updateAppointmentInput: { id, ...payload, status: AppointmentStatus.Scheduled } }
+              variables: { updateAppointmentInput: { id, ...payload, status: AppointmentStatus.Scheduled, shouldSendEmail: true } }
             }) : Alert.error(CANT_UPDATE_APPOINTMENT)
       } else {
         await createAppointment({
