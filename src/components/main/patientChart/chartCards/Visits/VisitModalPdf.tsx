@@ -659,7 +659,7 @@ function VisitModalPdf({ assessmentProblems, patientChartingReview, patientIllne
           </View>
 
           {/* 9.1-row */}
-          <View style={[styles.tableRow, styles.ml10]}>
+          <View style={[styles.tableRow]}>
             <View style={[styles.w100]}>
               <View style={styles.fieldRow3}>
                 <Text style={styles.fieldText}>{'Patient will return to the office as needed.'}</Text>
