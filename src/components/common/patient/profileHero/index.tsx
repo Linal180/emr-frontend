@@ -247,8 +247,8 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
 
   const isLoading = getPatientLoading || getAttachmentLoading
 
-  const patientAvatar = () => <Box key={attachmentId} display="flex" alignItems="center">
-    <Box pl={1} pr={3.75} pb={0} mb={0} position="relative" className={classes.profileImageNew}>
+  const patientAvatar = () => <Box className={classes.profileImageNew} key={attachmentId} display="flex" alignItems="center">
+    <Box pl={1} pr={3.75} pb={0} mb={0} position="relative">
       {getAttachmentLoading ?
         <Avatar variant="square" className={classes.profileImage}>
           <CircularProgress size={20} color="inherit" />
