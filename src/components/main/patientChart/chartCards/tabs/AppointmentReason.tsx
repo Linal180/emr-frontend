@@ -8,7 +8,7 @@ import ConfirmationModal from '../../../../common/ConfirmationModal'
 import NoDataFoundComponent from '../../../../common/NoDataFoundComponent'
 import AppointmentReasonModal from '../AppointmentReason/AppointmentReasonModal'
 //constants, interfaces, styles, reducers, graphql
-import { ADD, APPOINTMENT_REASON_DELETED, DELETE_REASON_DESCRIPTION, NEXT, REACTION_PAGE_LIMIT, REASON, REASON_VISIT, TO_CHECKOUT } from '../../../../../constants'
+import { ADD, APPOINTMENT_REASON_DELETED, CHIEF_COMPLAINT, DELETE_REASON_DESCRIPTION, NEXT, REACTION_PAGE_LIMIT, REASON, TO_CHECKOUT } from '../../../../../constants'
 import { PatientProblemsPayload, useFindAllPatientProblemsLazyQuery, useRemovePatientProblemMutation } from '../../../../../generated/graphql'
 import { AppointmentReasonProps, ParamsType } from '../../../../../interfacesTypes'
 import { Action, ActionType, chartReducer, initialState, State } from '../../../../../reducers/chartReducer'
@@ -110,7 +110,7 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
       <Card>
         <Box pb={2} className={classes.cardBox}>
           <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" borderBottom={`1px solid ${colors.grey[300]}`}>
-            <Typography variant='h3'>{REASON_VISIT}</Typography>
+            <Typography variant='h3'>{CHIEF_COMPLAINT}</Typography>
 
             <Box display='flex' alignItems='center'>
               {!shouldDisableEdit && shouldShowAdd && <Button
