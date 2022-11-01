@@ -55,6 +55,7 @@ import { Action as CvxCodeAction } from "../reducers/cvxCodeReducer";
 import { Action as MacroAction } from "../reducers/macrosReducer";
 import { Action as VaccineProductAction } from "../reducers/vaccineProductReducer";
 import { Action as RoomAction } from "../reducers/roomReducer";
+import { Action as ImagingTestAction } from "../reducers/imagingTestReducer";
 
 export type Order = 'ASC' | 'DESC';
 type Key = string | number | undefined;
@@ -2452,6 +2453,7 @@ export type IcdCodesTableProps = {
 export type ICD10FormType = Pick<CreateIcdCodeInput, 'code' | 'description'> & { priority: string };
 export type CptCodeFormType = Pick<CreateCptCodeInput, 'code' | 'shortDescription'> & { priority: string };
 export type NdcCodeFormType = { code: string, description: string };
+export type ImagingTestFormType = { name: string };
 export type MvxCodeFormType = Pick<CreateMvxCodeInput, 'manufacturerName' | 'mvxCode' | 'notes'> & { mvxStatus: SelectorOption }
 export type RoomFormType = Pick<CreateRoomInput, 'name' | 'number'> & { facility: SelectorOption }
 export type CvxCodeFormType = Pick<CreateCvxCodeInput, 'name' | 'cvxCode' | 'shortDescription' | 'notes'> & { cptCode: SelectorOption, status: SelectorOption }
@@ -2490,6 +2492,15 @@ export type NdcCodeFormProps = {
   fetch?: Function;
   id?: string;
   dispatcher?: Dispatch<NdcCodeAction>
+  handleClose: (open: boolean) => void
+}
+
+export type ImagingTestFormProps = {
+  open: boolean;
+  isEdit: boolean;
+  fetch?: Function;
+  id?: string;
+  dispatcher?: Dispatch<ImagingTestAction>
   handleClose: (open: boolean) => void
 }
 

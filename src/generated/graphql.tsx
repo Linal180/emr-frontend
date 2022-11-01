@@ -273,6 +273,7 @@ export type Appointment = {
   facility?: Maybe<Facility>;
   facilityId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  imagingOrders?: Maybe<Array<ImagingOrder>>;
   insuranceCompany?: Maybe<Scalars['String']>;
   insuranceStatus?: Maybe<Scalars['String']>;
   invoice?: Maybe<Invoice>;
@@ -1403,6 +1404,10 @@ export type CreateIcdCodeInput = {
   version?: Maybe<Scalars['String']>;
 };
 
+export type CreateImagingTestInput = {
+  name: Scalars['String'];
+};
+
 export type CreateInvoiceInputs = {
   amount: Scalars['String'];
   appointmentId: Scalars['String'];
@@ -2284,6 +2289,18 @@ export type FindAllIcdCodesPayload = {
   response?: Maybe<ResponsePayloadResponse>;
 };
 
+export type FindAllImagingTestInput = {
+  paginationOptions: PaginationInput;
+  searchQuery?: Maybe<Scalars['String']>;
+};
+
+export type FindAllImagingTestPayload = {
+  __typename?: 'FindAllImagingTestPayload';
+  imagingTests?: Maybe<Array<ImagingTest>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
 export type FindAllModifierInput = {
   paginationOptions: PaginationInput;
   searchQuery?: Maybe<Scalars['String']>;
@@ -2618,6 +2635,10 @@ export type GetIcdCodeInput = {
   id: Scalars['String'];
 };
 
+export type GetImagingTestInput = {
+  id: Scalars['String'];
+};
+
 export type GetInsuranceInput = {
   id?: Maybe<Scalars['String']>;
 };
@@ -2800,6 +2821,44 @@ export type IcdCodesPayload = {
   icdCodes?: Maybe<Array<Maybe<IcdCodesWithSnowMedCode>>>;
   pagination?: Maybe<PaginationPayload>;
   response?: Maybe<ResponsePayload>;
+};
+
+export type ImagingOrder = {
+  __typename?: 'ImagingOrder';
+  accessionNumber?: Maybe<Scalars['String']>;
+  appointmentId?: Maybe<Scalars['String']>;
+  collectedDate?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  imagingTests?: Maybe<Array<ImagingTest>>;
+  isSigned?: Maybe<Scalars['Boolean']>;
+  labName?: Maybe<Scalars['String']>;
+  labTestStatus: LabTestStatus;
+  orderNumber?: Maybe<Scalars['String']>;
+  patientId?: Maybe<Scalars['String']>;
+  providerNotes?: Maybe<Scalars['String']>;
+  receivedDate?: Maybe<Scalars['String']>;
+  testDate?: Maybe<Scalars['String']>;
+  testNotes?: Maybe<Scalars['String']>;
+  testTime?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+  vendorName?: Maybe<Scalars['String']>;
+};
+
+export type ImagingTest = {
+  __typename?: 'ImagingTest';
+  createdAt?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  imagingOrder?: Maybe<ImagingOrder>;
+  imagingOrderId?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type ImagingTestPayload = {
+  __typename?: 'ImagingTestPayload';
+  imagingTest?: Maybe<ImagingTest>;
+  response?: Maybe<ResponsePayloadResponse>;
 };
 
 export type Insurance = {
@@ -3248,6 +3307,7 @@ export type Mutation = {
   createForm: FormPayload;
   createFormTemplate: FormPayload;
   createIcdCode: IcdCodePayload;
+  createImagingTest: ImagingTestPayload;
   createInvoice: InvoicePayload;
   createLabTest: LabTestPayload;
   createLabTestObservation: LabTestObservationPayload;
@@ -3300,6 +3360,7 @@ export type Mutation = {
   removeFeeSchedule: FeeSchedulePayload;
   removeForm: FormPayload;
   removeIcdCode: IcdCodePayload;
+  removeImagingTest: ImagingTestPayload;
   removeLabTest: LabTestPayload;
   removeLabTestObservation: LabTestObservationPayload;
   removeMacro: MacroPayload;
@@ -3352,6 +3413,7 @@ export type Mutation = {
   updateForm: FormPayload;
   updateHPINotes: PatientIllnessHistoryPayload;
   updateIcdCode: IcdCodePayload;
+  updateImagingTest: ImagingTestPayload;
   updateInvoiceStatus: InvoicePayload;
   updateLabTest: LabTestPayload;
   updateLabTestObservation: LabTestObservationPayload;
@@ -3568,6 +3630,11 @@ export type MutationCreateFormTemplateArgs = {
 
 export type MutationCreateIcdCodeArgs = {
   createIcdCodeInput: CreateIcdCodeInput;
+};
+
+
+export type MutationCreateImagingTestArgs = {
+  createImagingTestInput: CreateImagingTestInput;
 };
 
 
@@ -3826,6 +3893,11 @@ export type MutationRemoveIcdCodeArgs = {
 };
 
 
+export type MutationRemoveImagingTestArgs = {
+  removeImagingTestInput: RemoveImagingTestInput;
+};
+
+
 export type MutationRemoveLabTestArgs = {
   removeLabTest: RemoveLabTest;
 };
@@ -4078,6 +4150,11 @@ export type MutationUpdateHpiNotesArgs = {
 
 export type MutationUpdateIcdCodeArgs = {
   updateIcdCodeInput: UpdateIcdCodeInput;
+};
+
+
+export type MutationUpdateImagingTestArgs = {
+  updateImagingTestInput: UpdateImagingTestInput;
 };
 
 
@@ -4432,6 +4509,7 @@ export type Patient = {
   holdStatement?: Maybe<Holdstatement>;
   homeBound?: Maybe<Homebound>;
   id: Scalars['String'];
+  imagingOrders?: Maybe<Array<ImagingOrder>>;
   immunizationConsent?: Maybe<Scalars['Boolean']>;
   inviteAccepted?: Maybe<Scalars['Boolean']>;
   labTests?: Maybe<Array<LabTests>>;
@@ -5397,6 +5475,7 @@ export type Query = {
   findAllFeeSchedules: AllFeeSchedulesPayload;
   findAllForms: FormsPayload;
   findAllIcdCodes: FindAllIcdCodesPayload;
+  findAllImagingTest: FindAllImagingTestPayload;
   findAllLabTest: LabTestsPayload;
   findAllLiveClaimFeeds: LiveClaimFeedPayload;
   findAllLoincCodes: LoincCodesPayload;
@@ -5463,6 +5542,7 @@ export type Query = {
   getFeeSchedule: FeeSchedulePayload;
   getForm: FormPayload;
   getIcdCode: IcdCodePayload;
+  getImagingTest: ImagingTestPayload;
   getInsurance: InsurancePayload;
   getLabTest: LabTestPayload;
   getMacro: MacroPayload;
@@ -5700,6 +5780,11 @@ export type QueryFindAllFormsArgs = {
 
 export type QueryFindAllIcdCodesArgs = {
   findAllIcdCodesInput: FindAllIcdCodesInput;
+};
+
+
+export type QueryFindAllImagingTestArgs = {
+  findAllImagingTestInput: FindAllImagingTestInput;
 };
 
 
@@ -6020,6 +6105,11 @@ export type QueryGetFormArgs = {
 
 export type QueryGetIcdCodeArgs = {
   getIcdCodeInput: GetIcdCodeInput;
+};
+
+
+export type QueryGetImagingTestArgs = {
+  getImagingTestInput: GetImagingTestInput;
 };
 
 
@@ -6463,6 +6553,10 @@ export type RemoveForm = {
 };
 
 export type RemoveIcdCodeInput = {
+  id: Scalars['String'];
+};
+
+export type RemoveImagingTestInput = {
   id: Scalars['String'];
 };
 
@@ -7834,6 +7928,11 @@ export type UpdateIcdCodeInput = {
   id: Scalars['String'];
   priority?: Maybe<Scalars['Int']>;
   version?: Maybe<Scalars['String']>;
+};
+
+export type UpdateImagingTestInput = {
+  id: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
 };
 
 export type UpdateLabTestInput = {
@@ -9868,6 +9967,41 @@ export type RemoveIcdCodeMutationVariables = Exact<{
 
 
 export type RemoveIcdCodeMutation = { __typename?: 'Mutation', removeIcdCode: { __typename?: 'IcdCodePayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, icdCode?: { __typename?: 'ICDCodes', id: string } | null } };
+
+export type FindAllImagingTestQueryVariables = Exact<{
+  findAllImagingTestInput: FindAllImagingTestInput;
+}>;
+
+
+export type FindAllImagingTestQuery = { __typename?: 'Query', findAllImagingTest: { __typename?: 'FindAllImagingTestPayload', imagingTests?: Array<{ __typename?: 'ImagingTest', id: string, name?: string | null }> | null, response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
+
+export type GetImagingTestQueryVariables = Exact<{
+  getImagingTestInput: GetImagingTestInput;
+}>;
+
+
+export type GetImagingTestQuery = { __typename?: 'Query', getImagingTest: { __typename?: 'ImagingTestPayload', imagingTest?: { __typename?: 'ImagingTest', id: string, name?: string | null } | null, response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null } };
+
+export type CreateImagingTestMutationVariables = Exact<{
+  createImagingTestInput: CreateImagingTestInput;
+}>;
+
+
+export type CreateImagingTestMutation = { __typename?: 'Mutation', createImagingTest: { __typename?: 'ImagingTestPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, imagingTest?: { __typename?: 'ImagingTest', id: string } | null } };
+
+export type UpdateImagingTestMutationVariables = Exact<{
+  updateImagingTestInput: UpdateImagingTestInput;
+}>;
+
+
+export type UpdateImagingTestMutation = { __typename?: 'Mutation', updateImagingTest: { __typename?: 'ImagingTestPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, imagingTest?: { __typename?: 'ImagingTest', id: string } | null } };
+
+export type RemoveImagingTestMutationVariables = Exact<{
+  removeImagingTestInput: RemoveImagingTestInput;
+}>;
+
+
+export type RemoveImagingTestMutation = { __typename?: 'Mutation', removeImagingTest: { __typename?: 'ImagingTestPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, imagingTest?: { __typename?: 'ImagingTest', id: string } | null } };
 
 export type FetchAllInsurancesQueryVariables = Exact<{
   insuranceInput: InsurancePaginationInput;
@@ -20190,6 +20324,211 @@ export function useRemoveIcdCodeMutation(baseOptions?: Apollo.MutationHookOption
 export type RemoveIcdCodeMutationHookResult = ReturnType<typeof useRemoveIcdCodeMutation>;
 export type RemoveIcdCodeMutationResult = Apollo.MutationResult<RemoveIcdCodeMutation>;
 export type RemoveIcdCodeMutationOptions = Apollo.BaseMutationOptions<RemoveIcdCodeMutation, RemoveIcdCodeMutationVariables>;
+export const FindAllImagingTestDocument = gql`
+    query FindAllImagingTest($findAllImagingTestInput: FindAllImagingTestInput!) {
+  findAllImagingTest(findAllImagingTestInput: $findAllImagingTestInput) {
+    imagingTests {
+      id
+      name
+    }
+    response {
+      status
+      message
+    }
+    pagination {
+      page
+      totalPages
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllImagingTestQuery__
+ *
+ * To run a query within a React component, call `useFindAllImagingTestQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllImagingTestQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllImagingTestQuery({
+ *   variables: {
+ *      findAllImagingTestInput: // value for 'findAllImagingTestInput'
+ *   },
+ * });
+ */
+export function useFindAllImagingTestQuery(baseOptions: Apollo.QueryHookOptions<FindAllImagingTestQuery, FindAllImagingTestQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllImagingTestQuery, FindAllImagingTestQueryVariables>(FindAllImagingTestDocument, options);
+      }
+export function useFindAllImagingTestLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllImagingTestQuery, FindAllImagingTestQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllImagingTestQuery, FindAllImagingTestQueryVariables>(FindAllImagingTestDocument, options);
+        }
+export type FindAllImagingTestQueryHookResult = ReturnType<typeof useFindAllImagingTestQuery>;
+export type FindAllImagingTestLazyQueryHookResult = ReturnType<typeof useFindAllImagingTestLazyQuery>;
+export type FindAllImagingTestQueryResult = Apollo.QueryResult<FindAllImagingTestQuery, FindAllImagingTestQueryVariables>;
+export const GetImagingTestDocument = gql`
+    query GetImagingTest($getImagingTestInput: GetImagingTestInput!) {
+  getImagingTest(getImagingTestInput: $getImagingTestInput) {
+    imagingTest {
+      id
+      name
+    }
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetImagingTestQuery__
+ *
+ * To run a query within a React component, call `useGetImagingTestQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetImagingTestQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetImagingTestQuery({
+ *   variables: {
+ *      getImagingTestInput: // value for 'getImagingTestInput'
+ *   },
+ * });
+ */
+export function useGetImagingTestQuery(baseOptions: Apollo.QueryHookOptions<GetImagingTestQuery, GetImagingTestQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetImagingTestQuery, GetImagingTestQueryVariables>(GetImagingTestDocument, options);
+      }
+export function useGetImagingTestLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetImagingTestQuery, GetImagingTestQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetImagingTestQuery, GetImagingTestQueryVariables>(GetImagingTestDocument, options);
+        }
+export type GetImagingTestQueryHookResult = ReturnType<typeof useGetImagingTestQuery>;
+export type GetImagingTestLazyQueryHookResult = ReturnType<typeof useGetImagingTestLazyQuery>;
+export type GetImagingTestQueryResult = Apollo.QueryResult<GetImagingTestQuery, GetImagingTestQueryVariables>;
+export const CreateImagingTestDocument = gql`
+    mutation CreateImagingTest($createImagingTestInput: CreateImagingTestInput!) {
+  createImagingTest(createImagingTestInput: $createImagingTestInput) {
+    response {
+      status
+      message
+    }
+    imagingTest {
+      id
+    }
+  }
+}
+    `;
+export type CreateImagingTestMutationFn = Apollo.MutationFunction<CreateImagingTestMutation, CreateImagingTestMutationVariables>;
+
+/**
+ * __useCreateImagingTestMutation__
+ *
+ * To run a mutation, you first call `useCreateImagingTestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateImagingTestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createImagingTestMutation, { data, loading, error }] = useCreateImagingTestMutation({
+ *   variables: {
+ *      createImagingTestInput: // value for 'createImagingTestInput'
+ *   },
+ * });
+ */
+export function useCreateImagingTestMutation(baseOptions?: Apollo.MutationHookOptions<CreateImagingTestMutation, CreateImagingTestMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateImagingTestMutation, CreateImagingTestMutationVariables>(CreateImagingTestDocument, options);
+      }
+export type CreateImagingTestMutationHookResult = ReturnType<typeof useCreateImagingTestMutation>;
+export type CreateImagingTestMutationResult = Apollo.MutationResult<CreateImagingTestMutation>;
+export type CreateImagingTestMutationOptions = Apollo.BaseMutationOptions<CreateImagingTestMutation, CreateImagingTestMutationVariables>;
+export const UpdateImagingTestDocument = gql`
+    mutation UpdateImagingTest($updateImagingTestInput: UpdateImagingTestInput!) {
+  updateImagingTest(updateImagingTestInput: $updateImagingTestInput) {
+    response {
+      status
+      message
+    }
+    imagingTest {
+      id
+    }
+  }
+}
+    `;
+export type UpdateImagingTestMutationFn = Apollo.MutationFunction<UpdateImagingTestMutation, UpdateImagingTestMutationVariables>;
+
+/**
+ * __useUpdateImagingTestMutation__
+ *
+ * To run a mutation, you first call `useUpdateImagingTestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateImagingTestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateImagingTestMutation, { data, loading, error }] = useUpdateImagingTestMutation({
+ *   variables: {
+ *      updateImagingTestInput: // value for 'updateImagingTestInput'
+ *   },
+ * });
+ */
+export function useUpdateImagingTestMutation(baseOptions?: Apollo.MutationHookOptions<UpdateImagingTestMutation, UpdateImagingTestMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateImagingTestMutation, UpdateImagingTestMutationVariables>(UpdateImagingTestDocument, options);
+      }
+export type UpdateImagingTestMutationHookResult = ReturnType<typeof useUpdateImagingTestMutation>;
+export type UpdateImagingTestMutationResult = Apollo.MutationResult<UpdateImagingTestMutation>;
+export type UpdateImagingTestMutationOptions = Apollo.BaseMutationOptions<UpdateImagingTestMutation, UpdateImagingTestMutationVariables>;
+export const RemoveImagingTestDocument = gql`
+    mutation RemoveImagingTest($removeImagingTestInput: RemoveImagingTestInput!) {
+  removeImagingTest(removeImagingTestInput: $removeImagingTestInput) {
+    response {
+      status
+      message
+    }
+    imagingTest {
+      id
+    }
+  }
+}
+    `;
+export type RemoveImagingTestMutationFn = Apollo.MutationFunction<RemoveImagingTestMutation, RemoveImagingTestMutationVariables>;
+
+/**
+ * __useRemoveImagingTestMutation__
+ *
+ * To run a mutation, you first call `useRemoveImagingTestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveImagingTestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeImagingTestMutation, { data, loading, error }] = useRemoveImagingTestMutation({
+ *   variables: {
+ *      removeImagingTestInput: // value for 'removeImagingTestInput'
+ *   },
+ * });
+ */
+export function useRemoveImagingTestMutation(baseOptions?: Apollo.MutationHookOptions<RemoveImagingTestMutation, RemoveImagingTestMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveImagingTestMutation, RemoveImagingTestMutationVariables>(RemoveImagingTestDocument, options);
+      }
+export type RemoveImagingTestMutationHookResult = ReturnType<typeof useRemoveImagingTestMutation>;
+export type RemoveImagingTestMutationResult = Apollo.MutationResult<RemoveImagingTestMutation>;
+export type RemoveImagingTestMutationOptions = Apollo.BaseMutationOptions<RemoveImagingTestMutation, RemoveImagingTestMutationVariables>;
 export const FetchAllInsurancesDocument = gql`
     query FetchAllInsurances($insuranceInput: InsurancePaginationInput!) {
   fetchAllInsurances(insuranceInput: $insuranceInput) {
