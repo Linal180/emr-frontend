@@ -1,10 +1,9 @@
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import {
-  ALLERGIES_TEXT, APPOINTMENT_DATE, ASSESSMENT_PLAN, DASHES, DIAGNOSES, DOB_TEXT, EXPRESS_HEALTHCARE_URL, FACILITY, FOLLOWUP, HISTORY_OF_PATIENT_ILLNESS, INTAKE, LAB_ORDER, MEDICATIONS,
+  ALLERGIES_TEXT, APPOINTMENT_DATE, ASSESSMENT_PLAN, CHIEF_COMPLAINT, DASHES, DIAGNOSES, DOB_TEXT, EXPRESS_HEALTHCARE_URL, FACILITY, FOLLOWUP, HISTORY_OF_PATIENT_ILLNESS, INTAKE, LAB_ORDER, MEDICATIONS,
   NO_DATA_FOUND,
   PATIENT_ID,
-  PHONE,
-  REASON_FOR_VISIT, REVIEW_OF_SYSTEM_TEXT, SEX, TRIAGE_NOTES, VITALS_TEXT
+  PHONE, REVIEW_OF_SYSTEM_TEXT, SEX, TRIAGE_NOTES, VITALS_TEXT
 } from '../../../../../constants';
 import { Genderidentity, PatientVitals } from '../../../../../generated/graphql';
 import { VisitModalPdfProps } from '../../../../../interfacesTypes';
@@ -191,7 +190,7 @@ function VisitModalPdf({ assessmentProblems, patientChartingReview, patientIllne
           <View style={styles.tableRow}>
             <View style={[styles.w100]}>
               <View style={[styles.bgLightGrey, styles.borderStyle, styles.borderTopWidth, styles.borderBottomWidth]}>
-                <Text style={styles.fieldTitle2}>{REASON_FOR_VISIT}</Text>
+                <Text style={styles.fieldTitle2}>{CHIEF_COMPLAINT}</Text>
               </View>
             </View>
           </View>
@@ -659,7 +658,7 @@ function VisitModalPdf({ assessmentProblems, patientChartingReview, patientIllne
           </View>
 
           {/* 9.1-row */}
-          <View style={[styles.tableRow, styles.ml10]}>
+          <View style={[styles.tableRow]}>
             <View style={[styles.w100]}>
               <View style={styles.fieldRow3}>
                 <Text style={styles.fieldText}>{'Patient will return to the office as needed.'}</Text>

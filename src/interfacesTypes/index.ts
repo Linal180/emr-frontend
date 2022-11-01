@@ -1665,7 +1665,8 @@ export interface ConfirmModalTypes extends DialogTypes {
   title?: string;
   actionText?: string;
   description?: string;
-  handleSave: () => void;
+  handleSave?: () => void;
+  shouldShowSave?: boolean
 }
 export interface SmartyUserData {
   street: string;
