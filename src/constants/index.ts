@@ -662,6 +662,7 @@ export const CPT_TEXT = "CPT";
 export const CUSTOM_CODES = "Custom Codes";
 export const MEDICINES = "Medicines";
 export const TESTS = "Tests";
+export const LAB_TESTS = "Lab Tests";
 export const VACCINES = "Vaccines";
 export const ICD_TEN_DESCRIPTION =
   "Create and edit ICD-10 codes inventory for your practice";

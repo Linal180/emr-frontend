@@ -1404,6 +1404,25 @@ export type CreateIcdCodeInput = {
   version?: Maybe<Scalars['String']>;
 };
 
+export type CreateImagingOrderInput = {
+  accessionNumber?: Maybe<Scalars['String']>;
+  appointmentId?: Maybe<Scalars['String']>;
+  collectedDate?: Maybe<Scalars['String']>;
+  imagingTests?: Maybe<Array<Scalars['String']>>;
+  isSigned?: Maybe<Scalars['Boolean']>;
+  labName?: Maybe<Scalars['String']>;
+  labTestStatus: LabTestStatus;
+  orderNumber?: Maybe<Scalars['String']>;
+  patientId?: Maybe<Scalars['String']>;
+  problemId?: Maybe<Scalars['String']>;
+  providerNotes?: Maybe<Scalars['String']>;
+  receivedDate?: Maybe<Scalars['String']>;
+  testDate?: Maybe<Scalars['String']>;
+  testNotes?: Maybe<Scalars['String']>;
+  testTime?: Maybe<Scalars['String']>;
+  vendorName?: Maybe<Scalars['String']>;
+};
+
 export type CreateImagingTestInput = {
   name: Scalars['String'];
 };
@@ -2289,6 +2308,18 @@ export type FindAllIcdCodesPayload = {
   response?: Maybe<ResponsePayloadResponse>;
 };
 
+export type FindAllImagingOrderInput = {
+  paginationOptions: PaginationInput;
+  searchQuery?: Maybe<Scalars['String']>;
+};
+
+export type FindAllImagingOrderPayload = {
+  __typename?: 'FindAllImagingOrderPayload';
+  imagingOrders?: Maybe<Array<ImagingOrder>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
 export type FindAllImagingTestInput = {
   paginationOptions: PaginationInput;
   searchQuery?: Maybe<Scalars['String']>;
@@ -2635,6 +2666,10 @@ export type GetIcdCodeInput = {
   id: Scalars['String'];
 };
 
+export type GetImagingOrderInput = {
+  id: Scalars['String'];
+};
+
 export type GetImagingTestInput = {
   id: Scalars['String'];
 };
@@ -2833,9 +2868,10 @@ export type ImagingOrder = {
   imagingTests?: Maybe<Array<ImagingTest>>;
   isSigned?: Maybe<Scalars['Boolean']>;
   labName?: Maybe<Scalars['String']>;
-  labTestStatus: LabTestStatus;
+  labTestStatus?: Maybe<LabTestStatus>;
   orderNumber?: Maybe<Scalars['String']>;
   patientId?: Maybe<Scalars['String']>;
+  patientProblemId?: Maybe<Scalars['String']>;
   providerNotes?: Maybe<Scalars['String']>;
   receivedDate?: Maybe<Scalars['String']>;
   testDate?: Maybe<Scalars['String']>;
@@ -2843,6 +2879,12 @@ export type ImagingOrder = {
   testTime?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
   vendorName?: Maybe<Scalars['String']>;
+};
+
+export type ImagingOrderPayload = {
+  __typename?: 'ImagingOrderPayload';
+  imagingOrder?: Maybe<ImagingOrder>;
+  response?: Maybe<ResponsePayloadResponse>;
 };
 
 export type ImagingTest = {
@@ -3307,6 +3349,7 @@ export type Mutation = {
   createForm: FormPayload;
   createFormTemplate: FormPayload;
   createIcdCode: IcdCodePayload;
+  createImagingOrder: ImagingOrderPayload;
   createImagingTest: ImagingTestPayload;
   createInvoice: InvoicePayload;
   createLabTest: LabTestPayload;
@@ -3360,6 +3403,7 @@ export type Mutation = {
   removeFeeSchedule: FeeSchedulePayload;
   removeForm: FormPayload;
   removeIcdCode: IcdCodePayload;
+  removeImagingOrder: ImagingOrderPayload;
   removeImagingTest: ImagingTestPayload;
   removeLabTest: LabTestPayload;
   removeLabTestObservation: LabTestObservationPayload;
@@ -3413,6 +3457,7 @@ export type Mutation = {
   updateForm: FormPayload;
   updateHPINotes: PatientIllnessHistoryPayload;
   updateIcdCode: IcdCodePayload;
+  updateImagingOrder: ImagingOrderPayload;
   updateImagingTest: ImagingTestPayload;
   updateInvoiceStatus: InvoicePayload;
   updateLabTest: LabTestPayload;
@@ -3630,6 +3675,11 @@ export type MutationCreateFormTemplateArgs = {
 
 export type MutationCreateIcdCodeArgs = {
   createIcdCodeInput: CreateIcdCodeInput;
+};
+
+
+export type MutationCreateImagingOrderArgs = {
+  createImagingOrderInput: CreateImagingOrderInput;
 };
 
 
@@ -3893,6 +3943,11 @@ export type MutationRemoveIcdCodeArgs = {
 };
 
 
+export type MutationRemoveImagingOrderArgs = {
+  removeImagingOrderInput: RemoveImagingOrderInput;
+};
+
+
 export type MutationRemoveImagingTestArgs = {
   removeImagingTestInput: RemoveImagingTestInput;
 };
@@ -4150,6 +4205,11 @@ export type MutationUpdateHpiNotesArgs = {
 
 export type MutationUpdateIcdCodeArgs = {
   updateIcdCodeInput: UpdateIcdCodeInput;
+};
+
+
+export type MutationUpdateImagingOrderArgs = {
+  updateImagingOrderInput: UpdateImagingOrderInput;
 };
 
 
@@ -4836,6 +4896,7 @@ export type PatientProblems = {
   doctor?: Maybe<Doctor>;
   forOrders?: Maybe<Scalars['Boolean']>;
   id: Scalars['String'];
+  imagingOrders?: Maybe<Array<ImagingOrder>>;
   isSigned?: Maybe<Scalars['Boolean']>;
   labTests?: Maybe<Array<LabTests>>;
   note?: Maybe<Scalars['String']>;
@@ -5475,6 +5536,7 @@ export type Query = {
   findAllFeeSchedules: AllFeeSchedulesPayload;
   findAllForms: FormsPayload;
   findAllIcdCodes: FindAllIcdCodesPayload;
+  findAllImagingOrder: FindAllImagingOrderPayload;
   findAllImagingTest: FindAllImagingTestPayload;
   findAllLabTest: LabTestsPayload;
   findAllLiveClaimFeeds: LiveClaimFeedPayload;
@@ -5542,6 +5604,7 @@ export type Query = {
   getFeeSchedule: FeeSchedulePayload;
   getForm: FormPayload;
   getIcdCode: IcdCodePayload;
+  getImagingOrder: ImagingOrderPayload;
   getImagingTest: ImagingTestPayload;
   getInsurance: InsurancePayload;
   getLabTest: LabTestPayload;
@@ -5780,6 +5843,11 @@ export type QueryFindAllFormsArgs = {
 
 export type QueryFindAllIcdCodesArgs = {
   findAllIcdCodesInput: FindAllIcdCodesInput;
+};
+
+
+export type QueryFindAllImagingOrderArgs = {
+  findAllImagingOrderInput: FindAllImagingOrderInput;
 };
 
 
@@ -6105,6 +6173,11 @@ export type QueryGetFormArgs = {
 
 export type QueryGetIcdCodeArgs = {
   getIcdCodeInput: GetIcdCodeInput;
+};
+
+
+export type QueryGetImagingOrderArgs = {
+  getImagingOrderInput: GetImagingOrderInput;
 };
 
 
@@ -6553,6 +6626,10 @@ export type RemoveForm = {
 };
 
 export type RemoveIcdCodeInput = {
+  id: Scalars['String'];
+};
+
+export type RemoveImagingOrderInput = {
   id: Scalars['String'];
 };
 
@@ -7928,6 +8005,26 @@ export type UpdateIcdCodeInput = {
   id: Scalars['String'];
   priority?: Maybe<Scalars['Int']>;
   version?: Maybe<Scalars['String']>;
+};
+
+export type UpdateImagingOrderInput = {
+  accessionNumber?: Maybe<Scalars['String']>;
+  appointmentId?: Maybe<Scalars['String']>;
+  collectedDate?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  imagingTests?: Maybe<Array<Scalars['String']>>;
+  isSigned?: Maybe<Scalars['Boolean']>;
+  labName?: Maybe<Scalars['String']>;
+  labTestStatus?: Maybe<LabTestStatus>;
+  orderNumber?: Maybe<Scalars['String']>;
+  patientId?: Maybe<Scalars['String']>;
+  problemId?: Maybe<Scalars['String']>;
+  providerNotes?: Maybe<Scalars['String']>;
+  receivedDate?: Maybe<Scalars['String']>;
+  testDate?: Maybe<Scalars['String']>;
+  testNotes?: Maybe<Scalars['String']>;
+  testTime?: Maybe<Scalars['String']>;
+  vendorName?: Maybe<Scalars['String']>;
 };
 
 export type UpdateImagingTestInput = {
@@ -9333,7 +9430,7 @@ export type FindAllPatientProblemsWithMedicationQueryVariables = Exact<{
 }>;
 
 
-export type FindAllPatientProblemsWithMedicationQuery = { __typename?: 'Query', findAllPatientProblem: { __typename?: 'PatientProblemsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null, page?: number | null } | null, patientProblems?: Array<{ __typename?: 'PatientProblems', id: string, problemType: ProblemType, forOrders?: boolean | null, isSigned?: boolean | null, problemSeverity: ProblemSeverity, problemStartDate?: string | null, apNotes?: string | null, note?: string | null, appointmentId?: string | null, ICDCode?: { __typename: 'ICDCodes', id: string, code: string, description?: string | null } | null, patientMedications?: Array<{ __typename?: 'PatientMedication', id: string, isSigned?: boolean | null, medication?: { __typename?: 'Medications', id: string, fullName?: string | null, termType?: string | null, rxNumber?: string | null, createdAt?: string | null, updatedAt?: string | null } | null }> | null, labTests?: Array<{ __typename?: 'LabTests', id: string, isSigned?: boolean | null, test?: { __typename?: 'LoincCodes', id: string, component?: string | null } | null }> | null, snowMedCode?: { __typename?: 'SnoMedCodes', id: string, referencedComponentId?: string | null } | null } | null> | null } };
+export type FindAllPatientProblemsWithMedicationQuery = { __typename?: 'Query', findAllPatientProblem: { __typename?: 'PatientProblemsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null, page?: number | null } | null, patientProblems?: Array<{ __typename?: 'PatientProblems', id: string, problemType: ProblemType, forOrders?: boolean | null, isSigned?: boolean | null, problemSeverity: ProblemSeverity, problemStartDate?: string | null, apNotes?: string | null, note?: string | null, appointmentId?: string | null, ICDCode?: { __typename: 'ICDCodes', id: string, code: string, description?: string | null } | null, patientMedications?: Array<{ __typename?: 'PatientMedication', id: string, isSigned?: boolean | null, medication?: { __typename?: 'Medications', id: string, fullName?: string | null, termType?: string | null, rxNumber?: string | null, createdAt?: string | null, updatedAt?: string | null } | null }> | null, labTests?: Array<{ __typename?: 'LabTests', id: string, isSigned?: boolean | null, test?: { __typename?: 'LoincCodes', id: string, component?: string | null } | null }> | null, imagingOrders?: Array<{ __typename?: 'ImagingOrder', id: string, isSigned?: boolean | null, imagingTests?: Array<{ __typename?: 'ImagingTest', id: string, name?: string | null }> | null }> | null, snowMedCode?: { __typename?: 'SnoMedCodes', id: string, referencedComponentId?: string | null } | null } | null> | null } };
 
 export type GetPatientProblemQueryVariables = Exact<{
   getPatientProblem: GetPatientProblem;
@@ -9967,6 +10064,41 @@ export type RemoveIcdCodeMutationVariables = Exact<{
 
 
 export type RemoveIcdCodeMutation = { __typename?: 'Mutation', removeIcdCode: { __typename?: 'IcdCodePayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, icdCode?: { __typename?: 'ICDCodes', id: string } | null } };
+
+export type FindAllImagingOrderQueryVariables = Exact<{
+  findAllImagingOrderInput: FindAllImagingOrderInput;
+}>;
+
+
+export type FindAllImagingOrderQuery = { __typename?: 'Query', findAllImagingOrder: { __typename?: 'FindAllImagingOrderPayload', imagingOrders?: Array<{ __typename?: 'ImagingOrder', id: string }> | null, response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
+
+export type GetImagingOrderQueryVariables = Exact<{
+  getImagingOrderInput: GetImagingOrderInput;
+}>;
+
+
+export type GetImagingOrderQuery = { __typename?: 'Query', getImagingOrder: { __typename?: 'ImagingOrderPayload', imagingOrder?: { __typename?: 'ImagingOrder', id: string } | null, response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null } };
+
+export type CreateImagingOrderMutationVariables = Exact<{
+  createImagingOrderInput: CreateImagingOrderInput;
+}>;
+
+
+export type CreateImagingOrderMutation = { __typename?: 'Mutation', createImagingOrder: { __typename?: 'ImagingOrderPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, imagingOrder?: { __typename?: 'ImagingOrder', id: string } | null } };
+
+export type UpdateImagingOrderMutationVariables = Exact<{
+  updateImagingOrderInput: UpdateImagingOrderInput;
+}>;
+
+
+export type UpdateImagingOrderMutation = { __typename?: 'Mutation', updateImagingOrder: { __typename?: 'ImagingOrderPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, imagingOrder?: { __typename?: 'ImagingOrder', id: string } | null } };
+
+export type RemoveImagingOrderMutationVariables = Exact<{
+  removeImagingOrderInput: RemoveImagingOrderInput;
+}>;
+
+
+export type RemoveImagingOrderMutation = { __typename?: 'Mutation', removeImagingOrder: { __typename?: 'ImagingOrderPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, imagingOrder?: { __typename?: 'ImagingOrder', id: string } | null } };
 
 export type FindAllImagingTestQueryVariables = Exact<{
   findAllImagingTestInput: FindAllImagingTestInput;
@@ -15907,6 +16039,14 @@ export const FindAllPatientProblemsWithMedicationDocument = gql`
           component
         }
       }
+      imagingOrders {
+        id
+        isSigned
+        imagingTests {
+          id
+          name
+        }
+      }
       appointmentId
       snowMedCode {
         id
@@ -20324,6 +20464,209 @@ export function useRemoveIcdCodeMutation(baseOptions?: Apollo.MutationHookOption
 export type RemoveIcdCodeMutationHookResult = ReturnType<typeof useRemoveIcdCodeMutation>;
 export type RemoveIcdCodeMutationResult = Apollo.MutationResult<RemoveIcdCodeMutation>;
 export type RemoveIcdCodeMutationOptions = Apollo.BaseMutationOptions<RemoveIcdCodeMutation, RemoveIcdCodeMutationVariables>;
+export const FindAllImagingOrderDocument = gql`
+    query FindAllImagingOrder($findAllImagingOrderInput: FindAllImagingOrderInput!) {
+  findAllImagingOrder(findAllImagingOrderInput: $findAllImagingOrderInput) {
+    imagingOrders {
+      id
+    }
+    response {
+      status
+      message
+    }
+    pagination {
+      page
+      totalPages
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllImagingOrderQuery__
+ *
+ * To run a query within a React component, call `useFindAllImagingOrderQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllImagingOrderQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllImagingOrderQuery({
+ *   variables: {
+ *      findAllImagingOrderInput: // value for 'findAllImagingOrderInput'
+ *   },
+ * });
+ */
+export function useFindAllImagingOrderQuery(baseOptions: Apollo.QueryHookOptions<FindAllImagingOrderQuery, FindAllImagingOrderQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllImagingOrderQuery, FindAllImagingOrderQueryVariables>(FindAllImagingOrderDocument, options);
+      }
+export function useFindAllImagingOrderLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllImagingOrderQuery, FindAllImagingOrderQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllImagingOrderQuery, FindAllImagingOrderQueryVariables>(FindAllImagingOrderDocument, options);
+        }
+export type FindAllImagingOrderQueryHookResult = ReturnType<typeof useFindAllImagingOrderQuery>;
+export type FindAllImagingOrderLazyQueryHookResult = ReturnType<typeof useFindAllImagingOrderLazyQuery>;
+export type FindAllImagingOrderQueryResult = Apollo.QueryResult<FindAllImagingOrderQuery, FindAllImagingOrderQueryVariables>;
+export const GetImagingOrderDocument = gql`
+    query getImagingOrder($getImagingOrderInput: GetImagingOrderInput!) {
+  getImagingOrder(getImagingOrderInput: $getImagingOrderInput) {
+    imagingOrder {
+      id
+    }
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetImagingOrderQuery__
+ *
+ * To run a query within a React component, call `useGetImagingOrderQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetImagingOrderQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetImagingOrderQuery({
+ *   variables: {
+ *      getImagingOrderInput: // value for 'getImagingOrderInput'
+ *   },
+ * });
+ */
+export function useGetImagingOrderQuery(baseOptions: Apollo.QueryHookOptions<GetImagingOrderQuery, GetImagingOrderQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetImagingOrderQuery, GetImagingOrderQueryVariables>(GetImagingOrderDocument, options);
+      }
+export function useGetImagingOrderLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetImagingOrderQuery, GetImagingOrderQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetImagingOrderQuery, GetImagingOrderQueryVariables>(GetImagingOrderDocument, options);
+        }
+export type GetImagingOrderQueryHookResult = ReturnType<typeof useGetImagingOrderQuery>;
+export type GetImagingOrderLazyQueryHookResult = ReturnType<typeof useGetImagingOrderLazyQuery>;
+export type GetImagingOrderQueryResult = Apollo.QueryResult<GetImagingOrderQuery, GetImagingOrderQueryVariables>;
+export const CreateImagingOrderDocument = gql`
+    mutation CreateImagingOrder($createImagingOrderInput: CreateImagingOrderInput!) {
+  createImagingOrder(createImagingOrderInput: $createImagingOrderInput) {
+    response {
+      status
+      message
+    }
+    imagingOrder {
+      id
+    }
+  }
+}
+    `;
+export type CreateImagingOrderMutationFn = Apollo.MutationFunction<CreateImagingOrderMutation, CreateImagingOrderMutationVariables>;
+
+/**
+ * __useCreateImagingOrderMutation__
+ *
+ * To run a mutation, you first call `useCreateImagingOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateImagingOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createImagingOrderMutation, { data, loading, error }] = useCreateImagingOrderMutation({
+ *   variables: {
+ *      createImagingOrderInput: // value for 'createImagingOrderInput'
+ *   },
+ * });
+ */
+export function useCreateImagingOrderMutation(baseOptions?: Apollo.MutationHookOptions<CreateImagingOrderMutation, CreateImagingOrderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateImagingOrderMutation, CreateImagingOrderMutationVariables>(CreateImagingOrderDocument, options);
+      }
+export type CreateImagingOrderMutationHookResult = ReturnType<typeof useCreateImagingOrderMutation>;
+export type CreateImagingOrderMutationResult = Apollo.MutationResult<CreateImagingOrderMutation>;
+export type CreateImagingOrderMutationOptions = Apollo.BaseMutationOptions<CreateImagingOrderMutation, CreateImagingOrderMutationVariables>;
+export const UpdateImagingOrderDocument = gql`
+    mutation UpdateImagingOrder($updateImagingOrderInput: UpdateImagingOrderInput!) {
+  updateImagingOrder(updateImagingOrderInput: $updateImagingOrderInput) {
+    response {
+      status
+      message
+    }
+    imagingOrder {
+      id
+    }
+  }
+}
+    `;
+export type UpdateImagingOrderMutationFn = Apollo.MutationFunction<UpdateImagingOrderMutation, UpdateImagingOrderMutationVariables>;
+
+/**
+ * __useUpdateImagingOrderMutation__
+ *
+ * To run a mutation, you first call `useUpdateImagingOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateImagingOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateImagingOrderMutation, { data, loading, error }] = useUpdateImagingOrderMutation({
+ *   variables: {
+ *      updateImagingOrderInput: // value for 'updateImagingOrderInput'
+ *   },
+ * });
+ */
+export function useUpdateImagingOrderMutation(baseOptions?: Apollo.MutationHookOptions<UpdateImagingOrderMutation, UpdateImagingOrderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateImagingOrderMutation, UpdateImagingOrderMutationVariables>(UpdateImagingOrderDocument, options);
+      }
+export type UpdateImagingOrderMutationHookResult = ReturnType<typeof useUpdateImagingOrderMutation>;
+export type UpdateImagingOrderMutationResult = Apollo.MutationResult<UpdateImagingOrderMutation>;
+export type UpdateImagingOrderMutationOptions = Apollo.BaseMutationOptions<UpdateImagingOrderMutation, UpdateImagingOrderMutationVariables>;
+export const RemoveImagingOrderDocument = gql`
+    mutation RemoveImagingOrder($removeImagingOrderInput: RemoveImagingOrderInput!) {
+  removeImagingOrder(removeImagingOrderInput: $removeImagingOrderInput) {
+    response {
+      status
+      message
+    }
+    imagingOrder {
+      id
+    }
+  }
+}
+    `;
+export type RemoveImagingOrderMutationFn = Apollo.MutationFunction<RemoveImagingOrderMutation, RemoveImagingOrderMutationVariables>;
+
+/**
+ * __useRemoveImagingOrderMutation__
+ *
+ * To run a mutation, you first call `useRemoveImagingOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveImagingOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeImagingOrderMutation, { data, loading, error }] = useRemoveImagingOrderMutation({
+ *   variables: {
+ *      removeImagingOrderInput: // value for 'removeImagingOrderInput'
+ *   },
+ * });
+ */
+export function useRemoveImagingOrderMutation(baseOptions?: Apollo.MutationHookOptions<RemoveImagingOrderMutation, RemoveImagingOrderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveImagingOrderMutation, RemoveImagingOrderMutationVariables>(RemoveImagingOrderDocument, options);
+      }
+export type RemoveImagingOrderMutationHookResult = ReturnType<typeof useRemoveImagingOrderMutation>;
+export type RemoveImagingOrderMutationResult = Apollo.MutationResult<RemoveImagingOrderMutation>;
+export type RemoveImagingOrderMutationOptions = Apollo.BaseMutationOptions<RemoveImagingOrderMutation, RemoveImagingOrderMutationVariables>;
 export const FindAllImagingTestDocument = gql`
     query FindAllImagingTest($findAllImagingTestInput: FindAllImagingTestInput!) {
   findAllImagingTest(findAllImagingTestInput: $findAllImagingTestInput) {
