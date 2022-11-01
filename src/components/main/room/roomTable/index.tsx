@@ -65,7 +65,6 @@ const RoomTable: FC = (): JSX.Element => {
           message && Alert.success(message);
           dispatch({ type: ActionType.SET_DEL_ID, delId: '' })
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
-          debugger
           if (!!data && (data.length > 1 || isLast(data?.length, page))) {
             await fetchAllRooms()
           } else {

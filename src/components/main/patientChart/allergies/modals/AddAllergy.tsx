@@ -119,7 +119,6 @@ const AddAllergy: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
   );
 
   const lastElementRef = useCallback((node) => {
-    debugger
     if (findAllergiesLoading) return;
     if (observer.current) observer.current.disconnect();
     observer.current = new IntersectionObserver((entries) => {
