@@ -392,8 +392,6 @@ function SignOff({ handleStepChange, appointmentInfo }: SignOffProps) {
             <Typography variant='h3'>{FOLLOWUP}</Typography>
           </Box>
 
-
-
           <Box p={2}>
             <Typography>Patient will return to the office as needed.</Typography>
           </Box>

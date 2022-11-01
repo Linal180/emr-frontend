@@ -1,42 +1,47 @@
 // packages block
-import { useParams } from 'react-router';
+import {
+  Box, Button, Card, Checkbox, CircularProgress, colors, FormControlLabel, FormGroup, Grid, Typography
+} from "@material-ui/core";
 import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
-import {
-  Box, Card, colors, Grid, Typography, Button, CircularProgress, FormGroup, FormControlLabel, Checkbox,
-} from "@material-ui/core";
+import { useParams } from 'react-router';
 //components block
+import InputController from '../../../../controller';
 import Alert from '../../../common/Alert';
 import Selector from '../../../common/Selector';
-import InputController from '../../../../controller';
 import LabOrdersResultSubForm from './LabOrdersResultSubForm';
 // interfaces, graphql, constants block
-import history from '../../../../history';
-import { GREY, GREY_THREE } from '../../../../theme';
-import { getFormatDateString, renderItem, setRecord } from '../../../../utils';
-import {
-  GeneralFormProps, LabOrderResultsFormInput, LabOrdersResultOption1, LabOrdersResultOption2, ParamsType,
-  SelectorOption
-} from "../../../../interfacesTypes";
 import {
   ACCESSION_NUMBER, DESCRIPTION, DOCTOR_SIGNOFF, LAB_TEXT, LOINC_CODE, NOT_FOUND_EXCEPTION,
   ORDERS_RESULT_INITIAL_VALUES_1, ORDERS_RESULT_INITIAL_VALUES_2, OTHER_OPTION, RESULTS, SAVE_TEXT, TESTS,
-  USER_NOT_FOUND_EXCEPTION_MESSAGE, VENDOR_NAME,
+  USER_NOT_FOUND_EXCEPTION_MESSAGE, VENDOR_NAME
 } from '../../../../constants';
 import {
   AbnormalFlag, LabTestStatus, useFindLabTestsByOrderNumLazyQuery, useRemoveLabTestObservationMutation,
   useUpdateLabTestMutation, useUpdateLabTestObservationMutation
 } from '../../../../generated/graphql';
+import history from '../../../../history';
+import {
+  GeneralFormProps, LabOrderResultsFormInput, LabOrdersResultOption1, LabOrdersResultOption2, ParamsType,
+  SelectorOption
+} from "../../../../interfacesTypes";
+import { GREY, GREY_THREE } from '../../../../theme';
+import { getFormatDateString, renderItem, setRecord } from '../../../../utils';
 import { PatientPrimaryProvider } from '../../../common/renderItem/PatientPrimaryProvider';
+import ConfirmModal from "../../../common/ConfirmModal";
 
 const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
   const { orderNum, patientId, appointmentId } = useParams<ParamsType>();
   const [resultsToRemove, setResultsToRemove] = useState<string[]>([])
   const [doctorSignOff, setDoctorSignOff] = useState(false);
+  const [doctorSignOffTemp, setDoctorSignOffTemp] = useState(false);
   const [accessionNumber, setAccessionNumber] = useState<string>('');
+  const [numberOfResults, setNumberOfResults] = useState(0)
   const [primaryProvider, setPrimaryProvider] = useState<string>('');
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
   const methods = useForm<LabOrderResultsFormInput>({ mode: "all" });
-  const { handleSubmit, setValue, control } = methods;
+  const { handleSubmit, setValue, control, watch } = methods;
+  const { loinsCodeFields } = watch()
   const { fields: resultFields } = useFieldArray({ control: control, name: "loinsCodeFields" });
 
   const [updateLabTest] = useUpdateLabTestMutation({
@@ -71,6 +76,9 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
   });
 
   const onSubmit: SubmitHandler<LabOrderResultsFormInput> = async (values) => {
+    if (!doctorSignOff) {
+      return setIsConfirmModalOpen(true)
+    }
     const { collectedDate, receivedDate, labName, venderName } = values ?? {}
 
     if (resultsToRemove.length) {
@@ -185,6 +193,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
             const { normalRange, resultUnit, resultValue, normalRangeUnit, abnormalFlag, id, doctorsSignOff } = testObservation ?? {}
 
             setDoctorSignOff(doctorsSignOff || false)
+            setDoctorSignOffTemp(doctorsSignOff || false)
 
             if (isCovid) {
               return {
@@ -216,6 +225,13 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
         }) ?? []
 
         setValue('loinsCodeFields', transformedLabTests)
+
+        const numberOfObservations = transformedLabTests.reduce((acc, labTest) => {
+          acc += labTest?.resultsField?.length || 0
+          return acc
+        }, 0)
+
+        setNumberOfResults(numberOfObservations)
       }
     }
   });
@@ -241,6 +257,19 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
   ) => {
     setDoctorSignOff(checked);
   };
+
+  const numberOfResultFields = loinsCodeFields?.reduce((acc, resultField) => {
+    acc += resultField?.resultsField?.length || 0
+    return acc
+  }, 0)
+
+  useEffect(() => {
+    if (numberOfResults !== numberOfResultFields) {
+      setDoctorSignOff(false)
+    } else {
+      setDoctorSignOff(doctorSignOffTemp)
+    }
+  }, [doctorSignOffTemp, numberOfResultFields, numberOfResults])
 
   const primaryProviderHandler = (providerId: string) => setPrimaryProvider(providerId)
 
@@ -356,7 +385,16 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
           </Card>
         </form>
       </FormProvider>
-
+      {isConfirmModalOpen &&
+        <ConfirmModal
+          isOpen={isConfirmModalOpen}
+          setOpen={setIsConfirmModalOpen}
+          title="Doctor Signoff Required"
+          actionText="CLOSE"
+          description="Please click the checkbox of doctor signoff"
+          shouldShowSave={false}
+        />
+      }
       <Box p={2} />
     </>
   );

@@ -3092,6 +3092,7 @@ export type LoincCodes = {
   observations?: Maybe<Array<Observations>>;
   orderObs?: Maybe<Scalars['String']>;
   panelType?: Maybe<Scalars['String']>;
+  priority?: Maybe<Scalars['Int']>;
   property?: Maybe<Scalars['String']>;
   relatedNames2?: Maybe<Scalars['String']>;
   scaleTyp?: Maybe<Scalars['String']>;
@@ -7551,6 +7552,7 @@ export type UpdateAppointmentInput = {
   scheduleStartDateTime?: Maybe<Scalars['String']>;
   secondaryInsurance?: Maybe<Scalars['String']>;
   selfCheckIn?: Maybe<Scalars['Boolean']>;
+  shouldSendEmail?: Maybe<Scalars['Boolean']>;
   status?: Maybe<AppointmentStatus>;
   timeZone?: Maybe<Scalars['String']>;
 };

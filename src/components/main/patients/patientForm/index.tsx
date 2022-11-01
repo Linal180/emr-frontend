@@ -398,8 +398,8 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
       };
 
       const emergencyContactInput = {
-        contactType: ContactType.Emergency, name: emergencyName,
-        phone: emergencyPhone, mobile: emergencyMobile, primaryContact: false,
+        contactType: ContactType.Emergency, name: emergencyName || `${firstName} ${lastName}`,
+        phone: emergencyPhone || basicPhone, mobile: emergencyMobile || basicMobile, primaryContact: false,
         relationship: selectedEmergencyRelationship as RelationshipType || RelationshipType.Other,
       };
 

@@ -5,11 +5,11 @@ import { CardContent, Button, Dialog, DialogActions, DialogContent, DialogTitle,
 import { ConfirmModalTypes } from "../../interfacesTypes";
 import { FORM_COPY, CANCEL } from "../../constants";
 
-const ConfirmModal: FC<ConfirmModalTypes> = ({ setOpen, isOpen, title, description, handleSave, actionText }): JSX.Element => {
+const ConfirmModal: FC<ConfirmModalTypes> = ({ setOpen, isOpen, title, description, handleSave, actionText, shouldShowSave }): JSX.Element => {
 
   const handleClose = () => setOpen && setOpen(!isOpen)
 
-  const onSave = () => handleSave()
+  const onSave = () => handleSave && handleSave()
 
   return (
     <Dialog open={isOpen} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" maxWidth="sm" fullWidth>
@@ -32,9 +32,9 @@ const ConfirmModal: FC<ConfirmModalTypes> = ({ setOpen, isOpen, title, descripti
           </Button>
         </Box>
 
-        <Button onClick={onSave} color="primary" variant="contained">
+        {shouldShowSave && <Button onClick={onSave} color="primary" variant="contained">
           {actionText ? actionText : FORM_COPY}
-        </Button>
+        </Button>}
       </DialogActions>
     </Dialog>
   );
