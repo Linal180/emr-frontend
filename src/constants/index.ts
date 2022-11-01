@@ -197,6 +197,7 @@ export const FORM_EMBED_TITLE = "Embed your form builder";
 export const FORM_NOT_PUBLISHED = "Form is not published";
 export const CONTACT_SUPPORT_TEAM = "Please Contact support team";
 export const REASON_FOR_VISIT = "Reason For Visit";
+export const CHIEF_COMPLAINT = "Chief Complaint";
 export const HISTORY_OF_PATIENT_ILLNESS = "History of Patient Illness";
 export const CSS_CLASSES = "CSS Classes";
 export const PLACEHOLDER = "Placeholder";
@@ -3952,7 +3953,7 @@ export const PATIENT_CHARTING_TABS = [
 
 export const REASON_FOR_VISIT_OPTION = {
   icon: ReasonForVisit,
-  title: "Reason For Visit",
+  title: "Chief Complaint",
   value: "1",
 }
 
@@ -3988,7 +3989,7 @@ export const EXAM_OPTION = {
 
 export const PATIENT_CHARTING_MENU = [
   {
-    title: "Reason For Visit",
+    title: "Chief Complaint",
   },
   // {
   //   title: "Triage Notes",
@@ -4029,9 +4030,9 @@ export const PATIENT_CHARTING_MENU = [
   {
     title: "Physical Exam",
   },
-  {
-    title: "Orders And Diagnoses",
-  }
+  // {
+  //   title: "Orders And Diagnoses",
+  // }
 ]
 
 export const HISTORY_CHARTING_TABS = [
