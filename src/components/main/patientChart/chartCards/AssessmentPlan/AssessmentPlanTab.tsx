@@ -82,14 +82,15 @@ function AssessmentPlanTab({ shouldDisableEdit }: { shouldDisableEdit?: boolean 
                 }) || []
 
                 const transformedImagingOrder = imagingOrders?.map((imagingOrder) => {
-                  const { id: patientTestId, imagingTests, isSigned: labSigned } = imagingOrder || {}
-                  const imagingTestsArr = imagingTests ?? []
-                  const { id, } = imagingTestsArr[0] || {}
+                  const { id: patientTestId, imagingOrderTest, isSigned: labSigned } = imagingOrder || {}
+                  const imagingTestsArr = imagingOrderTest ?? []
+                  const { imagingTest } = imagingTestsArr[0] || {}
+                  const { id, name } = imagingTest || {}
                   return {
-                    id,
+                    id: id || '',
                     testId: id || '',
                     patientTestId,
-                    imagingTests: imagingTests,
+                    name,
                     isSigned: labSigned || false
                   }
                 }) || []

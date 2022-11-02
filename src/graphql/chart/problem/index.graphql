@@ -63,7 +63,6 @@ query FindAllPatientProblemsWithMedication(
       note
 
       ICDCode {
-        __typename
         id
         code
         description
@@ -85,7 +84,7 @@ query FindAllPatientProblemsWithMedication(
       labTests {
         id
         isSigned
-        
+
         test {
           id
           component
@@ -96,9 +95,12 @@ query FindAllPatientProblemsWithMedication(
         id
         isSigned
 
-        imagingTests {
-          id
-          name
+        imagingOrderTest {
+          
+          imagingTest {
+            id
+            name
+          }
         }
       }
 

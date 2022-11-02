@@ -28,7 +28,7 @@ import {
   SingleScheduleInput, Staff, SurgicalHistory, TriageNotes, TriageNotesPayload, TwoFactorInput, User,
   UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput,
   UsersFormsElements, VaccineProduct, VerifyCodeInput, SectionQuestions, CreateMacroInput, CreateRoomInput,
-  ImagingTest, LoincCodes, ImagingOrder,
+  ImagingTest, LoincCodes, 
 } from "../generated/graphql";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
 import { Action as BillingAction, State as BillingState } from "../reducers/billingReducer";
@@ -1217,7 +1217,7 @@ export type AssessmentTest = LoincCodePayload['loincCode'] & {
   isSigned: boolean
 }
 
-export type AssessmentImagingOrder = ImagingOrder & {
+export type AssessmentImagingOrder = ImagingTest & {
   testId: string
   patientTestId?: string
   isSigned: boolean

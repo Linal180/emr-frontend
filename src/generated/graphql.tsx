@@ -1411,7 +1411,7 @@ export type CreateImagingOrderInput = {
   imagingTests?: Maybe<Array<Scalars['String']>>;
   isSigned?: Maybe<Scalars['Boolean']>;
   labName?: Maybe<Scalars['String']>;
-  labTestStatus: LabTestStatus;
+  labTestStatus?: Maybe<ImagingOrderStatus>;
   orderNumber?: Maybe<Scalars['String']>;
   patientId?: Maybe<Scalars['String']>;
   problemId?: Maybe<Scalars['String']>;
@@ -2865,10 +2865,10 @@ export type ImagingOrder = {
   collectedDate?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
   id: Scalars['String'];
-  imagingTests?: Maybe<Array<ImagingTest>>;
+  imagingOrderTest?: Maybe<Array<ImagingOrderTest>>;
   isSigned?: Maybe<Scalars['Boolean']>;
   labName?: Maybe<Scalars['String']>;
-  labTestStatus?: Maybe<LabTestStatus>;
+  labTestStatus?: Maybe<ImagingOrderStatus>;
   orderNumber?: Maybe<Scalars['String']>;
   patientId?: Maybe<Scalars['String']>;
   patientProblemId?: Maybe<Scalars['String']>;
@@ -2887,12 +2887,30 @@ export type ImagingOrderPayload = {
   response?: Maybe<ResponsePayloadResponse>;
 };
 
+/** The imaging order status assigned */
+export enum ImagingOrderStatus {
+  Discontinued = 'DISCONTINUED',
+  InProgress = 'IN_PROGRESS',
+  OrderEntered = 'ORDER_ENTERED',
+  ResultReceived = 'RESULT_RECEIVED',
+  ResultReviewedWithPatient = 'RESULT_REVIEWED_WITH_PATIENT'
+}
+
+export type ImagingOrderTest = {
+  __typename?: 'ImagingOrderTest';
+  createdAt: Scalars['String'];
+  id: Scalars['String'];
+  imagingOrderId?: Maybe<Scalars['String']>;
+  imagingTest?: Maybe<ImagingTest>;
+  imagingTestId?: Maybe<Scalars['String']>;
+  imagingTests: ImagingTest;
+  updatedAt: Scalars['String'];
+};
+
 export type ImagingTest = {
   __typename?: 'ImagingTest';
   createdAt?: Maybe<Scalars['String']>;
   id: Scalars['String'];
-  imagingOrder?: Maybe<ImagingOrder>;
-  imagingOrderId?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
 };
@@ -8015,7 +8033,7 @@ export type UpdateImagingOrderInput = {
   imagingTests?: Maybe<Array<Scalars['String']>>;
   isSigned?: Maybe<Scalars['Boolean']>;
   labName?: Maybe<Scalars['String']>;
-  labTestStatus?: Maybe<LabTestStatus>;
+  labTestStatus?: Maybe<ImagingOrderStatus>;
   orderNumber?: Maybe<Scalars['String']>;
   patientId?: Maybe<Scalars['String']>;
   problemId?: Maybe<Scalars['String']>;
@@ -9430,7 +9448,7 @@ export type FindAllPatientProblemsWithMedicationQueryVariables = Exact<{
 }>;
 
 
-export type FindAllPatientProblemsWithMedicationQuery = { __typename?: 'Query', findAllPatientProblem: { __typename?: 'PatientProblemsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null, page?: number | null } | null, patientProblems?: Array<{ __typename?: 'PatientProblems', id: string, problemType: ProblemType, forOrders?: boolean | null, isSigned?: boolean | null, problemSeverity: ProblemSeverity, problemStartDate?: string | null, apNotes?: string | null, note?: string | null, appointmentId?: string | null, ICDCode?: { __typename: 'ICDCodes', id: string, code: string, description?: string | null } | null, patientMedications?: Array<{ __typename?: 'PatientMedication', id: string, isSigned?: boolean | null, medication?: { __typename?: 'Medications', id: string, fullName?: string | null, termType?: string | null, rxNumber?: string | null, createdAt?: string | null, updatedAt?: string | null } | null }> | null, labTests?: Array<{ __typename?: 'LabTests', id: string, isSigned?: boolean | null, test?: { __typename?: 'LoincCodes', id: string, component?: string | null } | null }> | null, imagingOrders?: Array<{ __typename?: 'ImagingOrder', id: string, isSigned?: boolean | null, imagingTests?: Array<{ __typename?: 'ImagingTest', id: string, name?: string | null }> | null }> | null, snowMedCode?: { __typename?: 'SnoMedCodes', id: string, referencedComponentId?: string | null } | null } | null> | null } };
+export type FindAllPatientProblemsWithMedicationQuery = { __typename?: 'Query', findAllPatientProblem: { __typename?: 'PatientProblemsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null, page?: number | null } | null, patientProblems?: Array<{ __typename?: 'PatientProblems', id: string, problemType: ProblemType, forOrders?: boolean | null, isSigned?: boolean | null, problemSeverity: ProblemSeverity, problemStartDate?: string | null, apNotes?: string | null, note?: string | null, appointmentId?: string | null, ICDCode?: { __typename?: 'ICDCodes', id: string, code: string, description?: string | null } | null, patientMedications?: Array<{ __typename?: 'PatientMedication', id: string, isSigned?: boolean | null, medication?: { __typename?: 'Medications', id: string, fullName?: string | null, termType?: string | null, rxNumber?: string | null, createdAt?: string | null, updatedAt?: string | null } | null }> | null, labTests?: Array<{ __typename?: 'LabTests', id: string, isSigned?: boolean | null, test?: { __typename?: 'LoincCodes', id: string, component?: string | null } | null }> | null, imagingOrders?: Array<{ __typename?: 'ImagingOrder', id: string, isSigned?: boolean | null, imagingOrderTest?: Array<{ __typename?: 'ImagingOrderTest', imagingTest?: { __typename?: 'ImagingTest', id: string, name?: string | null } | null }> | null }> | null, snowMedCode?: { __typename?: 'SnoMedCodes', id: string, referencedComponentId?: string | null } | null } | null> | null } };
 
 export type GetPatientProblemQueryVariables = Exact<{
   getPatientProblem: GetPatientProblem;
@@ -16014,7 +16032,6 @@ export const FindAllPatientProblemsWithMedicationDocument = gql`
       apNotes
       note
       ICDCode {
-        __typename
         id
         code
         description
@@ -16042,9 +16059,11 @@ export const FindAllPatientProblemsWithMedicationDocument = gql`
       imagingOrders {
         id
         isSigned
-        imagingTests {
-          id
-          name
+        imagingOrderTest {
+          imagingTest {
+            id
+            name
+          }
         }
       }
       appointmentId

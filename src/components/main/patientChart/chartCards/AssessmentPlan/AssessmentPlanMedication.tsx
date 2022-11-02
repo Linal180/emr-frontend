@@ -15,7 +15,7 @@ import { Action, ActionType, chartReducer, initialState, State } from '../../../
 import {
   LabTestStatus, Medications, useAddPatientMedicationMutation, useCreateLabTestMutation,
   useRemoveLabTestMutation, useRemovePatientMedicationMutation, useRemovePatientProblemMutation,
-  useUpdatePatientProblemNotesMutation, ImagingTest, LoincCodes, useCreateImagingOrderMutation, useRemoveImagingOrderMutation,
+  useUpdatePatientProblemNotesMutation, ImagingTest, LoincCodes, useCreateImagingOrderMutation, useRemoveImagingOrderMutation, ImagingOrderStatus,
 } from '../../../../../generated/graphql'
 
 const AssessmentPlanMedication: FC<AssessmentPlanMedicationProps> = ({ index, problem, setAssessmentProblems, assessmentProblems, shouldDisableEdit, isSigned }): JSX.Element => {
@@ -280,7 +280,7 @@ const AssessmentPlanMedication: FC<AssessmentPlanMedicationProps> = ({ index, pr
       if (problemIndex === index) {
         return {
           ...problem,
-          imagingOrders: [...(imagingOrders || []), { testId: item?.id, isSigned: false, labTests: [item] }]
+          imagingOrders: [...(imagingOrders || []), { testId: item?.id, isSigned: false, ...item }]
         }
       }
 
@@ -297,7 +297,7 @@ const AssessmentPlanMedication: FC<AssessmentPlanMedicationProps> = ({ index, pr
           problemId,
           accessionNumber: generateString(6),
           orderNumber: generateString(),
-          labTestStatus: LabTestStatus.OrderEntered,
+          labTestStatus: ImagingOrderStatus.OrderEntered,
           imagingTests: [item?.id]
         }
       }
@@ -546,15 +546,14 @@ const AssessmentPlanMedication: FC<AssessmentPlanMedicationProps> = ({ index, pr
       <>
         <Typography>{IMAGING_TEST_TEXT}</Typography>
         <>{imagingOrders?.map((imagingOrder, subIndex) => {
-          const { imagingTests } = imagingOrder || {}
-          const imagingTestsArr = imagingTests ?? []
-          const { name } = imagingTestsArr[0] || {}
+          const { name } = imagingOrder || {}
+
           return (
             <Box px={2}>
               <ul>
                 <li className='li-hover'>
                   <Box py={1} display='flex' justifyContent='space-between' alignItems='center'>
-                    <Typography>{name}</Typography>
+                    <Typography>{name || ''}</Typography>
                     {!(shouldDisableEdit || isSigned) && <IconButton size='small' onClick={() => handleRemoveOrder(subIndex, 'imaging')}>
                       <CrossIcon />
                     </IconButton>}
