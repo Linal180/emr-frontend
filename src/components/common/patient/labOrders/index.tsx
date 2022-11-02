@@ -289,7 +289,11 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisabl
                               </TableCell>
                               <TableCell scope="row">
                                 <Box display="flex" alignItems="center">
-                                  <IconButton size='small' onClick={() => history.push(appointmentId ? `${ADD_LAB_ORDERS_RESULTS_ROUTE}/${id}/${orderNumber}/${appointmentId}` : `${ADD_LAB_ORDERS_RESULTS_ROUTE}/${id}/${orderNumber}`)}>
+                                  <IconButton
+                                    size='small'
+                                    onClick={() =>
+                                      history.push(appointmentId ? `${ADD_LAB_ORDERS_RESULTS_ROUTE}/${id}/${orderNumber}/${appointmentId}` : `${ADD_LAB_ORDERS_RESULTS_ROUTE}/${id}/${orderNumber}`)}
+                                  >
                                     <OutlinedAddIcon />
                                   </IconButton>
 

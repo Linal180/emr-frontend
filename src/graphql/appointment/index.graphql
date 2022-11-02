@@ -151,6 +151,7 @@ query GetAppointment($getAppointment: GetAppointment!) {
       reason
       token
       status
+      intakeSteps
       patientId
       employment
       paymentType

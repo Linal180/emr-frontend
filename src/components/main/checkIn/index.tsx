@@ -74,7 +74,7 @@ const CheckInComponent = (): JSX.Element => {
   const { appointmentType, scheduleStartDateTime, checkInActiveStep, status } = appointment ?? {}
 
   const appointmentTime = scheduleStartDateTime ? getFormattedDate(scheduleStartDateTime) : ''
-  const { appointmentId, id: patientId } = useParams<ParamsType>()
+  const { appointmentId, id: patientId, shouldProceed: shouldProceedFromParams } = useParams<ParamsType>()
   const patientRef = useRef<FormForwardRef>();
 
   const appointmentInfo = {
@@ -88,6 +88,10 @@ const CheckInComponent = (): JSX.Element => {
   useEffect(() => {
     dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: Number(checkInActiveStep) ?? 0 })
   }, [checkInActiveStep])
+
+  useEffect(() => {
+    setShouldProceed(shouldProceedFromParams === '1')
+  }, [shouldProceedFromParams])
 
   const [getAppointment] = useGetAppointmentLazyQuery({
     fetchPolicy: 'network-only',
