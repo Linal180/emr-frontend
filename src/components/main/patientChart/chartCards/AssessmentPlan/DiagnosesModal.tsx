@@ -92,14 +92,12 @@ const DiagnosesModal: FC<DiagnosesModalModalProps> = ({ isOpen = false, handleMo
     }
   });
 
-  const handleMedicationSearch = useCallback(async (query: string) => {
+  const handleMedicationSearch = useCallback(async (searchString: string) => {
     try {
-      const queryString = query
-
       await getMedications({
         variables: {
           medicationInput: {
-            searchString: queryString,
+            searchString,
             paginationOptions: { page: 1, limit: PAGE_LIMIT }
           }
         }
@@ -107,14 +105,12 @@ const DiagnosesModal: FC<DiagnosesModalModalProps> = ({ isOpen = false, handleMo
     } catch (error) { }
   }, [getMedications])
 
-  const handleLabTestsSearch = useCallback(async (query: string) => {
+  const handleLabTestsSearch = useCallback(async (searchTerm: string) => {
     try {
-      const queryString = query
-
       await findAllLoincCodes({
         variables: {
           searchLoincCodesInput: {
-            searchTerm: queryString,
+            searchTerm,
             paginationOptions: { page: 1, limit: PAGE_LIMIT }
           }
         }
@@ -123,14 +119,12 @@ const DiagnosesModal: FC<DiagnosesModalModalProps> = ({ isOpen = false, handleMo
   }, [findAllLoincCodes])
 
 
-  const handleImagingSearch = useCallback(async (query: string) => {
+  const handleImagingSearch = useCallback(async (searchQuery: string) => {
     try {
-      const queryString = query
-
       await fetchAllImagingTest({
         variables: {
           findAllImagingTestInput: {
-            searchQuery: queryString,
+            searchQuery,
             paginationOptions: { page: 1, limit: PAGE_LIMIT }
           }
         }
@@ -289,7 +283,7 @@ const DiagnosesModal: FC<DiagnosesModalModalProps> = ({ isOpen = false, handleMo
     setTab(name)
     dispatch({ type: ActionType.SET_SEARCHED_DATA, searchedData: [] })
     dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: '' })
-    handleSearch('', name);
+    tabDataHandler(name, '');
   };
 
   const renderTabs = () => (
