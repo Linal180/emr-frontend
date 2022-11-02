@@ -301,6 +301,8 @@ export type Appointment = {
   providerId?: Maybe<Scalars['String']>;
   reason?: Maybe<Scalars['String']>;
   reviewOfSystem?: Maybe<ReviewOfSystem>;
+  room?: Maybe<Room>;
+  roomId?: Maybe<Scalars['String']>;
   scheduleEndDateTime?: Maybe<Scalars['String']>;
   scheduleStartDateTime?: Maybe<Scalars['String']>;
   scribe?: Maybe<Scribe>;
@@ -386,6 +388,11 @@ export type ArrayOfStringsType = {
 export type ArrayOfStringsTypeInput = {
   name: Scalars['String'];
   value: Scalars['Boolean'];
+};
+
+export type AssociateRoomToAppointmentInput = {
+  appointmentId: Scalars['String'];
+  roomId: Scalars['String'];
 };
 
 export type Attachment = {
@@ -2904,7 +2911,6 @@ export type ImagingOrderTest = {
   imagingOrderId?: Maybe<Scalars['String']>;
   imagingTest?: Maybe<ImagingTest>;
   imagingTestId?: Maybe<Scalars['String']>;
-  imagingTests: ImagingTest;
   updatedAt: Scalars['String'];
 };
 
@@ -3345,6 +3351,7 @@ export type Mutation = {
   addVaccine: VaccinePayload;
   addVaccineProduct: VaccineProductPayload;
   assignPermissionToRole: PermissionPayload;
+  associateRoomToAppointment: AppointmentPayload;
   cancelAppointment: AppointmentPayload;
   chargeAfterAppointment: AppointmentPayload;
   chargePayment: TransactionPayload;
@@ -3575,6 +3582,11 @@ export type MutationAddVaccineProductArgs = {
 
 export type MutationAssignPermissionToRoleArgs = {
   rolePermissionItemInput: RolePermissionItemInput;
+};
+
+
+export type MutationAssociateRoomToAppointmentArgs = {
+  associateRoomToAppointmentInput: AssociateRoomToAppointmentInput;
 };
 
 
@@ -8823,7 +8835,7 @@ export type GetAppointmentQueryVariables = Exact<{
 }>;
 
 
-export type GetAppointmentQuery = { __typename?: 'Query', getAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, appointment?: { __typename?: 'Appointment', id: string, notes?: string | null, reason?: string | null, token?: string | null, status: AppointmentStatus, intakeSteps?: Array<string> | null, patientId?: string | null, employment?: boolean | null, paymentType: PaymentType, autoAccident?: boolean | null, otherAccident?: boolean | null, primaryInsurance?: string | null, secondaryInsurance?: string | null, scheduleEndDateTime?: string | null, scheduleStartDateTime?: string | null, appointmentDate?: string | null, createdAt?: string | null, updatedAt?: string | null, billingStatus: BillingStatus, checkedInAt?: string | null, selfCheckIn?: boolean | null, checkInActiveStep?: string | null, appointmentCreateType?: AppointmentCreateType | null, scribe?: { __typename?: 'Scribe', id: string, isScribed?: boolean | null, firstName?: string | null, lastName?: string | null } | null, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string, duration: string, serviceType: ServiceType } | null, provider?: { __typename?: 'Doctor', id: string, lastName?: string | null, firstName?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null } | null, facility?: { __typename?: 'Facility', id: string, name: string, practiceType?: PracticeType | null, serviceCode?: ServiceCode | null } | null, invoice?: { __typename?: 'Invoice', invoiceNo: string } | null } | null } };
+export type GetAppointmentQuery = { __typename?: 'Query', getAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, appointment?: { __typename?: 'Appointment', id: string, notes?: string | null, reason?: string | null, token?: string | null, status: AppointmentStatus, intakeSteps?: Array<string> | null, patientId?: string | null, employment?: boolean | null, paymentType: PaymentType, autoAccident?: boolean | null, otherAccident?: boolean | null, primaryInsurance?: string | null, secondaryInsurance?: string | null, scheduleEndDateTime?: string | null, scheduleStartDateTime?: string | null, appointmentDate?: string | null, createdAt?: string | null, updatedAt?: string | null, billingStatus: BillingStatus, checkedInAt?: string | null, selfCheckIn?: boolean | null, checkInActiveStep?: string | null, appointmentCreateType?: AppointmentCreateType | null, scribe?: { __typename?: 'Scribe', id: string, isScribed?: boolean | null, firstName?: string | null, lastName?: string | null } | null, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string, duration: string, serviceType: ServiceType } | null, provider?: { __typename?: 'Doctor', id: string, lastName?: string | null, firstName?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null } | null, facility?: { __typename?: 'Facility', id: string, name: string, practiceType?: PracticeType | null, serviceCode?: ServiceCode | null } | null, invoice?: { __typename?: 'Invoice', invoiceNo: string } | null, room?: { __typename?: 'Room', id: string, name?: string | null, number?: string | null } | null } | null } };
 
 export type RemoveAppointmentMutationVariables = Exact<{
   removeAppointment: RemoveAppointment;
@@ -8943,6 +8955,20 @@ export type UpdateScribeCheckMutationVariables = Exact<{
 
 
 export type UpdateScribeCheckMutation = { __typename?: 'Mutation', updateScribeCheck: { __typename?: 'ScribePayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null, scribe?: { __typename?: 'Scribe', id: string, firstName?: string | null, lastName?: string | null, isScribed?: boolean | null } | null } };
+
+export type AssociateRoomToAppointmentMutationVariables = Exact<{
+  associateRoomToAppointmentInput: AssociateRoomToAppointmentInput;
+}>;
+
+
+export type AssociateRoomToAppointmentMutation = { __typename?: 'Mutation', associateRoomToAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null } };
+
+export type GetAppointmentRoomQueryVariables = Exact<{
+  getAppointment: GetAppointment;
+}>;
+
+
+export type GetAppointmentRoomQuery = { __typename?: 'Query', getAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null, appointment?: { __typename?: 'Appointment', id: string, room?: { __typename?: 'Room', id: string, name?: string | null, number?: string | null } | null } | null } };
 
 export type GetAttachmentsQueryVariables = Exact<{
   getAttachment: GetAttachment;
@@ -10715,6 +10741,13 @@ export type FindAllRoomQueryVariables = Exact<{
 
 export type FindAllRoomQuery = { __typename?: 'Query', findAllRoom: { __typename?: 'FindAllRoomPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, rooms?: Array<{ __typename?: 'Room', id: string, name?: string | null, number?: string | null, facility?: { __typename?: 'Facility', id: string, name: string } | null }> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
 
+export type SearchAllRoomQueryVariables = Exact<{
+  findAllRoomInput: FindAllRoomInput;
+}>;
+
+
+export type SearchAllRoomQuery = { __typename?: 'Query', findAllRoom: { __typename?: 'FindAllRoomPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, error?: string | null, message?: string | null } | null, rooms?: Array<{ __typename?: 'Room', id: string, name?: string | null, number?: string | null }> | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
+
 export type CreateRoomMutationVariables = Exact<{
   createRoomInput: CreateRoomInput;
 }>;
@@ -11452,6 +11485,11 @@ export const GetAppointmentDocument = gql`
       }
       invoice {
         invoiceNo
+      }
+      room {
+        id
+        name
+        number
       }
     }
   }
@@ -12273,6 +12311,88 @@ export function useUpdateScribeCheckMutation(baseOptions?: Apollo.MutationHookOp
 export type UpdateScribeCheckMutationHookResult = ReturnType<typeof useUpdateScribeCheckMutation>;
 export type UpdateScribeCheckMutationResult = Apollo.MutationResult<UpdateScribeCheckMutation>;
 export type UpdateScribeCheckMutationOptions = Apollo.BaseMutationOptions<UpdateScribeCheckMutation, UpdateScribeCheckMutationVariables>;
+export const AssociateRoomToAppointmentDocument = gql`
+    mutation AssociateRoomToAppointment($associateRoomToAppointmentInput: AssociateRoomToAppointmentInput!) {
+  associateRoomToAppointment(
+    associateRoomToAppointmentInput: $associateRoomToAppointmentInput
+  ) {
+    response {
+      status
+    }
+  }
+}
+    `;
+export type AssociateRoomToAppointmentMutationFn = Apollo.MutationFunction<AssociateRoomToAppointmentMutation, AssociateRoomToAppointmentMutationVariables>;
+
+/**
+ * __useAssociateRoomToAppointmentMutation__
+ *
+ * To run a mutation, you first call `useAssociateRoomToAppointmentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssociateRoomToAppointmentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [associateRoomToAppointmentMutation, { data, loading, error }] = useAssociateRoomToAppointmentMutation({
+ *   variables: {
+ *      associateRoomToAppointmentInput: // value for 'associateRoomToAppointmentInput'
+ *   },
+ * });
+ */
+export function useAssociateRoomToAppointmentMutation(baseOptions?: Apollo.MutationHookOptions<AssociateRoomToAppointmentMutation, AssociateRoomToAppointmentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AssociateRoomToAppointmentMutation, AssociateRoomToAppointmentMutationVariables>(AssociateRoomToAppointmentDocument, options);
+      }
+export type AssociateRoomToAppointmentMutationHookResult = ReturnType<typeof useAssociateRoomToAppointmentMutation>;
+export type AssociateRoomToAppointmentMutationResult = Apollo.MutationResult<AssociateRoomToAppointmentMutation>;
+export type AssociateRoomToAppointmentMutationOptions = Apollo.BaseMutationOptions<AssociateRoomToAppointmentMutation, AssociateRoomToAppointmentMutationVariables>;
+export const GetAppointmentRoomDocument = gql`
+    query GetAppointmentRoom($getAppointment: GetAppointment!) {
+  getAppointment(getAppointment: $getAppointment) {
+    response {
+      status
+    }
+    appointment {
+      id
+      room {
+        id
+        name
+        number
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAppointmentRoomQuery__
+ *
+ * To run a query within a React component, call `useGetAppointmentRoomQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAppointmentRoomQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAppointmentRoomQuery({
+ *   variables: {
+ *      getAppointment: // value for 'getAppointment'
+ *   },
+ * });
+ */
+export function useGetAppointmentRoomQuery(baseOptions: Apollo.QueryHookOptions<GetAppointmentRoomQuery, GetAppointmentRoomQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAppointmentRoomQuery, GetAppointmentRoomQueryVariables>(GetAppointmentRoomDocument, options);
+      }
+export function useGetAppointmentRoomLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAppointmentRoomQuery, GetAppointmentRoomQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAppointmentRoomQuery, GetAppointmentRoomQueryVariables>(GetAppointmentRoomDocument, options);
+        }
+export type GetAppointmentRoomQueryHookResult = ReturnType<typeof useGetAppointmentRoomQuery>;
+export type GetAppointmentRoomLazyQueryHookResult = ReturnType<typeof useGetAppointmentRoomLazyQuery>;
+export type GetAppointmentRoomQueryResult = Apollo.QueryResult<GetAppointmentRoomQuery, GetAppointmentRoomQueryVariables>;
 export const GetAttachmentsDocument = gql`
     query GetAttachments($getAttachment: GetAttachment!) {
   getAttachments(getAttachment: $getAttachment) {
@@ -25103,6 +25223,54 @@ export function useFindAllRoomLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type FindAllRoomQueryHookResult = ReturnType<typeof useFindAllRoomQuery>;
 export type FindAllRoomLazyQueryHookResult = ReturnType<typeof useFindAllRoomLazyQuery>;
 export type FindAllRoomQueryResult = Apollo.QueryResult<FindAllRoomQuery, FindAllRoomQueryVariables>;
+export const SearchAllRoomDocument = gql`
+    query SearchAllRoom($findAllRoomInput: FindAllRoomInput!) {
+  findAllRoom(findAllRoomInput: $findAllRoomInput) {
+    response {
+      status
+      error
+      message
+    }
+    rooms {
+      id
+      name
+      number
+    }
+    pagination {
+      page
+      totalPages
+    }
+  }
+}
+    `;
+
+/**
+ * __useSearchAllRoomQuery__
+ *
+ * To run a query within a React component, call `useSearchAllRoomQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchAllRoomQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchAllRoomQuery({
+ *   variables: {
+ *      findAllRoomInput: // value for 'findAllRoomInput'
+ *   },
+ * });
+ */
+export function useSearchAllRoomQuery(baseOptions: Apollo.QueryHookOptions<SearchAllRoomQuery, SearchAllRoomQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchAllRoomQuery, SearchAllRoomQueryVariables>(SearchAllRoomDocument, options);
+      }
+export function useSearchAllRoomLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchAllRoomQuery, SearchAllRoomQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchAllRoomQuery, SearchAllRoomQueryVariables>(SearchAllRoomDocument, options);
+        }
+export type SearchAllRoomQueryHookResult = ReturnType<typeof useSearchAllRoomQuery>;
+export type SearchAllRoomLazyQueryHookResult = ReturnType<typeof useSearchAllRoomLazyQuery>;
+export type SearchAllRoomQueryResult = Apollo.QueryResult<SearchAllRoomQuery, SearchAllRoomQueryVariables>;
 export const CreateRoomDocument = gql`
     mutation CreateRoom($createRoomInput: CreateRoomInput!) {
   createRoom(createRoomInput: $createRoomInput) {
