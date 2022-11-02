@@ -27,7 +27,8 @@ import {
   ResponsePayloadResponse, ReviewOfSystemPayload, RolesPayload, Schedule, SectionsInputs, ServicesPayload,
   SingleScheduleInput, Staff, SurgicalHistory, TriageNotes, TriageNotesPayload, TwoFactorInput, User,
   UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput,
-  UsersFormsElements, VaccineProduct, VerifyCodeInput, SectionQuestions, CreateMacroInput, CreateRoomInput
+  UsersFormsElements, VaccineProduct, VerifyCodeInput, SectionQuestions, CreateMacroInput, CreateRoomInput,
+  ImagingTest, LoincCodes, 
 } from "../generated/graphql";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
 import { Action as BillingAction, State as BillingState } from "../reducers/billingReducer";
@@ -55,6 +56,7 @@ import { Action as CvxCodeAction } from "../reducers/cvxCodeReducer";
 import { Action as MacroAction } from "../reducers/macrosReducer";
 import { Action as VaccineProductAction } from "../reducers/vaccineProductReducer";
 import { Action as RoomAction } from "../reducers/roomReducer";
+import { Action as ImagingTestAction } from "../reducers/imagingTestReducer";
 
 export type Order = 'ASC' | 'DESC';
 type Key = string | number | undefined;
@@ -461,6 +463,10 @@ export interface VaccineProductNdcSelectorProps extends SelectorProps {
   filteredOptions?: SelectorOption[]
   placeHolder?: string;
   vaccineProductId: string
+}
+
+export type ImagingTestSelectorProps = Pick<SelectorProps, 'name' | 'label' | 'disabled' | 'isRequired' | 'addEmpty' | 'onSelect' | 'loading' | 'margin'> & {
+  placeHolder?: string;
 }
 
 
@@ -976,7 +982,7 @@ export type DiagnosesModalModalProps = {
   isOpen?: boolean
   handleModalClose: () => void
   fetch?: () => void
-  handleAdd?: Function
+  handleAdd?: (item: Medications | ImagingTest | LoincCodes, type: AddDiagnoseType) => void
   alreadyAddedMedications?: string[]
 }
 
@@ -1212,6 +1218,12 @@ export type AssessmentTest = LoincCodePayload['loincCode'] & {
   isSigned: boolean
 }
 
+export type AssessmentImagingOrder = ImagingTest & {
+  testId: string
+  patientTestId?: string
+  isSigned: boolean
+}
+
 export type AssessmentProblemType = {
   problemId: string
   isSigned: boolean
@@ -1225,6 +1237,7 @@ export type AssessmentProblemType = {
   },
   medications?: AssessmentMedication[]
   tests?: AssessmentTest[]
+  imagingOrders?: AssessmentImagingOrder[]
 }
 
 export type AssessmentProblems = {
@@ -2454,6 +2467,7 @@ export type IcdCodesTableProps = {
 export type ICD10FormType = Pick<CreateIcdCodeInput, 'code' | 'description'> & { priority: string };
 export type CptCodeFormType = Pick<CreateCptCodeInput, 'code' | 'shortDescription'> & { priority: string };
 export type NdcCodeFormType = { code: string, description: string };
+export type ImagingTestFormType = { name: string };
 export type MvxCodeFormType = Pick<CreateMvxCodeInput, 'manufacturerName' | 'mvxCode' | 'notes'> & { mvxStatus: SelectorOption }
 export type RoomFormType = Pick<CreateRoomInput, 'name' | 'number'> & { facility: SelectorOption }
 export type CvxCodeFormType = Pick<CreateCvxCodeInput, 'name' | 'cvxCode' | 'shortDescription' | 'notes'> & { cptCode: SelectorOption, status: SelectorOption }
@@ -2492,6 +2506,15 @@ export type NdcCodeFormProps = {
   fetch?: Function;
   id?: string;
   dispatcher?: Dispatch<NdcCodeAction>
+  handleClose: (open: boolean) => void
+}
+
+export type ImagingTestFormProps = {
+  open: boolean;
+  isEdit: boolean;
+  fetch?: Function;
+  id?: string;
+  dispatcher?: Dispatch<ImagingTestAction>
   handleClose: (open: boolean) => void
 }
 
@@ -2566,3 +2589,5 @@ export type PatientPrimaryProviderProps = {
   setPrimaryProvider?: (provider: string) => void
   label?: string
 }
+
+export type AddDiagnoseType = 'medication' | 'test' | 'imaging'

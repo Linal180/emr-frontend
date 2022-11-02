@@ -42,7 +42,7 @@ import {
   ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, UserForms,
   AttachmentType, AttachmentsPayload, UsersPayload, UnitType, PracticeType, SchedulesPayload,
   WeightType, ClaimStatus, AllCptCodePayload, AllModifiersPayload, FeeSchedule, CptFeeSchedule,
-  AllCptFeeSchedulesPayload, Taxonomy, TaxonomyPayload, FindAllNdcPayload, FindAllMvxPayload, FindAllQuestionTemplatesPayload, FindAllNdcVaccineProductsPayload, QuestionTemplate, FindAllCvxPayload,
+  AllCptFeeSchedulesPayload, Taxonomy, TaxonomyPayload, FindAllNdcPayload, FindAllMvxPayload, FindAllQuestionTemplatesPayload, FindAllNdcVaccineProductsPayload, QuestionTemplate, FindAllCvxPayload, FindAllImagingTestPayload,
 } from "../generated/graphql";
 
 export const handleLogout = () => {
@@ -900,6 +900,22 @@ export const renderVaccineProductNdcs = (ndcCodes: FindAllNdcVaccineProductsPayl
         const { id, code, description } = ndcCode || {}
 
         id && code && data.push({ id, name: description ? `${code} | ${description}` : code })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderImagingTest = (imagingTests: FindAllImagingTestPayload['imagingTests']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!imagingTests) {
+    for (let item of imagingTests) {
+      if (item) {
+        const { id, name } = item;
+
+        id && name && data.push({ id, name })
       }
     }
   }

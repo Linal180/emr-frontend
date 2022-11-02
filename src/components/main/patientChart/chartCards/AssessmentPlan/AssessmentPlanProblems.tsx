@@ -1,27 +1,31 @@
-import { Box, Button, Card, colors, Typography } from '@material-ui/core';
-import { AddCircleOutline } from '@material-ui/icons';
 import moment from 'moment';
-import { Reducer, useReducer } from 'react';
 import { useParams } from 'react-router';
-import { ASSESSMENT_PLAN } from '../../../../../constants';
-import { IcdCodesWithSnowMedCode, useAddPatientProblemMutation, useUpdatePatientProblemSignedMutation } from '../../../../../generated/graphql';
-import { AssessmentMedication, AssessmentPlanProblemsProps, ParamsType } from '../../../../../interfacesTypes';
-import { Action, ActionType, chartReducer, initialState, State } from '../../../../../reducers/chartReducer';
-import { useChartingStyles } from '../../../../../styles/chartingStyles';
+import { FC, Reducer, useReducer } from 'react';
+import { AddCircleOutline } from '@material-ui/icons';
+import { Box, Button, Card, colors, Typography } from '@material-ui/core';
+//components
 import Alert from '../../../../common/Alert';
+import AssessmentPlanMedication from './AssessmentPlanMedication';
 import NoDataFoundComponent from '../../../../common/NoDataFoundComponent';
 import AppointmentReasonModal from '../AppointmentReason/AppointmentReasonModal';
-import AssessmentPlanMedication from './AssessmentPlanMedication';
+//constants, interfaces, reducer, styles
+import { ASSESSMENT_PLAN } from '../../../../../constants';
+import { useChartingStyles } from '../../../../../styles/chartingStyles';
+import { Action, ActionType, chartReducer, initialState, State } from '../../../../../reducers/chartReducer';
+import { AssessmentMedication, AssessmentPlanProblemsProps, ParamsType } from '../../../../../interfacesTypes';
+import {
+  IcdCodesWithSnowMedCode, useAddPatientProblemMutation, useUpdatePatientProblemSignedMutation
+} from '../../../../../generated/graphql';
 
-function AssessmentPlanProblems({ fetchProblems, assessmentProblems: problems, setAssessmentProblems, shouldDisableEdit, isSigned, notes, setNotes }:
-  AssessmentPlanProblemsProps) {
+const AssessmentPlanProblems: FC<AssessmentPlanProblemsProps> = ({
+  fetchProblems, assessmentProblems: problems, setAssessmentProblems, shouldDisableEdit, isSigned, notes, setNotes
+}): JSX.Element => {
   const classes = useChartingStyles()
   const { id: patientId, appointmentId } = useParams<ParamsType>()
   // const { control, setValue, watch } = useFormContext<AssessmentProblems>()
   // const { problems } = watch()
 
-  const [state, dispatch] =
-    useReducer<Reducer<State, Action>>(chartReducer, initialState)
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(chartReducer, initialState)
   const { isOpen, problemIndex } = state
 
   const handleModalClose = () => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: !isOpen })
