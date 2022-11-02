@@ -2,7 +2,7 @@
 import { Box, Button, Card, colors, Grid, Tab, Typography } from "@material-ui/core";
 import { ChevronRight, PrintOutlined } from "@material-ui/icons";
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
-import { ChangeEvent, FC, ReactElement, Reducer, useContext, useMemo, useReducer, useState } from 'react';
+import { ChangeEvent, FC, ReactElement, Reducer, useContext, useEffect, useMemo, useReducer, useState } from 'react';
 import { useParams } from "react-router";
 // components block
 import Alert from "../../../common/Alert";
@@ -16,42 +16,47 @@ import AssessmentPlanTab from "./AssessmentPlan/AssessmentPlanTab";
 import ChartPrintModal from "./ChartModal/ChartPrintModal";
 import ChartSelectionModal from './ChartModal/ChartSelectionModal';
 import FamilyHistory from "./familyHistory";
+import PatientHistory from "./patientHistoryIllness";
+import ReviewOfSystem from "./reviewOfSystem";
+import SocialHistory from "./socialHistory";
 import SurgicalHistoryTab from "./surgicalHistory/SurgicalHistoryListing";
 import AllergyTab from './tabs/AllergyListing';
 import AppointmentReason from "./tabs/AppointmentReason";
+import ExamTab from "./tabs/ExamTab";
 import HistoryTab from './tabs/HistoryTab';
 import MedicationTab from './tabs/MedicationsListing';
 import ProblemTab from './tabs/ProblemListing';
 import TriageNoteTab from './tabs/TriageNotesListing';
 import VitalTab from './tabs/VitalListing';
-import PatientHistory from "./patientHistoryIllness";
-import ReviewOfSystem from "./reviewOfSystem";
-import SocialHistory from "./socialHistory";
-import ExamTab from "./tabs/ExamTab";
+import PhysicalExam from "./physicalExam";
+import VisitsTab from "./Visits";
 // interfaces, graphql, constants block /styles
 import { HistoryIcon } from "../../../../assets/svgs";
 import {
-  CONFIRMATION_MODAL_TYPE, DISCHARGE, DISCHARGE_PATIENT_DESCRIPTION, DONE_INTAKE, EXAM_OPTION,
-  PATIENT_CHARTING_MENU, PATIENT_CHARTING_TABS, PATIENT_DISCHARGED, PATIENT_DISCHARGED_SUCCESS, TRIAGE_NOTE_OPTION,
-  PRINT_CHART, REASON_FOR_VISIT_OPTION, SIGN_OFF, VISIT_OPTION, CHART_TEXT,
+  CHART_TEXT, CONFIRMATION_MODAL_TYPE, DISCHARGE, DISCHARGE_PATIENT_DESCRIPTION, DONE_INTAKE, EXAM_OPTION,
+  PATIENT_CHARTING_MENU, PATIENT_CHARTING_TABS, PATIENT_DISCHARGED, PATIENT_DISCHARGED_SUCCESS, PRINT_CHART, REASON_FOR_VISIT_OPTION, SIGN_OFF, TRIAGE_NOTE_OPTION, VISIT_OPTION
 } from "../../../../constants";
 import { AuthContext, ChartContextProvider } from '../../../../context';
-import { AppointmentStatus, useUpdateAppointmentStatusMutation } from "../../../../generated/graphql";
+import { AppointmentStatus, useUpdateAppointmentMutation, useUpdateAppointmentStatusMutation } from "../../../../generated/graphql";
 import { ChartComponentProps, ParamsType } from "../../../../interfacesTypes";
 import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
 import { useChartingStyles } from "../../../../styles/chartingStyles";
 import { useExternalPatientStyles } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
 import { WHITE } from '../../../../theme';
 import { isAdmin, isOnlyDoctor } from "../../../../utils";
-import VisitsTab from "./Visits";
-import PhysicalExam from "./physicalExam";
 
 const ChartCards: FC<ChartComponentProps> = ({ appointmentState, shouldDisableEdit, status, appointmentInfo, fetchAppointment, labOrderHandler, isInTake }): JSX.Element => {
   const classes = useChartingStyles();
 
   const { appointment } = appointmentState || {}
-  const { appointmentType } = appointment ?? {}
+  const { appointmentType, intakeSteps } = appointment ?? {}
   const { name: serviceName } = appointmentType ?? {}
+
+  useEffect(() => {
+    const transformedInTakeSteps = intakeSteps?.map((value) => Number(value || '')) || []
+    setStepArray(transformedInTakeSteps)
+    dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: transformedInTakeSteps[transformedInTakeSteps.length - 1] })
+  }, [intakeSteps])
 
   const patientClasses = useExternalPatientStyles();
   const { user } = useContext(AuthContext);
@@ -91,7 +96,19 @@ const ChartCards: FC<ChartComponentProps> = ({ appointmentState, shouldDisableEd
     }
   });
 
-  const updateAppointment = async () => {
+  const [updateAppointment] = useUpdateAppointmentMutation({
+    onError({ message }) {
+      Alert.error(message)
+    },
+
+    async onCompleted(data) {
+      if (data) {
+
+      }
+    }
+  });
+
+  const updateAppointmentStatusHandler = async () => {
     try {
       await updateAppointmentStatus({
         variables: {
@@ -103,6 +120,19 @@ const ChartCards: FC<ChartComponentProps> = ({ appointmentState, shouldDisableEd
       })
 
       labOrderHandler && labOrderHandler()
+    } catch (error) { }
+  }
+
+  const updateAppointmentHandler = async (intakeSteps: string[]) => {
+    try {
+      await updateAppointment({
+        variables: {
+          updateAppointmentInput: {
+            id: appointmentId || '',
+            intakeSteps
+          }
+        }
+      })
     } catch (error) { }
   }
 
@@ -127,7 +157,7 @@ const ChartCards: FC<ChartComponentProps> = ({ appointmentState, shouldDisableEd
 
   const isPatientDischarged = status === AppointmentStatus.Checkout || status === AppointmentStatus.Discharged
 
-  const handleStep = (index: number) => {
+  const handleStep = async (index: number) => {
     dispatch && dispatch({
       type: ActionType.SET_ACTIVE_STEP, activeStep: index
     })
@@ -136,6 +166,8 @@ const ChartCards: FC<ChartComponentProps> = ({ appointmentState, shouldDisableEd
       return
     } else {
       setStepArray((prev => [...prev, index]))
+      const transformedStepArray = [...stepArray, index].map((value) => String(value))
+      await updateAppointmentHandler(transformedStepArray)
     }
   }
 
@@ -462,7 +494,7 @@ const ChartCards: FC<ChartComponentProps> = ({ appointmentState, shouldDisableEd
             isOpen={openDelete}
             isLoading={updateAppointmentStatusLoading}
             description={DISCHARGE_PATIENT_DESCRIPTION}
-            handleDelete={updateAppointment}
+            handleDelete={updateAppointmentStatusHandler}
             actionText={DISCHARGE}
             modalType={CONFIRMATION_MODAL_TYPE.DISCHARGE}
             setOpen={(open: boolean) => setOpenDelete(open)}
