@@ -635,6 +635,7 @@ export type ParamsType = {
   tabValue?: string
   appointmentId?: string;
   testId?: string
+  shouldProceed?: string
 }
 
 export type MacroViewTypes = {
