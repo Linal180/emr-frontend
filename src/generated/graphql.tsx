@@ -276,6 +276,7 @@ export type Appointment = {
   imagingOrders?: Maybe<Array<ImagingOrder>>;
   insuranceCompany?: Maybe<Scalars['String']>;
   insuranceStatus?: Maybe<Scalars['String']>;
+  intakeSteps?: Maybe<Array<Scalars['String']>>;
   invoice?: Maybe<Invoice>;
   invoiceId?: Maybe<Scalars['String']>;
   isExternal?: Maybe<Scalars['Boolean']>;
@@ -3211,6 +3212,7 @@ export type LoincCodes = {
   observations?: Maybe<Array<Observations>>;
   orderObs?: Maybe<Scalars['String']>;
   panelType?: Maybe<Scalars['String']>;
+  priority?: Maybe<Scalars['Int']>;
   property?: Maybe<Scalars['String']>;
   relatedNames2?: Maybe<Scalars['String']>;
   scaleTyp?: Maybe<Scalars['String']>;
@@ -7723,6 +7725,7 @@ export type UpdateAppointmentInput = {
   id: Scalars['String'];
   insuranceCompany?: Maybe<Scalars['String']>;
   insuranceStatus?: Maybe<Scalars['String']>;
+  intakeSteps?: Maybe<Array<Scalars['String']>>;
   isExternal?: Maybe<Scalars['Boolean']>;
   membershipID?: Maybe<Scalars['String']>;
   notes?: Maybe<Scalars['String']>;
@@ -7740,6 +7743,7 @@ export type UpdateAppointmentInput = {
   scheduleStartDateTime?: Maybe<Scalars['String']>;
   secondaryInsurance?: Maybe<Scalars['String']>;
   selfCheckIn?: Maybe<Scalars['Boolean']>;
+  shouldSendEmail?: Maybe<Scalars['Boolean']>;
   status?: Maybe<AppointmentStatus>;
   timeZone?: Maybe<Scalars['String']>;
 };
@@ -8819,7 +8823,7 @@ export type GetAppointmentQueryVariables = Exact<{
 }>;
 
 
-export type GetAppointmentQuery = { __typename?: 'Query', getAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, appointment?: { __typename?: 'Appointment', id: string, notes?: string | null, reason?: string | null, token?: string | null, status: AppointmentStatus, patientId?: string | null, employment?: boolean | null, paymentType: PaymentType, autoAccident?: boolean | null, otherAccident?: boolean | null, primaryInsurance?: string | null, secondaryInsurance?: string | null, scheduleEndDateTime?: string | null, scheduleStartDateTime?: string | null, appointmentDate?: string | null, createdAt?: string | null, updatedAt?: string | null, billingStatus: BillingStatus, checkedInAt?: string | null, selfCheckIn?: boolean | null, checkInActiveStep?: string | null, appointmentCreateType?: AppointmentCreateType | null, scribe?: { __typename?: 'Scribe', id: string, isScribed?: boolean | null, firstName?: string | null, lastName?: string | null } | null, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string, duration: string, serviceType: ServiceType } | null, provider?: { __typename?: 'Doctor', id: string, lastName?: string | null, firstName?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null } | null, facility?: { __typename?: 'Facility', id: string, name: string, practiceType?: PracticeType | null, serviceCode?: ServiceCode | null } | null, invoice?: { __typename?: 'Invoice', invoiceNo: string } | null } | null } };
+export type GetAppointmentQuery = { __typename?: 'Query', getAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, appointment?: { __typename?: 'Appointment', id: string, notes?: string | null, reason?: string | null, token?: string | null, status: AppointmentStatus, intakeSteps?: Array<string> | null, patientId?: string | null, employment?: boolean | null, paymentType: PaymentType, autoAccident?: boolean | null, otherAccident?: boolean | null, primaryInsurance?: string | null, secondaryInsurance?: string | null, scheduleEndDateTime?: string | null, scheduleStartDateTime?: string | null, appointmentDate?: string | null, createdAt?: string | null, updatedAt?: string | null, billingStatus: BillingStatus, checkedInAt?: string | null, selfCheckIn?: boolean | null, checkInActiveStep?: string | null, appointmentCreateType?: AppointmentCreateType | null, scribe?: { __typename?: 'Scribe', id: string, isScribed?: boolean | null, firstName?: string | null, lastName?: string | null } | null, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string, duration: string, serviceType: ServiceType } | null, provider?: { __typename?: 'Doctor', id: string, lastName?: string | null, firstName?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null } | null, facility?: { __typename?: 'Facility', id: string, name: string, practiceType?: PracticeType | null, serviceCode?: ServiceCode | null } | null, invoice?: { __typename?: 'Invoice', invoiceNo: string } | null } | null } };
 
 export type RemoveAppointmentMutationVariables = Exact<{
   removeAppointment: RemoveAppointment;
@@ -11399,6 +11403,7 @@ export const GetAppointmentDocument = gql`
       reason
       token
       status
+      intakeSteps
       patientId
       employment
       paymentType

@@ -60,7 +60,7 @@ const MvxTable: FC = (): JSX.Element => {
           if (!!data && (data.length > 1 || isLast(data?.length, page))) {
             await fetchAllMvxCodes()
           } else {
-            dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, isLast?.length || 0) })
+            dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, data?.length || 0) })
           }
         }
       }

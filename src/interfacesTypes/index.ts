@@ -641,6 +641,7 @@ export type ParamsType = {
   tabValue?: string
   appointmentId?: string;
   testId?: string
+  shouldProceed?: string
 }
 
 export type MacroViewTypes = {
@@ -1678,7 +1679,8 @@ export interface ConfirmModalTypes extends DialogTypes {
   title?: string;
   actionText?: string;
   description?: string;
-  handleSave: () => void;
+  handleSave?: () => void;
+  shouldShowSave?: boolean
 }
 export interface SmartyUserData {
   street: string;

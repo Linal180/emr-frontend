@@ -65,11 +65,10 @@ const RoomTable: FC = (): JSX.Element => {
           message && Alert.success(message);
           dispatch({ type: ActionType.SET_DEL_ID, delId: '' })
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
-
           if (!!data && (data.length > 1 || isLast(data?.length, page))) {
             await fetchAllRooms()
           } else {
-            dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, isLast?.length || 0) })
+            dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, data?.length || 0) })
           }
         }
       }

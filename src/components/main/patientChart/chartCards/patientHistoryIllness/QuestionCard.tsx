@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
       height: '30px !important',
       borderRadius: '4px !important',
       '& .MuiAutocomplete-inputRoot, .MuiOutlinedInput-root': {
-        height: '26px !important',
+        height: '24px !important',
         marginTop: 10,
         backgroundColor: '#F3F4F6',
         borderRadius: '4px !important',

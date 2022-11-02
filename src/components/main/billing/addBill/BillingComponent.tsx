@@ -213,8 +213,10 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
           const primaryProvider = providers?.find((provider) => provider?.relation === DoctorPatientRelationType.PrimaryProvider)
           const renderingProvider = providers?.find((provider) => provider?.relation === DoctorPatientRelationType.RenderingProvider)
 
+          const renderingProviderInfo = renderingProvider ? renderingProvider : primaryProvider
+
           primaryProvider && setValue('servicingProvider', setRecord(primaryProvider?.doctorId || '', `${primaryProvider?.doctor?.firstName} ${primaryProvider?.doctor?.lastName}`))
-          renderingProvider && setValue('renderingProvider', setRecord(renderingProvider?.doctorId || '', `${renderingProvider?.doctor?.firstName} ${renderingProvider?.doctor?.lastName}`))
+          renderingProviderInfo && setValue('renderingProvider', setRecord(renderingProviderInfo?.doctorId || '', `${renderingProviderInfo?.doctor?.firstName} ${renderingProviderInfo?.doctor?.lastName}`))
         }
       }
     },

@@ -59,7 +59,7 @@ const NdcTable: FC = (): JSX.Element => {
           if (!!data && (data.length > 1 || isLast(data?.length, page))) {
             await fetchAllNdcCodes()
           } else {
-            dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, isLast?.length || 0) })
+            dispatch({ type: ActionType.SET_PAGE, page: getPageNumber(page, data?.length || 0) })
           }
         }
       }
@@ -106,9 +106,9 @@ const NdcTable: FC = (): JSX.Element => {
 
   const fetchAllNdcCodes = useCallback(async () => {
     try {
-      await findAllNdcCodes({ variables: { findAllNdcInput: { paginationOptions: { limit: PAGE_LIMIT, page } , searchQuery} } })
+      await findAllNdcCodes({ variables: { findAllNdcInput: { paginationOptions: { limit: PAGE_LIMIT, page }, searchQuery } } })
     } catch (error) { }
-  }, [findAllNdcCodes, page , searchQuery])
+  }, [findAllNdcCodes, page, searchQuery])
 
   useEffect(() => {
     fetchAllNdcCodes()
