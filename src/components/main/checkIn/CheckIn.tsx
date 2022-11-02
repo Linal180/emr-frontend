@@ -3,13 +3,13 @@ import { Box, Button, Card, colors, Grid, Typography } from "@material-ui/core";
 import { ChevronRight } from "@material-ui/icons";
 import { FC, useContext } from "react";
 //constants, interfaces, utils, types
+import { isBiller } from "../../../utils";
+import { AuthContext } from "../../../context";
+import { CheckInComponentProps } from "../../../interfacesTypes";
 import {
   APPOINTMENT_INFO, APPOINTMENT_TYPE, CHECK_IN_AT_TEXT, DONE_CHECK_IN, FACILITY_LOCATION, N_A, PRIMARY_INSURANCE,
   PROVIDER_NAME, REASON, SELF_CHECK_IN, SIGN_OFF, START_CHECK_IN, TO_CHECKOUT, TO_EXAM, TO_INTAKE
 } from "../../../constants";
-import { AuthContext } from "../../../context";
-import { CheckInComponentProps } from "../../../interfacesTypes";
-import { isBiller } from "../../../utils";
 
 const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep, shouldDisableEdit, activeStep, handleProceed }) => {
   const { user } = useContext(AuthContext)

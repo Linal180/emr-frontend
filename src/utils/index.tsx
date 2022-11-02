@@ -42,7 +42,7 @@ import {
   ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, UserForms,
   AttachmentType, AttachmentsPayload, UsersPayload, UnitType, PracticeType, SchedulesPayload,
   WeightType, ClaimStatus, AllCptCodePayload, AllModifiersPayload, FeeSchedule, CptFeeSchedule,
-  AllCptFeeSchedulesPayload, Taxonomy, TaxonomyPayload, FindAllNdcPayload, FindAllMvxPayload, FindAllQuestionTemplatesPayload, FindAllNdcVaccineProductsPayload, QuestionTemplate, FindAllCvxPayload, FindAllImagingTestPayload,
+  AllCptFeeSchedulesPayload, Taxonomy, TaxonomyPayload, FindAllNdcPayload, FindAllMvxPayload, FindAllQuestionTemplatesPayload, FindAllNdcVaccineProductsPayload, QuestionTemplate, FindAllCvxPayload, FindAllImagingTestPayload, FindAllRoomPayload,
 } from "../generated/graphql";
 
 export const handleLogout = () => {
@@ -921,6 +921,17 @@ export const renderImagingTest = (imagingTests: FindAllImagingTestPayload['imagi
   }
 
   return data;
+}
+
+export const renderAllRooms = (rooms: FindAllRoomPayload['rooms']): SelectorOption[] => {
+  if (!!rooms) {
+    const data: SelectorOption[] = rooms?.map((item) => {
+      const { id, name, number } = item || {}
+      return { id, name: `${number || ''}: ${name || ''}` }
+    })
+    return data
+  }
+  return [];
 }
 
 export const renderCvxs = (mvxsCodes: FindAllCvxPayload['cvxs']) => {

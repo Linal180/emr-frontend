@@ -45,6 +45,28 @@ query FindAllRoom($findAllRoomInput: FindAllRoomInput!) {
   }
 }
 
+query SearchAllRoom($findAllRoomInput: FindAllRoomInput!) {
+  findAllRoom(findAllRoomInput: $findAllRoomInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    rooms {
+      id
+      name
+      number
+      
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+  }
+}
+
 # mutations
 
 mutation CreateRoom($createRoomInput: CreateRoomInput!) {

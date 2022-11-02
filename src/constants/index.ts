@@ -562,6 +562,7 @@ export const MVX_TEXT = "MVX";
 export const ROOM_TEXT = "Room";
 export const CVX_TEXT = "CVX";
 export const IMAGING_TEST_TEXT = "Imaging Test";
+export const PATIENT_LOCATION_TEXT = "Patient location";
 export const VACCINE_PRODUCT_TEXT = "Vaccine Product";
 export const VIS_GIVEN_TEXT = "VIS Given";
 export const DATE_ON_VIS = "Date on VIS";

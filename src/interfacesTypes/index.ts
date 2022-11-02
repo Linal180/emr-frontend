@@ -469,6 +469,10 @@ export type ImagingTestSelectorProps = Pick<SelectorProps, 'name' | 'label' | 'd
   placeHolder?: string;
 }
 
+export type RoomSelectorProps = Pick<SelectorProps, 'name' | 'label' | 'disabled' | 'isRequired' | 'addEmpty' | 'onSelect' | 'loading' | 'margin'> & {
+  placeHolder?: string;
+}
+
 
 export interface MvxSelectorProps extends SelectorProps {
   filteredOptions?: SelectorOption[]
