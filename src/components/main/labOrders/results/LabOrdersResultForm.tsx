@@ -62,7 +62,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
     },
 
     onCompleted() {
-      history.push(appointmentId ? `/appointments/${appointmentId}/${patientId}/check-in` : `/patients/${patientId}/details/10`)
+      history.push(appointmentId ? `/appointments/${appointmentId}/${patientId}/check-in/1` : `/patients/${patientId}/details/10`)
     }
   });
 

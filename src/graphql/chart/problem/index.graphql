@@ -63,7 +63,6 @@ query FindAllPatientProblemsWithMedication(
       note
 
       ICDCode {
-        __typename
         id
         code
         description
@@ -85,9 +84,23 @@ query FindAllPatientProblemsWithMedication(
       labTests {
         id
         isSigned
+
         test {
           id
           component
+        }
+      }
+
+      imagingOrders {
+        id
+        isSigned
+
+        imagingOrderTest {
+          
+          imagingTest {
+            id
+            name
+          }
         }
       }
 
@@ -154,8 +167,12 @@ mutation UpdatePatientProblem($updateProblemInput: UpdateProblemInput!) {
   }
 }
 
-mutation UpdatePatientProblemSigned($updateProblemSignedInput: UpdateProblemSignedInput!) {
-  updatePatientProblemSigned(updateProblemSignedInput: $updateProblemSignedInput) {
+mutation UpdatePatientProblemSigned(
+  $updateProblemSignedInput: UpdateProblemSignedInput!
+) {
+  updatePatientProblemSigned(
+    updateProblemSignedInput: $updateProblemSignedInput
+  ) {
     response {
       status
       message
@@ -163,7 +180,9 @@ mutation UpdatePatientProblemSigned($updateProblemSignedInput: UpdateProblemSign
   }
 }
 
-mutation UpdatePatientProblemNotes($updateProblemNotesInput: UpdateProblemNotesInput!) {
+mutation UpdatePatientProblemNotes(
+  $updateProblemNotesInput: UpdateProblemNotesInput!
+) {
   updatePatientProblemNotes(updateProblemNotesInput: $updateProblemNotesInput) {
     response {
       status

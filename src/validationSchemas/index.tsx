@@ -1355,3 +1355,7 @@ export const RoomSchema = yup.object({
   number: yup.string().required(requiredMessage(NUMBER_TEXT)),
   facility: selectorSchema(FACILITY),
 })
+
+export const ImagingTestSchema = yup.object({
+  name: requiredMatches(NAME, invalidMessage(NAME), NO_SPACE_AT_BOTH_ENDS_REGEX),
+})

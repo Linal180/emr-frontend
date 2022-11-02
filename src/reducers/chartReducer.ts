@@ -1,6 +1,6 @@
 import {
   AllCptCodePayload,
-  Allergies, AllergiesPayload, Cvx, FindAllCvxPayload, IcdCodes, IcdCodesPayload, IcdCodesWithSnowMedCode, LoincCodesPayload, Medications, MedicationsPayload, PatientAllergiesPayload, PatientMedicationsPayload, PatientProblemsPayload, PatientVitalPayload, ReactionsPayload, SurgicalHistoriesPayload
+  Allergies, AllergiesPayload, Cvx, FindAllCvxPayload, FindAllImagingTestPayload, IcdCodes, IcdCodesPayload, IcdCodesWithSnowMedCode, LoincCodesPayload, Medications, MedicationsPayload, PatientAllergiesPayload, PatientMedicationsPayload, PatientProblemsPayload, PatientVitalPayload, ReactionsPayload, SurgicalHistoriesPayload
 } from "../generated/graphql";
 import { multiOptionType, PatientChartingInfo, SurgicalCode } from "../interfacesTypes";
 
@@ -27,7 +27,7 @@ export interface State {
   patientProblems: PatientProblemsPayload['patientProblems'],
   patientAllergies: PatientAllergiesPayload['patientAllergies'],
   selectedItem: Allergies | Medications | IcdCodesWithSnowMedCode | IcdCodes | SurgicalCode | undefined | Cvx;
-  searchedData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'] | MedicationsPayload['medications'] | AllCptCodePayload['cptCodes'] | FindAllCvxPayload['cvxs'] | LoincCodesPayload['loincCodes'];
+  searchedData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'] | MedicationsPayload['medications'] | AllCptCodePayload['cptCodes'] | FindAllCvxPayload['cvxs'] | LoincCodesPayload['loincCodes'] | FindAllImagingTestPayload['imagingTests'];
   medicationDeleteId: string;
   patientMedications: PatientMedicationsPayload['patientMedications']
   patientSurgicalHistory: SurgicalHistoriesPayload['surgicalHistories']
@@ -35,6 +35,7 @@ export interface State {
   patientChartingInfo: PatientChartingInfo | null,
   problemIndex: number | null;
   medicationIndex: number | null;
+  imagingOrderIndex: number | null;
   testIndex: number | null;
   isIcdFormOpen: boolean
 }
@@ -70,6 +71,7 @@ export const initialState: State = {
   patientChartingInfo: null,
   problemIndex: null,
   medicationIndex: null,
+  imagingOrderIndex: null,
   testIndex: null,
   isIcdFormOpen: false
 }
@@ -105,6 +107,7 @@ export enum ActionType {
   SET_PATIENT_CHARTING_INFO = "setPatientChartingInfo",
   SET_PROBLEM_INDEX = 'setProblemIndex',
   SET_MEDICATION_INDEX = 'setMedicationIndex',
+  SET_IMAGING_ORDER_INDEX = 'setImagingOrderIndex',
   SET_TEST_INDEX = 'setTestIndex',
   SET_ICD_FORM_OPEN = 'setICDFormOpen'
 }
@@ -129,7 +132,7 @@ export type Action =
   | { type: ActionType.SET_PATIENT_VITALS, patientVitals: PatientVitalPayload['patientVital'] }
   | { type: ActionType.SET_PATIENT_PROBLEMS, patientProblems: PatientProblemsPayload['patientProblems'] }
   | { type: ActionType.SET_PATIENT_ALLERGIES, patientAllergies: PatientAllergiesPayload['patientAllergies'] }
-  | { type: ActionType.SET_SEARCHED_DATA, searchedData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'] | MedicationsPayload['medications'] | AllCptCodePayload['cptCodes'] | FindAllCvxPayload['cvxs'] | LoincCodesPayload['loincCodes'] }
+  | { type: ActionType.SET_SEARCHED_DATA, searchedData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'] | MedicationsPayload['medications'] | AllCptCodePayload['cptCodes'] | FindAllCvxPayload['cvxs'] | LoincCodesPayload['loincCodes'] | FindAllImagingTestPayload['imagingTests'] }
   | { type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: boolean }
   | { type: ActionType.SET_ALLERGY_DELETE_ID, allergyDeleteId: string }
   | { type: ActionType.SET_PROBLEM_DELETE_ID, problemDeleteId: string }
@@ -140,6 +143,7 @@ export type Action =
   | { type: ActionType.SET_PATIENT_CHARTING_INFO, patientChartingInfo: PatientChartingInfo | null }
   | { type: ActionType.SET_PROBLEM_INDEX, problemIndex: number | null }
   | { type: ActionType.SET_MEDICATION_INDEX, medicationIndex: number | null }
+  | { type: ActionType.SET_IMAGING_ORDER_INDEX, imagingOrderIndex: number | null }
   | { type: ActionType.SET_TEST_INDEX, testIndex: number | null }
   | { type: ActionType.SET_ICD_FORM_OPEN, isIcdFormOpen: boolean }
 
@@ -324,6 +328,12 @@ export const chartReducer = (state: State, action: Action): State => {
       return {
         ...state,
         medicationIndex: action.medicationIndex
+      }
+
+    case ActionType.SET_IMAGING_ORDER_INDEX:
+      return {
+        ...state,
+        imagingOrderIndex: action.imagingOrderIndex
       }
 
     case ActionType.SET_TEST_INDEX:

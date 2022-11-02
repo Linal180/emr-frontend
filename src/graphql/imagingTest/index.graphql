@@ -1,0 +1,76 @@
+
+# queries 
+
+query FindAllImagingTest($findAllImagingTestInput: FindAllImagingTestInput!){
+  findAllImagingTest(findAllImagingTestInput: $findAllImagingTestInput){
+    imagingTests {
+      id
+      name
+    }
+    
+    response {
+      status
+      message
+    }
+    
+    pagination {
+      page
+      totalPages
+    }
+  }
+}
+
+query GetImagingTest($getImagingTestInput: GetImagingTestInput!){
+  getImagingTest(getImagingTestInput: $getImagingTestInput){
+    imagingTest {
+      id
+      name
+    }
+    
+    response {
+      status
+      message
+    }
+  }
+}
+
+#  mutations
+
+mutation CreateImagingTest($createImagingTestInput: CreateImagingTestInput!) {
+  createImagingTest(createImagingTestInput: $createImagingTestInput){
+    response {
+      status
+      message
+    }
+
+    imagingTest {
+      id
+    }
+  }
+}
+
+mutation UpdateImagingTest($updateImagingTestInput: UpdateImagingTestInput!) {
+  updateImagingTest(updateImagingTestInput: $updateImagingTestInput){
+    response {
+      status
+      message
+    }
+
+    imagingTest {
+      id
+    }
+  }
+}
+
+mutation RemoveImagingTest($removeImagingTestInput: RemoveImagingTestInput!) {
+  removeImagingTest(removeImagingTestInput: $removeImagingTestInput){
+    response {
+      status
+      message
+    }
+
+    imagingTest {
+      id
+    }
+  }
+}

@@ -92,7 +92,8 @@
     "preinstall": "npx npm-force-resolutions@0.0.3",
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "build:prod": "NODE_OPTIONS='--max-old-space-size=8192' react-scripts build",
+    "build:prod": "NODE_OPTIONS='--max-old-space-size=9216' react-scripts build",
+    "build:bash": "sh ./bash/index.sh",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "gen": "graphql-codegen --config codegen.yml"
