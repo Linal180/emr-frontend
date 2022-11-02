@@ -1,6 +1,7 @@
 // packages block
 import clsx from 'clsx';
 import { useParams } from "react-router";
+import { FormProvider, useForm } from 'react-hook-form';
 import { Check, ChevronRight } from '@material-ui/icons';
 import { Reducer, useCallback, useContext, useEffect, useReducer, useRef, useState } from "react";
 import {
@@ -12,20 +13,24 @@ import SignOff from "./SignOff";
 import Alert from "../../common/Alert";
 import PatientForm from "../patients/patientForm";
 import ChartCards from "../patientChart/chartCards";
+import RoomSelector from '../../common/Selector/roomSelector';
 import PatientProfileHero from "../../common/patient/profileHero";
 import BillingComponent from "../billing/addBill/BillingComponent";
 import ChartPrintModal from "../patientChart/chartCards/ChartModal/ChartPrintModal";
 import ChartSelectionModal from "../patientChart/chartCards/ChartModal/ChartSelectionModal";
 // constants, interfaces, utils block
-import { ChevronRightIcon } from "../../../assets/svgs";
-import { CHECK_IN_STEPS, DONE_CHECK_IN, PATIENT_INFO } from "../../../constants";
 import { AuthContext } from "../../../context";
+import { ChevronRightIcon } from "../../../assets/svgs";
+import { FormForwardRef, ParamsType, SelectorOption } from "../../../interfacesTypes";
+import { convertDateFromUnix, getFormattedDate, isBiller, isFrontDesk, isStaff } from "../../../utils";
+import { CHECK_IN_STEPS, DONE_CHECK_IN, EMPTY_OPTION, PATIENT_INFO, PATIENT_LOCATION_TEXT } from "../../../constants";
+import { Action, ActionType, appointmentReducer, initialState, State } from "../../../reducers/appointmentReducer";
+import { CheckInConnector, useCheckInProfileStyles, useCheckInStepIconStyles } from '../../../styles/checkInStyles';
 import {
   AppointmentPayload, AppointmentStatus, AttachmentsPayload, OrderOfBenefitType, PatientPayload,
+  useAssociateRoomToAppointmentMutation,
   useFetchPatientInsurancesLazyQuery, useGetAppointmentLazyQuery, useUpdateAppointmentMutation
 } from "../../../generated/graphql";
-import { FormForwardRef, ParamsType } from "../../../interfacesTypes";
-import { Action, ActionType, appointmentReducer, initialState, State } from "../../../reducers/appointmentReducer";
 import {
   Action as mediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer,
   State as mediaState
@@ -34,8 +39,6 @@ import {
   Action as PatientAction, ActionType as PatientActionType, initialState as patientInitialState,
   patientReducer, State as PatientState
 } from "../../../reducers/patientReducer";
-import { CheckInConnector, useCheckInProfileStyles, useCheckInStepIconStyles } from '../../../styles/checkInStyles';
-import { convertDateFromUnix, getFormattedDate, isBiller, isFrontDesk, isStaff } from "../../../utils";
 
 
 const CheckInStepIcon = (props: StepIconProps) => {
@@ -54,27 +57,30 @@ const CheckInStepIcon = (props: StepIconProps) => {
 }
 
 const CheckInComponent = (): JSX.Element => {
+
   const { user } = useContext(AuthContext)
   const { roles } = user || {}
+  const isStaffUser = isStaff(roles);
   const isBillerUser = isBiller(roles);
   const isFrontDeskUser = isFrontDesk(roles);
-  const isStaffUser = isStaff(roles);
   const checkInClasses = useCheckInProfileStyles();
   const [modulesToPrint, setModulesToPrint] = useState<string[]>([])
+  const [shouldProceed, setShouldProceed] = useState<boolean>(false)
   const [isChartingModalOpen, setIsChartingModalOpen] = useState(false)
   const [isChartPdfModalOpen, setIsChartPdfModalOpen] = useState<boolean>(false)
-  const [shouldProceed, setShouldProceed] = useState<boolean>(false)
+  const methods = useForm({
+    defaultValues: { room: EMPTY_OPTION }
+  })
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState);
-  const [, patientDispatcher] =
-    useReducer<Reducer<PatientState, PatientAction>>(patientReducer, patientInitialState)
-
-  const [, mediaDispatcher] =
-    useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
+  const [, mediaDispatcher] = useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
+  const [, patientDispatcher] = useReducer<Reducer<PatientState, PatientAction>>(patientReducer, patientInitialState)
   const { appointment, activeStep } = state
   const { appointmentType, scheduleStartDateTime, checkInActiveStep, status } = appointment ?? {}
 
+  const { setValue } = methods
+
   const appointmentTime = scheduleStartDateTime ? getFormattedDate(scheduleStartDateTime) : ''
-  const { appointmentId, id: patientId } = useParams<ParamsType>()
+  const { appointmentId, id: patientId, shouldProceed: shouldProceedFromParams } = useParams<ParamsType>()
   const patientRef = useRef<FormForwardRef>();
 
   const appointmentInfo = {
@@ -88,6 +94,10 @@ const CheckInComponent = (): JSX.Element => {
   useEffect(() => {
     dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: Number(checkInActiveStep) ?? 0 })
   }, [checkInActiveStep])
+
+  useEffect(() => {
+    setShouldProceed(shouldProceedFromParams === '1')
+  }, [shouldProceedFromParams])
 
   const [getAppointment] = useGetAppointmentLazyQuery({
     fetchPolicy: 'network-only',
@@ -105,7 +115,9 @@ const CheckInComponent = (): JSX.Element => {
       if (response) {
         const { status } = response;
         if (appointment && status && status === 200) {
-
+          const { room } = appointment;
+          const { id, name, number } = room || {}
+          id && name && setValue('room', { id, name: number ? `${number}: ${name}` : name })
           dispatch({ type: ActionType.SET_APPOINTMENT, appointment: appointment as AppointmentPayload['appointment'] })
         }
       }
@@ -135,6 +147,8 @@ const CheckInComponent = (): JSX.Element => {
       }
     }
   });
+
+  const [associateRoom] = useAssociateRoomToAppointmentMutation()
 
   useEffect(() => {
     fetchPatientInsurances()
@@ -401,6 +415,11 @@ const CheckInComponent = (): JSX.Element => {
     }
   }
 
+  const onRoomSelect = (option: SelectorOption) => {
+    const { id: roomId } = option || {}
+    associateRoom({ variables: { associateRoomToAppointmentInput: { appointmentId: appointmentId || '', roomId: roomId || '' } } })
+  }
+
   return (
     <>
       <Box display='flex' alignItems='center' flexWrap='wrap'>
@@ -439,6 +458,20 @@ const CheckInComponent = (): JSX.Element => {
             ))}
           </Stepper>
         </Box>
+
+        <Box p={1} />
+
+        <Box className={checkInClasses.checkInProfileBox}>
+          <FormProvider {...methods}>
+            <Box display='flex' alignItems='center'>
+              <Typography variant="h6" color="textPrimary">{PATIENT_LOCATION_TEXT}</Typography>
+              <Box width={200} ml={2}>
+                <RoomSelector addEmpty label='' name='room' onSelect={onRoomSelect} />
+              </Box>
+            </Box>
+          </FormProvider>
+        </Box>
+
       </Box>
 
       <Box mt={1}>

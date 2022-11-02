@@ -151,6 +151,7 @@ query GetAppointment($getAppointment: GetAppointment!) {
       reason
       token
       status
+      intakeSteps
       patientId
       employment
       paymentType
@@ -168,7 +169,7 @@ query GetAppointment($getAppointment: GetAppointment!) {
       selfCheckIn
       checkInActiveStep
       appointmentCreateType
-      
+
       scribe {
         id
         isScribed
@@ -205,6 +206,12 @@ query GetAppointment($getAppointment: GetAppointment!) {
 
       invoice {
         invoiceNo
+      }
+
+      room {
+        id
+        name
+        number
       }
     }
   }
@@ -529,12 +536,8 @@ query GetPublicAppointment($getAppointmentWithToken: GetAppointmentWithToken!) {
   }
 }
 
-mutation UpdateScribe(
-  $updateScribeInput: UpdateScribeInput!
-) {
-  updateScribe(
-    updateScribeInput: $updateScribeInput
-  ) {
+mutation UpdateScribe($updateScribeInput: UpdateScribeInput!) {
+  updateScribe(updateScribeInput: $updateScribeInput) {
     response {
       status
     }
@@ -545,12 +548,8 @@ mutation UpdateScribe(
   }
 }
 
-mutation CreateScribe(
-  $createScribeInput: CreateScribeInput!
-) {
-  createScribe(
-    createScribeInput: $createScribeInput
-  ) {
+mutation CreateScribe($createScribeInput: CreateScribeInput!) {
+  createScribe(createScribeInput: $createScribeInput) {
     response {
       status
     }
@@ -561,12 +560,8 @@ mutation CreateScribe(
   }
 }
 
-mutation updateScribeCheck(
-  $scribeCheckInput: ScribeCheckInput!
-) {
-  updateScribeCheck(
-    scribeCheckInput: $scribeCheckInput
-  ) {
+mutation updateScribeCheck($scribeCheckInput: ScribeCheckInput!) {
+  updateScribeCheck(scribeCheckInput: $scribeCheckInput) {
     response {
       status
     }
@@ -576,6 +571,36 @@ mutation updateScribeCheck(
       firstName
       lastName
       isScribed
+    }
+  }
+}
+
+mutation AssociateRoomToAppointment(
+  $associateRoomToAppointmentInput: AssociateRoomToAppointmentInput!
+) {
+  associateRoomToAppointment(
+    associateRoomToAppointmentInput: $associateRoomToAppointmentInput
+  ) {
+    response {
+      status
+    }
+  }
+}
+
+query GetAppointmentRoom($getAppointment: GetAppointment!) {
+  getAppointment(getAppointment: $getAppointment) {
+    response {
+      status
+    }
+
+    appointment {
+      id
+
+      room {
+        id
+        name
+        number
+      }
     }
   }
 }

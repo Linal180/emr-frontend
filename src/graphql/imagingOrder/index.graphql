@@ -1,0 +1,74 @@
+
+# queries 
+
+query FindAllImagingOrder($findAllImagingOrderInput: FindAllImagingOrderInput!){
+  findAllImagingOrder(findAllImagingOrderInput: $findAllImagingOrderInput){
+    imagingOrders {
+      id
+    }
+    
+    response {
+      status
+      message
+    }
+    
+    pagination {
+      page
+      totalPages
+    }
+  }
+}
+
+query getImagingOrder($getImagingOrderInput: GetImagingOrderInput!){
+  getImagingOrder(getImagingOrderInput: $getImagingOrderInput){
+    imagingOrder {
+      id
+    }
+    
+    response {
+      status
+      message
+    }
+  }
+}
+
+#  mutations
+
+mutation CreateImagingOrder($createImagingOrderInput: CreateImagingOrderInput!) {
+  createImagingOrder(createImagingOrderInput: $createImagingOrderInput){
+    response {
+      status
+      message
+    }
+
+    imagingOrder {
+      id
+    }
+  }
+}
+
+mutation UpdateImagingOrder($updateImagingOrderInput: UpdateImagingOrderInput!) {
+  updateImagingOrder(updateImagingOrderInput: $updateImagingOrderInput){
+    response {
+      status
+      message
+    }
+
+    imagingOrder {
+      id
+    }
+  }
+}
+
+mutation RemoveImagingOrder($removeImagingOrderInput: RemoveImagingOrderInput!) {
+  removeImagingOrder(removeImagingOrderInput: $removeImagingOrderInput){
+    response {
+      status
+      message
+    }
+
+    imagingOrder {
+      id
+    }
+  }
+}
