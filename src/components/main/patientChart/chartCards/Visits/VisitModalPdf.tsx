@@ -3,7 +3,7 @@ import {
   ALLERGIES_TEXT, APPOINTMENT_DATE, ASSESSMENT_PLAN, CHIEF_COMPLAINT, DASHES, DIAGNOSES, DOB_TEXT, EXPRESS_HEALTHCARE_URL, FACILITY, FOLLOWUP, HISTORY_OF_PATIENT_ILLNESS, INTAKE, LAB_ORDER, MEDICATIONS,
   NO_DATA_FOUND,
   PATIENT_ID,
-  PHONE, REVIEW_OF_SYSTEM_TEXT, SEX, TRIAGE_NOTES, VITALS_TEXT
+  PHONE, PHYSICAL_EXAM_TEXT, REVIEW_OF_SYSTEM_TEXT, SEX, TRIAGE_NOTES, VITALS_TEXT
 } from '../../../../../constants';
 import { Genderidentity, PatientVitals } from '../../../../../generated/graphql';
 import { VisitModalPdfProps } from '../../../../../interfacesTypes';
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
   },
 });
 
-function VisitModalPdf({ assessmentProblems, patientChartingReview, patientIllnessHistory, reviewOfSystem, triageNotes, appointmentInfo }: VisitModalPdfProps) {
+function VisitModalPdf({ assessmentProblems, patientChartingReview, patientIllnessHistory, reviewOfSystem, triageNotes, appointmentInfo, physicalExam }: VisitModalPdfProps) {
   const { patientAllergies, patientMedications, patientProblems, patientVitals, } = patientChartingReview || {}
   const { patient, id: appointmentId, scheduleStartDateTime, appointmentDate } = appointmentInfo || {}
   const { firstName, lastName, dob, genderIdentity, patientRecord, facility } =
@@ -498,9 +498,9 @@ function VisitModalPdf({ assessmentProblems, patientChartingReview, patientIllne
                 {/* 6.1-row */}
                 <View style={[styles.tableRow, styles.ml10]}>
                   <View style={[styles.w100]}>
-                    <View style={[styles.fieldRow3, styles.ml15]}>
+                    {!!medications?.length && <View style={[styles.fieldRow3, styles.ml15]}>
                       <Text style={[styles.fieldText, styles.w200px]}>{'Medications'}</Text>
-                    </View>
+                    </View>}
 
                     {
                       medications?.map(medication => {
@@ -525,9 +525,9 @@ function VisitModalPdf({ assessmentProblems, patientChartingReview, patientIllne
                 {/* 6.1-row */}
                 <View style={[styles.tableRow, styles.ml10]}>
                   <View style={[styles.w100]}>
-                    <View style={[styles.fieldRow3, styles.ml15]}>
+                    {!!tests?.length && <View style={[styles.fieldRow3, styles.ml15]}>
                       <Text style={[styles.fieldText, styles.w200px]}>{LAB_ORDER}</Text>
-                    </View>
+                    </View>}
 
                     {
                       tests?.map(test => {
@@ -617,6 +617,47 @@ function VisitModalPdf({ assessmentProblems, patientChartingReview, patientIllne
 
           {/* 8.1-row */}
           {reviewOfSystem?.answers?.length ? reviewOfSystem?.answers?.map(answerInfo => {
+            const { answer, value } = answerInfo || {}
+            const { name } = answer || {}
+            const [first, second] = name?.split('fill') || []
+
+            return (
+              <View style={[styles.tableRow, styles.ml10]}>
+                <View style={[styles.w100]}>
+                  <View style={styles.fieldRow3}>
+                    <Text style={styles.fieldText}>{`${first} ${value || ''} ${second || ''}`}</Text>
+                  </View>
+                </View>
+              </View>
+            )
+          }) : <View style={[styles.w100]}>
+            <View style={styles.fieldRow3}>
+              <Text style={styles.fieldText}>{NO_DATA_FOUND}</Text>
+            </View>
+          </View>}
+
+          {/* spacing-row */}
+          <View style={styles.tableRow}>
+            <View style={{ height: '20px' }}>
+            </View>
+          </View>
+
+          <View style={styles.tableRow}>
+            <View style={[styles.w100]}>
+              <View style={[styles.bgLightGrey, styles.borderStyle, styles.borderTopWidth, styles.borderBottomWidth]}>
+                <Text style={styles.fieldTitle2}>{PHYSICAL_EXAM_TEXT}</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* spacing-row */}
+          <View style={styles.tableRow}>
+            <View style={{ height: '10px' }}>
+            </View>
+          </View>
+
+          {/* 8.1-row */}
+          {physicalExam?.answers?.length ? physicalExam?.answers?.map(answerInfo => {
             const { answer, value } = answerInfo || {}
             const { name } = answer || {}
             const [first, second] = name?.split('fill') || []

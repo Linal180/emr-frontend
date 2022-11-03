@@ -6,7 +6,7 @@ import { FC, Reducer, useCallback, useEffect, useReducer, useState } from "react
 // interfaces/types block, theme, svgs and constants
 import { useParams } from "react-router";
 import { CLOSE, PRINT_PATIENT_CHART } from "../../../../../constants";
-import { PatientIllnessHistoryPayload, ReviewOfSystemPayload, useGetPatientChartingInfoLazyQuery, useLatestPatientIllnessHistoryLazyQuery, useLatestReviewOfSystemLazyQuery } from "../../../../../generated/graphql";
+import { PatientIllnessHistoryPayload, PhysicalExamPayload, ReviewOfSystemPayload, useGetPatientChartingInfoLazyQuery, useLatestPatientIllnessHistoryLazyQuery, useLatestPhysicalExamLazyQuery, useLatestReviewOfSystemLazyQuery } from "../../../../../generated/graphql";
 import { ChartPrintModalProps, ParamsType, PatientChartingInfo } from "../../../../../interfacesTypes";
 import { Action as ChartAction, ActionType as ChartActionType, chartReducer, initialState as chartInitialState, State as ChartState } from '../../../../../reducers/chartReducer';
 import Loader from "../../../../common/Loader";
@@ -15,6 +15,7 @@ import ChartPdf from "./ChartPdf";
 const ChartPrintModal: FC<ChartPrintModalProps> = ({ isOpen, handleClose, modulesToPrint }): JSX.Element => {
   const { id: patientId, appointmentId } = useParams<ParamsType>()
   const [reviewOfSystem, setReviewOfSystem] = useState<ReviewOfSystemPayload['reviewOfSystem']>(null)
+  const [physicalExam, setPhysicalExam] = useState<PhysicalExamPayload['physicalExam']>(null)
   const [patientIllnessHistory, setPatientIllnessHistory] = useState<PatientIllnessHistoryPayload['patientIllnessHistory']>(null)
   const [{ patientChartingInfo }, chartDispatch] =
     useReducer<Reducer<ChartState, ChartAction>>(chartReducer, chartInitialState)
@@ -90,6 +91,32 @@ const ChartPrintModal: FC<ChartPrintModalProps> = ({ isOpen, handleClose, module
 
   }, [patientId, patientReviewOfSystem, appointmentId])
 
+  const [getPhysicalExam, { loading: getPhysicalExamLoading }] = useLatestPhysicalExamLazyQuery({
+    onCompleted: (data) => {
+      const { latestPhysicalExam: dataResponse } = data || {}
+      const { response, physicalExam } = dataResponse || {}
+      const { status } = response || {}
+
+      if (status === 200) {
+        setPhysicalExam(physicalExam as PhysicalExamPayload['physicalExam'])
+
+      }
+    },
+    onError: () => { }
+  })
+
+  const fetchPhysicalExam = useCallback(async () => {
+    patientId && await getPhysicalExam({
+      variables: {
+        physicalExamInput: {
+          appointmentId,
+          patientId
+        }
+      }
+    })
+
+  }, [patientId, getPhysicalExam, appointmentId])
+
   const [getPatientIllnessHistory, { loading: getPatientIllnessHistoryLoading }] = useLatestPatientIllnessHistoryLazyQuery({
     onCompleted: (data) => {
       const { latestPatientIllnessHistory: dataResponse } = data || {}
@@ -119,10 +146,11 @@ const ChartPrintModal: FC<ChartPrintModalProps> = ({ isOpen, handleClose, module
       findPatientChartingInfo()
       fetchPatientIllnessHistory()
       fetchPatientReviewOfSystem()
+      fetchPhysicalExam()
     }
-  }, [fetchPatientIllnessHistory, fetchPatientReviewOfSystem, findPatientChartingInfo, patientId])
+  }, [fetchPatientIllnessHistory, fetchPatientReviewOfSystem, fetchPhysicalExam, findPatientChartingInfo, patientId])
 
-  if (getPatientChartingInfoLoading || patientReviewOfSystemLoading || getPatientIllnessHistoryLoading) {
+  if (getPatientChartingInfoLoading || patientReviewOfSystemLoading || getPatientIllnessHistoryLoading || getPhysicalExamLoading) {
     return <Loader loaderText='Loading Chart Info...' loading />
   }
 
@@ -143,7 +171,7 @@ const ChartPrintModal: FC<ChartPrintModalProps> = ({ isOpen, handleClose, module
             <ChartPdf
               patientChartInfo={{
                 ...patientChartingInfo,
-                reviewOfSystem, patientIllnessHistory,
+                reviewOfSystem, patientIllnessHistory, physicalExam
               } as PatientChartingInfo}
               modulesToPrint={modulesToPrint}
             />

@@ -16,24 +16,20 @@ import {
   AddVaccineInput, AddVaccineProductInput, AllDoctorPayload, Allergies, AppointmentPayload, AppointmentsPayload,
   AppointmentStatus, Attachment, AttachmentPayload, AttachmentType, BillingPayload, CodeType, Copay,
   CreateAppointmentInput, CreateContactInput, CreateCptCodeInput, CreateCptFeeScheduleInput, CreateCvxCodeInput,
-  CreateDoctorItemInput, CreateExternalAppointmentItemInput, CreateFeeScheduleInput, CreateIcdCodeInput,
-  CreateMvxCodeInput, CreatePatientAllergyInput, CreatePatientItemInput, CreatePatientMedicationInput,
-  CreatePracticeItemInput, CreateProblemInput, CreateServiceInput, CreateStaffItemInput, Cvx, DependentQuestions,
+  CreateDoctorItemInput, CreateExternalAppointmentItemInput, CreateFeeScheduleInput, CreateIcdCodeInput, CreateMacroInput, CreateMvxCodeInput, CreatePatientAllergyInput, CreatePatientItemInput, CreatePatientMedicationInput,
+  CreatePracticeItemInput, CreateProblemInput, CreateRoomInput, CreateServiceInput, CreateStaffItemInput, Cvx, DependentQuestions,
   Doctor, DoctorPatient, FacilitiesPayload, FamilyHistory, FetchBillingClaimStatusesInput, FieldsInputs,
-  FormElement, FormTabsInputs, IcdCodes, IcdCodesWithSnowMedCode, LabTests, LabTestsPayload, LoginUserInput,
-  LoincCodePayload, Medications, Patient, PatientAllergies, PatientIllnessHistoryPayload, PatientMedication,
-  PatientPayload, PatientProblems, PatientProviderPayload, PatientsPayload, PatientVitals, PermissionsPayload,
-  PolicyEligibilityWithPatientPayload, Practice, PracticePayload, QuestionAnswers, Questions, ReactionsPayload,
-  ResponsePayloadResponse, ReviewOfSystemPayload, RolesPayload, Schedule, SectionsInputs, ServicesPayload,
-  SingleScheduleInput, Staff, SurgicalHistory, TriageNotes, TriageNotesPayload, TwoFactorInput, User,
-  UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput,
-  UsersFormsElements, VaccineProduct, VerifyCodeInput, SectionQuestions, CreateMacroInput, CreateRoomInput,
-  ImagingTest, LoincCodes, 
+  FormElement, FormTabsInputs, IcdCodes, IcdCodesWithSnowMedCode, ImagingTest, LabTests, LabTestsPayload, LoginUserInput,
+  LoincCodePayload, LoincCodes, Medications, Patient, PatientAllergies, PatientIllnessHistoryPayload, PatientMedication,
+  PatientPayload, PatientProblems, PatientProviderPayload, PatientsPayload, PatientVitals, PermissionsPayload, PhysicalExamPayload, PolicyEligibilityWithPatientPayload, Practice, PracticePayload, QuestionAnswers, Questions, ReactionsPayload,
+  ResponsePayloadResponse, ReviewOfSystemPayload, RolesPayload, Schedule, SectionQuestions, SectionsInputs, ServicesPayload,
+  SingleScheduleInput, Staff, SurgicalHistory, TriageNotes, TriageNotesPayload, TwoFactorInput, UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, User, UsersFormsElements, VaccineProduct, VerifyCodeInput
 } from "../generated/graphql";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
 import { Action as BillingAction, State as BillingState } from "../reducers/billingReducer";
 import { Action as ChartAction } from "../reducers/chartReducer";
 import { Action as cptCodeAction } from "../reducers/cptCodeReducer";
+import { Action as CvxCodeAction } from "../reducers/cvxCodeReducer";
 import {
   Action as PublicFormBuilderAction, State as ExternalFormBuilderState
 } from "../reducers/externalFormBuilderReducer";
@@ -44,19 +40,18 @@ import { Action as FacilityAction, State as FacilityState } from "../reducers/fa
 import { Action as FeeScheduleAction, State as FeeScheduleState } from '../reducers/feeScheduleReducer';
 import { Action as FormBuilderAction, State as FormBuilderState } from "../reducers/formBuilderReducer";
 import { Action as IcdCodeAction } from "../reducers/icdTenReducer";
+import { Action as ImagingTestAction } from "../reducers/imagingTestReducer";
 import { Action as InsuranceAction } from "../reducers/insuranceReducer";
+import { Action as MacroAction } from "../reducers/macrosReducer";
 import { Action, State as MediaState } from "../reducers/mediaReducer";
+import { Action as MvxCodeAction } from "../reducers/mvxCodeReducer";
+import { Action as NdcCodeAction } from "../reducers/ndcCodeReducer";
 import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
 import { Action as PracticeAction } from "../reducers/practiceReducer";
-import { Action as ScheduleAction, State as ScheduleState } from "../reducers/scheduleReducer";
-import { Action as VaccineAction } from "../reducers/vaccinesReducer";
-import { Action as NdcCodeAction } from "../reducers/ndcCodeReducer";
-import { Action as MvxCodeAction } from "../reducers/mvxCodeReducer";
-import { Action as CvxCodeAction } from "../reducers/cvxCodeReducer";
-import { Action as MacroAction } from "../reducers/macrosReducer";
-import { Action as VaccineProductAction } from "../reducers/vaccineProductReducer";
 import { Action as RoomAction } from "../reducers/roomReducer";
-import { Action as ImagingTestAction } from "../reducers/imagingTestReducer";
+import { Action as ScheduleAction, State as ScheduleState } from "../reducers/scheduleReducer";
+import { Action as VaccineProductAction } from "../reducers/vaccineProductReducer";
+import { Action as VaccineAction } from "../reducers/vaccinesReducer";
 
 export type Order = 'ASC' | 'DESC';
 type Key = string | number | undefined;
@@ -676,6 +671,7 @@ export type PatientChartingInfo = {
   familyHistories: FamilyHistory[]
   reviewOfSystem: ReviewOfSystemPayload['reviewOfSystem']
   patientIllnessHistory: PatientIllnessHistoryPayload['patientIllnessHistory']
+  physicalExam: PhysicalExamPayload['physicalExam']
 }
 
 export type PatientChartingReview = {
@@ -940,6 +936,7 @@ export type VisitModalProps = ViewerProps & {
 export type VisitModalPdfProps = {
   assessmentProblems: AssessmentProblemType[]
   reviewOfSystem: ReviewOfSystemPayload['reviewOfSystem']
+  physicalExam: PhysicalExamPayload['physicalExam']
   patientIllnessHistory: PatientIllnessHistoryPayload['patientIllnessHistory']
   patientChartingReview: PatientChartingReview | null
   triageNotes: TriageNotesPayload['triageNotes']
