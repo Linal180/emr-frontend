@@ -135,13 +135,13 @@ const DoctorProfileHero: FC<DoctorProfileHeroProps> = ({ setDoctor, setAttachmen
     <>
       <Box display="flex" className={` ${classes.profileCard} card-box-shadow`}>
         <Box key={attachmentId} display="flex" alignItems="center">
-          <Box pl={1} pr={3.75} pb={0} mb={0} position="relative">
+          <Box pl={1} pr={3.75} pb={0} mb={0} position="relative" className={classes.profileAvatar}>
             {isLoading ?
-              <Avatar variant="square" className={classes.profileImage}>
+              <Avatar variant="square">
                 <CircularProgress size={20} color="inherit" />
               </Avatar>
               :
-              <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
+              <Avatar variant="square" src={attachmentUrl || ""} />
             }
 
             <MediaCards
