@@ -1,10 +1,12 @@
 import { Box } from '@material-ui/core'
-import { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
+import { useCallback, useEffect, useState } from 'react'
+//components
+import AssessmentPlanProblems from './AssessmentPlanProblems';
+// constants, interfaces, graphql
 import { EIGHT_PAGE_LIMIT } from '../../../../../constants'
-import { useFindAllPatientProblemsWithMedicationLazyQuery } from '../../../../../generated/graphql'
 import { AssessmentProblemType, ParamsType } from '../../../../../interfacesTypes'
-import AssessmentPlanProblems from './AssessmentPlanProblems'
+import { useFindAllPatientProblemsWithMedicationLazyQuery } from '../../../../../generated/graphql'
 
 function AssessmentPlanTab({ shouldDisableEdit }: { shouldDisableEdit?: boolean }) {
   const { id: patientId, appointmentId } = useParams<ParamsType>()
@@ -31,7 +33,7 @@ function AssessmentPlanTab({ shouldDisableEdit }: { shouldDisableEdit?: boolean 
 
             if (patientProblems && status && status === 200) {
               const transformedPatientProblems = patientProblems.map((problem, index) => {
-                const { ICDCode, id: problemId, snowMedCode, patientMedications, forOrders, isSigned, labTests, apNotes } = problem || {}
+                const { ICDCode, id: problemId, snowMedCode, patientMedications, forOrders, isSigned, labTests, apNotes, imagingOrders } = problem || {}
                 const { id: snoMedCodeId } = snowMedCode || {}
 
                 const icdCodes = {
@@ -64,7 +66,7 @@ function AssessmentPlanTab({ shouldDisableEdit }: { shouldDisableEdit?: boolean 
                   }
                 }) || []
 
-                const transformedPatientTests = labTests?.map((patientTest, subIndex) => {
+                const transformedPatientTests = labTests?.map((patientTest) => {
                   const { id: patientTestId, test, isSigned: labSigned } = patientTest || {}
                   const id = test?.id || ''
                   const component = test?.component
@@ -79,6 +81,20 @@ function AssessmentPlanTab({ shouldDisableEdit }: { shouldDisableEdit?: boolean 
                   }
                 }) || []
 
+                const transformedImagingOrder = imagingOrders?.map((imagingOrder) => {
+                  const { id: patientTestId, imagingOrderTest, isSigned: labSigned } = imagingOrder || {}
+                  const imagingTestsArr = imagingOrderTest ?? []
+                  const { imagingTest } = imagingTestsArr[0] || {}
+                  const { id, name } = imagingTest || {}
+                  return {
+                    id: id || '',
+                    testId: id || '',
+                    patientTestId,
+                    name,
+                    isSigned: labSigned || false
+                  }
+                }) || []
+
                 return {
                   isSigned: isSigned || false,
                   icdCodes,
@@ -86,7 +102,8 @@ function AssessmentPlanTab({ shouldDisableEdit }: { shouldDisableEdit?: boolean 
                   medications: transformedPatientMedications,
                   tests: transformedPatientTests,
                   forOrders: forOrders || false,
-                  notes: apNotes || ''
+                  notes: apNotes || '',
+                  imagingOrders: transformedImagingOrder
                 }
               })
 

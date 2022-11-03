@@ -247,14 +247,14 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
 
   const isLoading = getPatientLoading || getAttachmentLoading
 
-  const patientAvatar = () => <Box className={classes.profileImageNew} key={attachmentId} display="flex" alignItems="center">
+  const patientAvatar = () => <Box key={attachmentId} display="flex" alignItems="center">
     <Box pl={1} pr={3.75} pb={0} mb={0} position="relative">
       {getAttachmentLoading ?
-        <Avatar variant="square" className={classes.profileImage}>
+        <Avatar variant="square" classes={{ root: classes.profileRoot, img: classes.profileImage }}>
           <CircularProgress size={20} color="inherit" />
         </Avatar>
         :
-        <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
+        <Avatar variant="square" src={attachmentUrl || ""} classes={{ root: classes.profileRoot, img: classes.profileImage }} />
       }
 
       {!isCheckIn &&
@@ -338,7 +338,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({
 
   const regularComponent = () =>
     <>
-      <Box display="flex" className={` ${classes.profileCard} card-box-shadow`}>
+      <Box display="flex" className={`${classes.profileCard} card-box-shadow`}>
         {patientAvatar()}
 
         {isLoading ?

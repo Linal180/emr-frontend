@@ -16,23 +16,20 @@ import {
   AddVaccineInput, AddVaccineProductInput, AllDoctorPayload, Allergies, AppointmentPayload, AppointmentsPayload,
   AppointmentStatus, Attachment, AttachmentPayload, AttachmentType, BillingPayload, CodeType, Copay,
   CreateAppointmentInput, CreateContactInput, CreateCptCodeInput, CreateCptFeeScheduleInput, CreateCvxCodeInput,
-  CreateDoctorItemInput, CreateExternalAppointmentItemInput, CreateFeeScheduleInput, CreateIcdCodeInput,
-  CreateMvxCodeInput, CreatePatientAllergyInput, CreatePatientItemInput, CreatePatientMedicationInput,
-  CreatePracticeItemInput, CreateProblemInput, CreateServiceInput, CreateStaffItemInput, Cvx, DependentQuestions,
+  CreateDoctorItemInput, CreateExternalAppointmentItemInput, CreateFeeScheduleInput, CreateIcdCodeInput, CreateMacroInput, CreateMvxCodeInput, CreatePatientAllergyInput, CreatePatientItemInput, CreatePatientMedicationInput,
+  CreatePracticeItemInput, CreateProblemInput, CreateRoomInput, CreateServiceInput, CreateStaffItemInput, Cvx, DependentQuestions,
   Doctor, DoctorPatient, FacilitiesPayload, FamilyHistory, FetchBillingClaimStatusesInput, FieldsInputs,
-  FormElement, FormTabsInputs, IcdCodes, IcdCodesWithSnowMedCode, LabTests, LabTestsPayload, LoginUserInput,
-  LoincCodePayload, Medications, Patient, PatientAllergies, PatientIllnessHistoryPayload, PatientMedication,
-  PatientPayload, PatientProblems, PatientProviderPayload, PatientsPayload, PatientVitals, PermissionsPayload,
-  PolicyEligibilityWithPatientPayload, Practice, PracticePayload, QuestionAnswers, Questions, ReactionsPayload,
-  ResponsePayloadResponse, ReviewOfSystemPayload, RolesPayload, Schedule, SectionsInputs, ServicesPayload,
-  SingleScheduleInput, Staff, SurgicalHistory, TriageNotes, TriageNotesPayload, TwoFactorInput, User,
-  UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput,
-  UsersFormsElements, VaccineProduct, VerifyCodeInput, SectionQuestions, CreateMacroInput, CreateRoomInput, PhysicalExamPayload
+  FormElement, FormTabsInputs, IcdCodes, IcdCodesWithSnowMedCode, ImagingTest, LabTests, LabTestsPayload, LoginUserInput,
+  LoincCodePayload, LoincCodes, Medications, Patient, PatientAllergies, PatientIllnessHistoryPayload, PatientMedication,
+  PatientPayload, PatientProblems, PatientProviderPayload, PatientsPayload, PatientVitals, PermissionsPayload, PhysicalExamPayload, PolicyEligibilityWithPatientPayload, Practice, PracticePayload, QuestionAnswers, Questions, ReactionsPayload,
+  ResponsePayloadResponse, ReviewOfSystemPayload, RolesPayload, Schedule, SectionQuestions, SectionsInputs, ServicesPayload,
+  SingleScheduleInput, Staff, SurgicalHistory, TriageNotes, TriageNotesPayload, TwoFactorInput, UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, User, UsersFormsElements, VaccineProduct, VerifyCodeInput
 } from "../generated/graphql";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
 import { Action as BillingAction, State as BillingState } from "../reducers/billingReducer";
 import { Action as ChartAction } from "../reducers/chartReducer";
 import { Action as cptCodeAction } from "../reducers/cptCodeReducer";
+import { Action as CvxCodeAction } from "../reducers/cvxCodeReducer";
 import {
   Action as PublicFormBuilderAction, State as ExternalFormBuilderState
 } from "../reducers/externalFormBuilderReducer";
@@ -43,18 +40,18 @@ import { Action as FacilityAction, State as FacilityState } from "../reducers/fa
 import { Action as FeeScheduleAction, State as FeeScheduleState } from '../reducers/feeScheduleReducer';
 import { Action as FormBuilderAction, State as FormBuilderState } from "../reducers/formBuilderReducer";
 import { Action as IcdCodeAction } from "../reducers/icdTenReducer";
+import { Action as ImagingTestAction } from "../reducers/imagingTestReducer";
 import { Action as InsuranceAction } from "../reducers/insuranceReducer";
+import { Action as MacroAction } from "../reducers/macrosReducer";
 import { Action, State as MediaState } from "../reducers/mediaReducer";
+import { Action as MvxCodeAction } from "../reducers/mvxCodeReducer";
+import { Action as NdcCodeAction } from "../reducers/ndcCodeReducer";
 import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
 import { Action as PracticeAction } from "../reducers/practiceReducer";
-import { Action as ScheduleAction, State as ScheduleState } from "../reducers/scheduleReducer";
-import { Action as VaccineAction } from "../reducers/vaccinesReducer";
-import { Action as NdcCodeAction } from "../reducers/ndcCodeReducer";
-import { Action as MvxCodeAction } from "../reducers/mvxCodeReducer";
-import { Action as CvxCodeAction } from "../reducers/cvxCodeReducer";
-import { Action as MacroAction } from "../reducers/macrosReducer";
-import { Action as VaccineProductAction } from "../reducers/vaccineProductReducer";
 import { Action as RoomAction } from "../reducers/roomReducer";
+import { Action as ScheduleAction, State as ScheduleState } from "../reducers/scheduleReducer";
+import { Action as VaccineProductAction } from "../reducers/vaccineProductReducer";
+import { Action as VaccineAction } from "../reducers/vaccinesReducer";
 
 export type Order = 'ASC' | 'DESC';
 type Key = string | number | undefined;
@@ -463,6 +460,14 @@ export interface VaccineProductNdcSelectorProps extends SelectorProps {
   vaccineProductId: string
 }
 
+export type ImagingTestSelectorProps = Pick<SelectorProps, 'name' | 'label' | 'disabled' | 'isRequired' | 'addEmpty' | 'onSelect' | 'loading' | 'margin'> & {
+  placeHolder?: string;
+}
+
+export type RoomSelectorProps = Pick<SelectorProps, 'name' | 'label' | 'disabled' | 'isRequired' | 'addEmpty' | 'onSelect' | 'loading' | 'margin'> & {
+  placeHolder?: string;
+}
+
 
 export interface MvxSelectorProps extends SelectorProps {
   filteredOptions?: SelectorOption[]
@@ -635,6 +640,7 @@ export type ParamsType = {
   tabValue?: string
   appointmentId?: string;
   testId?: string
+  shouldProceed?: string
 }
 
 export type MacroViewTypes = {
@@ -977,7 +983,7 @@ export type DiagnosesModalModalProps = {
   isOpen?: boolean
   handleModalClose: () => void
   fetch?: () => void
-  handleAdd?: Function
+  handleAdd?: (item: Medications | ImagingTest | LoincCodes, type: AddDiagnoseType) => void
   alreadyAddedMedications?: string[]
 }
 
@@ -1213,6 +1219,12 @@ export type AssessmentTest = LoincCodePayload['loincCode'] & {
   isSigned: boolean
 }
 
+export type AssessmentImagingOrder = ImagingTest & {
+  testId: string
+  patientTestId?: string
+  isSigned: boolean
+}
+
 export type AssessmentProblemType = {
   problemId: string
   isSigned: boolean
@@ -1226,6 +1238,7 @@ export type AssessmentProblemType = {
   },
   medications?: AssessmentMedication[]
   tests?: AssessmentTest[]
+  imagingOrders?: AssessmentImagingOrder[]
 }
 
 export type AssessmentProblems = {
@@ -2455,6 +2468,7 @@ export type IcdCodesTableProps = {
 export type ICD10FormType = Pick<CreateIcdCodeInput, 'code' | 'description'> & { priority: string };
 export type CptCodeFormType = Pick<CreateCptCodeInput, 'code' | 'shortDescription'> & { priority: string };
 export type NdcCodeFormType = { code: string, description: string };
+export type ImagingTestFormType = { name: string };
 export type MvxCodeFormType = Pick<CreateMvxCodeInput, 'manufacturerName' | 'mvxCode' | 'notes'> & { mvxStatus: SelectorOption }
 export type RoomFormType = Pick<CreateRoomInput, 'name' | 'number'> & { facility: SelectorOption }
 export type CvxCodeFormType = Pick<CreateCvxCodeInput, 'name' | 'cvxCode' | 'shortDescription' | 'notes'> & { cptCode: SelectorOption, status: SelectorOption }
@@ -2493,6 +2507,15 @@ export type NdcCodeFormProps = {
   fetch?: Function;
   id?: string;
   dispatcher?: Dispatch<NdcCodeAction>
+  handleClose: (open: boolean) => void
+}
+
+export type ImagingTestFormProps = {
+  open: boolean;
+  isEdit: boolean;
+  fetch?: Function;
+  id?: string;
+  dispatcher?: Dispatch<ImagingTestAction>
   handleClose: (open: boolean) => void
 }
 
@@ -2567,3 +2590,5 @@ export type PatientPrimaryProviderProps = {
   setPrimaryProvider?: (provider: string) => void
   label?: string
 }
+
+export type AddDiagnoseType = 'medication' | 'test' | 'imaging'
