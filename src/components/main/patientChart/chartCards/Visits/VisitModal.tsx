@@ -7,7 +7,7 @@ import VisitModalPdf from "./VisitModalPdf";
 // interfaces/types block, theme, svgs and constants
 import { useParams } from "react-router";
 import { CLOSE, EIGHT_PAGE_LIMIT, PRINT_MEDICATION_RECORD, VITAL_LIST_PAGE_LIMIT } from "../../../../../constants";
-import { PatientIllnessHistoryPayload, ReviewOfSystemPayload, TriageNotesPayload, useFindAllPatientProblemsWithMedicationLazyQuery, useFindAllPatientTriageNotesLazyQuery, useGetPatientChartingReviewLazyQuery, usePatientIllnessHistoryLazyQuery, useReviewOfSystemLazyQuery } from "../../../../../generated/graphql";
+import { PatientIllnessHistoryPayload, PhysicalExamPayload, ReviewOfSystemPayload, TriageNotesPayload, useFindAllPatientProblemsWithMedicationLazyQuery, useFindAllPatientTriageNotesLazyQuery, useGetPatientChartingReviewLazyQuery, usePatientIllnessHistoryLazyQuery, usePhysicalExamLazyQuery, useReviewOfSystemLazyQuery } from "../../../../../generated/graphql";
 import { AssessmentProblemType, ParamsType, PatientChartingReview, VisitModalProps } from "../../../../../interfacesTypes";
 import Loader from "../../../../common/Loader";
 
@@ -15,10 +15,12 @@ const VisitModal: FC<VisitModalProps> = ({ isOpen, handleClose, appointmentInfo 
   const { id: patientId } = useParams<ParamsType>()
   const [assessmentProblems, setAssessmentProblems] = useState<AssessmentProblemType[]>([])
   const [reviewOfSystem, setReviewOfSystem] = useState<ReviewOfSystemPayload['reviewOfSystem']>(null)
+  const [physicalExam, setPhysicalExam] = useState<PhysicalExamPayload['physicalExam']>(null)
   const [patientIllnessHistory, setPatientIllnessHistory] = useState<PatientIllnessHistoryPayload['patientIllnessHistory']>(null)
   const [patientChartingReview, setPatientChartingReview] = useState<PatientChartingReview | null>(null)
   const [triageNotes, setTriageNotes] = useState<TriageNotesPayload['triageNotes']>(null)
   const { id: appointmentId } = appointmentInfo || {}
+
   const [findAllPatientProblems, { loading: findAllPatientProblemsLoading }] = useFindAllPatientProblemsWithMedicationLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
@@ -138,10 +140,6 @@ const VisitModal: FC<VisitModalProps> = ({ isOpen, handleClose, appointmentInfo 
 
   }, [patientReviewOfSystem, appointmentId])
 
-  useEffect(() => {
-    fetchPatientReviewOfSystem()
-  }, [fetchPatientReviewOfSystem])
-
   const [getPatientChartingReview, { loading: getPatientChartingReviewLoading }] = useGetPatientChartingReviewLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
@@ -209,6 +207,30 @@ const VisitModal: FC<VisitModalProps> = ({ isOpen, handleClose, appointmentInfo 
 
   }, [getPatientIllnessHistory, appointmentId])
 
+  const [getPhysicalExam, { loading: getPhysicalExamLoading }] = usePhysicalExamLazyQuery({
+    onCompleted: (data) => {
+      const { physicalExam: dataResponse } = data || {}
+      const { response, physicalExam } = dataResponse || {}
+      const { status } = response || {}
+
+      if (status === 200) {
+        setPhysicalExam(physicalExam as PhysicalExamPayload['physicalExam'])
+      }
+    },
+    onError: () => { }
+  })
+
+  const fetchPhysicalExam = useCallback(async () => {
+    appointmentId && await getPhysicalExam({
+      variables: {
+        physicalExamInput: {
+          appointmentId: appointmentId
+        }
+      }
+    })
+
+  }, [getPhysicalExam, appointmentId])
+
   const [getPatientTriageNotes, { loading: triageNotesLoading }] = useFindAllPatientTriageNotesLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
@@ -258,14 +280,16 @@ const VisitModal: FC<VisitModalProps> = ({ isOpen, handleClose, appointmentInfo 
       fetchPatientChartingView()
       fetchProblems()
       fetchPatientAllTriageNotes()
+      fetchPhysicalExam()
     } catch (error) { }
-  }, [fetchPatientAllTriageNotes, fetchPatientChartingView, fetchPatientIllnessHistory, fetchPatientReviewOfSystem, fetchProblems])
+  }, [fetchPatientAllTriageNotes, fetchPatientChartingView, fetchPatientIllnessHistory, fetchPatientReviewOfSystem, fetchPhysicalExam, fetchProblems])
 
   useEffect(() => {
     fetchVisitData()
   }, [fetchVisitData])
 
-  const loading = getPatientIllnessHistoryLoading || getPatientChartingReviewLoading || patientReviewOfSystemLoading || findAllPatientProblemsLoading || triageNotesLoading
+  const loading = getPatientIllnessHistoryLoading || getPatientChartingReviewLoading 
+  || patientReviewOfSystemLoading || findAllPatientProblemsLoading || triageNotesLoading || getPhysicalExamLoading
 
   if (loading) {
     return <Loader loaderText='Loading Medication record Info...' loading />
@@ -290,6 +314,7 @@ const VisitModal: FC<VisitModalProps> = ({ isOpen, handleClose, appointmentInfo 
               patientChartingReview={patientChartingReview}
               patientIllnessHistory={patientIllnessHistory}
               reviewOfSystem={reviewOfSystem}
+              physicalExam={physicalExam}
               triageNotes={triageNotes}
               appointmentInfo={appointmentInfo}
             />

@@ -4,11 +4,12 @@ import { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { 
   ASSESSMENT_PLAN, DASHES, EIGHT_PAGE_LIMIT, ENCOUNTER_INFORMATION, FOLLOWUP, PATIENT_HISTORY_ILLNESS_TEXT, 
+  PHYSICAL_EXAM_TEXT, 
   REVIEW_OF_SYSTEM_TEXT, TO_CHECKOUT 
 } from '../../../constants'
 import { 
-  PatientIllnessHistoryPayload, ReviewOfSystemPayload, ScribePayload, useFindAllPatientProblemsWithMedicationLazyQuery, 
-  usePatientIllnessHistoryLazyQuery, useReviewOfSystemLazyQuery, useUpdateScribeCheckMutation 
+  PatientIllnessHistoryPayload, PhysicalExamPayload, ReviewOfSystemPayload, ScribePayload, useFindAllPatientProblemsWithMedicationLazyQuery, 
+  usePatientIllnessHistoryLazyQuery, usePhysicalExamLazyQuery, useReviewOfSystemLazyQuery, useUpdateScribeCheckMutation 
 } from '../../../generated/graphql'
 import { AssessmentProblemType, ParamsType, SignOffProps } from '../../../interfacesTypes'
 import { useChartingStyles } from '../../../styles/chartingStyles'
@@ -21,6 +22,7 @@ function SignOff({ handleStepChange, appointmentInfo }: SignOffProps) {
   const [assessmentProblems, setAssessmentProblems] = useState<AssessmentProblemType[]>([])
   const [reviewOfSystem, setReviewOfSystem] = useState<ReviewOfSystemPayload['reviewOfSystem']>(null)
   const [patientIllnessHistory, setPatientIllnessHistory] = useState<PatientIllnessHistoryPayload['patientIllnessHistory']>(null)
+  const [physicalExam, setPhysicalExam] = useState<PhysicalExamPayload['physicalExam']>(null)
   const [isScribe, setIsScribe] = useState(false)
   const [isUsersModalOpen, setIsUsersModalOpen] = useState(false)
   const [scribeItem, setScribeItem] = useState<ScribePayload['scribe']>(null)
@@ -202,6 +204,34 @@ function SignOff({ handleStepChange, appointmentInfo }: SignOffProps) {
     fetchPatientIllnessHistory()
   }, [fetchPatientIllnessHistory])
 
+  const [getPhysicalExam] = usePhysicalExamLazyQuery({
+    onCompleted: (data) => {
+      const { physicalExam: dataResponse } = data || {}
+      const { response, physicalExam } = dataResponse || {}
+      const { status } = response || {}
+
+      if (status === 200) {
+        setPhysicalExam(physicalExam as PhysicalExamPayload['physicalExam'])
+      }
+    },
+    onError: () => { }
+  })
+
+  const fetchPhysicalExam = useCallback(async () => {
+    appointmentId && await getPhysicalExam({
+      variables: {
+        physicalExamInput: {
+          appointmentId: appointmentId
+        }
+      }
+    })
+
+  }, [getPhysicalExam, appointmentId])
+
+  useEffect(() => {
+    fetchPhysicalExam()
+  }, [fetchPhysicalExam])
+
   return (
     <>
       <Card>
@@ -366,6 +396,34 @@ function SignOff({ handleStepChange, appointmentInfo }: SignOffProps) {
 
           <Box p={2}>
             {reviewOfSystem?.answers?.map(answerInfo => {
+              const { answer, value } = answerInfo || {}
+              const { name, } = answer || {}
+
+              return <>
+                <Box display='flex' justifyContent='space-between' alignItems='center' flexWrap='wrap'>
+                  <Box>
+                    {!value ? <Typography variant='inherit'>{name}</Typography> :
+                      <Box display="flex" flexDirection="row"><Typography>{`${name?.split("fill")[0]} ${value} `}</Typography>&nbsp;<Typography>{name?.split("fill")[1]}</Typography></Box>
+                    }
+
+                  </Box>
+                </Box>
+              </>
+            })}
+          </Box>
+        </Box>
+      </Card>
+
+      <Box m={3} />
+
+      <Card>
+        <Box pb={2} className={classes.cardBox}>
+          <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" borderBottom={`1px solid ${colors.grey[300]}`}>
+            <Typography variant='h3'>{PHYSICAL_EXAM_TEXT}</Typography>
+          </Box>
+
+          <Box p={2}>
+            {physicalExam?.answers?.map(answerInfo => {
               const { answer, value } = answerInfo || {}
               const { name, } = answer || {}
 

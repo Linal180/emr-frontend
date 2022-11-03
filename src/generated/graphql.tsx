@@ -273,8 +273,10 @@ export type Appointment = {
   facility?: Maybe<Facility>;
   facilityId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  imagingOrders?: Maybe<Array<ImagingOrder>>;
   insuranceCompany?: Maybe<Scalars['String']>;
   insuranceStatus?: Maybe<Scalars['String']>;
+  intakeSteps?: Maybe<Array<Scalars['String']>>;
   invoice?: Maybe<Invoice>;
   invoiceId?: Maybe<Scalars['String']>;
   isExternal?: Maybe<Scalars['Boolean']>;
@@ -299,6 +301,8 @@ export type Appointment = {
   providerId?: Maybe<Scalars['String']>;
   reason?: Maybe<Scalars['String']>;
   reviewOfSystem?: Maybe<ReviewOfSystem>;
+  room?: Maybe<Room>;
+  roomId?: Maybe<Scalars['String']>;
   scheduleEndDateTime?: Maybe<Scalars['String']>;
   scheduleStartDateTime?: Maybe<Scalars['String']>;
   scribe?: Maybe<Scribe>;
@@ -384,6 +388,11 @@ export type ArrayOfStringsType = {
 export type ArrayOfStringsTypeInput = {
   name: Scalars['String'];
   value: Scalars['Boolean'];
+};
+
+export type AssociateRoomToAppointmentInput = {
+  appointmentId: Scalars['String'];
+  roomId: Scalars['String'];
 };
 
 export type Attachment = {
@@ -1403,6 +1412,29 @@ export type CreateIcdCodeInput = {
   version?: Maybe<Scalars['String']>;
 };
 
+export type CreateImagingOrderInput = {
+  accessionNumber?: Maybe<Scalars['String']>;
+  appointmentId?: Maybe<Scalars['String']>;
+  collectedDate?: Maybe<Scalars['String']>;
+  imagingTests?: Maybe<Array<Scalars['String']>>;
+  isSigned?: Maybe<Scalars['Boolean']>;
+  labName?: Maybe<Scalars['String']>;
+  labTestStatus?: Maybe<ImagingOrderStatus>;
+  orderNumber?: Maybe<Scalars['String']>;
+  patientId?: Maybe<Scalars['String']>;
+  problemId?: Maybe<Scalars['String']>;
+  providerNotes?: Maybe<Scalars['String']>;
+  receivedDate?: Maybe<Scalars['String']>;
+  testDate?: Maybe<Scalars['String']>;
+  testNotes?: Maybe<Scalars['String']>;
+  testTime?: Maybe<Scalars['String']>;
+  vendorName?: Maybe<Scalars['String']>;
+};
+
+export type CreateImagingTestInput = {
+  name: Scalars['String'];
+};
+
 export type CreateInvoiceInputs = {
   amount: Scalars['String'];
   appointmentId: Scalars['String'];
@@ -2284,6 +2316,30 @@ export type FindAllIcdCodesPayload = {
   response?: Maybe<ResponsePayloadResponse>;
 };
 
+export type FindAllImagingOrderInput = {
+  paginationOptions: PaginationInput;
+  searchQuery?: Maybe<Scalars['String']>;
+};
+
+export type FindAllImagingOrderPayload = {
+  __typename?: 'FindAllImagingOrderPayload';
+  imagingOrders?: Maybe<Array<ImagingOrder>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
+export type FindAllImagingTestInput = {
+  paginationOptions: PaginationInput;
+  searchQuery?: Maybe<Scalars['String']>;
+};
+
+export type FindAllImagingTestPayload = {
+  __typename?: 'FindAllImagingTestPayload';
+  imagingTests?: Maybe<Array<ImagingTest>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
 export type FindAllModifierInput = {
   paginationOptions: PaginationInput;
   searchQuery?: Maybe<Scalars['String']>;
@@ -2618,6 +2674,14 @@ export type GetIcdCodeInput = {
   id: Scalars['String'];
 };
 
+export type GetImagingOrderInput = {
+  id: Scalars['String'];
+};
+
+export type GetImagingTestInput = {
+  id: Scalars['String'];
+};
+
 export type GetInsuranceInput = {
   id?: Maybe<Scalars['String']>;
 };
@@ -2800,6 +2864,68 @@ export type IcdCodesPayload = {
   icdCodes?: Maybe<Array<Maybe<IcdCodesWithSnowMedCode>>>;
   pagination?: Maybe<PaginationPayload>;
   response?: Maybe<ResponsePayload>;
+};
+
+export type ImagingOrder = {
+  __typename?: 'ImagingOrder';
+  accessionNumber?: Maybe<Scalars['String']>;
+  appointmentId?: Maybe<Scalars['String']>;
+  collectedDate?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  imagingOrderTest?: Maybe<Array<ImagingOrderTest>>;
+  isSigned?: Maybe<Scalars['Boolean']>;
+  labName?: Maybe<Scalars['String']>;
+  labTestStatus?: Maybe<ImagingOrderStatus>;
+  orderNumber?: Maybe<Scalars['String']>;
+  patientId?: Maybe<Scalars['String']>;
+  patientProblemId?: Maybe<Scalars['String']>;
+  providerNotes?: Maybe<Scalars['String']>;
+  receivedDate?: Maybe<Scalars['String']>;
+  testDate?: Maybe<Scalars['String']>;
+  testNotes?: Maybe<Scalars['String']>;
+  testTime?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+  vendorName?: Maybe<Scalars['String']>;
+};
+
+export type ImagingOrderPayload = {
+  __typename?: 'ImagingOrderPayload';
+  imagingOrder?: Maybe<ImagingOrder>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
+/** The imaging order status assigned */
+export enum ImagingOrderStatus {
+  Discontinued = 'DISCONTINUED',
+  InProgress = 'IN_PROGRESS',
+  OrderEntered = 'ORDER_ENTERED',
+  ResultReceived = 'RESULT_RECEIVED',
+  ResultReviewedWithPatient = 'RESULT_REVIEWED_WITH_PATIENT'
+}
+
+export type ImagingOrderTest = {
+  __typename?: 'ImagingOrderTest';
+  createdAt: Scalars['String'];
+  id: Scalars['String'];
+  imagingOrderId?: Maybe<Scalars['String']>;
+  imagingTest?: Maybe<ImagingTest>;
+  imagingTestId?: Maybe<Scalars['String']>;
+  updatedAt: Scalars['String'];
+};
+
+export type ImagingTest = {
+  __typename?: 'ImagingTest';
+  createdAt?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type ImagingTestPayload = {
+  __typename?: 'ImagingTestPayload';
+  imagingTest?: Maybe<ImagingTest>;
+  response?: Maybe<ResponsePayloadResponse>;
 };
 
 export type Insurance = {
@@ -3225,6 +3351,7 @@ export type Mutation = {
   addVaccine: VaccinePayload;
   addVaccineProduct: VaccineProductPayload;
   assignPermissionToRole: PermissionPayload;
+  associateRoomToAppointment: AppointmentPayload;
   cancelAppointment: AppointmentPayload;
   chargeAfterAppointment: AppointmentPayload;
   chargePayment: TransactionPayload;
@@ -3249,6 +3376,8 @@ export type Mutation = {
   createForm: FormPayload;
   createFormTemplate: FormPayload;
   createIcdCode: IcdCodePayload;
+  createImagingOrder: ImagingOrderPayload;
+  createImagingTest: ImagingTestPayload;
   createInvoice: InvoicePayload;
   createLabTest: LabTestPayload;
   createLabTestObservation: LabTestObservationPayload;
@@ -3301,6 +3430,8 @@ export type Mutation = {
   removeFeeSchedule: FeeSchedulePayload;
   removeForm: FormPayload;
   removeIcdCode: IcdCodePayload;
+  removeImagingOrder: ImagingOrderPayload;
+  removeImagingTest: ImagingTestPayload;
   removeLabTest: LabTestPayload;
   removeLabTestObservation: LabTestObservationPayload;
   removeMacro: MacroPayload;
@@ -3353,6 +3484,8 @@ export type Mutation = {
   updateForm: FormPayload;
   updateHPINotes: PatientIllnessHistoryPayload;
   updateIcdCode: IcdCodePayload;
+  updateImagingOrder: ImagingOrderPayload;
+  updateImagingTest: ImagingTestPayload;
   updateInvoiceStatus: InvoicePayload;
   updateLabTest: LabTestPayload;
   updateLabTestObservation: LabTestObservationPayload;
@@ -3449,6 +3582,11 @@ export type MutationAddVaccineProductArgs = {
 
 export type MutationAssignPermissionToRoleArgs = {
   rolePermissionItemInput: RolePermissionItemInput;
+};
+
+
+export type MutationAssociateRoomToAppointmentArgs = {
+  associateRoomToAppointmentInput: AssociateRoomToAppointmentInput;
 };
 
 
@@ -3569,6 +3707,16 @@ export type MutationCreateFormTemplateArgs = {
 
 export type MutationCreateIcdCodeArgs = {
   createIcdCodeInput: CreateIcdCodeInput;
+};
+
+
+export type MutationCreateImagingOrderArgs = {
+  createImagingOrderInput: CreateImagingOrderInput;
+};
+
+
+export type MutationCreateImagingTestArgs = {
+  createImagingTestInput: CreateImagingTestInput;
 };
 
 
@@ -3827,6 +3975,16 @@ export type MutationRemoveIcdCodeArgs = {
 };
 
 
+export type MutationRemoveImagingOrderArgs = {
+  removeImagingOrderInput: RemoveImagingOrderInput;
+};
+
+
+export type MutationRemoveImagingTestArgs = {
+  removeImagingTestInput: RemoveImagingTestInput;
+};
+
+
 export type MutationRemoveLabTestArgs = {
   removeLabTest: RemoveLabTest;
 };
@@ -4079,6 +4237,16 @@ export type MutationUpdateHpiNotesArgs = {
 
 export type MutationUpdateIcdCodeArgs = {
   updateIcdCodeInput: UpdateIcdCodeInput;
+};
+
+
+export type MutationUpdateImagingOrderArgs = {
+  updateImagingOrderInput: UpdateImagingOrderInput;
+};
+
+
+export type MutationUpdateImagingTestArgs = {
+  updateImagingTestInput: UpdateImagingTestInput;
 };
 
 
@@ -4433,6 +4601,7 @@ export type Patient = {
   holdStatement?: Maybe<Holdstatement>;
   homeBound?: Maybe<Homebound>;
   id: Scalars['String'];
+  imagingOrders?: Maybe<Array<ImagingOrder>>;
   immunizationConsent?: Maybe<Scalars['Boolean']>;
   inviteAccepted?: Maybe<Scalars['Boolean']>;
   labTests?: Maybe<Array<LabTests>>;
@@ -4759,6 +4928,7 @@ export type PatientProblems = {
   doctor?: Maybe<Doctor>;
   forOrders?: Maybe<Scalars['Boolean']>;
   id: Scalars['String'];
+  imagingOrders?: Maybe<Array<ImagingOrder>>;
   isSigned?: Maybe<Scalars['Boolean']>;
   labTests?: Maybe<Array<LabTests>>;
   note?: Maybe<Scalars['String']>;
@@ -5398,6 +5568,8 @@ export type Query = {
   findAllFeeSchedules: AllFeeSchedulesPayload;
   findAllForms: FormsPayload;
   findAllIcdCodes: FindAllIcdCodesPayload;
+  findAllImagingOrder: FindAllImagingOrderPayload;
+  findAllImagingTest: FindAllImagingTestPayload;
   findAllLabTest: LabTestsPayload;
   findAllLiveClaimFeeds: LiveClaimFeedPayload;
   findAllLoincCodes: LoincCodesPayload;
@@ -5464,6 +5636,8 @@ export type Query = {
   getFeeSchedule: FeeSchedulePayload;
   getForm: FormPayload;
   getIcdCode: IcdCodePayload;
+  getImagingOrder: ImagingOrderPayload;
+  getImagingTest: ImagingTestPayload;
   getInsurance: InsurancePayload;
   getLabTest: LabTestPayload;
   getMacro: MacroPayload;
@@ -5701,6 +5875,16 @@ export type QueryFindAllFormsArgs = {
 
 export type QueryFindAllIcdCodesArgs = {
   findAllIcdCodesInput: FindAllIcdCodesInput;
+};
+
+
+export type QueryFindAllImagingOrderArgs = {
+  findAllImagingOrderInput: FindAllImagingOrderInput;
+};
+
+
+export type QueryFindAllImagingTestArgs = {
+  findAllImagingTestInput: FindAllImagingTestInput;
 };
 
 
@@ -6021,6 +6205,16 @@ export type QueryGetFormArgs = {
 
 export type QueryGetIcdCodeArgs = {
   getIcdCodeInput: GetIcdCodeInput;
+};
+
+
+export type QueryGetImagingOrderArgs = {
+  getImagingOrderInput: GetImagingOrderInput;
+};
+
+
+export type QueryGetImagingTestArgs = {
+  getImagingTestInput: GetImagingTestInput;
 };
 
 
@@ -6464,6 +6658,14 @@ export type RemoveForm = {
 };
 
 export type RemoveIcdCodeInput = {
+  id: Scalars['String'];
+};
+
+export type RemoveImagingOrderInput = {
+  id: Scalars['String'];
+};
+
+export type RemoveImagingTestInput = {
   id: Scalars['String'];
 };
 
@@ -7535,6 +7737,7 @@ export type UpdateAppointmentInput = {
   id: Scalars['String'];
   insuranceCompany?: Maybe<Scalars['String']>;
   insuranceStatus?: Maybe<Scalars['String']>;
+  intakeSteps?: Maybe<Array<Scalars['String']>>;
   isExternal?: Maybe<Scalars['Boolean']>;
   membershipID?: Maybe<Scalars['String']>;
   notes?: Maybe<Scalars['String']>;
@@ -7836,6 +8039,31 @@ export type UpdateIcdCodeInput = {
   id: Scalars['String'];
   priority?: Maybe<Scalars['Int']>;
   version?: Maybe<Scalars['String']>;
+};
+
+export type UpdateImagingOrderInput = {
+  accessionNumber?: Maybe<Scalars['String']>;
+  appointmentId?: Maybe<Scalars['String']>;
+  collectedDate?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  imagingTests?: Maybe<Array<Scalars['String']>>;
+  isSigned?: Maybe<Scalars['Boolean']>;
+  labName?: Maybe<Scalars['String']>;
+  labTestStatus?: Maybe<ImagingOrderStatus>;
+  orderNumber?: Maybe<Scalars['String']>;
+  patientId?: Maybe<Scalars['String']>;
+  problemId?: Maybe<Scalars['String']>;
+  providerNotes?: Maybe<Scalars['String']>;
+  receivedDate?: Maybe<Scalars['String']>;
+  testDate?: Maybe<Scalars['String']>;
+  testNotes?: Maybe<Scalars['String']>;
+  testTime?: Maybe<Scalars['String']>;
+  vendorName?: Maybe<Scalars['String']>;
+};
+
+export type UpdateImagingTestInput = {
+  id: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
 };
 
 export type UpdateLabTestInput = {
@@ -8600,7 +8828,7 @@ export type FindAllAppointmentVisitsQueryVariables = Exact<{
 }>;
 
 
-export type FindAllAppointmentVisitsQuery = { __typename?: 'Query', findAllAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, appointments?: Array<{ __typename?: 'Appointment', id: string, scheduleEndDateTime?: string | null, scheduleStartDateTime?: string | null, appointmentDate?: string | null, patient?: { __typename?: 'Patient', firstName?: string | null, lastName?: string | null, middleName?: string | null, ssn?: string | null, dob?: string | null, email?: string | null, genderIdentity?: Genderidentity | null, patientRecord?: string | null, race?: Race | null, ethnicity?: Ethnicity | null, language?: string | null, contacts?: Array<{ __typename?: 'Contact', name?: string | null, relationship?: RelationshipType | null, contactType?: ContactType | null, primaryContact?: boolean | null, phone?: string | null, address?: string | null, address2?: string | null, zipCode?: string | null, city?: string | null, state?: string | null, mobile?: string | null }> | null, facility?: { __typename?: 'Facility', name: string, practice?: { __typename?: 'Practice', name: string, attachments?: Array<{ __typename?: 'Attachment', url?: string | null }> | null } | null, contacts?: Array<{ __typename?: 'Contact', primaryContact?: boolean | null, phone?: string | null, address?: string | null, address2?: string | null, zipCode?: string | null, city?: string | null, state?: string | null }> | null } | null } | null, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string, duration: string } | null } | null> | null } };
+export type FindAllAppointmentVisitsQuery = { __typename?: 'Query', findAllAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, appointments?: Array<{ __typename?: 'Appointment', id: string, scheduleEndDateTime?: string | null, scheduleStartDateTime?: string | null, appointmentDate?: string | null, facility?: { __typename?: 'Facility', name: string } | null, patient?: { __typename?: 'Patient', firstName?: string | null, lastName?: string | null, middleName?: string | null, ssn?: string | null, dob?: string | null, email?: string | null, genderIdentity?: Genderidentity | null, patientRecord?: string | null, race?: Race | null, ethnicity?: Ethnicity | null, language?: string | null, contacts?: Array<{ __typename?: 'Contact', name?: string | null, relationship?: RelationshipType | null, contactType?: ContactType | null, primaryContact?: boolean | null, phone?: string | null, address?: string | null, address2?: string | null, zipCode?: string | null, city?: string | null, state?: string | null, mobile?: string | null }> | null, facility?: { __typename?: 'Facility', name: string, practice?: { __typename?: 'Practice', name: string, attachments?: Array<{ __typename?: 'Attachment', url?: string | null }> | null } | null, contacts?: Array<{ __typename?: 'Contact', primaryContact?: boolean | null, phone?: string | null, address?: string | null, address2?: string | null, zipCode?: string | null, city?: string | null, state?: string | null }> | null } | null } | null, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string, duration: string } | null } | null> | null } };
 
 export type GetAppointmentQueryVariables = Exact<{
   getAppointment: GetAppointment;
@@ -11021,6 +11249,9 @@ export const FindAllAppointmentVisitsDocument = gql`
       scheduleEndDateTime
       scheduleStartDateTime
       appointmentDate
+      facility {
+        name
+      }
       patient {
         firstName
         lastName

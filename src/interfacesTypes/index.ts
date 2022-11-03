@@ -27,7 +27,7 @@ import {
   ResponsePayloadResponse, ReviewOfSystemPayload, RolesPayload, Schedule, SectionsInputs, ServicesPayload,
   SingleScheduleInput, Staff, SurgicalHistory, TriageNotes, TriageNotesPayload, TwoFactorInput, User,
   UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput,
-  UsersFormsElements, VaccineProduct, VerifyCodeInput, SectionQuestions, CreateMacroInput, CreateRoomInput
+  UsersFormsElements, VaccineProduct, VerifyCodeInput, SectionQuestions, CreateMacroInput, CreateRoomInput, PhysicalExamPayload
 } from "../generated/graphql";
 import { Action as AppointmentAction, State as AppointmentState } from "../reducers/appointmentReducer";
 import { Action as BillingAction, State as BillingState } from "../reducers/billingReducer";
@@ -665,6 +665,7 @@ export type PatientChartingInfo = {
   familyHistories: FamilyHistory[]
   reviewOfSystem: ReviewOfSystemPayload['reviewOfSystem']
   patientIllnessHistory: PatientIllnessHistoryPayload['patientIllnessHistory']
+  physicalExam: PhysicalExamPayload['physicalExam']
 }
 
 export type PatientChartingReview = {
@@ -929,6 +930,7 @@ export type VisitModalProps = ViewerProps & {
 export type VisitModalPdfProps = {
   assessmentProblems: AssessmentProblemType[]
   reviewOfSystem: ReviewOfSystemPayload['reviewOfSystem']
+  physicalExam: PhysicalExamPayload['physicalExam']
   patientIllnessHistory: PatientIllnessHistoryPayload['patientIllnessHistory']
   patientChartingReview: PatientChartingReview | null
   triageNotes: TriageNotesPayload['triageNotes']
