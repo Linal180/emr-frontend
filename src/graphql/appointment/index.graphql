@@ -77,6 +77,10 @@ query FindAllAppointmentVisits($appointmentInput: AppointmentInput!) {
       scheduleStartDateTime
       appointmentDate
 
+      facility {
+        name
+      }
+
       patient {
         firstName
         lastName
