@@ -38,7 +38,7 @@ import {
   FEE_SCHEDULE, INVALID_BILL_FEE_MESSAGE, INVALID_UNIT_MESSAGE, BILLED_AMOUNT, UNIT, INVALID_AMOUNT_MESSAGE,
   PAYMENT_TYPE, APPOINTMENT_PAYMENT_TYPE, LAST_FOUR_DIGIT, PROBLEM_TEXT, FAMILY_RELATIVE, RELATIVE, MANUFACTURER_TEXT,
   NDC_TEXT, ROUTE, SITE_TEXT, UNITS, ADMINISTRATION_DATE, CODE, UPFRONT_PAYMENT_TYPES, STOP_DATE, NO_SPACE_REGEX,
-  PRIORITY, NDC_REGEX, MVX_CODE_REGEX, STATUS, CVX_TEXT, MVX_TEXT, NDC_VALIDATION_MESSAGE, SIG, NO_DECIMAL_REQUIRED,
+  PRIORITY, NDC_REGEX, MVX_CODE_REGEX, STATUS, CVX_TEXT, MVX_TEXT, NDC_VALIDATION_MESSAGE, SIG,
   ONSET_AGE_TEXT, SECTION, NUMBER_TEXT,
 } from "../constants";
 import { Copay, PatientPaymentType, ProblemType } from "../generated/graphql";
@@ -48,7 +48,7 @@ const notRequiredMatches = (message: string, regex: RegExp) => {
     .test('', message, value => !value ? !value : regex.test(value))
 }
 
-const positiveNumber = (label: string, isRequired: boolean = false) => {
+const positiveNumber = (label: string, isRequired: boolean = false, maxLength: number = 6) => {
   if (isRequired) {
     return yup.string().required(requiredMessage(label)).test('', invalidMessage(label), (value) => {
       if (!!value) {
@@ -56,7 +56,10 @@ const positiveNumber = (label: string, isRequired: boolean = false) => {
         if (Number.isNaN(int)) {
           return false
         } else {
-          return int > 0 ? true : false
+          if (value.includes('.') || value.length > maxLength || int < 0) {
+            return false
+          }
+          return true
         }
       }
       return true
@@ -69,7 +72,10 @@ const positiveNumber = (label: string, isRequired: boolean = false) => {
       if (Number.isNaN(int)) {
         return false
       } else {
-        return int > 0 ? true : false
+        if (value.includes('.') || value.length > maxLength || int < 0) {
+          return false
+        }
+        return true
       }
     }
     return true
@@ -1301,19 +1307,14 @@ export const patientVaccineSchema = yup.object({
 export const ICDCodeSchema = yup.object({
   code: requiredMatches(CODE, invalidMessage(CODE), NO_SPACE_REGEX),
   description: yup.string().required(requiredMessage(DESCRIPTION)),
-  priority: positiveNumber(PRIORITY, false).when({
-    is: (val: string) => !!val,
-    then: yup.string().matches(NUMBER_REGEX, NO_DECIMAL_REQUIRED)
-  }).test('len', invalidMessage(PRIORITY), (val) => val ? val.length <= 6 : true)
+  priority: positiveNumber(PRIORITY, false)
+
 })
 
 export const CptCodeSchema = yup.object({
   code: requiredMatches(CODE, invalidMessage(CODE), NO_SPACE_REGEX),
   shortDescription: yup.string().required(requiredMessage(DESCRIPTION)),
-  priority: positiveNumber(PRIORITY, false).when({
-    is: (val: string) => !!val,
-    then: yup.string().matches(NUMBER_REGEX, NO_DECIMAL_REQUIRED)
-  }).test('len', invalidMessage(PRIORITY), (val) => val ? val.length <= 6 : true)
+  priority: positiveNumber(PRIORITY, false)
 })
 
 export const NdcCodeSchema = yup.object({
