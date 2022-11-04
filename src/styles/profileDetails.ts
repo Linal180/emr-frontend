@@ -57,16 +57,12 @@ export const useProfileDetailsStyles = makeStyles(() =>
       justifyContent: 'space-around'
     },
 
-    profileRoot: {
-      height: 80,
-      width: 80,
-      borderRadius: 8,
-    },
-
-    profileImage: {
-      height: '100%',
-      width: '100%',
-      objectFit: 'cover',
+    profileAvatar: {
+      "& .MuiAvatar-root": {
+        width: 80,
+        height: 80,
+        borderRadius: 8,
+      }
     },
 
     userName: {

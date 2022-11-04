@@ -2,6 +2,7 @@
 import {
   useEffect, useCallback, Reducer, useReducer, useContext, useRef, FC, useState
 } from "react";
+import moment from "moment";
 import classNames from "clsx";
 import { Box, Card } from "@material-ui/core";
 import { EditingState, IntegratedEditing, ViewState } from '@devexpress/dx-react-scheduler';
@@ -11,6 +12,7 @@ import {
 } from '@devexpress/dx-react-scheduler-material-ui';
 // component block
 import Alert from "../../common/Alert";
+import Loader from "../../common/Loader";
 import PageHeader from "../../common/PageHeader";
 import { DayTimeTableCell } from "./calendarViews/dayView";
 import { WeekTimeTableCell } from "./calendarViews/weekView";
@@ -28,18 +30,16 @@ import { useIndicatorStyles } from "../../../styles/indicatorStyles";
 import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../../reducers/appointmentReducer";
-import {
-  useFindAllAppointmentsLazyQuery, AppointmentsPayload, AppointmentStatus
-} from "../../../generated/graphql";
+import { AppointmentsPayload, CalendarViewType, useFetchCalendarAppointmentsLazyQuery } from "../../../generated/graphql";
 import {
   isSuperAdmin, isPracticeAdmin, isFacilityAdmin, mapAppointmentData, isOnlyDoctor, isStaff
 } from "../../../utils"
 import {
   CALENDAR_VIEW_APPOINTMENTS_BREAD, CALENDAR_VIEW_TEXT, DASHBOARD_BREAD, SOMETHING_WENT_WRONG
 } from "../../../constants";
-import Loader from "../../common/Loader";
 
 const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
+
   const [currentDate, setCurrentDate] = useState(new Date())
   const [currentView, setCurrentView] = useState<string>('Month')
 
@@ -57,7 +57,7 @@ const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
   const isFacility = isFacilityAdmin(roles);
 
   const indicatorRef = useRef<Element>(null);
-  const [{ appointments, page }, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
+  const [{ appointments, page, appOpen }, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
 
   const Indicator = ({ top, ...restProps }: any) => {
     const classes = useIndicatorStyles({ top });
@@ -70,15 +70,7 @@ const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
     );
   };
 
-  const [findAllAppointments, { loading: fetchAllAppointmentsLoading }] = useFindAllAppointmentsLazyQuery({
-    variables: {
-      appointmentInput: {
-        practiceId: practiceId || '',
-        paginationOptions: {
-          page: 1, limit: 20
-        }
-      }
-    },
+  const [findAllAppointments, { loading: fetchAllAppointmentsLoading }] = useFetchCalendarAppointmentsLazyQuery({
 
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
@@ -89,15 +81,14 @@ const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
     },
 
     onCompleted(data) {
-      const { findAllAppointments } = data || {};
+      const { findAllCalendarAppointments } = data || {};
 
-      if (findAllAppointments) {
-        const { appointments } = findAllAppointments
+      if (findAllCalendarAppointments) {
+        const { appointments } = findAllCalendarAppointments
 
         dispatch({
           type: ActionType.SET_APPOINTMENTS,
-          appointments: appointments?.filter(appointment =>
-            appointment?.status !== AppointmentStatus.Cancelled) as AppointmentsPayload['appointments']
+          appointments: appointments as AppointmentsPayload['appointments']
         });
       }
     }
@@ -129,7 +120,8 @@ const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
 
   const fetchAppointments = useCallback(async () => {
     try {
-      const pageInputs = { paginationOptions: { page, limit: 125 } }
+      const pageInputs = { paginationOptions: { page, limit: 1000 } }
+      const appointmentDate = moment(currentDate).format('YYYY-MM-DD')
       let inputs = isSuper ? {}
         : isPractice ? { practiceId }
           : isFacility || isStaffUser ? { facilityId }
@@ -137,14 +129,11 @@ const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
 
       !!inputs ? await findAllAppointments({
         variables: {
-          appointmentInput: { ...inputs, ...pageInputs }
+          findAllCalendarAppointmentsInput: { ...inputs, ...pageInputs, appointmentDate, currentView: currentView as CalendarViewType }
         },
       }) : Alert.error(SOMETHING_WENT_WRONG)
     } catch (error) { }
-  }, [
-    page, isSuper, isPractice, isFacility, isStaffUser, isDoctor, findAllAppointments,
-    practiceId, facilityId, userId
-  ])
+  }, [page, currentDate, isSuper, isPractice, practiceId, isFacility, isStaffUser, facilityId, isDoctor, userId, findAllAppointments, currentView])
 
   const currentViewNameChange = (currentViewName: string) => setCurrentView(currentViewName);
 
@@ -159,6 +148,7 @@ const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
   if (fetchAllAppointmentsLoading) {
     return <Loader loading loaderText="Fetching Appointments..." />
   }
+
 
   return (
     <>
@@ -176,9 +166,13 @@ const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
             <Scheduler data={mapAppointmentData(appointments)}>
               <ViewState
                 currentDate={currentDate}
-                onCurrentDateChange={(currentDate) => { handleDateChange(currentDate) }}
+                onCurrentDateChange={(currentDate) => {
+                  handleDateChange(currentDate)
+                }}
                 currentViewName={currentView}
-                onCurrentViewNameChange={currentViewNameChange} />
+                onCurrentViewNameChange={currentViewNameChange}
+              />
+
               <EditingState onCommitChanges={onCommitChanges} />
               <MonthView timeTableCellComponent={MonthTimeTableCell} />
               <WeekView timeTableCellComponent={WeekTimeTableCell} />
@@ -189,16 +183,26 @@ const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
               <IntegratedEditing />
               <IntegratedAppointments />
               <DateNavigator />
-              <Appointments appointmentComponent={Appointment}
+
+              <Appointments
+                appointmentComponent={Appointment}
+                containerComponent={AppointmentContainer}
                 appointmentContentComponent={AppointmentContent}
-                containerComponent={AppointmentContainer} />
+              />
+
               <AppointmentTooltip
                 showCloseButton
-                layoutComponent={(props) => <AppointmentCard tooltip={props}
-                  setCurrentView={setCurrentView}
-                  setCurrentDate={setCurrentDate}
-                  reload={fetchAppointments}
-                />} />
+                onVisibilityChange={(val) => dispatch({ type: ActionType.SET_APP_OPEN, appOpen: val })}
+                layoutComponent={(props) =>
+                  <AppointmentCard
+                    appOpen={appOpen}
+                    tooltip={props}
+                    setCurrentView={setCurrentView}
+                    setCurrentDate={setCurrentDate}
+                    reload={fetchAppointments}
+                  />}
+              />
+
               <CurrentTimeIndicator
                 indicatorComponent={Indicator}
               />

@@ -1,5 +1,5 @@
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Card, colors, Typography } from "@material-ui/core";
-import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
+import { FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 //components
@@ -32,8 +32,9 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
 
   const [expanded, setExpanded] = useState<string | false>('panel1');
 
-  const handleChange = (panel: string) => (_: ChangeEvent<{}>, isExpanded: boolean) =>
-    setExpanded(isExpanded ? panel : false);
+  const handleChange = (panel: string) => {
+    setExpanded(expanded === panel ? '' : panel)
+  };
 
   const [createIllnessHistory] = useCreatePatientIllnessHistoryMutation({
     onCompleted: (data) => {
@@ -118,7 +119,7 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
     fetchPatientIllnessHistory()
   }, [fetchPatientIllnessHistory])
 
-  const fetchPatientChartingTemplates = useCallback(async (ids: string[]) => {
+  const fetchPatientChartingTemplates = async (ids: string[]) => {
     try {
       ids.forEach(async (id) => {
         if (!templates?.some((template) => id === template.id)) {
@@ -129,9 +130,12 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
           })
         }
       })
+
+      const transformedTemplates = templates.filter((template) => ids.includes(template?.id))
+      dispatch({ type: ActionType.SET_TEMPLATES, templates: transformedTemplates })
     } catch (error) { }
 
-  }, [findPatientChartingTemplate, templates])
+  }
 
   const onSubmit: SubmitHandler<any> = async (values) => {
     try {
@@ -307,7 +311,7 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
                     </AccordionSummary>
 
                     <AccordionDetails>
-                      <Box maxHeight="calc(100vh - 180px)" className="overflowY-auto"></Box>
+                      {/* <Box maxHeight="calc(100vh - 180px)" className="overflowY-auto"></Box> */}
                       <Box maxHeight="calc(100vh - 180px)" className="overflowY-auto">
                         {sections?.map((section) => {
                           const { id, name, questions } = section || {}

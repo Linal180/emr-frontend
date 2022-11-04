@@ -41,7 +41,7 @@ import { BillingFormProps, FormForwardRef, ItemSelectorOption, ParamsType, Selec
 
 const BillingForm: FC<BillingFormProps> = ({
   methods, onSubmit, createBillingLoading, submitButtonText, createClaimCallback, shouldDisableEdit, dispatch, state,
-  createClaimLoading
+  createClaimLoading, refetch
 }) => {
   const classesToggle = usePublicAppointmentStyles();
   const billingRef = useRef<FormForwardRef>();
@@ -506,7 +506,7 @@ const BillingForm: FC<BillingFormProps> = ({
               <TabPanel value="2">
                 <Box>
                   {/* <Card> */}
-                  <InsuranceComponent shouldDisableEdit={shouldDisableEdit} />
+                  <InsuranceComponent shouldDisableEdit={shouldDisableEdit} refetch={refetch}/>
                   {/* </Card> */}
                 </Box>
               </TabPanel>

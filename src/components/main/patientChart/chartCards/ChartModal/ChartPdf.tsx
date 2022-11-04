@@ -1,7 +1,7 @@
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import {
   ACTIVE, ACUITY, ASSOCIATED_DX, BLOOD_PRESSURE_TEXT, CURRENT, DIAGNOSES, DOB, DOB_TEXT, DRUG_ALLERGIES,
-  ENVIRONMENTAL_ALLERGIES, EXPRESS_HEALTHCARE_URL, FACILITY, FAMILY_HISTORY_TEXT, FIRST_NAME, FOOD_ALLERGIES, HISTORICAL, HISTORY_OF_PATIENT_ILLNESS, LAST_NAME, MEDICATIONS, NOTES, NO_DATA_FOUND, NO_DRUG_ALLERGIES_RECORDED, NO_ENVIRONMENTAL_ALLERGIES_RECORDED, NO_FOOD_ALLERGIES_RECORDED, NO_NOTES_ADDED, NO_SURGICAL_PROCEDURE_RECORDED, ONSET, ONSET_AGE_TEXT, ONSET_DATE, PATIENT_ID, PHONE, PROBLEM_TEXT, PROCEDURE_TEXT, RELATIVE, RESPIRATORY_RATE_TEXT, REVIEW_OF_SYSTEM_TEXT, SEVERITY_REACTIONS, SEX, SIG, START, START_STOP, SURGERY_DATE, SURGICAL_HISTORY_TEXT, TEMPERATURE_TEXT, TRIAGE_NOTES, VITALS_TEXT
+  ENVIRONMENTAL_ALLERGIES, EXPRESS_HEALTHCARE_URL, FACILITY, FAMILY_HISTORY_TEXT, FIRST_NAME, FOOD_ALLERGIES, HISTORICAL, HISTORY_OF_PATIENT_ILLNESS, LAST_NAME, MEDICATIONS, NOTES, NO_DATA_FOUND, NO_DRUG_ALLERGIES_RECORDED, NO_ENVIRONMENTAL_ALLERGIES_RECORDED, NO_FOOD_ALLERGIES_RECORDED, NO_NOTES_ADDED, NO_SURGICAL_PROCEDURE_RECORDED, ONSET, ONSET_AGE_TEXT, ONSET_DATE, PATIENT_ID, PHONE, PHYSICAL_EXAM_TEXT, PROBLEM_TEXT, PROCEDURE_TEXT, RELATIVE, RESPIRATORY_RATE_TEXT, REVIEW_OF_SYSTEM_TEXT, SEVERITY_REACTIONS, SEX, SIG, START, START_STOP, SURGERY_DATE, SURGICAL_HISTORY_TEXT, TEMPERATURE_TEXT, TRIAGE_NOTES, VITALS_TEXT
 } from "../../../../../constants";
 import { AllergyType, Genderidentity, ProblemType } from "../../../../../generated/graphql";
 import { PatientChartingInfo } from "../../../../../interfacesTypes";
@@ -155,14 +155,10 @@ const styles = StyleSheet.create({
 
 const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: PatientChartingInfo | null, modulesToPrint: string[] }) => {
   const { patientInfo, patientProblems, patientAllergies, patientMedications,
-    patientVitals, surgicalHistories, triageNotes, familyHistories, patientIllnessHistory, reviewOfSystem } = patientChartInfo || {}
+    patientVitals, surgicalHistories, triageNotes, familyHistories, patientIllnessHistory, reviewOfSystem, physicalExam } = patientChartInfo || {}
   const { firstName, lastName, dob, genderIdentity, patientRecord, facility } =
     patientInfo || {}
-  // const { address: patientAddress, address2: patientAddress2, city: patientCity, state: patientState, zipCode: patientZipCode, mobile } =
-  //   patientContacts?.find((patientContact) => patientContact?.primaryContact) || {}
 
-  // const { relationship, phone: nextOfKinPhone, address: nextAddress, city: nextCity, state: nextState, zipCode: nextZipCode, name: nextName } =
-  //   patientContacts?.find((patientContact) => patientContact?.contactType === ContactType.NextOfKin) || {}
   const { practice, contacts: facilityContacts } = facility || {}
   const { phone, address, address2, city, state, zipCode } = facilityContacts?.find((facilityContact) => facilityContact?.primaryContact) || {}
   const { name: practiceName, attachments } = practice || {}
@@ -1012,6 +1008,43 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
               </View>
               {/* 7.1-row */}
               {patientIllnessHistory?.answers?.length ? patientIllnessHistory?.answers?.map(answerInfo => {
+                const { answer, value } = answerInfo || {}
+                const { name } = answer || {}
+                const [first, second] = name?.split('fill') || []
+
+                return (
+                  <View style={[styles.tableRow, styles.ml10]}>
+                    <View style={[styles.w100]}>
+                      <View style={styles.fieldRow3}>
+                        <Text style={styles.fieldText}>{`${first} ${value || ''} ${second || ''}`}</Text>
+                      </View>
+                    </View>
+                  </View>
+                )
+              }) : <View style={[styles.w100]}>
+                <View style={styles.fieldRow3}>
+                  <Text style={styles.fieldText}>{NO_DATA_FOUND}</Text>
+                </View>
+              </View>}
+            </> : <View></View>}
+
+          {modulesToPrint.includes('PE') ?
+            <>
+              <View style={styles.tableRow}>
+                <View style={[styles.w100]}>
+                  <View style={[styles.bgLightGrey, styles.borderStyle, styles.borderTopWidth, styles.borderBottomWidth]}>
+                    <Text style={styles.fieldTitle2}>{PHYSICAL_EXAM_TEXT}</Text>
+                  </View>
+                </View>
+              </View>
+
+              {/* spacing-row */}
+              <View style={styles.tableRow}>
+                <View style={{ height: '10px' }}>
+                </View>
+              </View>
+              {/* 7.1-row */}
+              {physicalExam?.answers?.length ? physicalExam?.answers?.map(answerInfo => {
                 const { answer, value } = answerInfo || {}
                 const { name } = answer || {}
                 const [first, second] = name?.split('fill') || []

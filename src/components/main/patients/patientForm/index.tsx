@@ -38,7 +38,7 @@ import {
 } from "../../../../generated/graphql";
 
 const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
-  { id, isEdit, shouldShowBread = true, shouldDisableEdit, isAppointment = false }, ref
+  { id, isEdit, shouldShowBread = true, shouldDisableEdit, isAppointment = false, refetch }, ref
 ): JSX.Element => {
   const { user, currentDoctor } = useContext(AuthContext)
   const { id: selectedDoctorId } = currentDoctor || {}
@@ -545,6 +545,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
           shouldShowBread={shouldShowBread}
           getPatientLoading={getPatientLoading}
           shouldDisableEdit={shouldDisableEdit}
+          refetch={refetch}
         />
       </form>
     </FormProvider>

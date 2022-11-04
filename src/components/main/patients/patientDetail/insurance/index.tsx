@@ -26,7 +26,7 @@ import {
 } from "../../../../../constants";
 
 const InsuranceComponent = ({
-  shouldDisableEdit, patientId: pId, showAddInsuranceBtn = true, showEditInsuranceBtn = true, viewInsuranceBtn = true,
+  shouldDisableEdit, patientId: pId, showAddInsuranceBtn = true, showEditInsuranceBtn = true, viewInsuranceBtn = true, refetch
 }: InsuranceComponentProps): JSX.Element => {
   const { id: patientId, appointmentId } = useParams<ParamsType>()
 
@@ -266,6 +266,7 @@ const InsuranceComponent = ({
                 handleReload={handleReload}
                 setPolicyToEdit={setPolicyToEdit}
                 filteredOrderOfBenefitOptions={filteredOrderOfBenefitOptions}
+                refetch={refetch}
               />
             </SideDrawer>
           </Box>

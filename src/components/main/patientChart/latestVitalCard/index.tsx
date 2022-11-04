@@ -1,11 +1,11 @@
-import { FC, useCallback, useEffect, useState } from 'react'
-import { Box, Button, Card, Collapse, colors, Typography } from '@material-ui/core'
+import { Box, Button, Card, Collapse, colors, Typography } from '@material-ui/core';
+import { FC, useCallback, useEffect, useState } from 'react';
 //interfaces, constants, utils, styles, graphql
-import { getAppointmentDateWithDay, renderLoading } from '../../../../utils';
-import { LatestVitalCardProps } from '../../../../interfacesTypes'
-import { useProfileDetailsStyles } from '../../../../styles/profileDetails'
-import { LESS_INFO, MORE_INFO, PATIENT_VITAL_TEXT, VITAL_LABELS } from '../../../../constants'
-import { PatientVitalPayload, useGetPatientLatestVitalLazyQuery } from '../../../../generated/graphql'
+import { LESS_INFO, MORE_INFO, PATIENT_VITAL_TEXT, VITAL_LABELS } from '../../../../constants';
+import { PatientVitalPayload, useGetPatientLatestVitalLazyQuery } from '../../../../generated/graphql';
+import { LatestVitalCardProps } from '../../../../interfacesTypes';
+import { useProfileDetailsStyles } from '../../../../styles/profileDetails';
+import { getAppointmentDateWithDay, isAbnormalBloodPressureRate, isAbnormalOxygenSaturation, isAbnormalPain, isAbnormalPulseRate, isAbnormalRespiratoryRate, isAbnormalTemperature, renderLoading } from '../../../../utils';
 
 const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId, shouldRefetch, setShouldRefetch }): JSX.Element => {
 
@@ -78,7 +78,12 @@ const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId, shouldRefetch, s
             <Box className={classes.profileInfoHeading}>{VITAL_LABELS.patientTemperature}</Box>
 
             {loading ? renderLoading('') : <Box className={classes.profileInfoItem}>
-              <Typography variant="body1">{patientTemperature || '--'}</Typography>
+              <Typography
+                variant="body1"
+                className={`${isAbnormalTemperature(patientTemperature || '') ? 'danger' : ''}`}
+              >
+                {patientTemperature || '--'}
+              </Typography>
             </Box>}
           </Box>
 
@@ -86,7 +91,12 @@ const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId, shouldRefetch, s
             <Box className={classes.profileInfoHeading}>{VITAL_LABELS.bloodPressure}</Box>
 
             {loading ? renderLoading('') : <Box className={classes.profileInfoItem}>
-              <Typography variant="body1">{`${systolicBloodPressure || '--'} / ${diastolicBloodPressure || '--'}`}</Typography>
+              <Typography
+                variant="body1"
+                className={`${isAbnormalBloodPressureRate(systolicBloodPressure || '', diastolicBloodPressure || '') ? 'danger' : ''}`}
+              >
+                {`${systolicBloodPressure || '--'} / ${diastolicBloodPressure || '--'}`}
+              </Typography>
             </Box>}
           </Box>
 
@@ -94,7 +104,12 @@ const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId, shouldRefetch, s
             <Box className={classes.profileInfoHeading}>{VITAL_LABELS.oxygenSaturation}</Box>
 
             {loading ? renderLoading('') : <Box className={classes.profileInfoItem}>
-              <Typography variant="body1">{oxygenSaturation || '--'}</Typography>
+              <Typography
+                variant="body1"
+                className={`${isAbnormalOxygenSaturation(oxygenSaturation || '') ? 'danger' : ''}`}
+              >
+                {oxygenSaturation || '--'}
+              </Typography>
             </Box>}
           </Box>
 
@@ -102,7 +117,12 @@ const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId, shouldRefetch, s
             <Box className={classes.profileInfoHeading}>{VITAL_LABELS.pulseRate}</Box>
 
             {loading ? renderLoading('') : <Box className={classes.profileInfoItem}>
-              <Typography variant="body1">{pulseRate || '--'}</Typography>
+              <Typography
+                variant="body1"
+                className={`${isAbnormalPulseRate(pulseRate || '') ? 'danger' : ''}`}
+              >
+                {pulseRate || '--'}
+              </Typography>
             </Box>}
           </Box>
 
@@ -110,7 +130,12 @@ const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId, shouldRefetch, s
             <Box className={classes.profileInfoHeading}>{VITAL_LABELS.respiratoryRate}</Box>
 
             {loading ? renderLoading('') : <Box className={classes.profileInfoItem}>
-              <Typography variant="body1">{respiratoryRate || '--'}</Typography>
+              <Typography
+                variant="body1"
+                className={`${isAbnormalRespiratoryRate(respiratoryRate || '') ? 'danger' : ''}`}
+              >
+                {respiratoryRate || '--'}
+              </Typography>
             </Box>}
           </Box>
 
@@ -118,7 +143,12 @@ const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId, shouldRefetch, s
             <Box className={classes.profileInfoHeading}>{VITAL_LABELS.PainRange}</Box>
 
             {loading ? renderLoading('') : <Box className={classes.profileInfoItem}>
-              <Typography variant="body1">{PainRange || '--'}</Typography>
+              <Typography
+                variant="body1"
+                className={`${isAbnormalPain(PainRange || '') ? 'danger' : ''}`}
+              >
+                {PainRange || '--'}
+              </Typography>
             </Box>}
           </Box>
 
