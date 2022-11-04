@@ -55,7 +55,7 @@ const ChartCards: FC<ChartComponentProps> = ({ appointmentState, shouldDisableEd
   useEffect(() => {
     const transformedInTakeSteps = intakeSteps?.map((value) => Number(value || '')) || []
     setStepArray(transformedInTakeSteps)
-    dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: transformedInTakeSteps[transformedInTakeSteps.length - 1] })
+    dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: transformedInTakeSteps[transformedInTakeSteps.length - 1] || 0 })
   }, [intakeSteps])
 
   const patientClasses = useExternalPatientStyles();
