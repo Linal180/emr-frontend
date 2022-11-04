@@ -48,7 +48,7 @@ import {
   CANCEL_TIME_PAST_MESSAGE, CANT_CANCELLED_APPOINTMENT, CHECK_IN_ROUTE, DATE, DELETE_APPOINTMENT_DESCRIPTION,
   DESC, EMPTY_OPTION, FACILITY, MINUTES, PATIENT, EIGHT_PAGE_LIMIT, STAGE, TELEHEALTH_URL, TIME, TYPE,
   USER_PERMISSIONS, VIEW_ENCOUNTER, PAGE_LIMIT, TODAY, APPOINTMENT_REMINDER_SENT_SUCCESSFULLY, SENDING_APPOINTMENT_REMINDER,
-  PATIENT_EMAIL_PHONE_INFO_MISSING
+  PATIENT_EMAIL_PHONE_INFO_MISSING, ROOM_TEXT, N_A
 } from "../../constants";
 
 dotenv.config()
@@ -500,6 +500,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                   {renderTh(TYPE)}
                   {renderTh(DATE)}
                   {renderTh(FACILITY)}
+                  {renderTh(ROOM_TEXT)}
                   {renderTh(ARRIVAL_STATUS)}
                   {renderTh(STAGE)}
                   {renderTh(ACTION, "center")}
@@ -517,13 +518,14 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                   appointments?.map((appointment: AppointmentPayload['appointment']) => {
                     const {
                       id, scheduleStartDateTime, facility, patient, appointmentType, status,
-                      scheduleEndDateTime, checkInActiveStep, appointmentCreateType, appointmentDate
+                      scheduleEndDateTime, checkInActiveStep, appointmentCreateType, appointmentDate, room
                     } = appointment || {};
 
                     const { name } = facility || {};
                     const { id: patientId, firstName, lastName, email, contacts } = patient || {};
                     const { phone } = contacts?.find((contact) => contact.primaryContact) || {}
                     const { name: type } = appointmentType || {};
+                    const { name: roomName, number: roomNo } = room || {}
 
                     const cantUpdate = canBeUpdated(status as AppointmentStatus)
                     const { text, textColor, bgColor } = appointmentStatus(status || '')
@@ -559,6 +561,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                         </TableCell>
 
                         <TableCell scope="row">{name}</TableCell>
+                        <TableCell scope="row">{roomNo ? `${roomNo || ''} : ${roomName || ''}` : N_A}</TableCell>
                         <TableCell scope="row">
                           {id && <>
                             {isEdit && appointmentId === id ?
