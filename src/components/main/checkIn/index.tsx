@@ -177,6 +177,8 @@ const CheckInComponent = (): JSX.Element => {
         if (aptStatus === AppointmentStatus.Arrived) {
           await fetchPatientInsurances()
         }
+
+        await fetchAppointment()
       }
     }
   });

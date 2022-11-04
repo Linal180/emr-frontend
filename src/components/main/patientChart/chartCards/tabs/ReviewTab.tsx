@@ -10,11 +10,11 @@ import { ParamsType, PatientChartingReview, ReviewTabProps } from '../../../../.
 import {
   ALLERGIES_TEXT, CARE_PLAN_TEXT, CARE_PROGRAM_TEXT, DASHES, DIAGNOSES, GOALS_TEXT, INTAKE, MEDICATIONS,
   NONE_RECORDED_TEXT,
-  PATIENT_HISTORY_ILLNESS_TEXT, RECENT_EVENT_SUMMARY, REVIEW_OF_SYSTEM_TEXT
+  PATIENT_HISTORY_ILLNESS_TEXT, PHYSICAL_EXAM_TEXT, RECENT_EVENT_SUMMARY, REVIEW_OF_SYSTEM_TEXT
 } from '../../../../../constants'
 import {
-  PatientIllnessHistoryPayload, PatientVitals, ReviewOfSystemPayload, useGetPatientChartingReviewLazyQuery,
-  usePatientIllnessHistoryLazyQuery, useReviewOfSystemLazyQuery
+  PatientIllnessHistoryPayload, PatientVitals, PhysicalExamPayload, ReviewOfSystemPayload, useGetPatientChartingReviewLazyQuery,
+  usePatientIllnessHistoryLazyQuery, usePhysicalExamLazyQuery, useReviewOfSystemLazyQuery
 } from '../../../../../generated/graphql'
 
 
@@ -24,6 +24,7 @@ function ReviewTab({ shouldShowCheckout, handleStepChange, shouldDisableEdit, sh
   const [patientChartingReview, setPatientChartingReview] = useState<PatientChartingReview | null>(null)
   const [reviewOfSystem, setReviewOfSystem] = useState<ReviewOfSystemPayload['reviewOfSystem']>(null)
   const [patientIllnessHistory, setPatientIllnessHistory] = useState<PatientIllnessHistoryPayload['patientIllnessHistory']>(null)
+  const [physicalExam, setPhysicalExam] = useState<PhysicalExamPayload['physicalExam']>(null)
 
   const [getPatientChartingReview] = useGetPatientChartingReviewLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -62,6 +63,19 @@ function ReviewTab({ shouldShowCheckout, handleStepChange, shouldDisableEdit, sh
 
       if (status === 200) {
         setPatientIllnessHistory(patientIllnessHistory as PatientIllnessHistoryPayload['patientIllnessHistory'])
+      }
+    },
+    onError: () => { }
+  })
+
+  const [getPhysicalExam] = usePhysicalExamLazyQuery({
+    onCompleted: (data) => {
+      const { physicalExam: dataResponse } = data || {}
+      const { response, physicalExam } = dataResponse || {}
+      const { status } = response || {}
+
+      if (status === 200) {
+        setPhysicalExam(physicalExam as PhysicalExamPayload['physicalExam'])
       }
     },
     onError: () => { }
@@ -116,12 +130,24 @@ function ReviewTab({ shouldShowCheckout, handleStepChange, shouldDisableEdit, sh
 
   }, [getPatientIllnessHistory, appointmentId])
 
+  const fetchPhysicalExam = useCallback(async () => {
+    appointmentId && await getPhysicalExam({
+      variables: {
+      physicalExamInput: {
+          appointmentId: appointmentId
+        }
+      }
+    })
+
+  }, [getPhysicalExam, appointmentId])
+
   useEffect(() => {
     if (shouldShowExamDetails) {
       fetchPatientIllnessHistory()
       fetchPatientReviewOfSystem()
+      fetchPhysicalExam()
     }
-  }, [fetchPatientIllnessHistory, fetchPatientReviewOfSystem, shouldShowExamDetails])
+  }, [fetchPatientIllnessHistory, fetchPatientReviewOfSystem, fetchPhysicalExam, shouldShowExamDetails])
 
   useEffect(() => {
     fetchPatientChartingView()
@@ -250,6 +276,33 @@ function ReviewTab({ shouldShowCheckout, handleStepChange, shouldDisableEdit, sh
 
             <Box p={2}>
               {reviewOfSystem?.answers?.map(answerInfo => {
+                const { answer, value } = answerInfo || {}
+                const { name, } = answer || {}
+
+                return <>
+                  <Box display='flex' justifyContent='space-between' alignItems='center' flexWrap='wrap'>
+                    <Box>
+                      {!value ? <Typography variant='inherit'>{name}</Typography> :
+                        <Box display="flex" flexDirection="row"><Typography>{`${name?.split("fill")[0]} ${value} `}</Typography>&nbsp;<Typography>{name?.split("fill")[1]}</Typography></Box>
+                      }
+
+                    </Box>
+                  </Box>
+                </>
+              })}
+            </Box>
+          </Box>
+        </Card>
+        <Box m={3} />
+
+        <Card>
+          <Box pb={2} className={classes.cardBox}>
+            <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" borderBottom={`1px solid ${colors.grey[300]}`}>
+              <Typography variant='h3'>{PHYSICAL_EXAM_TEXT}</Typography>
+            </Box>
+
+            <Box p={2}>
+              {physicalExam?.answers?.map(answerInfo => {
                 const { answer, value } = answerInfo || {}
                 const { name, } = answer || {}
 
