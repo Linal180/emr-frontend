@@ -1,7 +1,7 @@
 // packages block
 import clsx from 'clsx';
 import { useParams } from "react-router";
-import { FormProvider, useForm } from 'react-hook-form';
+import {  useForm } from 'react-hook-form';
 import { Check, ChevronRight } from '@material-ui/icons';
 import { Reducer, useCallback, useContext, useEffect, useReducer, useRef, useState } from "react";
 import {
@@ -11,9 +11,9 @@ import {
 import CheckIn from "./CheckIn";
 import SignOff from "./SignOff";
 import Alert from "../../common/Alert";
+import AppointmentRoom from './appointmentRoom';
 import PatientForm from "../patients/patientForm";
 import ChartCards from "../patientChart/chartCards";
-import RoomSelector from '../../common/Selector/roomSelector';
 import PatientProfileHero from "../../common/patient/profileHero";
 import BillingComponent from "../billing/addBill/BillingComponent";
 import ChartPrintModal from "../patientChart/chartCards/ChartModal/ChartPrintModal";
@@ -21,14 +21,13 @@ import ChartSelectionModal from "../patientChart/chartCards/ChartModal/ChartSele
 // constants, interfaces, utils block
 import { AuthContext } from "../../../context";
 import { ChevronRightIcon } from "../../../assets/svgs";
-import { FormForwardRef, ParamsType, SelectorOption } from "../../../interfacesTypes";
+import { FormForwardRef, ParamsType } from "../../../interfacesTypes";
 import { convertDateFromUnix, getFormattedDate, isBiller, isFrontDesk, isStaff } from "../../../utils";
-import { CHECK_IN_STEPS, DONE_CHECK_IN, EMPTY_OPTION, PATIENT_INFO, PATIENT_LOCATION_TEXT } from "../../../constants";
+import { CHECK_IN_STEPS, DONE_CHECK_IN, EMPTY_OPTION, PATIENT_INFO } from "../../../constants";
 import { Action, ActionType, appointmentReducer, initialState, State } from "../../../reducers/appointmentReducer";
 import { CheckInConnector, useCheckInProfileStyles, useCheckInStepIconStyles } from '../../../styles/checkInStyles';
 import {
   AppointmentPayload, AppointmentStatus, AttachmentsPayload, OrderOfBenefitType, PatientPayload,
-  useAssociateRoomToAppointmentMutation,
   useFetchPatientInsurancesLazyQuery, useGetAppointmentLazyQuery, useUpdateAppointmentMutation
 } from "../../../generated/graphql";
 import {
@@ -139,14 +138,12 @@ const CheckInComponent = (): JSX.Element => {
         const { policies, response } = fetchPatientInsurances
         if (response && response.status === 200) {
           const primaryInsurance = policies?.find((policy) => policy.orderOfBenefit === OrderOfBenefitType.Primary)
-            dispatch({ type: ActionType.SET_PRIMARY_INSURANCE, primaryInsurance: primaryInsurance?.insurance?.payerName ?? '' })
-            return
+          dispatch({ type: ActionType.SET_PRIMARY_INSURANCE, primaryInsurance: primaryInsurance?.insurance?.payerName ?? '' })
+          return
         }
       }
     }
   });
-
-  const [associateRoom] = useAssociateRoomToAppointmentMutation()
 
   useEffect(() => {
     fetchPatientInsurances()
@@ -294,7 +291,7 @@ const CheckInComponent = (): JSX.Element => {
       case 4:
         return <SignOff handleStepChange={handleStep} appointmentInfo={appointment} />
       case 5:
-        return <BillingComponent shouldDisableEdit={shouldDisableBillingEdit} refetch={fetchPatientInsurances}/>
+        return <BillingComponent shouldDisableEdit={shouldDisableBillingEdit} refetch={fetchPatientInsurances} />
       default:
         return <CircularProgress />;
     }
@@ -414,11 +411,6 @@ const CheckInComponent = (): JSX.Element => {
     }
   }
 
-  const onRoomSelect = (option: SelectorOption) => {
-    const { id: roomId } = option || {}
-    associateRoom({ variables: { associateRoomToAppointmentInput: { appointmentId: appointmentId || '', roomId: roomId || '' } } })
-  }
-
   return (
     <>
       <Box display='flex' alignItems='center' flexWrap='wrap'>
@@ -461,14 +453,7 @@ const CheckInComponent = (): JSX.Element => {
         <Box p={1} />
 
         <Box className={checkInClasses.checkInProfileBox}>
-          <FormProvider {...methods}>
-            <Box display='flex' alignItems='center'>
-              <Typography variant="h6" color="textPrimary">{PATIENT_LOCATION_TEXT}</Typography>
-              <Box width={200} ml={2}>
-                <RoomSelector addEmpty label='' name='room' onSelect={onRoomSelect} />
-              </Box>
-            </Box>
-          </FormProvider>
+          <AppointmentRoom appointmentId={appointmentId || ''} />
         </Box>
 
       </Box>
