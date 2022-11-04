@@ -120,7 +120,6 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
   }, [fetchPatientIllnessHistory])
 
   const fetchPatientChartingTemplates = async (ids: string[]) => {
-    debugger
     try {
       ids.forEach(async (id) => {
         if (!templates?.some((template) => id === template.id)) {
