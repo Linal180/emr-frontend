@@ -667,6 +667,13 @@ export type Cvx = {
   vaccineProduct?: Maybe<Array<VaccineProduct>>;
 };
 
+/** Calendar View Type  */
+export enum CalendarViewType {
+  Day = 'Day',
+  Month = 'Month',
+  Week = 'Week'
+}
+
 export type CancelAppointment = {
   reason: Scalars['String'];
   token: Scalars['String'];
@@ -2273,6 +2280,16 @@ export type FieldsTypes = {
 export type FindAllCptCodesInput = {
   code?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
+};
+
+export type FindAllCalendarAppointmentsInput = {
+  appointmentDate: Scalars['String'];
+  currentView: CalendarViewType;
+  facilityId?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+  practiceId?: Maybe<Scalars['String']>;
+  providerId?: Maybe<Scalars['String']>;
+  sortBy?: Maybe<Scalars['String']>;
 };
 
 export type FindAllCptFeeScheduleInput = {
@@ -5557,6 +5574,7 @@ export type Query = {
   fetchUser: UserPayload;
   findAllAllergies: AllergiesPayload;
   findAllAppointments: AppointmentsPayload;
+  findAllCalendarAppointments: AppointmentsPayload;
   findAllContacts: ContactsPayload;
   findAllCptCodes: AllCptCodePayload;
   findAllCptFeeSchedule: AllCptFeeSchedulesPayload;
@@ -5820,6 +5838,11 @@ export type QueryFindAllAllergiesArgs = {
 
 export type QueryFindAllAppointmentsArgs = {
   appointmentInput: AppointmentInput;
+};
+
+
+export type QueryFindAllCalendarAppointmentsArgs = {
+  findAllCalendarAppointmentsInput: FindAllCalendarAppointmentsInput;
 };
 
 
@@ -8823,6 +8846,13 @@ export type FindAllAppointmentsQueryVariables = Exact<{
 
 export type FindAllAppointmentsQuery = { __typename?: 'Query', findAllAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, appointments?: Array<{ __typename?: 'Appointment', id: string, status: AppointmentStatus, scheduleEndDateTime?: string | null, scheduleStartDateTime?: string | null, appointmentDate?: string | null, token?: string | null, reason?: string | null, primaryInsurance?: string | null, billingStatus: BillingStatus, checkInActiveStep?: string | null, appointmentCreateType?: AppointmentCreateType | null, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null, email?: string | null, contacts?: Array<{ __typename?: 'Contact', primaryContact?: boolean | null, phone?: string | null }> | null } | null, facility?: { __typename?: 'Facility', id: string, name: string } | null, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string, color?: string | null, duration: string } | null } | null> | null } };
 
+export type FetchCalendarAppointmentsQueryVariables = Exact<{
+  findAllCalendarAppointmentsInput: FindAllCalendarAppointmentsInput;
+}>;
+
+
+export type FetchCalendarAppointmentsQuery = { __typename?: 'Query', findAllCalendarAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, appointments?: Array<{ __typename?: 'Appointment', id: string, status: AppointmentStatus, scheduleEndDateTime?: string | null, scheduleStartDateTime?: string | null, patient?: { __typename?: 'Patient', firstName?: string | null, lastName?: string | null } | null, appointmentType?: { __typename?: 'Service', color?: string | null } | null } | null> | null } };
+
 export type FindAllAppointmentVisitsQueryVariables = Exact<{
   appointmentInput: AppointmentInput;
 }>;
@@ -8836,6 +8866,13 @@ export type GetAppointmentQueryVariables = Exact<{
 
 
 export type GetAppointmentQuery = { __typename?: 'Query', getAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, appointment?: { __typename?: 'Appointment', id: string, notes?: string | null, reason?: string | null, token?: string | null, status: AppointmentStatus, intakeSteps?: Array<string> | null, patientId?: string | null, employment?: boolean | null, paymentType: PaymentType, autoAccident?: boolean | null, otherAccident?: boolean | null, primaryInsurance?: string | null, secondaryInsurance?: string | null, scheduleEndDateTime?: string | null, scheduleStartDateTime?: string | null, appointmentDate?: string | null, createdAt?: string | null, updatedAt?: string | null, billingStatus: BillingStatus, checkedInAt?: string | null, selfCheckIn?: boolean | null, checkInActiveStep?: string | null, appointmentCreateType?: AppointmentCreateType | null, scribe?: { __typename?: 'Scribe', id: string, isScribed?: boolean | null, firstName?: string | null, lastName?: string | null } | null, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string, duration: string, serviceType: ServiceType } | null, provider?: { __typename?: 'Doctor', id: string, lastName?: string | null, firstName?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null } | null, facility?: { __typename?: 'Facility', id: string, name: string, practiceType?: PracticeType | null, serviceCode?: ServiceCode | null } | null, invoice?: { __typename?: 'Invoice', invoiceNo: string } | null, room?: { __typename?: 'Room', id: string, name?: string | null, number?: string | null } | null } | null } };
+
+export type GetCalenderAppointmentQueryVariables = Exact<{
+  getAppointment: GetAppointment;
+}>;
+
+
+export type GetCalenderAppointmentQuery = { __typename?: 'Query', getAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, appointment?: { __typename?: 'Appointment', id: string, token?: string | null, status: AppointmentStatus, reason?: string | null, appointmentDate?: string | null, primaryInsurance?: string | null, scheduleEndDateTime?: string | null, scheduleStartDateTime?: string | null, appointmentCreateType?: AppointmentCreateType | null, provider?: { __typename?: 'Doctor', id: string, lastName?: string | null, firstName?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null } | null, facility?: { __typename?: 'Facility', name: string } | null, appointmentType?: { __typename?: 'Service', name: string } | null } | null } };
 
 export type RemoveAppointmentMutationVariables = Exact<{
   removeAppointment: RemoveAppointment;
@@ -11323,6 +11360,64 @@ export function useFindAllAppointmentsLazyQuery(baseOptions?: Apollo.LazyQueryHo
 export type FindAllAppointmentsQueryHookResult = ReturnType<typeof useFindAllAppointmentsQuery>;
 export type FindAllAppointmentsLazyQueryHookResult = ReturnType<typeof useFindAllAppointmentsLazyQuery>;
 export type FindAllAppointmentsQueryResult = Apollo.QueryResult<FindAllAppointmentsQuery, FindAllAppointmentsQueryVariables>;
+export const FetchCalendarAppointmentsDocument = gql`
+    query FetchCalendarAppointments($findAllCalendarAppointmentsInput: FindAllCalendarAppointmentsInput!) {
+  findAllCalendarAppointments(
+    findAllCalendarAppointmentsInput: $findAllCalendarAppointmentsInput
+  ) {
+    response {
+      error
+      status
+      message
+    }
+    pagination {
+      page
+      totalPages
+    }
+    appointments {
+      id
+      status
+      scheduleEndDateTime
+      scheduleStartDateTime
+      patient {
+        firstName
+        lastName
+      }
+      appointmentType {
+        color
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useFetchCalendarAppointmentsQuery__
+ *
+ * To run a query within a React component, call `useFetchCalendarAppointmentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFetchCalendarAppointmentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFetchCalendarAppointmentsQuery({
+ *   variables: {
+ *      findAllCalendarAppointmentsInput: // value for 'findAllCalendarAppointmentsInput'
+ *   },
+ * });
+ */
+export function useFetchCalendarAppointmentsQuery(baseOptions: Apollo.QueryHookOptions<FetchCalendarAppointmentsQuery, FetchCalendarAppointmentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FetchCalendarAppointmentsQuery, FetchCalendarAppointmentsQueryVariables>(FetchCalendarAppointmentsDocument, options);
+      }
+export function useFetchCalendarAppointmentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FetchCalendarAppointmentsQuery, FetchCalendarAppointmentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FetchCalendarAppointmentsQuery, FetchCalendarAppointmentsQueryVariables>(FetchCalendarAppointmentsDocument, options);
+        }
+export type FetchCalendarAppointmentsQueryHookResult = ReturnType<typeof useFetchCalendarAppointmentsQuery>;
+export type FetchCalendarAppointmentsLazyQueryHookResult = ReturnType<typeof useFetchCalendarAppointmentsLazyQuery>;
+export type FetchCalendarAppointmentsQueryResult = Apollo.QueryResult<FetchCalendarAppointmentsQuery, FetchCalendarAppointmentsQueryVariables>;
 export const FindAllAppointmentVisitsDocument = gql`
     query FindAllAppointmentVisits($appointmentInput: AppointmentInput!) {
   findAllAppointments(appointmentInput: $appointmentInput) {
@@ -11526,6 +11621,72 @@ export function useGetAppointmentLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type GetAppointmentQueryHookResult = ReturnType<typeof useGetAppointmentQuery>;
 export type GetAppointmentLazyQueryHookResult = ReturnType<typeof useGetAppointmentLazyQuery>;
 export type GetAppointmentQueryResult = Apollo.QueryResult<GetAppointmentQuery, GetAppointmentQueryVariables>;
+export const GetCalenderAppointmentDocument = gql`
+    query GetCalenderAppointment($getAppointment: GetAppointment!) {
+  getAppointment(getAppointment: $getAppointment) {
+    response {
+      error
+      status
+      message
+    }
+    appointment {
+      id
+      token
+      status
+      reason
+      appointmentDate
+      primaryInsurance
+      scheduleEndDateTime
+      scheduleStartDateTime
+      appointmentCreateType
+      provider {
+        id
+        lastName
+        firstName
+      }
+      patient {
+        id
+        firstName
+        lastName
+      }
+      facility {
+        name
+      }
+      appointmentType {
+        name
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCalenderAppointmentQuery__
+ *
+ * To run a query within a React component, call `useGetCalenderAppointmentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCalenderAppointmentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCalenderAppointmentQuery({
+ *   variables: {
+ *      getAppointment: // value for 'getAppointment'
+ *   },
+ * });
+ */
+export function useGetCalenderAppointmentQuery(baseOptions: Apollo.QueryHookOptions<GetCalenderAppointmentQuery, GetCalenderAppointmentQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCalenderAppointmentQuery, GetCalenderAppointmentQueryVariables>(GetCalenderAppointmentDocument, options);
+      }
+export function useGetCalenderAppointmentLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCalenderAppointmentQuery, GetCalenderAppointmentQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCalenderAppointmentQuery, GetCalenderAppointmentQueryVariables>(GetCalenderAppointmentDocument, options);
+        }
+export type GetCalenderAppointmentQueryHookResult = ReturnType<typeof useGetCalenderAppointmentQuery>;
+export type GetCalenderAppointmentLazyQueryHookResult = ReturnType<typeof useGetCalenderAppointmentLazyQuery>;
+export type GetCalenderAppointmentQueryResult = Apollo.QueryResult<GetCalenderAppointmentQuery, GetCalenderAppointmentQueryVariables>;
 export const RemoveAppointmentDocument = gql`
     mutation RemoveAppointment($removeAppointment: RemoveAppointment!) {
   removeAppointment(removeAppointment: $removeAppointment) {
