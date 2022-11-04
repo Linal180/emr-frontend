@@ -54,6 +54,12 @@ query FindAllAppointments($appointmentInput: AppointmentInput!) {
         color
         duration
       }
+
+      room {
+        id
+        name
+        number
+      }
     }
   }
 }

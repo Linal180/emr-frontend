@@ -9,7 +9,7 @@ import { useParams } from "react-router";
 import Alert from "../../../../common/Alert";
 // constants, interfaces, utils block 
 import { NoDataIcon, SearchIcon } from "../../../../../assets/svgs";
-import { ADD_REASON, ICD_10, INITIAL_PAGE_LIMIT, NO_RECORDS, PROBLEMS_TABS, REASON_ADDED, SEARCH_FOR_PROBLEMS, SNOMED, TYPE } from "../../../../../constants";
+import { CHIEF_COMPLAINT, ICD_10, INITIAL_PAGE_LIMIT, NO_RECORDS, PROBLEMS_TABS, REASON_ADDED, SEARCH_FOR_PROBLEMS, SNOMED, TYPE } from "../../../../../constants";
 import {
   IcdCodesWithSnowMedCode, ProblemSeverity, ProblemType, useAddPatientProblemMutation, useSearchIcdCodesLazyQuery
 } from "../../../../../generated/graphql";
@@ -236,7 +236,7 @@ const AppointmentReasonModal: FC<AddAppointmentReasonProps> = ({ isOpen = false,
   return (
     <Dialog fullWidth maxWidth="sm" open={isOpen} onClose={handleModalClose}>
       <DialogTitle>
-        <Typography variant="h4">{title || ADD_REASON}</Typography>
+        <Typography variant="h4">{title || CHIEF_COMPLAINT}</Typography>
       </DialogTitle>
 
       <DialogContent className={chartingClasses.chartModalBox}>
