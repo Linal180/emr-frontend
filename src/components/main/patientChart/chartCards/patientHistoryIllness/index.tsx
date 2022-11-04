@@ -119,7 +119,7 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
     fetchPatientIllnessHistory()
   }, [fetchPatientIllnessHistory])
 
-  const fetchPatientChartingTemplates = useCallback(async (ids: string[]) => {
+  const fetchPatientChartingTemplates = async (ids: string[]) => {
     try {
       ids.forEach(async (id) => {
         if (!templates?.some((template) => id === template.id)) {
@@ -130,9 +130,12 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
           })
         }
       })
+
+      const transformedTemplates = templates.filter((template) => ids.includes(template?.id))
+      dispatch({ type: ActionType.SET_TEMPLATES, templates: transformedTemplates })
     } catch (error) { }
 
-  }, [findPatientChartingTemplate, templates])
+  }
 
   const onSubmit: SubmitHandler<any> = async (values) => {
     try {
