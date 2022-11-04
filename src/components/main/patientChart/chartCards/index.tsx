@@ -55,7 +55,7 @@ const ChartCards: FC<ChartComponentProps> = ({ appointmentState, shouldDisableEd
   useEffect(() => {
     const transformedInTakeSteps = intakeSteps?.map((value) => Number(value || '')) || []
     setStepArray(transformedInTakeSteps)
-    dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: transformedInTakeSteps[transformedInTakeSteps.length - 1] })
+    dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: transformedInTakeSteps[transformedInTakeSteps.length - 1] || 0 })
   }, [intakeSteps])
 
   const patientClasses = useExternalPatientStyles();
@@ -215,10 +215,7 @@ const ChartCards: FC<ChartComponentProps> = ({ appointmentState, shouldDisableEd
         return <ReviewOfSystem shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(12)} />
 
       case 12:
-        return <PhysicalExam shouldDisableEdit={shouldDisableEdit} handleStep={() => handleStep(13)} />
-
-      case 13:
-        return <AssessmentPlanTab shouldDisableEdit={shouldDisableEdit} />
+        return <PhysicalExam shouldDisableEdit={shouldDisableEdit} />
       default:
         return (
           <></>
@@ -311,7 +308,7 @@ const ChartCards: FC<ChartComponentProps> = ({ appointmentState, shouldDisableEd
 
             {appointmentId && <Box m={0.5}>
               <Button variant="contained" color="primary" onClick={() => {
-                handleDischarge()
+                !isPatientDischarged ? handleDischarge() : labOrderHandler && labOrderHandler()
               }}>
                 {isInTake ? DONE_INTAKE :
                   isPatientDischarged ? AppointmentStatus.Discharged : SIGN_OFF}

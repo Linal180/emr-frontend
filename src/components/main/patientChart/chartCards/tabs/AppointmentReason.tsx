@@ -8,7 +8,10 @@ import ConfirmationModal from '../../../../common/ConfirmationModal'
 import NoDataFoundComponent from '../../../../common/NoDataFoundComponent'
 import AppointmentReasonModal from '../AppointmentReason/AppointmentReasonModal'
 //constants, interfaces, styles, reducers, graphql
-import { ADD, APPOINTMENT_REASON_DELETED, CHIEF_COMPLAINT, DELETE_REASON_DESCRIPTION, NEXT, REACTION_PAGE_LIMIT, REASON, TO_CHECKOUT } from '../../../../../constants'
+import {
+  ADD, APPOINTMENT_REASON_DELETED, CHIEF_COMPLAINT, DELETE_CHIEF_COMPLAINT_DESCRIPTION, NEXT, REACTION_PAGE_LIMIT,
+  TO_CHECKOUT
+} from '../../../../../constants'
 import { PatientProblemsPayload, useFindAllPatientProblemsLazyQuery, useRemovePatientProblemMutation } from '../../../../../generated/graphql'
 import { AppointmentReasonProps, ParamsType } from '../../../../../interfacesTypes'
 import { Action, ActionType, chartReducer, initialState, State } from '../../../../../reducers/chartReducer'
@@ -148,7 +151,7 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
               </Box>
             })}
           </Box>
-          
+
           {((!loading && singlePatientProblems?.length === 0) || error) && (
             <Box display="flex" justifyContent="center" pb={12} pt={5}>
               <NoDataFoundComponent />
@@ -166,10 +169,10 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
         />}
 
       <ConfirmationModal
-        title={REASON}
+        title={CHIEF_COMPLAINT}
         isOpen={openDelete}
         isLoading={removeProblemLoading}
-        description={DELETE_REASON_DESCRIPTION}
+        description={DELETE_CHIEF_COMPLAINT_DESCRIPTION}
         handleDelete={handleDelete}
         setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
       />

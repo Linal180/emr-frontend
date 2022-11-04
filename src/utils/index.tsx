@@ -2475,10 +2475,13 @@ export const emailRegex = (value: string) => {
 }
 
 export const dateFormateForEmail = (dateTime: string) => {
-  const appointmentDateStr = dateTime ? parseInt(dateTime) : '';
-  const date = moment(appointmentDateStr).format("DD-MM-YYYY")
-  const time = moment(appointmentDateStr).format("hh:mm A")
-  return { date: date, time: time }
+
+  if (dateTime) {
+    const date = moment(dateTime).format("DD-MM-YYYY")
+    const time = moment(dateTime).format("hh:mm A")
+    return { date: date, time: time }
+  }
+  return { date: '', time: '' }
 }
 
 const getSocialQsType = (type: string, value: any) => {

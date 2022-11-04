@@ -2598,4 +2598,8 @@ export type PatientPrimaryProviderProps = {
   label?: string
 }
 
-export type AddDiagnoseType = 'medication' | 'test' | 'imaging'
+export type AddDiagnoseType = 'medication' | 'test' | 'imaging';
+
+export type AppointmentRoomProps = {
+  appointmentId: string
+}
