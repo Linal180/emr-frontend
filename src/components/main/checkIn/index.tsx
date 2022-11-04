@@ -1,7 +1,7 @@
 // packages block
 import clsx from 'clsx';
 import { useParams } from "react-router";
-import {  useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { Check, ChevronRight } from '@material-ui/icons';
 import { Reducer, useCallback, useContext, useEffect, useReducer, useRef, useState } from "react";
 import {
@@ -455,7 +455,9 @@ const CheckInComponent = (): JSX.Element => {
         <Box p={1} />
 
         <Box className={checkInClasses.checkInProfileBox}>
-          <AppointmentRoom appointmentId={appointmentId || ''} />
+          <FormProvider {...methods}>
+            <AppointmentRoom appointmentId={appointmentId || ''} />
+          </FormProvider>
         </Box>
 
       </Box>
