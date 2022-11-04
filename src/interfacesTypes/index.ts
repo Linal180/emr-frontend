@@ -1842,7 +1842,8 @@ export interface AppointmentCardProps {
   tooltip: AppointmentTooltip.LayoutProps
   setCurrentView: Function
   setCurrentDate: Function,
-  reload: Function
+  reload: Function,
+  appOpen: boolean
 }
 
 export interface ProfileEditFormType {

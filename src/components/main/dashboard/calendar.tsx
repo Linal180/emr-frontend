@@ -11,6 +11,7 @@ import {
 } from '@devexpress/dx-react-scheduler-material-ui';
 // component block
 import Alert from "../../common/Alert";
+import Loader from "../../common/Loader";
 import PageHeader from "../../common/PageHeader";
 import { DayTimeTableCell } from "./calendarViews/dayView";
 import { WeekTimeTableCell } from "./calendarViews/weekView";
@@ -28,16 +29,13 @@ import { useIndicatorStyles } from "../../../styles/indicatorStyles";
 import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../../reducers/appointmentReducer";
-import {
-  useFindAllAppointmentsLazyQuery, AppointmentsPayload, AppointmentStatus
-} from "../../../generated/graphql";
+import { AppointmentsPayload, useFetchCalendarAppointmentsLazyQuery } from "../../../generated/graphql";
 import {
   isSuperAdmin, isPracticeAdmin, isFacilityAdmin, mapAppointmentData, isOnlyDoctor, isStaff
 } from "../../../utils"
 import {
   CALENDAR_VIEW_APPOINTMENTS_BREAD, CALENDAR_VIEW_TEXT, DASHBOARD_BREAD, SOMETHING_WENT_WRONG
 } from "../../../constants";
-import Loader from "../../common/Loader";
 
 const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
   const [currentDate, setCurrentDate] = useState(new Date())
@@ -57,7 +55,7 @@ const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
   const isFacility = isFacilityAdmin(roles);
 
   const indicatorRef = useRef<Element>(null);
-  const [{ appointments, page }, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
+  const [{ appointments, page, appOpen }, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
 
   const Indicator = ({ top, ...restProps }: any) => {
     const classes = useIndicatorStyles({ top });
@@ -70,7 +68,7 @@ const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
     );
   };
 
-  const [findAllAppointments, { loading: fetchAllAppointmentsLoading }] = useFindAllAppointmentsLazyQuery({
+  const [findAllAppointments, { loading: fetchAllAppointmentsLoading }] = useFetchCalendarAppointmentsLazyQuery({
     variables: {
       appointmentInput: {
         practiceId: practiceId || '',
@@ -96,8 +94,7 @@ const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
 
         dispatch({
           type: ActionType.SET_APPOINTMENTS,
-          appointments: appointments?.filter(appointment =>
-            appointment?.status !== AppointmentStatus.Cancelled) as AppointmentsPayload['appointments']
+          appointments: appointments as AppointmentsPayload['appointments']
         });
       }
     }
@@ -189,16 +186,26 @@ const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
               <IntegratedEditing />
               <IntegratedAppointments />
               <DateNavigator />
-              <Appointments appointmentComponent={Appointment}
+
+              <Appointments
+                appointmentComponent={Appointment}
+                containerComponent={AppointmentContainer}
                 appointmentContentComponent={AppointmentContent}
-                containerComponent={AppointmentContainer} />
+              />
+
               <AppointmentTooltip
                 showCloseButton
-                layoutComponent={(props) => <AppointmentCard tooltip={props}
-                  setCurrentView={setCurrentView}
-                  setCurrentDate={setCurrentDate}
-                  reload={fetchAppointments}
-                />} />
+                onVisibilityChange={(val) => dispatch({ type: ActionType.SET_APP_OPEN, appOpen: val })}
+                layoutComponent={(props) =>
+                  <AppointmentCard
+                    appOpen={appOpen}
+                    tooltip={props}
+                    setCurrentView={setCurrentView}
+                    setCurrentDate={setCurrentDate}
+                    reload={fetchAppointments}
+                  />}
+              />
+
               <CurrentTimeIndicator
                 indicatorComponent={Indicator}
               />
