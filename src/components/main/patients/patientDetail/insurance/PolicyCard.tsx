@@ -54,7 +54,7 @@ const CheckInStepIcon: FC<StepIconProps> = ({ active, completed }) => {
 }
 
 const PolicyCard: FC<PolicyCardProps> = ({
-  id, isEdit, handleReload, filteredOrderOfBenefitOptions, setPolicyToEdit
+  id, isEdit, handleReload, filteredOrderOfBenefitOptions, setPolicyToEdit, refetch
 }) => {
   const addInsuranceClasses = useInsurancesStyles();
   const { id: patientId } = useParams<ParamsType>()
@@ -346,6 +346,8 @@ const PolicyCard: FC<PolicyCardProps> = ({
         })
       }
     } else Alert.error(INSURANCE_CARD_ERROR_MESSAGE)
+
+    refetch && refetch()
   }
 
   const loading = isEdit && isFormLoaded

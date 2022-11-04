@@ -30,7 +30,7 @@ import { INSURANCE, INSURANCE_SELECTION, NEXT, PAYMENTS, RegisterPatientMenuNav 
 
 
 const RegisterFormComponent: FC<PatientCardsProps> = ({
-  getPatientLoading, dispatch, isEdit, state, shouldDisableEdit, disableSubmit, shouldShowBread, isAppointment
+  getPatientLoading, dispatch, isEdit, state, shouldDisableEdit, disableSubmit, shouldShowBread, isAppointment, refetch
 }) => {
   const classes = useExternalPatientStyles()
   const methods = useFormContext<PatientInputProps>()
@@ -96,7 +96,7 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
             disableSubmit={disableSubmit}
             saveBtnText={NEXT}
           >
-            <InsuranceComponent />
+            <InsuranceComponent refetch={refetch}/>
           </CardComponent>
         )
 

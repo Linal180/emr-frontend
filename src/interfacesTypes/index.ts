@@ -1020,6 +1020,7 @@ export interface PolicyCardProps extends GeneralFormProps {
   handleReload?: Function
   filteredOrderOfBenefitOptions?: SelectorOption[]
   setPolicyToEdit?: Function
+  refetch?: Function
 }
 
 export interface CheckInComponentProps {
@@ -1461,6 +1462,7 @@ export interface PatientCardsProps extends GeneralFormProps {
   disableSubmit?: boolean
   loading?: boolean
   isAppointment: boolean
+  refetch?: Function
 }
 
 export interface InsuranceSelectionProps extends GeneralFormProps {
@@ -1484,6 +1486,7 @@ export interface PatientFormProps extends GeneralFormProps {
   shouldShowBread?: boolean
   shouldDisableEdit?: boolean
   isAppointment?: boolean
+  refetch?: Function
 }
 
 export type UpFrontPaymentProps = {
@@ -2194,6 +2197,7 @@ export interface BillingComponentProps extends GeneralFormProps {
   shouldDisableEdit?: boolean
   submitButtonText?: string
   labOrderNumber?: string
+  refetch?: Function
 }
 
 export interface BillingFormProps extends BillingComponentProps {
@@ -2205,6 +2209,7 @@ export interface BillingFormProps extends BillingComponentProps {
   state: BillingState
   claimNumber: string
   createClaimLoading: boolean
+  refetch?: Function
 }
 
 export interface CodesTableProps {
@@ -2378,6 +2383,7 @@ export type InsuranceComponentProps = {
   shouldDisableEdit?: boolean;
   showAddInsuranceBtn?: boolean;
   showEditInsuranceBtn?: boolean;
+  refetch?: Function
 }
 
 export type ItemSelectForwardRef = {

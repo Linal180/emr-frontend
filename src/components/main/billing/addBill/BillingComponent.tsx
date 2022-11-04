@@ -32,7 +32,7 @@ import {
   useFindAllPatientProblemsIcdCodeLazyQuery,
 } from "../../../../generated/graphql";
 
-const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submitButtonText, labOrderNumber }) => {
+const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submitButtonText, labOrderNumber, refetch }) => {
   const { id, appointmentId } = useParams<ParamsType>()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(billingReducer, initialState)
   const {
@@ -650,6 +650,7 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         createClaimCallback={createClaimCallback}
         claimNumber={claimNumber}
         createClaimLoading={createClaimLoading}
+        refetch={refetch}
       />
 
       {

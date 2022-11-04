@@ -139,10 +139,8 @@ const CheckInComponent = (): JSX.Element => {
         const { policies, response } = fetchPatientInsurances
         if (response && response.status === 200) {
           const primaryInsurance = policies?.find((policy) => policy.orderOfBenefit === OrderOfBenefitType.Primary)
-          if (!!primaryInsurance) {
             dispatch({ type: ActionType.SET_PRIMARY_INSURANCE, primaryInsurance: primaryInsurance?.insurance?.payerName ?? '' })
             return
-          }
         }
       }
     }
@@ -296,7 +294,7 @@ const CheckInComponent = (): JSX.Element => {
       case 4:
         return <SignOff handleStepChange={handleStep} appointmentInfo={appointment} />
       case 5:
-        return <BillingComponent shouldDisableEdit={shouldDisableBillingEdit} />
+        return <BillingComponent shouldDisableEdit={shouldDisableBillingEdit} refetch={fetchPatientInsurances}/>
       default:
         return <CircularProgress />;
     }
@@ -329,6 +327,7 @@ const CheckInComponent = (): JSX.Element => {
               isAppointment
               shouldShowBread={false}
               ref={patientRef}
+              refetch={fetchPatientInsurances}
               shouldDisableEdit={shouldDisableChartingEdit}
             />
           </Box>
