@@ -2,6 +2,7 @@
 import {
   useEffect, useCallback, Reducer, useReducer, useContext, useRef, FC, useState
 } from "react";
+import moment from "moment";
 import classNames from "clsx";
 import { Box, Card } from "@material-ui/core";
 import { EditingState, IntegratedEditing, ViewState } from '@devexpress/dx-react-scheduler';
@@ -29,7 +30,7 @@ import { useIndicatorStyles } from "../../../styles/indicatorStyles";
 import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../../reducers/appointmentReducer";
-import { AppointmentsPayload, useFetchCalendarAppointmentsLazyQuery } from "../../../generated/graphql";
+import { AppointmentsPayload, CalendarViewType, useFetchCalendarAppointmentsLazyQuery } from "../../../generated/graphql";
 import {
   isSuperAdmin, isPracticeAdmin, isFacilityAdmin, mapAppointmentData, isOnlyDoctor, isStaff
 } from "../../../utils"
@@ -38,6 +39,7 @@ import {
 } from "../../../constants";
 
 const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
+
   const [currentDate, setCurrentDate] = useState(new Date())
   const [currentView, setCurrentView] = useState<string>('Month')
 
@@ -69,14 +71,6 @@ const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
   };
 
   const [findAllAppointments, { loading: fetchAllAppointmentsLoading }] = useFetchCalendarAppointmentsLazyQuery({
-    variables: {
-      appointmentInput: {
-        practiceId: practiceId || '',
-        paginationOptions: {
-          page: 1, limit: 20
-        }
-      }
-    },
 
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
@@ -87,10 +81,10 @@ const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
     },
 
     onCompleted(data) {
-      const { findAllAppointments } = data || {};
+      const { findAllCalendarAppointments } = data || {};
 
-      if (findAllAppointments) {
-        const { appointments } = findAllAppointments
+      if (findAllCalendarAppointments) {
+        const { appointments } = findAllCalendarAppointments
 
         dispatch({
           type: ActionType.SET_APPOINTMENTS,
@@ -126,7 +120,8 @@ const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
 
   const fetchAppointments = useCallback(async () => {
     try {
-      const pageInputs = { paginationOptions: { page, limit: 125 } }
+      const pageInputs = { paginationOptions: { page, limit: 1000 } }
+      const appointmentDate = moment(currentDate).format('YYYY-MM-DD')
       let inputs = isSuper ? {}
         : isPractice ? { practiceId }
           : isFacility || isStaffUser ? { facilityId }
@@ -134,14 +129,11 @@ const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
 
       !!inputs ? await findAllAppointments({
         variables: {
-          appointmentInput: { ...inputs, ...pageInputs }
+          findAllCalendarAppointmentsInput: { ...inputs, ...pageInputs, appointmentDate, currentView: currentView as CalendarViewType }
         },
       }) : Alert.error(SOMETHING_WENT_WRONG)
     } catch (error) { }
-  }, [
-    page, isSuper, isPractice, isFacility, isStaffUser, isDoctor, findAllAppointments,
-    practiceId, facilityId, userId
-  ])
+  }, [page, currentDate, isSuper, isPractice, practiceId, isFacility, isStaffUser, facilityId, isDoctor, userId, findAllAppointments, currentView])
 
   const currentViewNameChange = (currentViewName: string) => setCurrentView(currentViewName);
 
@@ -156,6 +148,7 @@ const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
   if (fetchAllAppointmentsLoading) {
     return <Loader loading loaderText="Fetching Appointments..." />
   }
+
 
   return (
     <>
@@ -173,9 +166,13 @@ const CalendarComponent: FC<CalenderProps> = ({ showHeader }): JSX.Element => {
             <Scheduler data={mapAppointmentData(appointments)}>
               <ViewState
                 currentDate={currentDate}
-                onCurrentDateChange={(currentDate) => { handleDateChange(currentDate) }}
+                onCurrentDateChange={(currentDate) => {
+                  handleDateChange(currentDate)
+                }}
                 currentViewName={currentView}
-                onCurrentViewNameChange={currentViewNameChange} />
+                onCurrentViewNameChange={currentViewNameChange}
+              />
+
               <EditingState onCommitChanges={onCommitChanges} />
               <MonthView timeTableCellComponent={MonthTimeTableCell} />
               <WeekView timeTableCellComponent={WeekTimeTableCell} />

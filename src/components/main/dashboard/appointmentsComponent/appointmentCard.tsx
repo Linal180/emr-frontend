@@ -216,7 +216,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload, appO
               <Typography variant="body2">{facilityName ?? 'N/A'}</Typography>
             </Box>
 
-            {providerName !== 'undefined undefined' && <Box display='flex' justifyContent='space-between' pb={1}>
+            {providerName !== ' ' && <Box display='flex' justifyContent='space-between' pb={1}>
               <Typography variant="body1">{PROVIDER_NAME}</Typography>
               <Typography variant="body2">{providerName}</Typography>
             </Box>}
@@ -228,7 +228,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload, appO
 
             <Box display='flex' justifyContent='space-between' pb={1}>
               <Typography variant="body1">{PRIMARY_INSURANCE}</Typography>
-              <Typography variant="body2">{appPrimaryInsurance === '' ? 'N/A' : appPrimaryInsurance}</Typography>
+              <Typography variant="body2">{appPrimaryInsurance ?? 'N/A'}</Typography>
             </Box>
 
             <ConfirmationModal

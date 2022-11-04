@@ -58,8 +58,8 @@ query FindAllAppointments($appointmentInput: AppointmentInput!) {
   }
 }
 
-query FetchCalendarAppointments($appointmentInput: AppointmentInput!) {
-  findAllAppointments(appointmentInput: $appointmentInput) {
+query FetchCalendarAppointments($findAllCalendarAppointmentsInput: FindAllCalendarAppointmentsInput!) {
+  findAllCalendarAppointments(findAllCalendarAppointmentsInput: $findAllCalendarAppointmentsInput) {
     response {
       error
       status

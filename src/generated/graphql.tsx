@@ -667,6 +667,13 @@ export type Cvx = {
   vaccineProduct?: Maybe<Array<VaccineProduct>>;
 };
 
+/** Calendar View Type  */
+export enum CalendarViewType {
+  Day = 'Day',
+  Month = 'Month',
+  Week = 'Week'
+}
+
 export type CancelAppointment = {
   reason: Scalars['String'];
   token: Scalars['String'];
@@ -2273,6 +2280,16 @@ export type FieldsTypes = {
 export type FindAllCptCodesInput = {
   code?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
+};
+
+export type FindAllCalendarAppointmentsInput = {
+  appointmentDate: Scalars['String'];
+  currentView: CalendarViewType;
+  facilityId?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+  practiceId?: Maybe<Scalars['String']>;
+  providerId?: Maybe<Scalars['String']>;
+  sortBy?: Maybe<Scalars['String']>;
 };
 
 export type FindAllCptFeeScheduleInput = {
@@ -5557,6 +5574,7 @@ export type Query = {
   fetchUser: UserPayload;
   findAllAllergies: AllergiesPayload;
   findAllAppointments: AppointmentsPayload;
+  findAllCalendarAppointments: AppointmentsPayload;
   findAllContacts: ContactsPayload;
   findAllCptCodes: AllCptCodePayload;
   findAllCptFeeSchedule: AllCptFeeSchedulesPayload;
@@ -5820,6 +5838,11 @@ export type QueryFindAllAllergiesArgs = {
 
 export type QueryFindAllAppointmentsArgs = {
   appointmentInput: AppointmentInput;
+};
+
+
+export type QueryFindAllCalendarAppointmentsArgs = {
+  findAllCalendarAppointmentsInput: FindAllCalendarAppointmentsInput;
 };
 
 
@@ -8824,11 +8847,11 @@ export type FindAllAppointmentsQueryVariables = Exact<{
 export type FindAllAppointmentsQuery = { __typename?: 'Query', findAllAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, appointments?: Array<{ __typename?: 'Appointment', id: string, status: AppointmentStatus, scheduleEndDateTime?: string | null, scheduleStartDateTime?: string | null, appointmentDate?: string | null, token?: string | null, reason?: string | null, primaryInsurance?: string | null, billingStatus: BillingStatus, checkInActiveStep?: string | null, appointmentCreateType?: AppointmentCreateType | null, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, patient?: { __typename?: 'Patient', id: string, firstName?: string | null, lastName?: string | null, email?: string | null, contacts?: Array<{ __typename?: 'Contact', primaryContact?: boolean | null, phone?: string | null }> | null } | null, facility?: { __typename?: 'Facility', id: string, name: string } | null, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string, color?: string | null, duration: string } | null } | null> | null } };
 
 export type FetchCalendarAppointmentsQueryVariables = Exact<{
-  appointmentInput: AppointmentInput;
+  findAllCalendarAppointmentsInput: FindAllCalendarAppointmentsInput;
 }>;
 
 
-export type FetchCalendarAppointmentsQuery = { __typename?: 'Query', findAllAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, appointments?: Array<{ __typename?: 'Appointment', id: string, status: AppointmentStatus, scheduleEndDateTime?: string | null, scheduleStartDateTime?: string | null, patient?: { __typename?: 'Patient', firstName?: string | null, lastName?: string | null } | null, appointmentType?: { __typename?: 'Service', color?: string | null } | null } | null> | null } };
+export type FetchCalendarAppointmentsQuery = { __typename?: 'Query', findAllCalendarAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, appointments?: Array<{ __typename?: 'Appointment', id: string, status: AppointmentStatus, scheduleEndDateTime?: string | null, scheduleStartDateTime?: string | null, patient?: { __typename?: 'Patient', firstName?: string | null, lastName?: string | null } | null, appointmentType?: { __typename?: 'Service', color?: string | null } | null } | null> | null } };
 
 export type FindAllAppointmentVisitsQueryVariables = Exact<{
   appointmentInput: AppointmentInput;
@@ -11338,8 +11361,10 @@ export type FindAllAppointmentsQueryHookResult = ReturnType<typeof useFindAllApp
 export type FindAllAppointmentsLazyQueryHookResult = ReturnType<typeof useFindAllAppointmentsLazyQuery>;
 export type FindAllAppointmentsQueryResult = Apollo.QueryResult<FindAllAppointmentsQuery, FindAllAppointmentsQueryVariables>;
 export const FetchCalendarAppointmentsDocument = gql`
-    query FetchCalendarAppointments($appointmentInput: AppointmentInput!) {
-  findAllAppointments(appointmentInput: $appointmentInput) {
+    query FetchCalendarAppointments($findAllCalendarAppointmentsInput: FindAllCalendarAppointmentsInput!) {
+  findAllCalendarAppointments(
+    findAllCalendarAppointmentsInput: $findAllCalendarAppointmentsInput
+  ) {
     response {
       error
       status
@@ -11378,7 +11403,7 @@ export const FetchCalendarAppointmentsDocument = gql`
  * @example
  * const { data, loading, error } = useFetchCalendarAppointmentsQuery({
  *   variables: {
- *      appointmentInput: // value for 'appointmentInput'
+ *      findAllCalendarAppointmentsInput: // value for 'findAllCalendarAppointmentsInput'
  *   },
  * });
  */
