@@ -1,14 +1,15 @@
 // packages block
-import { Reducer, useCallback, useContext, useEffect, useReducer } from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { Close, VideocamOutlined } from '@material-ui/icons';
+import { Reducer, useCallback, useContext, useEffect, useReducer } from 'react';
 import { Box, Button, Dialog, Card, CardHeader, IconButton, Typography } from '@material-ui/core';
 // component block
 import Alert from '../../../common/Alert';
 import ConfirmationModal from '../../../common/ConfirmationModal';
 // constant, assets and styles block
 import history from '../../../../history';
+import { AuthContext } from '../../../../context';
 import { AppointmentCardProps } from '../../../../interfacesTypes';
 import { useCalendarStyles } from '../../../../styles/calendarStyles';
 import { DeleteAppointmentIcon, EditAppointmentIcon } from '../../../../assets/svgs';
@@ -16,47 +17,45 @@ import {
   Action, appointmentReducer, initialState, State, ActionType
 } from '../../../../reducers/appointmentReducer';
 import {
-  useGetAppointmentLazyQuery, useCancelAppointmentMutation, AppointmentCreateType
+  useGetAppointmentLazyQuery, useCancelAppointmentMutation, AppointmentCreateType, AppointmentPayload, AppointmentStatus
 } from '../../../../generated/graphql';
 import {
-  appointmentStatus, getAppointmentDate, getAppointmentDatePassingView, getAppointmentTime, getISOTime, isSuperAdmin
+  appointmentStatus, getAppointmentDatePassingView, getAppointmentDateWithDay, getDocumentDateFromTimestamps, getISOTime, isSuperAdmin
 } from '../../../../utils';
 import {
   APPOINTMENT_CANCEL_REASON, CANCEL_RECORD, PROVIDER_NAME, APPOINTMENT, PRIMARY_INSURANCE,
   CANCEL_APPOINTMENT_DESCRIPTION, CHECK_IN_ROUTE, TELEHEALTH_URL, REASON, FACILITY_NAME, APPOINTMENT_TYPE,
   CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, APPOINTMENTS_ROUTE, TELEHEALTH, CANCEL_TIME_PAST_MESSAGE,
 } from '../../../../constants';
-import { AuthContext } from '../../../../context';
 
-const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: AppointmentCardProps): JSX.Element => {
+const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload, appOpen: appointmentOpen }: AppointmentCardProps): JSX.Element => {
   const { user } = useContext(AuthContext)
   const { roles } = user || {}
-  const { visible, onHide, appointmentMeta } = tooltip
+  const { visible, onHide, appointmentMeta } = tooltip;
+  const { data } = appointmentMeta || {}
+  const { id, title, startDate } = data || {}
 
   const classes = useCalendarStyles()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState);
-  const { appOpen, openDelete } = state;
+  const { openDelete, appointment } = state;
   const isSuper = isSuperAdmin(roles)
 
-  const id = appointmentMeta?.data.appointmentId
-  const appReason = appointmentMeta?.data?.reason
-  const patientName = appointmentMeta?.data.title
+  const {
+    reason: appReason, patient, token: appCancelToken, facility, provider, scheduleStartDateTime, appointmentDate,
+    primaryInsurance: appPrimaryInsurance, scheduleEndDateTime, appointmentCreateType, appointmentType, status
+  } = appointment || {}
+  const { id: patientId, firstName, lastName } = patient || {}
+  const { name: facilityName } = facility || {}
+  const { firstName: providerFN, lastName: providerLN } = provider || {}
 
-  const patientId = appointmentMeta?.data.patientId
-  const appCancelToken = appointmentMeta?.data.token
-  const facilityName = appointmentMeta?.data?.facilityName
+  const patientName = `${firstName || ''} ${lastName || ''}`
+  const providerName = `${providerFN || ''} ${providerLN || ''}`
 
-  const providerName = appointmentMeta?.data?.providerName
-  const appDate = getAppointmentDate(appointmentMeta?.data.startDate)
-  const appEndTime = getAppointmentTime(appointmentMeta?.data.endDate)
+  const appDate = getAppointmentDateWithDay(appointmentDate || '', 'YYYY-MM-DD', 'MMMM Do YYYY')
+  const appEndTime = getDocumentDateFromTimestamps(scheduleEndDateTime || '', 'hh:mm a')
+  const appStartTime = getDocumentDateFromTimestamps(scheduleStartDateTime || '', 'hh:mm a')
+  const isDisabled = !(status === AppointmentStatus.Scheduled || status === AppointmentStatus.Rescheduled)
 
-  const appStartTime = getAppointmentTime(appointmentMeta?.data.startDate)
-  const scheduleStartDateTime = appointmentMeta?.data.scheduleStartDateTime
-  const appPrimaryInsurance = appointmentMeta?.data?.primaryInsurance
-
-  const appointmentDatePassingView = appointmentMeta && appointmentMeta?.data.startDate
-  const appointmentCreateType = appointmentMeta?.data?.appointmentCreateType
-  const status = appointmentMeta?.data?.rawStatus
   const { text: appointmentArrivalStatus } = appointmentStatus(status || '')
 
   const [getAppointment] = useGetAppointmentLazyQuery({
@@ -69,12 +68,13 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
     },
 
     async onCompleted(data) {
-      const { getAppointment: { response, appointment } } = data;
+      const { getAppointment: { response, appointment: appointmentData } } = data;
 
       if (response) {
         const { status } = response;
-        if (appointment && status && status === 200) {
-          const { appointmentCreateType } = appointment;
+        if (appointmentData && status && status === 200) {
+          dispatch({ type: ActionType.SET_APPOINTMENT, appointment: appointmentData as AppointmentPayload['appointment'] })
+          const { appointmentCreateType } = appointmentData;
           appointmentCreateType && dispatch({
             type: ActionType.SET_APPOINTMENT_CREATE_TYPE,
             appointmentCreateType: appointmentCreateType
@@ -86,7 +86,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
 
   const fetchAppointment = useCallback(async () => {
     id && await getAppointment({
-      variables: { getAppointment: { id: id.toString() } },
+      variables: { getAppointment: { id: String(id) } },
     });
   }, [getAppointment, id]);
 
@@ -115,7 +115,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
   });
 
   const handleCancelAppointment = async () => {
-    await cancelAppointment({
+    appCancelToken && await cancelAppointment({
       variables: {
         cancelAppointment: { reason: APPOINTMENT_CANCEL_REASON, token: appCancelToken }
       }
@@ -129,21 +129,17 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
   const handleEdit = () => history.push(`${APPOINTMENTS_ROUTE}/${id}`)
 
   useEffect(() => {
-    id && fetchAppointment()
-  }, [id, fetchAppointment]);
+    id && appointmentOpen && fetchAppointment()
+  }, [id, fetchAppointment, appointmentOpen]);
 
 
   useEffect(() => {
-    typeof visible === 'boolean' && dispatch({ type: ActionType.SET_APP_OPEN, appOpen: visible })
-  }, [appointmentMeta?.data.appointmentStatus, visible,])
-
-  useEffect(() => {
-    if (patientName === "Show More" && visible === true) {
+    if (title === "Show More" && visible === true) {
       onHide && onHide()
-      setCurrentDate(getAppointmentDatePassingView(appointmentDatePassingView))
+      setCurrentDate(getAppointmentDatePassingView(startDate || ''))
       setCurrentView('Day')
     }
-  }, [appointmentDatePassingView, onHide, patientName, setCurrentDate, setCurrentView, visible])
+  }, [startDate, onHide, title, setCurrentDate, setCurrentView, visible])
 
   const deleteAppointmentHandler = (scheduleStartDateTime: any) => {
     if (isSuper) {
@@ -161,7 +157,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
 
   return (
     <Dialog
-      open={appOpen} aria-labelledby="alert-dialog-title"
+      open={visible ?? false} aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
       disableEscapeKeyDown keepMounted
       maxWidth="sm" className={classes.dropdown}
@@ -172,7 +168,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
             title={APPOINTMENT}
             action={
               <Box>
-                <IconButton size='small' onClick={() => deleteAppointmentHandler(scheduleStartDateTime)}>
+                <IconButton size='small' onClick={() => deleteAppointmentHandler(scheduleStartDateTime)} disabled={isDisabled}>
                   <DeleteAppointmentIcon />
                 </IconButton>
 
@@ -212,7 +208,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
 
             <Box display='flex' justifyContent='space-between' pb={1}>
               <Typography variant="body1">{APPOINTMENT_TYPE}</Typography>
-              <Typography variant="body2">{appointmentMeta?.data?.appointmentType?.name}</Typography>
+              <Typography variant="body2">{appointmentType?.name}</Typography>
             </Box>
 
             <Box display='flex' justifyContent='space-between' pb={1}>
@@ -220,7 +216,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
               <Typography variant="body2">{facilityName ?? 'N/A'}</Typography>
             </Box>
 
-            {providerName !== 'undefined undefined' && <Box display='flex' justifyContent='space-between' pb={1}>
+            {providerName !== ' ' && <Box display='flex' justifyContent='space-between' pb={1}>
               <Typography variant="body1">{PROVIDER_NAME}</Typography>
               <Typography variant="body2">{providerName}</Typography>
             </Box>}
@@ -232,7 +228,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate, reload }: Ap
 
             <Box display='flex' justifyContent='space-between' pb={1}>
               <Typography variant="body1">{PRIMARY_INSURANCE}</Typography>
-              <Typography variant="body2">{appPrimaryInsurance === '' ? 'N/A' : appPrimaryInsurance}</Typography>
+              <Typography variant="body2">{appPrimaryInsurance ?? 'N/A'}</Typography>
             </Box>
 
             <ConfirmationModal

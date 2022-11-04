@@ -58,6 +58,37 @@ query FindAllAppointments($appointmentInput: AppointmentInput!) {
   }
 }
 
+query FetchCalendarAppointments($findAllCalendarAppointmentsInput: FindAllCalendarAppointmentsInput!) {
+  findAllCalendarAppointments(findAllCalendarAppointmentsInput: $findAllCalendarAppointmentsInput) {
+    response {
+      error
+      status
+      message
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+
+    appointments {
+      id
+      status
+      scheduleEndDateTime
+      scheduleStartDateTime
+
+      patient {
+        firstName
+        lastName
+      }
+
+      appointmentType {
+        color
+      }
+    }
+  }
+}
+
 query FindAllAppointmentVisits($appointmentInput: AppointmentInput!) {
   findAllAppointments(appointmentInput: $appointmentInput) {
     response {
@@ -76,6 +107,10 @@ query FindAllAppointmentVisits($appointmentInput: AppointmentInput!) {
       scheduleEndDateTime
       scheduleStartDateTime
       appointmentDate
+
+      facility {
+        name
+      }
 
       patient {
         firstName
@@ -212,6 +247,49 @@ query GetAppointment($getAppointment: GetAppointment!) {
         id
         name
         number
+      }
+    }
+  }
+}
+
+query GetCalenderAppointment($getAppointment: GetAppointment!) {
+  getAppointment(getAppointment: $getAppointment) {
+    response {
+      error
+      status
+      message
+    }
+
+    appointment {
+      
+      id
+      token
+      status
+      reason
+      appointmentDate
+      primaryInsurance
+      scheduleEndDateTime
+      scheduleStartDateTime
+      appointmentCreateType
+
+      provider {
+        id
+        lastName
+        firstName
+      }
+
+      patient {
+        id
+        firstName
+        lastName
+      }
+
+      facility {
+        name
+      }
+
+      appointmentType {
+        name
       }
     }
   }

@@ -324,7 +324,7 @@ export const getAppointmentDate = (date: SchedulerDateTime | undefined): string 
 };
 
 export const getAppointmentDatePassingView = (date: SchedulerDateTime | undefined): string => {
-  return date ? (moment(new Date(date))).format().toString() : moment().format().toString()
+  return date ? moment(new Date(date)).format() : moment().format()
 };
 
 export const getDate = (date: string) => moment(date, "x").format("YYYY-MM-DD");
@@ -340,8 +340,8 @@ export const getDocumentDate = (date: string) =>
   moment(new Date(date), 'x').format(`YYYY-MM-DD`)
 
 
-export const getDocumentDateFromTimestamps = (date: string) =>
-  moment(new Date(parseInt(date)), 'x').format(`YYYY-MM-DD`)
+export const getDocumentDateFromTimestamps = (date: string, outputFormat: string = 'YYYY-MM-DD') =>
+  moment(new Date(parseInt(date)), 'x').format(outputFormat)
 
 export const dateDifference = (startingDate: string) => {
   let startDate = moment(startingDate, 'MM-DD-YYYY')
@@ -476,7 +476,7 @@ export const getDateWithDay = (date: string) =>
   moment(date, "x").format("ddd MMM. DD, YYYY");
 
 export const getAppointmentDateWithDay = (date: string, inputFormat?: string | undefined, outputFormat?: string) =>
-  moment(date, inputFormat).format(outputFormat ?? "ddd MMM. DD, YYYY");
+  date ? moment(date, inputFormat).format(outputFormat ?? "ddd MMM. DD, YYYY") : ''
 
 export const getDateWithDayAndTime = (date: string) =>
   moment(date, "x").format("ddd MMM DD, YYYY hh:mm A");
@@ -1220,41 +1220,15 @@ const makeTodayAppointment = (startDate: Date, endDate: Date) => {
 
 export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
   data?.map(appointment => {
-    const {
-      scheduleEndDateTime, scheduleStartDateTime, patient, id: appointmentId, appointmentType, facility, provider,
-      reason, primaryInsurance, status, token, billingStatus, appointmentCreateType
-    } = appointment || {};
+    const { scheduleEndDateTime, scheduleStartDateTime, patient, id: appointmentId, appointmentType } = appointment || {};
+    const { firstName, lastName } = patient || {}
+    const { color } = appointmentType || {}
 
-    const { firstName, lastName, contacts: pContact, id: patientId } = patient || {}
-    const { color, price, name: appointmentName, id: serviceId } = appointmentType || {}
-    const { contacts: fContact, id: facilityId, name: facilityName } = facility || {}
-    const { firstName: providerFN, lastName: providerLN, id: providerId } = provider || {}
-    const facilityContact = fContact && fContact.filter(contact => contact.primaryContact)[0]
-    const appointmentStatus = status && formatValue(status)
-    const rawStatus = status
-    const patientContact = pContact && pContact.filter(contact => contact.primaryContact)[0];
     return {
-      token,
-      reason,
-      facilityId,
-      patientId,
-      serviceId,
-      providerId,
       appointmentId,
-      facilityName,
-      facilityContact,
-      patientContact,
-      appointmentType,
-      primaryInsurance,
-      color, price,
-      billingStatus,
-      appointmentName,
-      appointmentStatus,
-      appointmentCreateType,
-      scheduleStartDateTime,
-      rawStatus,
+      color,
+      id: appointmentId,
       title: `${firstName} ${lastName}`,
-      providerName: `${providerFN} ${providerLN}`,
       ...makeTodayAppointment(new Date(parseInt(scheduleStartDateTime || '')), new Date(parseInt(scheduleEndDateTime || '')))
     }
   })
