@@ -7426,7 +7426,7 @@ export type Staff = {
   mobile?: Maybe<Scalars['String']>;
   patientAllergies?: Maybe<Array<PatientAllergies>>;
   patientProblem?: Maybe<Array<PatientProblems>>;
-  patientVitals?: Maybe<PatientVitals>;
+  patientVitals?: Maybe<Array<PatientVitals>>;
   phone?: Maybe<Scalars['String']>;
   practice?: Maybe<Practice>;
   practiceId?: Maybe<Scalars['String']>;
@@ -10929,7 +10929,7 @@ export type FindAllStaffQueryVariables = Exact<{
 }>;
 
 
-export type FindAllStaffQuery = { __typename?: 'Query', findAllStaff: { __typename?: 'AllStaffPayload', pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, allstaff?: Array<{ __typename?: 'Staff', id: string, email: string, firstName: string, lastName: string, username?: string | null, phone?: string | null, user?: { __typename?: 'User', id: string } | null } | null> | null } };
+export type FindAllStaffQuery = { __typename?: 'Query', findAllStaff: { __typename?: 'AllStaffPayload', pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, allstaff?: Array<{ __typename?: 'Staff', id: string, email: string, firstName: string, lastName: string, username?: string | null, phone?: string | null, user?: { __typename?: 'User', id: string, userType: string } | null } | null> | null } };
 
 export type GetStaffQueryVariables = Exact<{
   getStaff: GetStaff;
@@ -26333,6 +26333,7 @@ export const FindAllStaffDocument = gql`
       phone
       user {
         id
+        userType
       }
     }
   }
