@@ -9,8 +9,8 @@ import NoDataFoundComponent from '../../../../common/NoDataFoundComponent'
 import AppointmentReasonModal from '../AppointmentReason/AppointmentReasonModal'
 //constants, interfaces, styles, reducers, graphql
 import {
-  ADD, APPOINTMENT_REASON_DELETED, CHIEF_COMPLAINT, DELETE_CHIEF_COMPLAINT_DESCRIPTION, NEXT, REACTION_PAGE_LIMIT,
-  TO_CHECKOUT
+  ADD, APPOINTMENT_CHIEF_COMPLAINT_DELETED, CHIEF_COMPLAINT, DELETE_CHIEF_COMPLAINT_DESCRIPTION, NEXT,
+  REACTION_PAGE_LIMIT, TO_CHECKOUT
 } from '../../../../../constants'
 import { PatientProblemsPayload, useFindAllPatientProblemsLazyQuery, useRemovePatientProblemMutation } from '../../../../../generated/graphql'
 import { AppointmentReasonProps, ParamsType } from '../../../../../interfacesTypes'
@@ -81,7 +81,7 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
         const { status } = response
 
         if (status && status === 200) {
-          Alert.success(APPOINTMENT_REASON_DELETED);
+          Alert.success(APPOINTMENT_CHIEF_COMPLAINT_DELETED);
           dispatch({ type: ActionType.SET_PROBLEM_DELETE_ID, problemDeleteId: '' })
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
 
