@@ -658,7 +658,7 @@ export type ExtendedStaffInputProps = Omit<
 
 export type ScheduleInputProps = Omit<SingleScheduleInput, "servicesIds" | "day">
   & { serviceId: multiOptionType[] | multiOptionType } & { day: SelectorOption[] | SelectorOption }
-  & { shouldHaveRecursion: boolean };
+  & { recurringEndDate: string };
 
 export type PatientChartingInfo = {
   patientAllergies: PatientAllergies[]

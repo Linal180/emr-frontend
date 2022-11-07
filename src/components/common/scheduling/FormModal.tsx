@@ -2,7 +2,7 @@
 import { FC, useCallback, useContext, useEffect } from "react";
 import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import {
   Box, Button, Checkbox, CircularProgress, Dialog, FormControl, FormControlLabel, FormGroup,
   Grid, InputLabel, Typography
@@ -56,7 +56,7 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
     resolver: yupResolver(scheduleSchema(isDoctor || false, scheduleRecursion))
   });
 
-  const { reset, handleSubmit, setValue, control, watch, setError, clearErrors } = methods;
+  const { reset, handleSubmit, setValue, watch, setError, clearErrors } = methods;
   const { startAt, endAt } = watch()
 
   const handleClose = useCallback(() => {
@@ -235,7 +235,7 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
       }
       else if (bulkEdit) {
         await updateBulkSchedule({
-          variables: { updateBulkScheduleInput: { schedules: scheduleInput,  } }
+          variables: { updateBulkScheduleInput: { schedules: scheduleInput, } }
         })
       }
       else {
@@ -337,28 +337,23 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
                   <Grid container spacing={3}>
                     <Grid item md={6} sm={12} xs={12}>
                       {getScheduleLoading ? renderLoading(WANT_RECURRING) :
-                        <Controller
-                          name='shouldHaveRecursion'
-                          control={control}
-                          render={() => (
-                            <FormControl fullWidth margin="normal" className={classesToggle.toggleContainer}>
-                              <InputLabel shrink>{WANT_RECURRING}</InputLabel>
 
-                              <label className="toggle-main">
-                                <Box color={scheduleRecursion ? WHITE : GREY_SEVEN}>{YES}</Box>
-                                <AntSwitch checked={scheduleRecursion}
-                                  name='shouldHaveRecursion'
-                                  onChange={({ target: { checked } }) =>
-                                    scheduleDispatch && scheduleDispatch({
-                                      type: ActionType.SET_SCHEDULE_RECURSION,
-                                      scheduleRecursion: checked
-                                    })}
-                                />
-                                <Box color={scheduleRecursion ? GREY_SEVEN : WHITE}>{NO}</Box>
-                              </label>
-                            </FormControl>
-                          )}
-                        />
+                        <FormControl fullWidth margin="normal" className={classesToggle.toggleContainer}>
+                          <InputLabel shrink>{WANT_RECURRING}</InputLabel>
+
+                          <label className="toggle-main">
+                            <Box color={scheduleRecursion ? WHITE : GREY_SEVEN}>{YES}</Box>
+                            <AntSwitch checked={scheduleRecursion}
+                              name='shouldHaveRecursion'
+                              onChange={({ target: { checked } }) =>
+                                scheduleDispatch && scheduleDispatch({
+                                  type: ActionType.SET_SCHEDULE_RECURSION,
+                                  scheduleRecursion: checked
+                                })}
+                            />
+                            <Box color={scheduleRecursion ? GREY_SEVEN : WHITE}>{NO}</Box>
+                          </label>
+                        </FormControl>
                       }
                     </Grid>
 

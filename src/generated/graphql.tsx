@@ -12,8 +12,6 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
-  DateTime: any;
 };
 
 export type AchPaymentInputs = {
@@ -657,6 +655,7 @@ export type Cvx = {
   createdAt?: Maybe<Scalars['String']>;
   cvxCode?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  isDeleted?: Maybe<Scalars['Boolean']>;
   name?: Maybe<Scalars['String']>;
   notes?: Maybe<Scalars['String']>;
   shortDescription?: Maybe<Scalars['String']>;
@@ -6936,7 +6935,7 @@ export type Schedule = {
   facility?: Maybe<Facility>;
   facilityId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
-  recurringEndDate?: Maybe<Scalars['DateTime']>;
+  recurringEndDate?: Maybe<Scalars['String']>;
   scheduleServices?: Maybe<Array<ScheduleServices>>;
   startAt: Scalars['String'];
   updatedAt: Scalars['String'];
@@ -7238,7 +7237,7 @@ export type SingleScheduleInput = {
   doctorId?: Maybe<Scalars['String']>;
   endAt: Scalars['String'];
   facilityId?: Maybe<Scalars['String']>;
-  recurringEndDate?: Maybe<Scalars['DateTime']>;
+  recurringEndDate?: Maybe<Scalars['String']>;
   servicesIds: Array<Scalars['String']>;
   startAt: Scalars['String'];
 };
@@ -8420,7 +8419,7 @@ export type UpdateScheduleInput = {
   endAt?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
-  recurringEndDate?: Maybe<Scalars['DateTime']>;
+  recurringEndDate?: Maybe<Scalars['String']>;
   servicesIds?: Maybe<Array<Scalars['String']>>;
   startAt?: Maybe<Scalars['String']>;
 };
@@ -10832,14 +10831,14 @@ export type GetScheduleQueryVariables = Exact<{
 }>;
 
 
-export type GetScheduleQuery = { __typename?: 'Query', getSchedule: { __typename?: 'SchedulePayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, schedule?: { __typename?: 'Schedule', id: string, recurringEndDate?: any | null, startAt: string, endAt: string, createdAt: string, updatedAt: string, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, scheduleServices?: Array<{ __typename?: 'ScheduleServices', id: string, service?: { __typename?: 'Service', id: string, name: string, duration: string } | null }> | null } | null } };
+export type GetScheduleQuery = { __typename?: 'Query', getSchedule: { __typename?: 'SchedulePayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, schedule?: { __typename?: 'Schedule', id: string, recurringEndDate?: string | null, startAt: string, endAt: string, createdAt: string, updatedAt: string, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, scheduleServices?: Array<{ __typename?: 'ScheduleServices', id: string, service?: { __typename?: 'Service', id: string, name: string, duration: string } | null }> | null } | null } };
 
 export type FindAllSchedulesQueryVariables = Exact<{
   scheduleInput: ScheduleInput;
 }>;
 
 
-export type FindAllSchedulesQuery = { __typename?: 'Query', findAllSchedules: { __typename?: 'SchedulesPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, limit?: number | null, totalPages?: number | null } | null, schedules?: Array<{ __typename?: 'Schedule', id: string, startAt: string, endAt: string, recurringEndDate?: any | null, createdAt: string, updatedAt: string, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null } | null> | null } };
+export type FindAllSchedulesQuery = { __typename?: 'Query', findAllSchedules: { __typename?: 'SchedulesPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, limit?: number | null, totalPages?: number | null } | null, schedules?: Array<{ __typename?: 'Schedule', id: string, startAt: string, endAt: string, recurringEndDate?: string | null, createdAt: string, updatedAt: string, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null } | null> | null } };
 
 export type GetDoctorScheduleQueryVariables = Exact<{
   getDoctorSchedule: GetDoctorSchedule;
