@@ -4868,3 +4868,29 @@ export const STATUS_MAPPED = [
 export const PROBLEMS_TABS = ['Common Terms']
 export const ORDERS_TABS = ['Lab Order', 'Medications', 'Imaging']
 export const SCRIBE_TABS = ['Doctors', 'Staff']
+
+export enum InsuranceRadioTypes {
+  INSURANCE = "insurance",
+  NO_INSURANCE = 'noInsurance',
+  INTERNATIONAL_TRAVELER = 'internationalTraveler',
+  CONTRACT = 'contract'
+}
+
+export const INSURANCE_RADIO_BUTTON_MAPPED = [
+  {
+    type: InsuranceRadioTypes.INSURANCE,
+    title: INSURANCE,
+  },
+  {
+    type: InsuranceRadioTypes.NO_INSURANCE,
+    title: NO_INSURANCE,
+  },
+  {
+    type: InsuranceRadioTypes.INTERNATIONAL_TRAVELER,
+    title: INTERNATIONAL_TRAVELER,
+  },
+  {
+    type: InsuranceRadioTypes.CONTRACT,
+    title: CONTRACT,
+  },
+]

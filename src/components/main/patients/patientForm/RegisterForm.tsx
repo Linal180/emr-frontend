@@ -26,7 +26,7 @@ import { ActionType } from '../../../../reducers/patientReducer';
 import { useFindAppointmentInsuranceStatusLazyQuery } from '../../../../generated/graphql';
 import { ParamsType, PatientCardsProps, PatientInputProps } from '../../../../interfacesTypes';
 import { useExternalPatientStyles } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
-import { INSURANCE, INSURANCE_SELECTION, NEXT, PAYMENTS, RegisterPatientMenuNav } from '../../../../constants';
+import { INSURANCE, InsuranceRadioTypes, INSURANCE_SELECTION, NEXT, PAYMENTS, RegisterPatientMenuNav } from '../../../../constants';
 
 
 const RegisterFormComponent: FC<PatientCardsProps> = ({
@@ -39,6 +39,8 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
   const { appointmentId } = useParams<ParamsType>()
   const { activeStep } = state || {}
   const [selection, setSelection] = useState('')
+
+  const shouldShowInsuranceStep = selection === InsuranceRadioTypes.INSURANCE ? true : false
 
   const ageFormat = dob ? moment(new Date(dob)).format('YYYY-MM-DD') : ''
   const age = ageFormat ? calculateAge(ageFormat) : -1
@@ -74,7 +76,6 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
 
 
   const getActiveComponent = (step: number | undefined) => {
-    const shouldShowInsuranceStep = selection === 'insurance' ? true : false
     switch (step) {
       case !shouldShowBread ? 0 : Infinity:
         return (<>
@@ -94,9 +95,10 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
             isEdit={isEdit}
             cardTitle={INSURANCE}
             disableSubmit={disableSubmit}
+            onSubmitClick={() => dispatch && dispatch({ activeStep: (activeStep || 0) + 1, type: ActionType.SET_ACTIVE_STEP })}
             saveBtnText={NEXT}
           >
-            <InsuranceComponent refetch={refetch}/>
+            <InsuranceComponent refetch={refetch} />
           </CardComponent>
         )
 
@@ -172,7 +174,7 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
                 />
               </Box>
             </>}
-            
+
             <EmploymentCard
               getPatientLoading={getPatientLoading}
               shouldDisableEdit={shouldDisableEdit}
@@ -209,7 +211,7 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
         return (
           <UpFrontPayment shouldDisableEdit={shouldDisableEdit} />
         )
-        
+
       default:
         return (
           <PatientPrivacyCard
@@ -224,7 +226,7 @@ const RegisterFormComponent: FC<PatientCardsProps> = ({
     }
   }
 
-  const stepperDataWithInsurance = selection === 'insurance' ? [{ title: INSURANCE }, ...RegisterPatientMenuNav] : RegisterPatientMenuNav
+  const stepperDataWithInsurance = shouldShowInsuranceStep ? [{ title: INSURANCE }, ...RegisterPatientMenuNav] : RegisterPatientMenuNav
 
   const stepperData = !shouldShowBread ? [{ title: INSURANCE_SELECTION }, ...stepperDataWithInsurance, { title: PAYMENTS }] : RegisterPatientMenuNav
 
