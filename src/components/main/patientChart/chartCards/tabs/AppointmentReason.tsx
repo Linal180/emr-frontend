@@ -1,5 +1,5 @@
-import { Box, Button, Card, colors, IconButton, Typography } from '@material-ui/core'
-import { ChevronRight, RemoveCircleOutline } from '@material-ui/icons'
+import { Box, Button, Card, Chip, colors, Typography } from '@material-ui/core'
+import { ChevronRight } from '@material-ui/icons'
 import { Reducer, useCallback, useEffect, useReducer } from 'react'
 import { useParams } from 'react-router'
 //component block
@@ -8,11 +8,12 @@ import ConfirmationModal from '../../../../common/ConfirmationModal'
 import NoDataFoundComponent from '../../../../common/NoDataFoundComponent'
 import AppointmentReasonModal from '../AppointmentReason/AppointmentReasonModal'
 //constants, interfaces, styles, reducers, graphql
+import moment from 'moment'
 import {
   ADD, APPOINTMENT_REASON_DELETED, CHIEF_COMPLAINT, DELETE_CHIEF_COMPLAINT_DESCRIPTION, NEXT, REACTION_PAGE_LIMIT,
   TO_CHECKOUT
 } from '../../../../../constants'
-import { PatientProblemsPayload, useFindAllPatientProblemsLazyQuery, useRemovePatientProblemMutation } from '../../../../../generated/graphql'
+import { AllCptCodePayload, PatientProblemsPayload, ProblemSeverity, ProblemType, useAddPatientProblemMutation, useFindAllPatientProblemsLazyQuery, useFindChiefComplaintProblemsLazyQuery, useRemovePatientProblemMutation } from '../../../../../generated/graphql'
 import { AppointmentReasonProps, ParamsType } from '../../../../../interfacesTypes'
 import { Action, ActionType, chartReducer, initialState, State } from '../../../../../reducers/chartReducer'
 import { useChartingStyles } from '../../../../../styles/chartingStyles'
@@ -24,11 +25,38 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
   const [state, dispatch] =
     useReducer<Reducer<State, Action>>(chartReducer, initialState)
 
-  const { isOpen, page, patientProblems, problemDeleteId, openDelete } = state
+  const { isOpen, page, patientProblems, problemDeleteId, openDelete, chiefComplaintProblems } = state
 
   const handleModalClose = () => dispatch({ type: ActionType.SET_IS_OPEN, isOpen: !isOpen })
 
-  const [findAllPatientProblems, { loading, error }] = useFindAllPatientProblemsLazyQuery({
+  const [findAllChiefComplaintProblems, { loading: chiefComplaintProblemsLoading }] = useFindChiefComplaintProblemsLazyQuery({
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+
+    onError() {
+      dispatch({ type: ActionType.SET_PATIENT_PROBLEMS, patientProblems: [] })
+    },
+
+    onCompleted(data) {
+      if (data) {
+        const { findChiefComplaintProblems } = data;
+
+        if (findChiefComplaintProblems) {
+          const { response, icdCodes } = findChiefComplaintProblems
+
+          if (response) {
+            const { status } = response
+
+            if (icdCodes && status && status === 200) {
+              dispatch({ type: ActionType.SET_CHIEF_COMPLAINT_PROBLEMS, chiefComplaintProblems: icdCodes as AllCptCodePayload['cptCodes'] })
+            }
+          }
+        }
+      }
+    }
+  });
+
+  const [findAllPatientProblems, { loading }] = useFindAllPatientProblemsLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -65,9 +93,20 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
     } catch (error) { }
   }, [appointmentId, findAllPatientProblems, page, patientId]);
 
+  const fetchChiefComplaintProblems = useCallback(async () => {
+    try {
+      await findAllChiefComplaintProblems({
+        variables: {
+          allIcdCodesInput: {}
+        },
+      })
+    } catch (error) { }
+  }, [findAllChiefComplaintProblems]);
+
   useEffect(() => {
     patientId && fetchProblems()
-  }, [fetchProblems, page, patientId])
+    fetchChiefComplaintProblems()
+  }, [fetchProblems, fetchChiefComplaintProblems, page, patientId])
 
   const [removePatientProblem, { loading: removeProblemLoading }] = useRemovePatientProblemMutation({
     onError({ message }) {
@@ -91,6 +130,45 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
     }
   });
 
+  const [addPatientProblem] = useAddPatientProblemMutation({
+    onError({ message }) {
+      Alert.error(message)
+    },
+
+    onCompleted(data) {
+      const { addPatientProblem: { response } } = data;
+
+      if (response) {
+        const { status } = response
+
+        if (status && status === 200) {
+          fetchProblems && fetchProblems()
+        }
+      }
+    }
+  });
+
+  const handleAddReason = async (icdCodeId: string) => {
+    const commonInput = {
+      note: '',
+      problemSeverity: ProblemSeverity.Acute,
+      problemStartDate: moment().format('MM-DD-YYYY'),
+      problemType: ProblemType.Active
+    }
+
+    const extendedInput = appointmentId ?
+      { appointmentId: appointmentId, ...commonInput } : { ...commonInput }
+
+    await addPatientProblem({
+      variables: {
+        createProblemInput: {
+          patientId, icdCodeId, shouldCreateTemplate: true, ...extendedInput,
+        }
+      }
+    })
+  }
+
+
   const handleDelete = async () => {
     problemDeleteId && await removePatientProblem({
       variables: { removeProblem: { id: problemDeleteId } }
@@ -107,6 +185,18 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
   const singlePatientProblems = patientProblems?.filter((problem, index, self) => index === self.findIndex((t) => (
     t?.ICDCode?.code === problem?.ICDCode?.code
   )))
+
+  const singlePatientProblemCodes = [...(singlePatientProblems?.map((problem) => problem?.ICDCode) || []), ...(chiefComplaintProblems || [])].filter((problem, index, self) => index === self.findIndex((t) => (
+    t?.code === problem?.code
+  )))
+
+  const transformedProblems = singlePatientProblemCodes.map((value) => {
+    return {
+      value: value,
+      isSelected: singlePatientProblems?.some((problem => problem?.ICDCode?.code === value?.code)),
+      problemId: singlePatientProblems?.find((problem => problem?.ICDCode?.code === value?.code))?.id
+    }
+  })
 
   return (
     <>
@@ -140,7 +230,35 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
             </Box>
           </Box>
 
-          <Box p={2}>
+          <Box mt={2}>
+
+            {transformedProblems?.map((chiefComplaintProblem) => {
+              const { isSelected, value, problemId } = chiefComplaintProblem || {}
+              const { description, id: icdCodeId } = value || {}
+              return (
+                <Box mx={1.5} my={1} display='inline-flex' flexDirection='row' flexWrap='wrap'>
+                  <Chip
+                    label={description}
+                    clickable
+                    disabled={shouldDisableEdit}
+                    onClick={() => isSelected ? onDeleteClick(problemId || '') : handleAddReason(icdCodeId || '')}
+                    style={{
+                      background: isSelected ? 'red' : 'white',
+                      border: `1.5px solid red`,
+                      display: "inline-flex",
+                      alignItems: "center",
+                      flexWrap: "wrap",
+                      minWidth: 100,
+                      height: 50,
+                      color: isSelected ? 'white' : 'red'
+                    }}
+                  />
+                </Box>
+              )
+            })}
+          </Box>
+
+          {/* <Box p={2}>
             {singlePatientProblems?.map((value) => {
               const { id, ICDCode } = value || {}
               return <Box display="flex" flexDirection="row" justifyContent="space-between">
@@ -150,9 +268,9 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
                 </IconButton>}
               </Box>
             })}
-          </Box>
+          </Box> */}
 
-          {((!loading && singlePatientProblems?.length === 0) || error) && (
+          {((!(loading || chiefComplaintProblemsLoading) && transformedProblems?.length === 0)) && (
             <Box display="flex" justifyContent="center" pb={12} pt={5}>
               <NoDataFoundComponent />
             </Box>

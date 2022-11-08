@@ -170,6 +170,10 @@ export type AllFeeSchedulesPayload = {
   response?: Maybe<ResponsePayloadResponse>;
 };
 
+export type AllIcdCodesInput = {
+  searchQuery?: Maybe<Scalars['String']>;
+};
+
 export type AllModifiersPayload = {
   __typename?: 'AllModifiersPayload';
   modifiers?: Maybe<Array<Maybe<Modifier>>>;
@@ -1697,6 +1701,7 @@ export type CreateProblemInput = {
   problemStartDate?: Maybe<Scalars['String']>;
   problemType?: Maybe<ProblemType>;
   providerId?: Maybe<Scalars['String']>;
+  shouldCreateTemplate?: Maybe<Scalars['Boolean']>;
   snowMedCodeId?: Maybe<Scalars['String']>;
   staffId?: Maybe<Scalars['String']>;
   testIds?: Maybe<Array<Scalars['String']>>;
@@ -5620,6 +5625,7 @@ export type Query = {
   findAllVaccineProducts: FindAllVaccineProductsPayload;
   findAllVaccines: FindAllVaccinesPayload;
   findAppointmentInsuranceStatus: AppointmentInsuranceStatus;
+  findChiefComplaintProblems: FindAllIcdCodesPayload;
   findClaimStatus: ClaimStatusPayload;
   findLabResultInfo: LabResultPayload;
   findLabTestsByOrderNum: LabTestsPayload;
@@ -6068,6 +6074,11 @@ export type QueryFindAllVaccinesArgs = {
 
 export type QueryFindAppointmentInsuranceStatusArgs = {
   appointmentId: Scalars['String'];
+};
+
+
+export type QueryFindChiefComplaintProblemsArgs = {
+  allIcdCodesInput: AllIcdCodesInput;
 };
 
 
@@ -10121,6 +10132,13 @@ export type FindAllIcdCodesQueryVariables = Exact<{
 
 
 export type FindAllIcdCodesQuery = { __typename?: 'Query', findAllIcdCodes: { __typename?: 'FindAllIcdCodesPayload', icdCodes?: Array<{ __typename?: 'ICDCodes', id: string, code: string, description?: string | null, systematic?: boolean | null, priority?: number | null } | null> | null, response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
+
+export type FindChiefComplaintProblemsQueryVariables = Exact<{
+  allIcdCodesInput: AllIcdCodesInput;
+}>;
+
+
+export type FindChiefComplaintProblemsQuery = { __typename?: 'Query', findChiefComplaintProblems: { __typename?: 'FindAllIcdCodesPayload', icdCodes?: Array<{ __typename?: 'ICDCodes', id: string, code: string, description?: string | null, systematic?: boolean | null, priority?: number | null } | null> | null, response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null } };
 
 export type GetIcdCodeQueryVariables = Exact<{
   getIcdCodeInput: GetIcdCodeInput;
@@ -20614,6 +20632,51 @@ export function useFindAllIcdCodesLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type FindAllIcdCodesQueryHookResult = ReturnType<typeof useFindAllIcdCodesQuery>;
 export type FindAllIcdCodesLazyQueryHookResult = ReturnType<typeof useFindAllIcdCodesLazyQuery>;
 export type FindAllIcdCodesQueryResult = Apollo.QueryResult<FindAllIcdCodesQuery, FindAllIcdCodesQueryVariables>;
+export const FindChiefComplaintProblemsDocument = gql`
+    query FindChiefComplaintProblems($allIcdCodesInput: AllIcdCodesInput!) {
+  findChiefComplaintProblems(allIcdCodesInput: $allIcdCodesInput) {
+    icdCodes {
+      id
+      code
+      description
+      systematic
+      priority
+    }
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindChiefComplaintProblemsQuery__
+ *
+ * To run a query within a React component, call `useFindChiefComplaintProblemsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindChiefComplaintProblemsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindChiefComplaintProblemsQuery({
+ *   variables: {
+ *      allIcdCodesInput: // value for 'allIcdCodesInput'
+ *   },
+ * });
+ */
+export function useFindChiefComplaintProblemsQuery(baseOptions: Apollo.QueryHookOptions<FindChiefComplaintProblemsQuery, FindChiefComplaintProblemsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindChiefComplaintProblemsQuery, FindChiefComplaintProblemsQueryVariables>(FindChiefComplaintProblemsDocument, options);
+      }
+export function useFindChiefComplaintProblemsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindChiefComplaintProblemsQuery, FindChiefComplaintProblemsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindChiefComplaintProblemsQuery, FindChiefComplaintProblemsQueryVariables>(FindChiefComplaintProblemsDocument, options);
+        }
+export type FindChiefComplaintProblemsQueryHookResult = ReturnType<typeof useFindChiefComplaintProblemsQuery>;
+export type FindChiefComplaintProblemsLazyQueryHookResult = ReturnType<typeof useFindChiefComplaintProblemsLazyQuery>;
+export type FindChiefComplaintProblemsQueryResult = Apollo.QueryResult<FindChiefComplaintProblemsQuery, FindChiefComplaintProblemsQueryVariables>;
 export const GetIcdCodeDocument = gql`
     query GetIcdCode($getIcdCodeInput: GetIcdCodeInput!) {
   getIcdCode(getIcdCodeInput: $getIcdCodeInput) {
