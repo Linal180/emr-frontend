@@ -9,7 +9,9 @@ import { useParams } from "react-router";
 import Alert from "../../../../common/Alert";
 // constants, interfaces, utils block 
 import { NoDataIcon, SearchIcon } from "../../../../../assets/svgs";
-import { CHIEF_COMPLAINT, ICD_10, INITIAL_PAGE_LIMIT, NO_RECORDS, PROBLEMS_TABS, REASON_ADDED, SEARCH_FOR_PROBLEMS, SNOMED, TYPE } from "../../../../../constants";
+import {
+  CHIEF_COMPLAINT, ICD_10, INITIAL_PAGE_LIMIT, NO_RECORDS, PROBLEMS_TABS, ADD_CHIEF_COMPLAINT, SEARCH_FOR_PROBLEMS, SNOMED, TYPE
+} from "../../../../../constants";
 import {
   IcdCodesWithSnowMedCode, ProblemSeverity, ProblemType, useAddPatientProblemMutation, useSearchIcdCodesLazyQuery
 } from "../../../../../generated/graphql";
@@ -42,7 +44,7 @@ const AppointmentReasonModal: FC<AddAppointmentReasonProps> = ({ isOpen = false,
         if (status && status === 200) {
           fetch && fetch()
           handleModalClose()
-          Alert.success(REASON_ADDED);
+          Alert.success(ADD_CHIEF_COMPLAINT);
         }
       }
     }

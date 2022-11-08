@@ -198,6 +198,7 @@ export const FORM_NOT_PUBLISHED = "Form is not published";
 export const CONTACT_SUPPORT_TEAM = "Please Contact support team";
 export const REASON_FOR_VISIT = "Reason For Visit";
 export const CHIEF_COMPLAINT = "Chief Complaint";
+export const ADD_CHIEF_COMPLAINT = "Add Chief Complaint";
 export const HISTORY_OF_PATIENT_ILLNESS = "History of Patient Illness";
 export const CSS_CLASSES = "CSS Classes";
 export const PLACEHOLDER = "Placeholder";
