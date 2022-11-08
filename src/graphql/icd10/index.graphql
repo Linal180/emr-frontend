@@ -20,6 +20,23 @@ query FindAllIcdCodes($findAllIcdCodesInput: FindAllIcdCodesInput!) {
   }
 }
 
+query FindChiefComplaintProblems($allIcdCodesInput: AllIcdCodesInput!) {
+  findChiefComplaintProblems(allIcdCodesInput: $allIcdCodesInput) {
+    icdCodes {
+      id
+      code
+      description
+      systematic
+      priority
+    }
+
+    response {
+      status
+      message
+    }
+  }
+}
+
 query GetIcdCode($getIcdCodeInput: GetIcdCodeInput!) {
   getIcdCode(getIcdCodeInput: $getIcdCodeInput) {
     icdCode {
