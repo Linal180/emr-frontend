@@ -15,14 +15,14 @@ import { useTableStyles } from "../../../../styles/tableStyles";
 import { EditNewIcon, TrashNewIcon } from '../../../../assets/svgs';
 import { staffReducer, Action, initialState, State, ActionType } from "../../../../reducers/staffReducer";
 import {
-  checkPermission, formatPhone, getPageNumber, isFacilityAdmin, isLast, isPracticeAdmin, isSuperAdmin, isUser, renderTh
+  checkPermission, formatPhone, formatRoleName, getPageNumber, isFacilityAdmin, isLast, isPracticeAdmin, isSuperAdmin, isUser, renderTh
 } from "../../../../utils";
 import {
   AllStaffPayload, StaffPayload, useFindAllStaffLazyQuery, useRemoveStaffMutation
 } from "../../../../generated/graphql";
 import {
   ACTION, EMAIL, NAME, PAGE_LIMIT, PHONE, STAFF_ROUTE, DELETE_STAFF_DESCRIPTION, CANT_DELETE_STAFF,
-  STAFF_TEXT, CANT_DELETE_SELF_STAFF, USER_PERMISSIONS
+  STAFF_TEXT, CANT_DELETE_SELF_STAFF, USER_PERMISSIONS, ROLE
 } from "../../../../constants";
 
 const StaffTable: FC = (): JSX.Element => {
@@ -155,6 +155,7 @@ const StaffTable: FC = (): JSX.Element => {
               <TableRow>
                 {renderTh(NAME)}
                 {renderTh(EMAIL)}
+                {renderTh(ROLE)}
                 {renderTh(PHONE)}
                 {renderTh(ACTION, "center")}
               </TableRow>
@@ -169,12 +170,14 @@ const StaffTable: FC = (): JSX.Element => {
                 </TableRow>
               ) : (
                 allStaff?.map((record: StaffPayload['staff']) => {
-                  const { id, firstName, lastName, email, phone } = record || {};
+                  const { id, firstName, lastName, email, phone, user } = record || {};
+                  const { userType } = user || {}
 
                   return (
                     <TableRow key={id}>
                       <TableCell scope="row">{firstName} {lastName}</TableCell>
                       <TableCell scope="row">{email}</TableCell>
+                      <TableCell scope="row">{formatRoleName(userType || '')}</TableCell>
                       <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">

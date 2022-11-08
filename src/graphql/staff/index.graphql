@@ -20,13 +20,14 @@ query FindAllStaff($staffInput: StaffInput!) {
       phone
       user {
         id
+        userType
       }
     }
   }
 }
 
-query GetStaff($getStaff: GetStaff!){
-  getStaff(getStaff: $getStaff){
+query GetStaff($getStaff: GetStaff!) {
+  getStaff(getStaff: $getStaff) {
     response {
       name
       error
@@ -47,7 +48,7 @@ query GetStaff($getStaff: GetStaff!){
       facilityId
       createdAt
       updatedAt
-      
+
       user {
         roles {
           id
@@ -68,9 +69,9 @@ query GetStaff($getStaff: GetStaff!){
   }
 }
 
-mutation RemoveStaff($removeStaff: RemoveStaff!){
-  removeStaff(removeStaff: $removeStaff){
-    response{
+mutation RemoveStaff($removeStaff: RemoveStaff!) {
+  removeStaff(removeStaff: $removeStaff) {
+    response {
       name
       status
       message
@@ -79,7 +80,7 @@ mutation RemoveStaff($removeStaff: RemoveStaff!){
 }
 
 mutation UpdateStaff($updateStaffInput: UpdateStaffInput!) {
-  updateStaff(updateStaffInput: $updateStaffInput){
+  updateStaff(updateStaffInput: $updateStaffInput) {
     response {
       error
       status
@@ -89,7 +90,7 @@ mutation UpdateStaff($updateStaffInput: UpdateStaffInput!) {
 }
 
 mutation CreateStaff($createStaffInput: CreateStaffInput!) {
-  createStaff(createStaffInput: $createStaffInput){
+  createStaff(createStaffInput: $createStaffInput) {
     response {
       error
       status

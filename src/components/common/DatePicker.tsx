@@ -25,15 +25,16 @@ const DatePicker: FC<PickerProps> = ({
           name={name}
           control={control}
           defaultValue={defaultValue ? defaultValue : ""}
-          render={({ field, fieldState: { invalid, error: { message } = {} } }) => (
-            <FormControl fullWidth margin="normal" error={invalid}>
+          render={({ field: { name, onChange, ref, value }, fieldState: { error: { message } = {} } }) => (
+            <FormControl fullWidth margin="normal" error={!!message}>
               <InputLabel shrink htmlFor={`${name}-dialog`}>
                 {isRequired ? requiredLabel(label) : label}
               </InputLabel>
 
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <KeyboardDatePicker
-                  {...field}
+                  name={name}
+                  ref={ref}
                   id={`${name}-dialog`}
                   variant="inline"
                   format={format ? format : "MM/dd/yyyy"}
@@ -42,14 +43,14 @@ const DatePicker: FC<PickerProps> = ({
                   open={openPicker}
                   placeholder={US_DATE_FORMAT}
                   disabled={disabled}
-                  value={field.value || null}
+                  value={value || null}
                   // onClick={disabled ? () => { } : () => setOpenPicker(!openPicker)}
                   onClose={disabled ? () => { } : () => setOpenPicker(!openPicker)}
                   // onKeyDown={(e) => e.preventDefault()}
-                  error={invalid}
-                  helperText={invalid && message}
+                  error={!!message}
+                  helperText={message}
                   autoOk
-                  disablePast={disablePast ? disablePast : false}
+                  disablePast={disablePast ?? false}
                   disableFuture={disableFuture}
                   maxDate="2100-01-31"
                   minDate="1900-01-01"
@@ -58,9 +59,8 @@ const DatePicker: FC<PickerProps> = ({
                   </Box>
                   }
                   onChange={(_, data) => {
-                    field.onChange(data)
+                    onChange(data ?? '')
                     onSelect && onSelect(data)
-
                     return data
                   }}
 

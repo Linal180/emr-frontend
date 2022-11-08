@@ -431,7 +431,10 @@ const CheckInComponent = (): JSX.Element => {
         <Box p={1} />
 
         <Box className={checkInClasses.checkInProfileBox}>
-          <Typography variant="h6" color="textPrimary">{`Encounter on ${appointmentTime}`}</Typography>
+          <Box>
+            <Typography variant="h5" color="textPrimary">{`Encounter On`}</Typography>
+            <Typography variant="body1">{appointmentTime}</Typography>
+          </Box>
         </Box>
 
         <Box p={1} />

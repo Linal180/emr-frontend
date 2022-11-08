@@ -8,7 +8,7 @@ import RadioButton from "../../../common/RadioButton";
 import CardComponent from "../../../common/CardComponent";
 //constants, interfaces, reducer imports
 import {
-  CONTRACT, INSURANCE, INSURANCE_DISCLAIMER, INSURANCE_SELECTION, INTERNATIONAL_TRAVELER, SAVE_AND_NEXT, NO_INSURANCE
+  INSURANCE_DISCLAIMER, INSURANCE_SELECTION, SAVE_AND_NEXT, INSURANCE_RADIO_BUTTON_MAPPED
 } from "../../../../constants";
 import { useUpdateAppointmentMutation } from "../../../../generated/graphql";
 import { InsuranceSelectionProps, ParamsType } from "../../../../interfacesTypes";
@@ -20,17 +20,6 @@ const InsuranceSelectionCard: FC<InsuranceSelectionProps> = ({
 }) => {
   const classes = useExternalPatientStyles()
   const { appointmentId } = useParams<ParamsType>()
-
-  const handleCheck = async (checked: boolean, name: string) => {
-    checked ? setSelection && setSelection(name) : setSelection && setSelection('')
-    await updateAppointment({
-      variables: {
-        updateAppointmentInput: {
-          id: appointmentId || '', insuranceStatus: checked ? name : ''
-        }
-      }
-    })
-  }
 
   const [updateAppointment, { loading: updateAppointmentLoading }] = useUpdateAppointmentMutation({
     fetchPolicy: "network-only",
@@ -45,6 +34,17 @@ const InsuranceSelectionCard: FC<InsuranceSelectionProps> = ({
       }
     }
   });
+
+  const handleCheck = async (name: string) => {
+    setSelection && setSelection(name)
+    await updateAppointment({
+      variables: {
+        updateAppointmentInput: {
+          id: appointmentId || '', insuranceStatus: name
+        }
+      }
+    })
+  }
 
   const handleAppointmentUpdate = async () => {
     await updateAppointment({
@@ -62,65 +62,24 @@ const InsuranceSelectionCard: FC<InsuranceSelectionProps> = ({
         <FormControl component="fieldset">
           <FormLabel className={classes.privacyLabelHeader} component="li">{INSURANCE_DISCLAIMER}</FormLabel>
           <Box display="flex" flexWrap="wrap" pb={2}>
-            <FormGroup className={classes.privacyFormGroup}>
-              <FormControlLabel
-                className={classes.privacyLabelDescription}
-                control={
-                  <RadioButton
-                    disabled={shouldDisableEdit}
-                    color="primary"
-                    checked={selection === 'insurance'}
-                    onChange={({ target: { checked } }) => handleCheck(checked, 'insurance')}
-                  />
-                }
-                label={INSURANCE}
-              />
-            </FormGroup>
+            
+            {INSURANCE_RADIO_BUTTON_MAPPED?.map(({ title, type }, index) =>
+              <FormGroup className={classes.privacyFormGroup} key={`${index}-${type}-${title}`}>
+                <FormControlLabel
+                  className={classes.privacyLabelDescription}
+                  control={
+                    <RadioButton
+                      disabled={shouldDisableEdit}
+                      color="primary"
+                      checked={selection === type}
+                      onChange={() => handleCheck(type)}
+                    />
+                  }
+                  label={title}
+                />
+              </FormGroup>
+            )}
 
-            <FormGroup className={classes.privacyFormGroup}>
-              <FormControlLabel
-                className={classes.privacyLabelDescription}
-                control={
-                  <RadioButton
-                    disabled={shouldDisableEdit}
-                    color="primary"
-                    checked={selection === 'noInsurance'}
-                    onChange={({ target: { checked } }) => handleCheck(checked, 'noInsurance')}
-                  />
-                }
-                label={NO_INSURANCE}
-              />
-            </FormGroup>
-
-            <FormGroup className={classes.privacyFormGroup}>
-              <FormControlLabel
-                className={classes.privacyLabelDescription}
-                control={
-                  <RadioButton
-                    disabled={shouldDisableEdit}
-                    color="primary"
-                    checked={selection === 'internationalTraveler'}
-                    onChange={({ target: { checked } }) => handleCheck(checked, 'internationalTraveler')}
-                  />
-                }
-                label={INTERNATIONAL_TRAVELER}
-              />
-            </FormGroup>
-
-            <FormGroup className={classes.privacyFormGroup}>
-              <FormControlLabel
-                className={classes.privacyLabelDescription}
-                control={
-                  <RadioButton
-                    disabled={shouldDisableEdit}
-                    color="primary"
-                    checked={selection === 'contract'}
-                    onChange={({ target: { checked } }) => handleCheck(checked, 'contract')}
-                  />
-                }
-                label={CONTRACT}
-              />
-            </FormGroup>
           </Box>
         </FormControl>
       </Grid>

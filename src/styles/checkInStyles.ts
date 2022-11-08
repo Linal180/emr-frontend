@@ -85,7 +85,7 @@ export const useCheckInProfileStyles = makeStyles((theme) => ({
       display: 'flex',
       flexDirection: 'row',
       justifyContent: 'flex-start',
-      flex: 'auto',
+      flex: 'inherit',
       marginBottom: 10,
     },
 

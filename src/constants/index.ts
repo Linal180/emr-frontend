@@ -198,6 +198,7 @@ export const FORM_NOT_PUBLISHED = "Form is not published";
 export const CONTACT_SUPPORT_TEAM = "Please Contact support team";
 export const REASON_FOR_VISIT = "Reason For Visit";
 export const CHIEF_COMPLAINT = "Chief Complaint";
+export const ADD_CHIEF_COMPLAINT = "Add Chief Complaint";
 export const HISTORY_OF_PATIENT_ILLNESS = "History of Patient Illness";
 export const CSS_CLASSES = "CSS Classes";
 export const PLACEHOLDER = "Placeholder";
@@ -1643,13 +1644,13 @@ export const PUBLIC_FORM_FAIL_MESSAGE = 'Your record is not created.';
 export const VERIFICATION_MESSAGE = "You are verified. Please login.";
 export const DELETE_PROBLEM_DESCRIPTION = "Confirm to delete problem";
 export const DELETE_REASON_DESCRIPTION = "Confirm to delete appointment reason";
-export const DELETE_CHIEF_COMPLAINT_DESCRIPTION = "Confirm to delete appointment chief complaint";
+export const DELETE_CHIEF_COMPLAINT_DESCRIPTION = "Confirm to delete chief complaint";
 export const DELETE_VACCINE_DESCRIPTION = "Confirm to delete vaccine";
 export const DELETE_ICD_10_DESCRIPTION = "Confirm to delete icd-10";
 export const DELETE_CPT_CODE_DESCRIPTION = "Confirm to delete CPT code";
 export const DELETE_NDC_CODE_DESCRIPTION = "Confirm to delete NDC code";
-export const DELETE_IMAGING_TEST_DESCRIPTION = "Confirm to delete Imaging Test";
 export const DELETE_ROOM_DESCRIPTION = "Confirm to delete room";
+export const DELETE_IMAGING_TEST_DESCRIPTION = "Confirm to delete imaging test";
 export const DELETE_VACCINE_PRODUCT_DESCRIPTION = "Confirm to delete Vaccine Product";
 export const DELETE_CVX_CODE_DESCRIPTION = "Confirm to delete CVX code";
 export const DELETE_MACRO_DESCRIPTION = "Confirm to delete Macro";
@@ -1719,7 +1720,7 @@ export const SLOT_CONFIRMATION_SUB_HEADING_TWO = "You can access the information
 export const APPOINTMENT_SUCCESS_DOCUMENTS_HEADING = "Thank you! When you arrive, Please make sure to have these documents with you.";
 export const CHECKOUT_MODAL_DESCRIPTION = "After checking out, you will not be able to edit it again. Do you still want to check out?";
 export const SIGN_RECORD_LEARN_MORE_TEXT = "You are about to sign this document permanently. Are you sure you want to sign this document?";
-export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure you want to delete this record?";
+export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure to delete this record?";
 export const CANCEL_RECORD_LEARN_MORE_TEXT = "You are about to cancel this record permanently. Are you sure you want to cancel this record?";
 export const DISCHARGE_MODAL_PATIENT_DESCRIPTION = "You are about to discharge the patient permanently. Are you sure you want to discharge the patient?";
 export const appointmentCancellationDescription = `Are you sure you want to cancel`;
@@ -2004,6 +2005,7 @@ export const RESET_PASSWORD_MESSAGE = "Please enter your new secure password.";
 export const PATIENT_ALLERGY_DELETED = "Patient allergy deleted successfully!";
 export const PATIENT_PROBLEM_DELETED = "Patient problem deleted successfully!";
 export const APPOINTMENT_REASON_DELETED = "Appointment Reason deleted successfully!";
+export const APPOINTMENT_CHIEF_COMPLAINT_DELETED = "Appointment Chief Complaint deleted successfully!";
 export const PATIENT_SURGICAL_HISTORY_DELETE = "Patient surgical history removed successfully!"
 export const PATIENT_MEDICATION_ADD = "Patient medication added successfully"
 export const MEDICATION_PROBLEM_DELETED = "Medication deleted successfully";
@@ -4868,3 +4870,29 @@ export const STATUS_MAPPED = [
 export const PROBLEMS_TABS = ['Common Terms']
 export const ORDERS_TABS = ['Lab Order', 'Medications', 'Imaging']
 export const SCRIBE_TABS = ['Doctors', 'Staff']
+
+export enum InsuranceRadioTypes {
+  INSURANCE = "insurance",
+  NO_INSURANCE = 'noInsurance',
+  INTERNATIONAL_TRAVELER = 'internationalTraveler',
+  CONTRACT = 'contract'
+}
+
+export const INSURANCE_RADIO_BUTTON_MAPPED = [
+  {
+    type: InsuranceRadioTypes.INSURANCE,
+    title: INSURANCE,
+  },
+  {
+    type: InsuranceRadioTypes.NO_INSURANCE,
+    title: NO_INSURANCE,
+  },
+  {
+    type: InsuranceRadioTypes.INTERNATIONAL_TRAVELER,
+    title: INTERNATIONAL_TRAVELER,
+  },
+  {
+    type: InsuranceRadioTypes.CONTRACT,
+    title: CONTRACT,
+  },
+]
