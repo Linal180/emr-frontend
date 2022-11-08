@@ -1643,7 +1643,7 @@ export const PUBLIC_FORM_FAIL_MESSAGE = 'Your record is not created.';
 export const VERIFICATION_MESSAGE = "You are verified. Please login.";
 export const DELETE_PROBLEM_DESCRIPTION = "Confirm to delete problem";
 export const DELETE_REASON_DESCRIPTION = "Confirm to delete appointment reason";
-export const DELETE_CHIEF_COMPLAINT_DESCRIPTION = "Confirm to delete appointment chief complaint";
+export const DELETE_CHIEF_COMPLAINT_DESCRIPTION = "Confirm to delete chief complaint";
 export const DELETE_VACCINE_DESCRIPTION = "Confirm to delete vaccine";
 export const DELETE_ICD_10_DESCRIPTION = "Confirm to delete icd-10";
 export const DELETE_CPT_CODE_DESCRIPTION = "Confirm to delete CPT code";
@@ -2004,6 +2004,7 @@ export const RESET_PASSWORD_MESSAGE = "Please enter your new secure password.";
 export const PATIENT_ALLERGY_DELETED = "Patient allergy deleted successfully!";
 export const PATIENT_PROBLEM_DELETED = "Patient problem deleted successfully!";
 export const APPOINTMENT_REASON_DELETED = "Appointment Reason deleted successfully!";
+export const APPOINTMENT_CHIEF_COMPLAINT_DELETED = "Appointment Chief Complaint deleted successfully!";
 export const PATIENT_SURGICAL_HISTORY_DELETE = "Patient surgical history removed successfully!"
 export const PATIENT_MEDICATION_ADD = "Patient medication added successfully"
 export const MEDICATION_PROBLEM_DELETED = "Medication deleted successfully";
@@ -4868,3 +4869,29 @@ export const STATUS_MAPPED = [
 export const PROBLEMS_TABS = ['Common Terms']
 export const ORDERS_TABS = ['Lab Order', 'Medications', 'Imaging']
 export const SCRIBE_TABS = ['Doctors', 'Staff']
+
+export enum InsuranceRadioTypes {
+  INSURANCE = "insurance",
+  NO_INSURANCE = 'noInsurance',
+  INTERNATIONAL_TRAVELER = 'internationalTraveler',
+  CONTRACT = 'contract'
+}
+
+export const INSURANCE_RADIO_BUTTON_MAPPED = [
+  {
+    type: InsuranceRadioTypes.INSURANCE,
+    title: INSURANCE,
+  },
+  {
+    type: InsuranceRadioTypes.NO_INSURANCE,
+    title: NO_INSURANCE,
+  },
+  {
+    type: InsuranceRadioTypes.INTERNATIONAL_TRAVELER,
+    title: INTERNATIONAL_TRAVELER,
+  },
+  {
+    type: InsuranceRadioTypes.CONTRACT,
+    title: CONTRACT,
+  },
+]
