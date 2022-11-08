@@ -15,9 +15,10 @@ const AppointmentRoom: FC<AppointmentRoomProps> = ({ appointmentId }): JSX.Eleme
     associateRoom({ variables: { associateRoomToAppointmentInput: { appointmentId: appointmentId || '', roomId: roomId || '' } } })
   }
   return (
-    <Box display='flex' alignItems='center'>
-      <Typography variant="h6" color="textPrimary">{PATIENT_LOCATION_TEXT}</Typography>
-      <Box width={200} ml={2}>
+    <Box>
+      <Typography variant="h5" color="textPrimary">{PATIENT_LOCATION_TEXT}</Typography>
+
+      <Box width={200}>
         <RoomSelector addEmpty label='' name='room' onSelect={onRoomSelect} />
       </Box>
     </Box>

@@ -89,23 +89,25 @@ const RoomSelector: FC<RoomSelectorProps> = ({
             getOptionSelected={(option, value) => option.id === value.id}
             renderOption={(option) => option.name}
             renderInput={(params) => (
-              <FormControl fullWidth margin={margin || 'normal'} error={Boolean(invalid)}>
-                <Box position="relative">
-                  <InputLabel id={`${name}-autocomplete`} shrink>
-                    {isRequired ? requiredLabel(label) : label}
-                  </InputLabel>
-                </Box>
+              <Box className="pt-location">
+                <FormControl fullWidth margin={margin || 'normal'} error={Boolean(invalid)}>
+                  <Box position="relative">
+                    <InputLabel id={`${name}-autocomplete`} shrink>
+                      {isRequired ? requiredLabel(label) : label}
+                    </InputLabel>
+                  </Box>
 
-                <AutocompleteTextField
-                  invalid={invalid}
-                  onChange={(event) => setSearchQuery(event.target.value)}
-                  params={params}
-                  loading={loading || findLoading}
-                  placeHolder={placeHolder}
-                />
+                  <AutocompleteTextField
+                    invalid={invalid}
+                    onChange={(event) => setSearchQuery(event.target.value)}
+                    params={params}
+                    loading={loading || findLoading}
+                    placeHolder={placeHolder}
+                  />
 
-                <FormHelperText>{message}</FormHelperText>
-              </FormControl>
+                  <FormHelperText>{message}</FormHelperText>
+                </FormControl>
+              </Box>
             )}
             onChange={(_, data) => {
               field.onChange(data)

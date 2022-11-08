@@ -1013,7 +1013,17 @@ input[type=number] {
   vertical-align: baseline !important;
 }
 
-.my-2{
+.my-2 {
   margin-top: 1px;
   margin-bottom: 1px;
+}
+
+.pt-location .MuiFormControl-marginNormal {
+  margin: 0;
+  padding: 0;
+}
+
+.pt-location .MuiFormControl-marginNormal .MuiFormControl-root .MuiAutocomplete-inputRoot {
+  height: 40px;
+  margin-top: 5px;
 }
