@@ -12,8 +12,6 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
-  DateTime: any;
 };
 
 export type AchPaymentInputs = {
@@ -168,6 +166,10 @@ export type AllFeeSchedulesPayload = {
   feeSchedules?: Maybe<Array<Maybe<FeeSchedule>>>;
   pagination?: Maybe<PaginationPayload>;
   response?: Maybe<ResponsePayloadResponse>;
+};
+
+export type AllIcdCodesInput = {
+  searchQuery?: Maybe<Scalars['String']>;
 };
 
 export type AllModifiersPayload = {
@@ -657,6 +659,7 @@ export type Cvx = {
   createdAt?: Maybe<Scalars['String']>;
   cvxCode?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  isDeleted?: Maybe<Scalars['Boolean']>;
   name?: Maybe<Scalars['String']>;
   notes?: Maybe<Scalars['String']>;
   shortDescription?: Maybe<Scalars['String']>;
@@ -1697,6 +1700,7 @@ export type CreateProblemInput = {
   problemStartDate?: Maybe<Scalars['String']>;
   problemType?: Maybe<ProblemType>;
   providerId?: Maybe<Scalars['String']>;
+  shouldCreateTemplate?: Maybe<Scalars['Boolean']>;
   snowMedCodeId?: Maybe<Scalars['String']>;
   staffId?: Maybe<Scalars['String']>;
   testIds?: Maybe<Array<Scalars['String']>>;
@@ -5620,6 +5624,7 @@ export type Query = {
   findAllVaccineProducts: FindAllVaccineProductsPayload;
   findAllVaccines: FindAllVaccinesPayload;
   findAppointmentInsuranceStatus: AppointmentInsuranceStatus;
+  findChiefComplaintProblems: FindAllIcdCodesPayload;
   findClaimStatus: ClaimStatusPayload;
   findLabResultInfo: LabResultPayload;
   findLabTestsByOrderNum: LabTestsPayload;
@@ -6068,6 +6073,11 @@ export type QueryFindAllVaccinesArgs = {
 
 export type QueryFindAppointmentInsuranceStatusArgs = {
   appointmentId: Scalars['String'];
+};
+
+
+export type QueryFindChiefComplaintProblemsArgs = {
+  allIcdCodesInput: AllIcdCodesInput;
 };
 
 
@@ -6936,7 +6946,7 @@ export type Schedule = {
   facility?: Maybe<Facility>;
   facilityId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
-  recurringEndDate?: Maybe<Scalars['DateTime']>;
+  recurringEndDate?: Maybe<Scalars['String']>;
   scheduleServices?: Maybe<Array<ScheduleServices>>;
   startAt: Scalars['String'];
   updatedAt: Scalars['String'];
@@ -7238,7 +7248,7 @@ export type SingleScheduleInput = {
   doctorId?: Maybe<Scalars['String']>;
   endAt: Scalars['String'];
   facilityId?: Maybe<Scalars['String']>;
-  recurringEndDate?: Maybe<Scalars['DateTime']>;
+  recurringEndDate?: Maybe<Scalars['String']>;
   servicesIds: Array<Scalars['String']>;
   startAt: Scalars['String'];
 };
@@ -7427,7 +7437,7 @@ export type Staff = {
   mobile?: Maybe<Scalars['String']>;
   patientAllergies?: Maybe<Array<PatientAllergies>>;
   patientProblem?: Maybe<Array<PatientProblems>>;
-  patientVitals?: Maybe<PatientVitals>;
+  patientVitals?: Maybe<Array<PatientVitals>>;
   phone?: Maybe<Scalars['String']>;
   practice?: Maybe<Practice>;
   practiceId?: Maybe<Scalars['String']>;
@@ -8420,7 +8430,7 @@ export type UpdateScheduleInput = {
   endAt?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
-  recurringEndDate?: Maybe<Scalars['DateTime']>;
+  recurringEndDate?: Maybe<Scalars['String']>;
   servicesIds?: Maybe<Array<Scalars['String']>>;
   startAt?: Maybe<Scalars['String']>;
 };
@@ -10122,6 +10132,13 @@ export type FindAllIcdCodesQueryVariables = Exact<{
 
 export type FindAllIcdCodesQuery = { __typename?: 'Query', findAllIcdCodes: { __typename?: 'FindAllIcdCodesPayload', icdCodes?: Array<{ __typename?: 'ICDCodes', id: string, code: string, description?: string | null, systematic?: boolean | null, priority?: number | null } | null> | null, response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null } };
 
+export type FindChiefComplaintProblemsQueryVariables = Exact<{
+  allIcdCodesInput: AllIcdCodesInput;
+}>;
+
+
+export type FindChiefComplaintProblemsQuery = { __typename?: 'Query', findChiefComplaintProblems: { __typename?: 'FindAllIcdCodesPayload', icdCodes?: Array<{ __typename?: 'ICDCodes', id: string, code: string, description?: string | null, systematic?: boolean | null, priority?: number | null } | null> | null, response?: { __typename?: 'ResponsePayloadResponse', status?: number | null, message?: string | null } | null } };
+
 export type GetIcdCodeQueryVariables = Exact<{
   getIcdCodeInput: GetIcdCodeInput;
 }>;
@@ -10832,14 +10849,14 @@ export type GetScheduleQueryVariables = Exact<{
 }>;
 
 
-export type GetScheduleQuery = { __typename?: 'Query', getSchedule: { __typename?: 'SchedulePayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, schedule?: { __typename?: 'Schedule', id: string, recurringEndDate?: any | null, startAt: string, endAt: string, createdAt: string, updatedAt: string, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, scheduleServices?: Array<{ __typename?: 'ScheduleServices', id: string, service?: { __typename?: 'Service', id: string, name: string, duration: string } | null }> | null } | null } };
+export type GetScheduleQuery = { __typename?: 'Query', getSchedule: { __typename?: 'SchedulePayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, schedule?: { __typename?: 'Schedule', id: string, recurringEndDate?: string | null, startAt: string, endAt: string, createdAt: string, updatedAt: string, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, scheduleServices?: Array<{ __typename?: 'ScheduleServices', id: string, service?: { __typename?: 'Service', id: string, name: string, duration: string } | null }> | null } | null } };
 
 export type FindAllSchedulesQueryVariables = Exact<{
   scheduleInput: ScheduleInput;
 }>;
 
 
-export type FindAllSchedulesQuery = { __typename?: 'Query', findAllSchedules: { __typename?: 'SchedulesPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, limit?: number | null, totalPages?: number | null } | null, schedules?: Array<{ __typename?: 'Schedule', id: string, startAt: string, endAt: string, recurringEndDate?: any | null, createdAt: string, updatedAt: string, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null } | null> | null } };
+export type FindAllSchedulesQuery = { __typename?: 'Query', findAllSchedules: { __typename?: 'SchedulesPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, limit?: number | null, totalPages?: number | null } | null, schedules?: Array<{ __typename?: 'Schedule', id: string, startAt: string, endAt: string, recurringEndDate?: string | null, createdAt: string, updatedAt: string, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null } | null> | null } };
 
 export type GetDoctorScheduleQueryVariables = Exact<{
   getDoctorSchedule: GetDoctorSchedule;
@@ -10930,7 +10947,7 @@ export type FindAllStaffQueryVariables = Exact<{
 }>;
 
 
-export type FindAllStaffQuery = { __typename?: 'Query', findAllStaff: { __typename?: 'AllStaffPayload', pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, allstaff?: Array<{ __typename?: 'Staff', id: string, email: string, firstName: string, lastName: string, username?: string | null, phone?: string | null, user?: { __typename?: 'User', id: string } | null } | null> | null } };
+export type FindAllStaffQuery = { __typename?: 'Query', findAllStaff: { __typename?: 'AllStaffPayload', pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, allstaff?: Array<{ __typename?: 'Staff', id: string, email: string, firstName: string, lastName: string, username?: string | null, phone?: string | null, user?: { __typename?: 'User', id: string, userType: string } | null } | null> | null } };
 
 export type GetStaffQueryVariables = Exact<{
   getStaff: GetStaff;
@@ -20614,6 +20631,51 @@ export function useFindAllIcdCodesLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type FindAllIcdCodesQueryHookResult = ReturnType<typeof useFindAllIcdCodesQuery>;
 export type FindAllIcdCodesLazyQueryHookResult = ReturnType<typeof useFindAllIcdCodesLazyQuery>;
 export type FindAllIcdCodesQueryResult = Apollo.QueryResult<FindAllIcdCodesQuery, FindAllIcdCodesQueryVariables>;
+export const FindChiefComplaintProblemsDocument = gql`
+    query FindChiefComplaintProblems($allIcdCodesInput: AllIcdCodesInput!) {
+  findChiefComplaintProblems(allIcdCodesInput: $allIcdCodesInput) {
+    icdCodes {
+      id
+      code
+      description
+      systematic
+      priority
+    }
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindChiefComplaintProblemsQuery__
+ *
+ * To run a query within a React component, call `useFindChiefComplaintProblemsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindChiefComplaintProblemsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindChiefComplaintProblemsQuery({
+ *   variables: {
+ *      allIcdCodesInput: // value for 'allIcdCodesInput'
+ *   },
+ * });
+ */
+export function useFindChiefComplaintProblemsQuery(baseOptions: Apollo.QueryHookOptions<FindChiefComplaintProblemsQuery, FindChiefComplaintProblemsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindChiefComplaintProblemsQuery, FindChiefComplaintProblemsQueryVariables>(FindChiefComplaintProblemsDocument, options);
+      }
+export function useFindChiefComplaintProblemsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindChiefComplaintProblemsQuery, FindChiefComplaintProblemsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindChiefComplaintProblemsQuery, FindChiefComplaintProblemsQueryVariables>(FindChiefComplaintProblemsDocument, options);
+        }
+export type FindChiefComplaintProblemsQueryHookResult = ReturnType<typeof useFindChiefComplaintProblemsQuery>;
+export type FindChiefComplaintProblemsLazyQueryHookResult = ReturnType<typeof useFindChiefComplaintProblemsLazyQuery>;
+export type FindChiefComplaintProblemsQueryResult = Apollo.QueryResult<FindChiefComplaintProblemsQuery, FindChiefComplaintProblemsQueryVariables>;
 export const GetIcdCodeDocument = gql`
     query GetIcdCode($getIcdCodeInput: GetIcdCodeInput!) {
   getIcdCode(getIcdCodeInput: $getIcdCodeInput) {
@@ -26334,6 +26396,7 @@ export const FindAllStaffDocument = gql`
       phone
       user {
         id
+        userType
       }
     }
   }

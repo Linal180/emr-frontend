@@ -37,7 +37,8 @@ export interface State {
   medicationIndex: number | null;
   imagingOrderIndex: number | null;
   testIndex: number | null;
-  isIcdFormOpen: boolean
+  isIcdFormOpen: boolean;
+  chiefComplaintProblems: AllCptCodePayload['cptCodes']
 }
 
 export const initialState: State = {
@@ -73,7 +74,8 @@ export const initialState: State = {
   medicationIndex: null,
   imagingOrderIndex: null,
   testIndex: null,
-  isIcdFormOpen: false
+  isIcdFormOpen: false,
+  chiefComplaintProblems: []
 }
 
 export enum ActionType {
@@ -109,7 +111,8 @@ export enum ActionType {
   SET_MEDICATION_INDEX = 'setMedicationIndex',
   SET_IMAGING_ORDER_INDEX = 'setImagingOrderIndex',
   SET_TEST_INDEX = 'setTestIndex',
-  SET_ICD_FORM_OPEN = 'setICDFormOpen'
+  SET_ICD_FORM_OPEN = 'setICDFormOpen',
+  SET_CHIEF_COMPLAINT_PROBLEMS = 'setChiefComplaintProblems'
 }
 
 export type Action =
@@ -146,6 +149,7 @@ export type Action =
   | { type: ActionType.SET_IMAGING_ORDER_INDEX, imagingOrderIndex: number | null }
   | { type: ActionType.SET_TEST_INDEX, testIndex: number | null }
   | { type: ActionType.SET_ICD_FORM_OPEN, isIcdFormOpen: boolean }
+  | { type: ActionType.SET_CHIEF_COMPLAINT_PROBLEMS, chiefComplaintProblems: AllCptCodePayload['cptCodes'] }
 
 
 export const chartReducer = (state: State, action: Action): State => {
@@ -346,6 +350,12 @@ export const chartReducer = (state: State, action: Action): State => {
       return {
         ...state,
         isIcdFormOpen: action.isIcdFormOpen
+      }
+
+    case ActionType.SET_CHIEF_COMPLAINT_PROBLEMS:
+      return {
+        ...state,
+        chiefComplaintProblems: action.chiefComplaintProblems
       }
   }
 };

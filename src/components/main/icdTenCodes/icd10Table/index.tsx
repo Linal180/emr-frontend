@@ -117,7 +117,7 @@ const IcdCodesTable: FC<IcdCodesTableProps> = (): JSX.Element => {
   };
 
   const handleDelete = async () => {
-    (isSuper && delId) && await removeIcdCode({
+    delId && await removeIcdCode({
       variables: { removeIcdCodeInput: { id: delId } }
     })
   }
