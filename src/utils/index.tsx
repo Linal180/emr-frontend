@@ -1376,11 +1376,14 @@ export const formatPermissionName = (name: string) => {
 }
 
 export const formatRoleName = (name: string): string => {
-  let formatted = ''
-  name?.split(/[-_\s]+/)?.map(term =>
-    formatted = `${formatted} ${term.charAt(0).toUpperCase()}${term.slice(1).toLowerCase()}`)
+  if (name) {
+    let formatted = ''
+    name?.split(/[-_\s]+/)?.map(term =>
+      formatted = `${formatted} ${term.charAt(0).toUpperCase()}${term.slice(1).toLowerCase()}`)
 
-  return formatted?.trim();
+    return formatted?.trim();
+  }
+  return ''
 };
 
 export const parseXmGrid = (col: number): GridSize => {
