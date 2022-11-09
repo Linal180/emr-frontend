@@ -389,9 +389,9 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
         <ConfirmModal
           isOpen={isConfirmModalOpen}
           setOpen={setIsConfirmModalOpen}
-          title="Doctor Signoff Required"
+          title={`${DOCTOR_SIGNOFF} Required`}
           actionText="CLOSE"
-          description="Please click the checkbox of doctor signoff"
+          description={`Please click the checkbox of ${DOCTOR_SIGNOFF}`}
           shouldShowSave={false}
         />
       }
