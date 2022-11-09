@@ -1,21 +1,24 @@
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Card, colors, Typography } from "@material-ui/core";
-import { ExpandMore } from "@material-ui/icons";
-import { FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
+import { ExpandMore } from "@material-ui/icons";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Card, colors, Typography } from "@material-ui/core";
 //components
-import Alert from "../../../../common/Alert";
-import ChartingTemplateSelector from "../../../../common/Selector/ChartingTemplateSelector";
-import TableLoader from "../../../../common/TableLoader";
 import QuestionCard from "./QuestionCard";
-//constants
-import { ALL_NORMAL, CLEAR_TEXT, NEXT, NORMAL, PE_TEMPLATES, PHYSICAL_EXAM_TEXT, QuestionType, TemplateType } from "../../../../../constants";
-import { QuestionTemplate, useCreatePhysicalExamHistoryMutation, useGetPatientChartingTemplateLazyQuery, usePhysicalExamLazyQuery } from '../../../../../generated/graphql';
-import { multiOptionType, ParamsType, PatientHistoryProps } from "../../../../../interfacesTypes";
-import { Action, ActionType, initialState, patientHistoryReducer, State } from "../../../../../reducers/patientHistoryReducer";
-import { useChartingStyles } from '../../../../../styles/chartingStyles';
-import { renderMultiTemplates } from "../../../../../utils";
+import Alert from "../../../../common/Alert";
+import TableLoader from "../../../../common/TableLoader";
 import MacroView from "../../../../common/Macro/MacroView";
+import ChartingTemplateSelector from "../../../../common/Selector/ChartingTemplateSelector";
+//constants
+import { renderMultiTemplates } from "../../../../../utils";
+import { useChartingStyles } from '../../../../../styles/chartingStyles';
+import { multiOptionType, ParamsType, PatientHistoryProps, RosType } from "../../../../../interfacesTypes";
+import { Action, ActionType, initialState, patientHistoryReducer, State } from "../../../../../reducers/patientHistoryReducer";
+import { ALL_NORMAL, CLEAR_TEXT, NEXT, NORMAL, PE_TEMPLATES, PHYSICAL_EXAM_TEXT, QuestionType, TemplateType } from "../../../../../constants";
+import {
+  QuestionTemplate, useCreatePhysicalExamHistoryMutation, useGetPatientChartingTemplateLazyQuery,
+  usePhysicalExamLazyQuery
+} from '../../../../../generated/graphql';
 
 
 const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, handleStep }): JSX.Element => {
@@ -23,7 +26,9 @@ const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, hand
   const chartingClasses = useChartingStyles();
   const { id: patientId, appointmentId } = useParams<ParamsType>()
 
-  const [expanded, setExpanded] = useState<string | false>('panel1');
+  const [expanded, setExpanded] = useState<string | boolean>('panel1');
+  const [qSections, setQSections] = useState<{ [key: number]: string[] }>({});
+  const [rosTemplate, setRosTemplate] = useState<{ [key: number]: string[] }>({});
 
   const handleChange = (panel: string) => {
     setExpanded(expanded === panel ? '' : panel)
@@ -51,7 +56,6 @@ const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, hand
       Alert.error(message)
     }
   })
-
 
   const [findPatientChartingTemplate, { loading: findPatientChartingTemplateLoading }] = useGetPatientChartingTemplateLazyQuery({
     onError: ({ message }) => {
@@ -175,43 +179,65 @@ const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, hand
 
   }
 
-  const handleClear = (answerIds?: string[]) => {
-    if (answerIds) {
-      answerIds.forEach((answerId) => {
-        const value = values[answerId]
-        if (value) {
-          setValue(answerId, {
-            ...value,
-            select: false
+  const handleNormal = (answerIds: string[], rosType: RosType, index: number) => {
+    if (rosType === 'section') {
+      if (!(qSections?.[index]?.length) && answerIds?.length > 0) {
+        setQSections((prev) => ({ ...prev, [index]: answerIds }))
+        if (answerIds) {
+          answerIds.forEach((answerId) => {
+            const value = values[answerId]
+            setValue(answerId, {
+              ...(value || {}),
+              select: true
+            })
           })
+          handleSubmit(onSubmit)()
         }
-      })
-      handleSubmit(onSubmit)()
-      return
+      }
     }
-    const objectValues = Object.keys(values).filter((value) => value !== 'hpiTemplates')
-
-    objectValues.forEach((value) => {
-      setValue(value, {
-        ...values[value],
-        select: false
-      })
-    })
-
-    handleSubmit(onSubmit)()
+    else if (rosType === 'template') {
+      if (!(rosTemplate?.[index]?.length) && answerIds?.length > 0) {
+        setRosTemplate((prev) => ({ ...prev, [index]: answerIds }))
+        answerIds.forEach((answerId) => {
+          const value = values[answerId]
+          setValue(answerId, {
+            ...(value || {}),
+            select: true
+          })
+        })
+        handleSubmit(onSubmit)()
+      }
+    }
   }
 
-  const handleNormal = (answerIds?: string[]) => {
-    if (answerIds) {
-      answerIds.forEach((answerId) => {
-        const value = values[answerId]
-        setValue(answerId, {
-          ...(value || {}),
-          select: true
+  const handleClear = (answerIds: string[], rosType: RosType, index: number) => {
+    if (rosType === 'section') {
+      if (qSections?.[index]?.length && answerIds?.length > 0) {
+        setQSections((prev) => ({ ...prev, [index]: [] }))
+        if (answerIds) {
+          answerIds.forEach((answerId) => {
+            const value = values[answerId]
+            setValue(answerId, {
+              ...(value || {}),
+              select: false
+            })
+          })
+          handleSubmit(onSubmit)()
+        }
+      }
+    }
+    else if (rosType === 'template') {
+      if (rosTemplate?.[index]?.length && answerIds?.length > 0) {
+        setRosTemplate((prev) => ({ ...prev, [index]: [] }))
+        answerIds.forEach((answerId) => {
+          const value = values[answerId]
+          setValue(answerId, {
+            ...(value || {}),
+            select: false
+          })
         })
-      })
-      handleSubmit(onSubmit)()
-      return
+        handleSubmit(onSubmit)()
+      }
     }
   }
 
@@ -254,7 +280,8 @@ const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, hand
               type={TemplateType.PHYSICAL_EXAM}
             />
             {templates?.map((template, i) => {
-              const { sections, name } = template || {}
+              const { id, sections, name } = template || {}
+
               const clearAnswerIds = sections?.reduce<string[]>((acc, section) => {
                 const { questions } = section || {}
                 const answers = questions?.reduce<string[]>((acc, question) => {
@@ -276,8 +303,9 @@ const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, hand
                 acc.push(...answers)
                 return acc
               }, [])
+
               return (
-                <Box px={1}>
+                <Box px={1} key={`${i}-${id}`}>
                   <Accordion expanded={expanded === `panel${i + 1}`} className={chartingClasses.accordion}>
                     <AccordionSummary
                       expandIcon={<ExpandMore />}
@@ -291,13 +319,13 @@ const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, hand
                         <Typography variant="h4" color="textPrimary">{name}</Typography>
                         <Box display="flex" alignItems="center">
                           <Box mx={1}>
-                            <Button color="primary" onClick={() => handleNormal(normalAnswerIds)}>
+                            <Button color="primary" onClick={() => handleNormal(normalAnswerIds || [], 'template', i)}>
                               {ALL_NORMAL}
                             </Button>
                           </Box>
 
                           <Box mx={1}>
-                            <Button className="danger" onClick={() => handleClear(clearAnswerIds)}>
+                            <Button className="danger" onClick={() => handleClear(clearAnswerIds || [], 'template', i)}>
                               {CLEAR_TEXT}
                             </Button>
                           </Box>
@@ -307,8 +335,9 @@ const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, hand
 
                     <AccordionDetails>
                       <Box maxHeight="calc(100vh - 180px)" className="overflowY-auto">
-                        {sections?.map((section) => {
+                        {sections?.map((section, index) => {
                           const { id, name, questions } = section || {}
+
                           const answerIds = questions?.reduce<string[]>((acc, question) => {
                             const answerValues = question?.answers?.map((answer) => answer.id || '') || []
                             acc.push(...answerValues)
@@ -320,8 +349,9 @@ const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, hand
                             acc.push(...answerValues)
                             return acc
                           }, [])
+
                           return (
-                            <Card>
+                            <Card key={`${id}-${index}`}>
                               <Box
                                 width="100%" pr={3.5} mb={3}
                                 display="flex"
@@ -332,19 +362,19 @@ const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, hand
                                 <Typography variant="h4" color="textPrimary">{name}</Typography>
                                 <Box display="flex" alignItems="center">
                                   <Box mx={1}>
-                                    <Button color="primary" onClick={() => handleNormal(normalAnswerIds)}>
+                                    <Button color="primary" onClick={() => handleNormal(normalAnswerIds || [], 'section', index)}>
                                       {NORMAL}
                                     </Button>
                                   </Box>
 
                                   <Box mx={1}>
-                                    <Button className="danger" onClick={() => handleClear(answerIds)}>
+                                    <Button className="danger" onClick={() => handleClear(answerIds || [], 'section', index)}>
                                       {CLEAR_TEXT}
                                     </Button>
                                   </Box>
                                 </Box>
                               </Box>
-                              {/* // <CardComponent cardTitle={name || ''} key={id}> */}
+
                               {questions?.map((question, index) => {
                                 return (
                                   <>
@@ -358,7 +388,7 @@ const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, hand
                                   </>
                                 )
                               })}
-                              {/* // </CardComponent> */}
+
                             </Card>
                           )
                         })}

@@ -1,24 +1,26 @@
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Card, colors, Typography } from "@material-ui/core";
-import { FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
-//components
-import Alert from "../../../../common/Alert";
-//constants
 import { ExpandMore } from "@material-ui/icons";
-import { ALL_NORMAL, CLEAR_TEXT, HPI_TEMPLATES, NEXT, NORMAL, PATIENT_HISTORY_ILLNESS_TEXT, QuestionType, TemplateType } from "../../../../../constants";
-import {
-  QuestionTemplate,
-  useCreatePatientIllnessHistoryMutation, useGetPatientChartingTemplateLazyQuery, usePatientIllnessHistoryLazyQuery
-} from '../../../../../generated/graphql';
-import { multiOptionType, ParamsType, PatientHistoryProps } from "../../../../../interfacesTypes";
-import { Action, ActionType, initialState, patientHistoryReducer, State } from "../../../../../reducers/patientHistoryReducer";
-import { useChartingStyles } from '../../../../../styles/chartingStyles';
-import { renderMultiTemplates, setRecord } from "../../../../../utils";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Card, colors, Typography } from "@material-ui/core";
+//components
+import QuestionCard from "./QuestionCard";
+import Alert from "../../../../common/Alert";
+import TableLoader from "../../../../common/TableLoader";
 import MacroView from "../../../../common/Macro/MacroView";
 import ChartingTemplateSelector from "../../../../common/Selector/ChartingTemplateSelector";
-import TableLoader from "../../../../common/TableLoader";
-import QuestionCard from "./QuestionCard";
+//constants
+import { renderMultiTemplates, setRecord } from "../../../../../utils";
+import { useChartingStyles } from '../../../../../styles/chartingStyles';
+import { multiOptionType, ParamsType, PatientHistoryProps, RosType } from "../../../../../interfacesTypes";
+import { Action, ActionType, initialState, patientHistoryReducer, State } from "../../../../../reducers/patientHistoryReducer";
+import {
+  ALL_NORMAL, CLEAR_TEXT, HPI_TEMPLATES, NEXT, NORMAL, PATIENT_HISTORY_ILLNESS_TEXT, QuestionType, TemplateType
+} from "../../../../../constants";
+import {
+  QuestionTemplate, useCreatePatientIllnessHistoryMutation, useGetPatientChartingTemplateLazyQuery,
+  usePatientIllnessHistoryLazyQuery
+} from '../../../../../generated/graphql';
 
 const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, handleStep }): JSX.Element => {
   const methods = useForm();
@@ -30,7 +32,9 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
   const { handleSubmit, setValue, watch } = methods;
   const values = watch()
 
-  const [expanded, setExpanded] = useState<string | false>('panel1');
+  const [expanded, setExpanded] = useState<string | boolean>('panel1');
+  const [qSections, setQSections] = useState<{ [key: number]: string[] }>({});
+  const [rosTemplate, setRosTemplate] = useState<{ [key: number]: string[] }>({});
 
   const handleChange = (panel: string) => {
     setExpanded(expanded === panel ? '' : panel)
@@ -176,43 +180,65 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
 
   }
 
-  const handleClear = (answerIds?: string[]) => {
-    if (answerIds) {
-      answerIds.forEach((answerId) => {
-        const value = values[answerId]
-        if (value) {
+  const handleClear = (answerIds: string[], rosType: RosType, index: number) => {
+    if (rosType === 'section') {
+      if (qSections?.[index]?.length && answerIds?.length > 0) {
+        setQSections((prev) => ({ ...prev, [index]: [] }))
+        if (answerIds) {
+          answerIds.forEach((answerId) => {
+            const value = values[answerId]
+            setValue(answerId, {
+              ...(value || {}),
+              select: false
+            })
+          })
+          handleSubmit(onSubmit)()
+        }
+      }
+    }
+    else if (rosType === 'template') {
+      if (rosTemplate?.[index]?.length && answerIds?.length > 0) {
+        setRosTemplate((prev) => ({ ...prev, [index]: [] }))
+        answerIds.forEach((answerId) => {
+          const value = values[answerId]
           setValue(answerId, {
-            ...value,
+            ...(value || {}),
             select: false
           })
-        }
-      })
-      handleSubmit(onSubmit)()
-      return
+        })
+        handleSubmit(onSubmit)()
+      }
     }
-    const objectValues = Object.keys(values).filter((value) => value !== 'hpiTemplates')
-
-    objectValues.forEach((value) => {
-      setValue(value, {
-        ...values[value],
-        select: false
-      })
-    })
-
-    handleSubmit(onSubmit)()
   }
 
-  const handleNormal = (answerIds?: string[]) => {
-    if (answerIds) {
-      answerIds.forEach((answerId) => {
-        const value = values[answerId]
-        setValue(answerId, {
-          ...(value || {}),
-          select: true
+  const handleNormal = (answerIds: string[], rosType: RosType, index: number) => {
+    if (rosType === 'section') {
+      if (!(qSections?.[index]?.length) && answerIds?.length > 0) {
+        setQSections((prev) => ({ ...prev, [index]: answerIds }))
+        if (answerIds) {
+          answerIds.forEach((answerId) => {
+            const value = values[answerId]
+            setValue(answerId, {
+              ...(value || {}),
+              select: true
+            })
+          })
+          handleSubmit(onSubmit)()
+        }
+      }
+    }
+    else if (rosType === 'template') {
+      if (!(rosTemplate?.[index]?.length) && answerIds?.length > 0) {
+        setRosTemplate((prev) => ({ ...prev, [index]: answerIds }))
+        answerIds.forEach((answerId) => {
+          const value = values[answerId]
+          setValue(answerId, {
+            ...(value || {}),
+            select: true
+          })
         })
-      })
-      handleSubmit(onSubmit)()
-      return
+        handleSubmit(onSubmit)()
+      }
     }
   }
 
@@ -259,6 +285,7 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
 
             {templates?.map((template, i) => {
               const { sections, name } = template || {}
+
               const clearAnswerIds = sections?.reduce<string[]>((acc, section) => {
                 const { questions } = section || {}
                 const answers = questions?.reduce<string[]>((acc, question) => {
@@ -296,13 +323,13 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
                         <Typography variant="h4" color="textPrimary">{name}</Typography>
                         <Box display="flex" alignItems="center">
                           <Box mx={1}>
-                            <Button color="primary" onClick={() => handleNormal(normalAnswerIds)}>
+                            <Button color="primary" onClick={() => handleNormal(normalAnswerIds || [], 'template', i)}>
                               {ALL_NORMAL}
                             </Button>
                           </Box>
 
                           <Box mx={1}>
-                            <Button className="danger" onClick={() => handleClear(clearAnswerIds)}>
+                            <Button className="danger" onClick={() => handleClear(clearAnswerIds || [], 'template', i)}>
                               {CLEAR_TEXT}
                             </Button>
                           </Box>
@@ -313,8 +340,9 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
                     <AccordionDetails>
                       {/* <Box maxHeight="calc(100vh - 180px)" className="overflowY-auto"></Box> */}
                       <Box maxHeight="calc(100vh - 180px)" className="overflowY-auto">
-                        {sections?.map((section) => {
+                        {sections?.map((section, index) => {
                           const { id, name, questions } = section || {}
+
                           const answerIds = questions?.reduce<string[]>((acc, question) => {
                             const answerValues = question?.answers?.map((answer) => answer.id || '') || []
                             acc.push(...answerValues)
@@ -326,8 +354,9 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
                             acc.push(...answerValues)
                             return acc
                           }, [])
+
                           return (
-                            <Card>
+                            <Card key={`${index}-${id}`}>
                               <Box
                                 width="100%" pr={3} mb={3}
                                 display="flex"
@@ -338,13 +367,13 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
                                 <Typography variant="h4" color="textPrimary">{name}</Typography>
                                 <Box display="flex" alignItems="center">
                                   <Box mx={1}>
-                                    <Button color="primary" onClick={() => handleNormal(normalAnswerIds)}>
+                                    <Button color="primary" onClick={() => handleNormal(normalAnswerIds || [], 'section', index)}>
                                       {NORMAL}
                                     </Button>
                                   </Box>
 
                                   <Box mx={1}>
-                                    <Button className="danger" onClick={() => handleClear(answerIds)}>
+                                    <Button className="danger" onClick={() => handleClear(answerIds || [], 'section', index)}>
                                       {CLEAR_TEXT}
                                     </Button>
                                   </Box>

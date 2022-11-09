@@ -178,7 +178,6 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
   const loading = findPatientChartingTemplateLoading || getLoading;
 
   const handleClear = (answerIds: string[], rosType: RosType, index: number) => {
-
     if (rosType === 'section') {
       if (qSections?.[index]?.length && answerIds?.length > 0) {
         setQSections((prev) => ({ ...prev, [index]: [] }))
@@ -208,7 +207,6 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
       }
     }
   }
-
 
   const handleNormal = (answerIds: string[], rosType: RosType, index: number) => {
     if (rosType === 'section') {
