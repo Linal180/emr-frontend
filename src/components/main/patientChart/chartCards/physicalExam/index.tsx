@@ -36,7 +36,7 @@ const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, hand
 
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientHistoryReducer, initialState);
   const { itemId, templates, notes } = state;
-  const { handleSubmit, setValue, watch } = methods;
+  const { handleSubmit, setValue, watch, reset } = methods;
   const values = watch()
 
   const [createPhysicalExam] = useCreatePhysicalExamHistoryMutation({
@@ -212,7 +212,7 @@ const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, hand
 
   const handleClear = (answerIds: string[], rosType: RosType, index: number) => {
     if (rosType === 'section') {
-      if (qSections?.[index]?.length && answerIds?.length > 0) {
+      if (answerIds?.length > 0) {
         setQSections((prev) => ({ ...prev, [index]: [] }))
         if (answerIds) {
           answerIds.forEach((answerId) => {
@@ -222,12 +222,13 @@ const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, hand
               select: false
             })
           })
+          reset()
           handleSubmit(onSubmit)()
         }
       }
     }
     else if (rosType === 'template') {
-      if (rosTemplate?.[index]?.length && answerIds?.length > 0) {
+      if (answerIds?.length > 0) {
         setRosTemplate((prev) => ({ ...prev, [index]: [] }))
         answerIds.forEach((answerId) => {
           const value = values[answerId]
@@ -236,6 +237,7 @@ const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, hand
             select: false
           })
         })
+        reset()
         handleSubmit(onSubmit)()
       }
     }

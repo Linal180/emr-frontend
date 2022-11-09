@@ -29,7 +29,7 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
 
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientHistoryReducer, initialState);
   const { itemId, templates, notes } = state;
-  const { handleSubmit, setValue, watch } = methods;
+  const { handleSubmit, setValue, watch, reset } = methods;
   const values = watch()
 
   const [expanded, setExpanded] = useState<string | boolean>('panel1');
@@ -182,7 +182,7 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
 
   const handleClear = (answerIds: string[], rosType: RosType, index: number) => {
     if (rosType === 'section') {
-      if (qSections?.[index]?.length && answerIds?.length > 0) {
+      if (answerIds?.length > 0) {
         setQSections((prev) => ({ ...prev, [index]: [] }))
         if (answerIds) {
           answerIds.forEach((answerId) => {
@@ -192,12 +192,13 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
               select: false
             })
           })
+          reset()
           handleSubmit(onSubmit)()
         }
       }
     }
     else if (rosType === 'template') {
-      if (rosTemplate?.[index]?.length && answerIds?.length > 0) {
+      if (answerIds?.length > 0) {
         setRosTemplate((prev) => ({ ...prev, [index]: [] }))
         answerIds.forEach((answerId) => {
           const value = values[answerId]
@@ -206,6 +207,7 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
             select: false
           })
         })
+        reset()
         handleSubmit(onSubmit)()
       }
     }
