@@ -2603,3 +2603,5 @@ export type AddDiagnoseType = 'medication' | 'test' | 'imaging';
 export type AppointmentRoomProps = {
   appointmentId: string
 }
+
+export type RosType = 'section' | 'template'

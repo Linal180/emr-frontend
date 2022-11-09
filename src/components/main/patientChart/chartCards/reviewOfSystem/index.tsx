@@ -12,7 +12,7 @@ import QuestionCard from "./QuestionCard";
 //constants
 import { ALL_NORMAL, CLEAR_TEXT, NEXT, NORMAL, QuestionType, REVIEW_OF_SYSTEM_TEXT, ROS_TEMPLATES, TemplateType } from "../../../../../constants";
 import { QuestionTemplate, useCreateReviewOfSystemHistoryMutation, useGetPatientChartingTemplateLazyQuery, useReviewOfSystemLazyQuery } from '../../../../../generated/graphql';
-import { multiOptionType, ParamsType, PatientHistoryProps } from "../../../../../interfacesTypes";
+import { multiOptionType, ParamsType, PatientHistoryProps, RosType } from "../../../../../interfacesTypes";
 import { Action, ActionType, initialState, patientHistoryReducer, State } from "../../../../../reducers/patientHistoryReducer";
 import { useChartingStyles } from '../../../../../styles/chartingStyles';
 import { renderMultiTemplates } from "../../../../../utils";
@@ -22,7 +22,9 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
   const chartingClasses = useChartingStyles();
   const { id: patientId, appointmentId } = useParams<ParamsType>()
 
-  const [expanded, setExpanded] = useState<string | false>('panel1');
+  const [expanded, setExpanded] = useState<string | boolean>('panel1');
+  const [qSections, setQSections] = useState<{ [key: number]: string[] }>({});
+  const [rosTemplate, setRosTemplate] = useState<{ [key: number]: string[] }>({});
 
   const handleChange = (panel: string) => {
     setExpanded(expanded === panel ? '' : panel)
@@ -50,7 +52,6 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
       Alert.error(message)
     }
   })
-
 
   const [findPatientChartingTemplate, { loading: findPatientChartingTemplateLoading }] = useGetPatientChartingTemplateLazyQuery({
     onError: ({ message }) => {
@@ -176,43 +177,67 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
 
   const loading = findPatientChartingTemplateLoading || getLoading;
 
-  const handleClear = (answerIds?: string[]) => {
-    if (answerIds) {
-      answerIds.forEach((answerId) => {
-        const value = values[answerId]
-        if (value) {
+  const handleClear = (answerIds: string[], rosType: RosType, index: number) => {
+
+    if (rosType === 'section') {
+      if (qSections?.[index]?.length && answerIds?.length > 0) {
+        setQSections((prev) => ({ ...prev, [index]: [] }))
+        if (answerIds) {
+          answerIds.forEach((answerId) => {
+            const value = values[answerId]
+            setValue(answerId, {
+              ...(value || {}),
+              select: false
+            })
+          })
+          handleSubmit(onSubmit)()
+        }
+      }
+    }
+    else if (rosType === 'template') {
+      if (rosTemplate?.[index]?.length && answerIds?.length > 0) {
+        setRosTemplate((prev) => ({ ...prev, [index]: [] }))
+        answerIds.forEach((answerId) => {
+          const value = values[answerId]
           setValue(answerId, {
-            ...value,
+            ...(value || {}),
             select: false
           })
-        }
-      })
-      handleSubmit(onSubmit)()
-      return
+        })
+        handleSubmit(onSubmit)()
+      }
     }
-    const objectValues = Object.keys(values).filter((value) => value !== 'hpiTemplates')
-
-    objectValues.forEach((value) => {
-      setValue(value, {
-        ...values[value],
-        select: false
-      })
-    })
-
-    handleSubmit(onSubmit)()
   }
 
-  const handleNormal = (answerIds?: string[]) => {
-    if (answerIds) {
-      answerIds.forEach((answerId) => {
-        const value = values[answerId]
-        setValue(answerId, {
-          ...(value || {}),
-          select: true
+
+  const handleNormal = (answerIds: string[], rosType: RosType, index: number) => {
+    if (rosType === 'section') {
+      if (!(qSections?.[index]?.length) && answerIds?.length > 0) {
+        setQSections((prev) => ({ ...prev, [index]: answerIds }))
+        if (answerIds) {
+          answerIds.forEach((answerId) => {
+            const value = values[answerId]
+            setValue(answerId, {
+              ...(value || {}),
+              select: true
+            })
+          })
+          handleSubmit(onSubmit)()
+        }
+      }
+    }
+    else if (rosType === 'template') {
+      if (!(rosTemplate?.[index]?.length) && answerIds?.length > 0) {
+        setRosTemplate((prev) => ({ ...prev, [index]: answerIds }))
+        answerIds.forEach((answerId) => {
+          const value = values[answerId]
+          setValue(answerId, {
+            ...(value || {}),
+            select: true
+          })
         })
-      })
-      handleSubmit(onSubmit)()
-      return
+        handleSubmit(onSubmit)()
+      }
     }
   }
 
@@ -253,7 +278,8 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
               type={TemplateType.REVIEW_OF_SYSTEM}
             />
             {templates?.map((template, i) => {
-              const { sections, name } = template || {}
+              const { id, sections, name } = template || {}
+
               const clearAnswerIds = sections?.reduce<string[]>((acc, section) => {
                 const { questions } = section || {}
                 const answers = questions?.reduce<string[]>((acc, question) => {
@@ -275,8 +301,9 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
                 acc.push(...answers)
                 return acc
               }, [])
+
               return (
-                <Box px={1}>
+                <Box px={1} key={`${i}-${id}`}>
                   <Accordion expanded={expanded === `panel${i + 1}`} className={chartingClasses.accordion}>
                     <AccordionSummary
                       expandIcon={<ExpandMore />}
@@ -290,13 +317,13 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
                         <Typography variant="h4" color="textPrimary">{name}</Typography>
                         <Box display="flex" alignItems="center">
                           <Box mx={1}>
-                            <Button color="primary" onClick={() => handleNormal(normalAnswerIds)}>
+                            <Button color="primary" onClick={() => handleNormal(normalAnswerIds || [], "template", i)}>
                               {ALL_NORMAL}
                             </Button>
                           </Box>
 
                           <Box mx={1}>
-                            <Button className="danger" onClick={() => handleClear(clearAnswerIds)}>
+                            <Button className="danger" onClick={() => handleClear(clearAnswerIds || [], 'template', i)}>
                               {CLEAR_TEXT}
                             </Button>
                           </Box>
@@ -306,8 +333,9 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
 
                     <AccordionDetails>
                       <Box maxHeight="calc(100vh - 180px)" className="overflowY-auto">
-                        {sections?.map((section) => {
+                        {sections?.map((section, index) => {
                           const { id, name, questions } = section || {}
+
                           const answerIds = questions?.reduce<string[]>((acc, question) => {
                             const answerValues = question?.answers?.map((answer) => answer.id || '') || []
                             acc.push(...answerValues)
@@ -319,8 +347,9 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
                             acc.push(...answerValues)
                             return acc
                           }, [])
+
                           return (
-                            <Card>
+                            <Card key={`${index}-${id}`}>
                               <Box
                                 width="100%" pr={3} mb={3}
                                 display="flex"
@@ -331,19 +360,19 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
                                 <Typography variant="h4" color="textPrimary">{name}</Typography>
                                 <Box display="flex" alignItems="center">
                                   <Box mx={1}>
-                                    <Button color="primary" onClick={() => handleNormal(normalAnswerIds)}>
+                                    <Button color="primary" onClick={() => handleNormal(normalAnswerIds || [], 'section', index)}>
                                       {NORMAL}
                                     </Button>
                                   </Box>
 
                                   <Box mx={1}>
-                                    <Button className="danger" onClick={() => handleClear(answerIds)}>
+                                    <Button className="danger" onClick={() => handleClear(answerIds || [], 'section', index)}>
                                       {CLEAR_TEXT}
                                     </Button>
                                   </Box>
                                 </Box>
                               </Box>
-                              {/* // <CardComponent cardTitle={name || ''} key={id}> */}
+
                               {questions?.map((question, index) => {
                                 return (
                                   <>
@@ -357,7 +386,7 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
                                   </>
                                 )
                               })}
-                              {/* // </CardComponent> */}
+
                             </Card>
                           )
                         })}
