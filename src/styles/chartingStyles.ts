@@ -31,6 +31,23 @@ export const useChartingStyles = makeStyles((theme) => ({
 
   },
 
+  problemChip: {
+    border: `1.5px solid ${BLUE}`,
+    borderRadius: 4,
+    display: "inline-flex",
+    alignItems: "center",
+    flexWrap: "wrap",
+    minWidth: 100,
+    height: "auto",
+    paddingBottom: 3,
+    fontSize: 16,
+    whiteSpace: "normal",
+
+    "& .MuiChip-label": {
+      whiteSpace: "normal",
+    },
+  },
+
   tab: {
     "& .MuiTab-wrapper": {
       display: 'flex',
