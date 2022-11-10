@@ -256,7 +256,9 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
             })}
           </Box>
 
-          <Box p={2}>
+          <Box m={2} />
+
+          <Box p={2} borderTop={`1px solid ${colors.grey[300]}`}>
             {singlePatientProblems?.map((value) => {
               const { id, ICDCode } = value || {}
               return <Box display="flex" flexDirection="row" justifyContent="space-between">
