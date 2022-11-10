@@ -2,14 +2,13 @@ import { Box, Button, Card, Checkbox, colors, FormControlLabel, Typography } fro
 import { AddCircleOutline, ChevronRight } from '@material-ui/icons'
 import { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
-import { 
-  ASSESSMENT_PLAN, DASHES, EIGHT_PAGE_LIMIT, ENCOUNTER_INFORMATION, FOLLOWUP, PATIENT_HISTORY_ILLNESS_TEXT, 
-  PHYSICAL_EXAM_TEXT, 
-  REVIEW_OF_SYSTEM_TEXT, TO_CHECKOUT 
+import {
+  ASSESSMENT_PLAN, DASHES, EIGHT_PAGE_LIMIT, ENCOUNTER_INFORMATION, FOLLOWUP, PATIENT_HISTORY_ILLNESS_TEXT,
+  PHYSICAL_EXAM_TEXT, REVIEW_OF_SYSTEM_TEXT, TO_CHECKOUT
 } from '../../../constants'
-import { 
-  PatientIllnessHistoryPayload, PhysicalExamPayload, ReviewOfSystemPayload, ScribePayload, useFindAllPatientProblemsWithMedicationLazyQuery, 
-  usePatientIllnessHistoryLazyQuery, usePhysicalExamLazyQuery, useReviewOfSystemLazyQuery, useUpdateScribeCheckMutation 
+import {
+  PatientIllnessHistoryPayload, PhysicalExamPayload, ReviewOfSystemPayload, ScribePayload, useFindAllPatientProblemsWithMedicationLazyQuery,
+  usePatientIllnessHistoryLazyQuery, usePhysicalExamLazyQuery, useReviewOfSystemLazyQuery, useUpdateScribeCheckMutation
 } from '../../../generated/graphql'
 import { AssessmentProblemType, ParamsType, SignOffProps } from '../../../interfacesTypes'
 import { useChartingStyles } from '../../../styles/chartingStyles'

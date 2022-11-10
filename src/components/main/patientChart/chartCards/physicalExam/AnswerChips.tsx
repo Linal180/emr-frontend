@@ -1,10 +1,12 @@
 import { Box, Chip } from '@material-ui/core'
 import { useFormContext } from 'react-hook-form'
-import { QuestionType } from '../../../../../constants'
+//component
+import Selector from '../../../../common/Selector'
 import InputController from '../../../../../controller'
+//constants, graphql, interfaces
+import { QuestionType } from '../../../../../constants'
 import { QuestionAnswers } from '../../../../../generated/graphql'
 import { AnswerChipsProps } from '../../../../../interfacesTypes'
-import Selector from '../../../../common/Selector'
 
 function AnswerChips({ answers, colors, handleSubmit, shouldDisableEdit }: AnswerChipsProps) {
   const methods = useFormContext()
@@ -68,8 +70,7 @@ function AnswerChips({ answers, colors, handleSubmit, shouldDisableEdit }: Answe
     setValue(`${id}.select`, true)
     handleSubmit && handleSubmit()
   }
-
-
+  
   return (
     <>
       {

@@ -198,7 +198,7 @@ export const useExternalPatientStyles = makeStyles({
     "& .MuiCheckbox-root .MuiIconButton-label:before":{
       width:15,
       height:15
-    }
+    },
   },
 
   privacyLabelNewDescription: {
