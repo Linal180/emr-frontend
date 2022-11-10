@@ -40,6 +40,7 @@ import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { hasEncounter, isFrontDesk } from '../../../../utils';
 import PastAndUpcomingAppointments from "./PastAndUpcomingAppointments";
 import { AuthContext } from "../../../../context";
+import ReceivablesTable from "./receivables";
 // import { WHITE } from '../../../../theme';
 
 const PatientDetailsComponent = (): JSX.Element => {
@@ -360,6 +361,10 @@ const PatientDetailsComponent = (): JSX.Element => {
               providerBtn={true}
               isEditable={true}
             />
+          </TabPanel>
+
+          <TabPanel value="12">
+            <ReceivablesTable patientSpecific />
           </TabPanel>
         </Box>
       </TabContext>

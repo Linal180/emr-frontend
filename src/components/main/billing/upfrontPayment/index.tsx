@@ -38,7 +38,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
       Copay: [{ ...UPFRONT_INITIAL_VALUES, paymentType: UPFRONT_PAYMENT_TYPES.Copay }],
       Previous: [{ ...UPFRONT_INITIAL_VALUES, paymentType: UPFRONT_PAYMENT_TYPES.Previous }],
     },
-    resolver: yupResolver(createUpFrontPaymentSchema(copays))
+    resolver: yupResolver(createUpFrontPaymentSchema(copays, isInsurance))
   })
 
   const { watch, setValue, handleSubmit, trigger } = methods
@@ -85,13 +85,16 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
       const { fetchUpFrontPaymentDetailsByAppointmentId } = data || {};
 
       if (fetchUpFrontPaymentDetailsByAppointmentId) {
-        const { upFrontPayment } = fetchUpFrontPaymentDetailsByAppointmentId
-        const { UpFrontPaymentTypes, adjustments, balance, expected, paid, totalCharges } = upFrontPayment
+        const { upFrontPayment, previous: accPrevious } = fetchUpFrontPaymentDetailsByAppointmentId
+        const { UpFrontPaymentTypes, adjustments, balance, expected, paid, totalCharges } = upFrontPayment || {}
         setValue('adjustments', adjustments || '')
         setValue('balance', balance || '')
         setValue('expected', expected || '')
         setValue('totalCharges', totalCharges || '')
         setValue('paid', paid || '')
+        setValue('previous', String(accPrevious || 0))
+
+        accPrevious &&  setValue(`${UPFRONT_PAYMENT_TYPES.Previous}.0.amount`, String(accPrevious) as never)
 
         const transformedUpFrontPayments = UpFrontPaymentTypes?.map((UpFrontPaymentType) => {
           const { amount, notes, paymentType, type, copayType } = UpFrontPaymentType
@@ -125,13 +128,14 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
         })
 
         previous?.forEach((value, index) => {
-          setValue(`${value.paymentType as UPFRONT_PAYMENT_TYPES}.${index}.amount`, value?.amount as never)
+          setValue(`${value.paymentType as UPFRONT_PAYMENT_TYPES}.${index}.amount`, (value?.amount as never || accPrevious))
           setValue(`${value.paymentType as UPFRONT_PAYMENT_TYPES}.${index}.notes`, value?.notes as never)
           setValue(`${value.paymentType as UPFRONT_PAYMENT_TYPES}.${index}.type`, value?.type as never)
           setValue(`${value.paymentType as UPFRONT_PAYMENT_TYPES}.${index}.paymentType`, value?.paymentType as never)
           setValue(`${value.paymentType as UPFRONT_PAYMENT_TYPES}.${index}.copayType`, value?.copayType as never)
         })
-
+       
+        
       }
     },
   });
@@ -250,7 +254,6 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
   if (getUpFrontPaymentDetailsLoading) {
     return <Loader loading loaderText="Fetching upFront Payments..." />
   }
-
 
   return (
     <>

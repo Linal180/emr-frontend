@@ -1024,8 +1024,8 @@ export interface PolicyCardProps extends GeneralFormProps {
 }
 
 export interface CheckInComponentProps {
-  appointmentState: AppointmentState,
-  appointmentDispatcher: Dispatch<AppointmentAction>
+  appointmentState?: AppointmentState,
+  appointmentDispatcher?: Dispatch<AppointmentAction>
   handleStep: Function
   shouldDisableEdit?: boolean
   activeStep?: number
@@ -1107,6 +1107,7 @@ export type CreateUpFrontPayment = {
   balance: string
   paid: string
   adjustments: string
+  previous: string
 }
 
 export interface CreateLabTestProviderProps {
@@ -2021,6 +2022,10 @@ export type UpdateAttachmentDataInputs = Pick<UpdateAttachmentInput, 'attachment
 export type DocumentInputProps = UpdateAttachmentDataInputs
   & { provider: SelectorOption } & { date: string } & { patientName: string }
 
+export type ReceivablesTableProps= {
+  patientSpecific?: boolean
+}
+
 export interface PatientNoteModalProps {
   patientStates: PatientState;
   dispatcher: Dispatch<PatientAction>;
@@ -2603,3 +2608,5 @@ export type AddDiagnoseType = 'medication' | 'test' | 'imaging';
 export type AppointmentRoomProps = {
   appointmentId: string
 }
+
+export type RosType = 'section' | 'template'

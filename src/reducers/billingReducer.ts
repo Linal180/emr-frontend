@@ -1,4 +1,4 @@
-import { BillingStatus } from "../generated/graphql";
+import { BillingsPayload, BillingStatus } from "../generated/graphql";
 import { CodeTablesData } from "../interfacesTypes";
 
 export interface State {
@@ -23,6 +23,10 @@ export interface State {
   claimErrorMessages: string[]
   shouldSubmitPayment: boolean
   totalPrice: string
+  billings: BillingsPayload['billings']
+  totalPages: number
+  page: number
+  searchQuery: string
 }
 
 export const initialState: State = {
@@ -46,7 +50,11 @@ export const initialState: State = {
   claimModalOpen: false,
   claimErrorMessages: [],
   shouldSubmitPayment: false,
-  totalPrice: ''
+  totalPrice: '',
+  billings: [],
+  totalPages: 0,
+  page: 1,
+  searchQuery: ''
 }
 
 export enum ActionType {
@@ -70,7 +78,11 @@ export enum ActionType {
   SET_CLAIM_MODAL_OPEN = 'SET_CLAIM_MODAL_OPEN',
   SET_CLAIM_ERROR_MESSAGES = 'SET_CLAIM_ERROR_MESSAGES',
   SET_SHOULD_SUBMIT_PAYMENT = 'SET_SHOULD_SUBMIT_PAYMENT',
-  SET_TOTAL_PRICE = 'SET_TOTAL_PRICE'
+  SET_TOTAL_PRICE = 'SET_TOTAL_PRICE',
+  SET_BILLINGS = 'SET_BILLINGS',
+  SET_TOTAL_PAGES = 'SET_TOTAL_PAGES',
+  SET_PAGE = 'SET_PAGE',
+  SET_SEARCH_QUERY = 'SET_SEARCH_QUERY',
 }
 
 export type Action =
@@ -95,6 +107,10 @@ export type Action =
   | { type: ActionType.SET_CLAIM_ERROR_MESSAGES, claimErrorMessages: string[] }
   | { type: ActionType.SET_SHOULD_SUBMIT_PAYMENT, shouldSubmitPayment: boolean }
   | { type: ActionType.SET_TOTAL_PRICE, totalPrice: string }
+  | { type: ActionType.SET_BILLINGS, billings: BillingsPayload['billings'] }
+  | { type: ActionType.SET_TOTAL_PAGES, totalPages: number }
+  | { type: ActionType.SET_PAGE, page: number }
+  | { type: ActionType.SET_SEARCH_QUERY, searchQuery: string }
 
 
 export const billingReducer = (state: State, action: Action): State => {
@@ -223,6 +239,30 @@ export const billingReducer = (state: State, action: Action): State => {
       return {
         ...state,
         shouldSubmitPayment: action.shouldSubmitPayment
+      }
+
+    case ActionType.SET_BILLINGS:
+      return {
+        ...state,
+        billings: action.billings
+      }
+
+    case ActionType.SET_TOTAL_PAGES:
+      return {
+        ...state,
+        totalPages: action.totalPages
+      }
+
+    case ActionType.SET_PAGE:
+      return {
+        ...state,
+        page: action.page
+      }
+
+    case ActionType.SET_SEARCH_QUERY:
+      return {
+        ...state,
+        searchQuery: action.searchQuery
       }
   }
 };
