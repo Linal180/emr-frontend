@@ -1163,7 +1163,7 @@ export const createBillingSchema = yup.object({
   ).test('', requiredMessage(ITEM_MODULE.cptCode), (value: any) => !!value && value.length > 0),
 })
 
-export const createUpFrontPaymentSchema = (copays: Copay[]) => {
+export const createUpFrontPaymentSchema = (copays: Copay[], isInsurance?: boolean) => {
   return yup.object({
     [UPFRONT_PAYMENT_TYPES.Additional]: yup.array().of(
       yup.object().shape({
@@ -1178,7 +1178,7 @@ export const createUpFrontPaymentSchema = (copays: Copay[]) => {
     ).test('', requiredMessage('Additional'), (value: any) => !!value && value.length > 0),
     [UPFRONT_PAYMENT_TYPES.Copay]: yup.array().of(
       yup.object().shape({
-        type: copays?.length ? selectorSchema('Type', true) : selectorSchema('Type', false),
+        type: copays?.length && isInsurance ? selectorSchema('Type', true) : selectorSchema('Type', false),
         amount: yup.string().test('', 'Amount should be less than Due Amount', (value, { parent }) => {
           const { dueAmount } = parent || {}
           return parseInt(String(value) || '0') <= parseInt(dueAmount || '0')

@@ -91,6 +91,52 @@ query FetchBillingDetailsByAppointmentId($appointmentId: String!) {
   }
 }
 
+query GetBillings($fetchBillingInput: FetchBillingInput!) {
+  getBillings(fetchBillingInput: $fetchBillingInput) {
+    response {
+      status
+      message
+    }
+
+    billings {
+      id
+      claimNo
+      facility {
+        id
+        name
+      }
+
+      appointment {
+        appointmentDate
+        appointmentType {
+          name
+        }
+ 
+        upFrontPayment {
+          totalCharges
+          expected
+          balance
+          paid
+          UpFrontPaymentTypes {
+            paymentType
+            amount
+            type
+          }
+        }
+      }
+
+      patient {
+        firstName
+        lastName
+      }
+    }
+
+    pagination {
+      totalPages
+    }
+  }
+}
+
 mutation CreateClaim($createClaimInput: CreateClaimInput!) {
   createClaim(createClaimInput: $createClaimInput) {
     response {
@@ -404,5 +450,7 @@ query FetchUpFrontPaymentDetailsByAppointmentId($appointmentId: String!) {
         copayType
       }
     }
+
+    previous
   }
 }
