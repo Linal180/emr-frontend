@@ -444,6 +444,7 @@ export interface FacilitySelectorProps extends SelectorProps {
 export type ChartingTemplateSelectorProps = ReactionSelectorInterface & {
   templateType?: string
   onSelect?: Function
+  onRemove?: Function
   addEmpty?: boolean
   disabled?: boolean
 }

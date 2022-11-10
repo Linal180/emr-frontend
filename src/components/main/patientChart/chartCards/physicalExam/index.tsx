@@ -243,6 +243,14 @@ const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, hand
     }
   }
 
+  const selectHandler = (multiOption: multiOptionType[]) => {
+    fetchPatientChartingTemplates(multiOption.map(value => value.value))
+  }
+
+  const onRemove = () => {
+    handleSubmit(onSubmit)()
+  }
+
   const loading = findPatientChartingTemplateLoading || getLoading;
 
   return (
@@ -265,14 +273,15 @@ const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, hand
           {!loading ? <>
             <Box px={2} mt={3}>
               <ChartingTemplateSelector
-                label={PE_TEMPLATES}
-                name="hpiTemplates"
-                disabled={shouldDisableEdit}
-                addEmpty
                 isEdit
-                defaultValues={renderMultiTemplates(templates as QuestionTemplate[])}
+                addEmpty
+                name="hpiTemplates"
+                onRemove={onRemove}
+                label={PE_TEMPLATES}
+                onSelect={selectHandler}
+                disabled={shouldDisableEdit}
                 templateType={TemplateType.PHYSICAL_EXAM}
-                onSelect={(multiOption: multiOptionType[]) => fetchPatientChartingTemplates(multiOption.map(value => value.value))}
+                defaultValues={renderMultiTemplates(templates as QuestionTemplate[])}
               />
             </Box>
             <MacroView

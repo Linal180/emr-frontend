@@ -32,7 +32,7 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
 
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientHistoryReducer, initialState);
   const { itemId, templates, notes } = state;
-  const { handleSubmit, setValue, watch,reset } = methods;
+  const { handleSubmit, setValue, watch, reset } = methods;
   const values = watch()
 
   const [createReviewOfSystem] = useCreateReviewOfSystemHistoryMutation({
@@ -241,6 +241,14 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
     }
   }
 
+  const selectHandler = (multiOption: multiOptionType[]) => {
+    fetchPatientChartingTemplates(multiOption.map(value => value.value))
+  }
+
+  const onRemove = () => {
+    handleSubmit(onSubmit)()
+  }
+
   return (
     <>
       <Box p={2} display='flex' justifyContent='space-between' alignItems='center' flexWrap="wrap" borderBottom={`1px solid ${colors.grey[300]}`}>
@@ -261,14 +269,15 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
           {!loading ? <>
             <Box px={2} mt={3}>
               <ChartingTemplateSelector
-                label={ROS_TEMPLATES}
-                name="hpiTemplates"
-                disabled={shouldDisableEdit}
-                addEmpty
                 isEdit
-                defaultValues={renderMultiTemplates(templates as QuestionTemplate[])}
+                addEmpty
+                name="hpiTemplates"
+                onRemove={onRemove}
+                label={ROS_TEMPLATES}
+                onSelect={selectHandler}
+                disabled={shouldDisableEdit}
                 templateType={TemplateType.REVIEW_OF_SYSTEM}
-                onSelect={(multiOption: multiOptionType[]) => fetchPatientChartingTemplates(multiOption.map(value => value.value))}
+                defaultValues={renderMultiTemplates(templates as QuestionTemplate[])}
               />
             </Box>
             <MacroView

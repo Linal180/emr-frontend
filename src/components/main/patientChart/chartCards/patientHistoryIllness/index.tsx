@@ -244,6 +244,14 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
     }
   }
 
+  const selectHandler = (multiOption: multiOptionType[]) => {
+    fetchPatientChartingTemplates(multiOption.map(value => value.value))
+  }
+
+  const onRemove = () => {
+    handleSubmit(onSubmit)()
+  }
+
   const loading = findPatientChartingTemplateLoading || getLoading;
 
   return (
@@ -267,14 +275,15 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
           {!loading ? <>
             <Box px={2} mt={3}>
               <ChartingTemplateSelector
-                label={HPI_TEMPLATES}
-                name="hpiTemplates"
-                addEmpty
                 isEdit
+                addEmpty
+                name="hpiTemplates"
+                onRemove={onRemove}
+                label={HPI_TEMPLATES}
+                onSelect={selectHandler}
                 disabled={shouldDisableEdit}
-                defaultValues={renderMultiTemplates(templates as QuestionTemplate[])}
                 templateType={TemplateType.HPI}
-                onSelect={(multiOption: multiOptionType[]) => fetchPatientChartingTemplates(multiOption.map(value => value.value))}
+                defaultValues={renderMultiTemplates(templates as QuestionTemplate[])}
               />
             </Box>
 
