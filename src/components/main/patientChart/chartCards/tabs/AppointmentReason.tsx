@@ -1,22 +1,26 @@
-import { Box, Button, Card, Chip, colors, Typography } from '@material-ui/core'
-import { ChevronRight } from '@material-ui/icons'
 import { Reducer, useCallback, useEffect, useReducer } from 'react'
 import { useParams } from 'react-router'
+import { BLUE } from '../../../../../theme'
+import { ChevronRight, RemoveCircleOutline } from '@material-ui/icons'
+import { Box, Button, Card, Chip, colors, IconButton, Typography } from '@material-ui/core'
 //component block
+import moment from 'moment'
 import Alert from '../../../../common/Alert'
 import ConfirmationModal from '../../../../common/ConfirmationModal'
 import NoDataFoundComponent from '../../../../common/NoDataFoundComponent'
 import AppointmentReasonModal from '../AppointmentReason/AppointmentReasonModal'
 //constants, interfaces, styles, reducers, graphql
-import moment from 'moment'
 import {
   ADD, APPOINTMENT_CHIEF_COMPLAINT_DELETED, CHIEF_COMPLAINT, DELETE_CHIEF_COMPLAINT_DESCRIPTION, NEXT,
   REACTION_PAGE_LIMIT, TO_CHECKOUT
 } from '../../../../../constants'
-import { AllCptCodePayload, PatientProblemsPayload, ProblemSeverity, ProblemType, useAddPatientProblemMutation, useFindAllPatientProblemsLazyQuery, useFindChiefComplaintProblemsLazyQuery, useRemovePatientProblemMutation } from '../../../../../generated/graphql'
+import {
+  AllCptCodePayload, PatientProblemsPayload, ProblemSeverity, ProblemType, useAddPatientProblemMutation,
+  useFindAllPatientProblemsLazyQuery, useFindChiefComplaintProblemsLazyQuery, useRemovePatientProblemMutation
+} from '../../../../../generated/graphql'
+import { useChartingStyles } from '../../../../../styles/chartingStyles'
 import { AppointmentReasonProps, ParamsType } from '../../../../../interfacesTypes'
 import { Action, ActionType, chartReducer, initialState, State } from '../../../../../reducers/chartReducer'
-import { useChartingStyles } from '../../../../../styles/chartingStyles'
 
 
 function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableEdit, shouldShowCheckout, handleStepChange }: AppointmentReasonProps) {
@@ -231,26 +235,20 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
           </Box>
 
           <Box mt={2}>
-
             {transformedProblems?.map((chiefComplaintProblem) => {
               const { isSelected, value, problemId } = chiefComplaintProblem || {}
               const { description, id: icdCodeId } = value || {}
               return (
-                <Box mx={1.5} my={1} display='inline-flex' flexDirection='row' flexWrap='wrap'>
+                <Box m={1} display='inline-flex' flexDirection='row' flexWrap='wrap'>
                   <Chip
                     label={description}
                     clickable
                     disabled={shouldDisableEdit}
                     onClick={() => isSelected ? onDeleteClick(problemId || '') : handleAddReason(icdCodeId || '')}
+                    className={classes.problemChip}
                     style={{
-                      background: isSelected ? 'red' : 'white',
-                      border: `1.5px solid red`,
-                      display: "inline-flex",
-                      alignItems: "center",
-                      flexWrap: "wrap",
-                      minWidth: 100,
-                      height: 50,
-                      color: isSelected ? 'white' : 'red'
+                      background: isSelected ? `${BLUE}` : 'white',
+                      color: isSelected ? 'white' : `${BLUE}`
                     }}
                   />
                 </Box>
@@ -258,7 +256,9 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
             })}
           </Box>
 
-          {/* <Box p={2}>
+          <Box m={2} />
+
+          <Box p={2} borderTop={`1px solid ${colors.grey[300]}`}>
             {singlePatientProblems?.map((value) => {
               const { id, ICDCode } = value || {}
               return <Box display="flex" flexDirection="row" justifyContent="space-between">
@@ -268,7 +268,7 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
                 </IconButton>}
               </Box>
             })}
-          </Box> */}
+          </Box>
 
           {((!(loading || chiefComplaintProblemsLoading) && transformedProblems?.length === 0)) && (
             <Box display="flex" justifyContent="center" pb={12} pt={5}>
