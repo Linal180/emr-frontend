@@ -274,7 +274,6 @@ const PolicyCard: FC<PolicyCardProps> = ({
   };
 
   const onSubmit: SubmitHandler<InsuranceCreateInput> = async (values) => {
-    debugger
     if (numberOfFiles) {
       const { address, addressCTD, certificationNumber, city, coInsurancePercentage, copayFields,
         dob, employer, expirationDate, firstName, insuranceId, issueDate, lastName, middleName,
