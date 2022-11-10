@@ -1,8 +1,8 @@
 import { Reducer, useCallback, useEffect, useReducer } from 'react'
 import { useParams } from 'react-router'
 import { BLUE } from '../../../../../theme'
-import { ChevronRight } from '@material-ui/icons'
-import { Box, Button, Card, Chip, colors, Typography } from '@material-ui/core'
+import { ChevronRight, RemoveCircleOutline } from '@material-ui/icons'
+import { Box, Button, Card, Chip, colors, IconButton, Typography } from '@material-ui/core'
 //component block
 import moment from 'moment'
 import Alert from '../../../../common/Alert'
@@ -14,9 +14,9 @@ import {
   ADD, APPOINTMENT_CHIEF_COMPLAINT_DELETED, CHIEF_COMPLAINT, DELETE_CHIEF_COMPLAINT_DESCRIPTION, NEXT,
   REACTION_PAGE_LIMIT, TO_CHECKOUT
 } from '../../../../../constants'
-import { 
-  AllCptCodePayload, PatientProblemsPayload, ProblemSeverity, ProblemType, useAddPatientProblemMutation, 
-  useFindAllPatientProblemsLazyQuery, useFindChiefComplaintProblemsLazyQuery, useRemovePatientProblemMutation 
+import {
+  AllCptCodePayload, PatientProblemsPayload, ProblemSeverity, ProblemType, useAddPatientProblemMutation,
+  useFindAllPatientProblemsLazyQuery, useFindChiefComplaintProblemsLazyQuery, useRemovePatientProblemMutation
 } from '../../../../../generated/graphql'
 import { useChartingStyles } from '../../../../../styles/chartingStyles'
 import { AppointmentReasonProps, ParamsType } from '../../../../../interfacesTypes'
@@ -256,7 +256,7 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
             })}
           </Box>
 
-          {/* <Box p={2}>
+          <Box p={2}>
             {singlePatientProblems?.map((value) => {
               const { id, ICDCode } = value || {}
               return <Box display="flex" flexDirection="row" justifyContent="space-between">
@@ -266,7 +266,7 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
                 </IconButton>}
               </Box>
             })}
-          </Box> */}
+          </Box>
 
           {((!(loading || chiefComplaintProblemsLoading) && transformedProblems?.length === 0)) && (
             <Box display="flex" justifyContent="center" pb={12} pt={5}>
