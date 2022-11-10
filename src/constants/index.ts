@@ -879,6 +879,7 @@ export const INS_1 = "Ins 1";
 export const INS = "Ins";
 export const VALUE = "Value";
 export const VISIT = "Visit";
+export const VISIT_TYPE = "Visit Type";
 export const ISSUES = "Issues";
 export const PRINT_PATIENT_CHART = "Print Patient Chart"
 export const PRINT_MEDICATION_RECORD = "Print Medication Record"
@@ -958,6 +959,7 @@ export const FILE = "File";
 export const EDIT = "Edit";
 export const FOOD = "Food";
 export const PAYER = "Payer";
+export const CHARGE = "Charge";
 export const STAGE = "Stage";
 export const CANCEL = "Cancel";
 export const BILLED = "Billed";
@@ -2681,6 +2683,10 @@ export const PROFILE_TOP_TABS = [
   {
     title: "Care Team",
     value: "11",
+  },
+  {
+    title: "Receivables",
+    value: "12",
   },
 ];
 
