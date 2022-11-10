@@ -332,6 +332,7 @@ export type AppointmentInput = {
   appointmentStatus?: Maybe<Scalars['String']>;
   appointmentTypeId?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
+  invoiceNumber?: Maybe<Scalars['Boolean']>;
   isCheckedIn?: Maybe<Scalars['Boolean']>;
   paginationOptions: PaginationInput;
   patientId?: Maybe<Scalars['String']>;
@@ -2221,6 +2222,15 @@ export type FetchBillingClaimStatusesInput = {
   paginationOptions: PaginationInput;
   patientId?: Maybe<Scalars['String']>;
   to?: Maybe<Scalars['String']>;
+};
+
+export type FetchBillingInput = {
+  appointmentId?: Maybe<Scalars['String']>;
+  claimNo?: Maybe<Scalars['String']>;
+  facilityId?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+  patientId?: Maybe<Scalars['String']>;
+  searchQuery?: Maybe<Scalars['String']>;
 };
 
 export type FieldOptionsInputType = {
@@ -5644,6 +5654,7 @@ export type Query = {
   getAttachmentsByAgreementId: AttachmentWithPreSignedUrlPayload;
   getAttachmentsByLabOrder: AttachmentsPayload;
   getAttachmentsByPolicyId: AttachmentWithPreSignedUrlPayload;
+  getBillings: BillingsPayload;
   getCPTCode: CptCodePayload;
   getClaim: ClaimPayload;
   getClaimFile: ClaimFilePayload;
@@ -6163,6 +6174,11 @@ export type QueryGetAttachmentsByLabOrderArgs = {
 
 export type QueryGetAttachmentsByPolicyIdArgs = {
   getAttachmentsByPolicyId: GetAttachmentsByPolicyId;
+};
+
+
+export type QueryGetBillingsArgs = {
+  fetchBillingInput: FetchBillingInput;
 };
 
 
@@ -7657,8 +7673,10 @@ export type UpComingAppointmentsInput = {
   appointmentDate?: Maybe<Scalars['String']>;
   appointmentNumber?: Maybe<Scalars['String']>;
   appointmentStatus?: Maybe<Scalars['String']>;
+  appointmentTime?: Maybe<Scalars['String']>;
   appointmentTypeId?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
+  invoiceNumber?: Maybe<Scalars['Boolean']>;
   isCheckedIn?: Maybe<Scalars['Boolean']>;
   paginationOptions: PaginationInput;
   patientId?: Maybe<Scalars['String']>;
@@ -7710,8 +7728,9 @@ export type UpFrontPaymentInputType = {
 export type UpFrontPaymentPayload = {
   __typename?: 'UpFrontPaymentPayload';
   pagination?: Maybe<PaginationPayload>;
+  previous?: Maybe<Scalars['Int']>;
   response?: Maybe<Response>;
-  upFrontPayment: UpFrontPayment;
+  upFrontPayment?: Maybe<UpFrontPayment>;
 };
 
 export type UpFrontPaymentType = {
@@ -9195,6 +9214,13 @@ export type FetchBillingDetailsByAppointmentIdQueryVariables = Exact<{
 
 export type FetchBillingDetailsByAppointmentIdQuery = { __typename?: 'Query', fetchBillingDetailsByAppointmentId: { __typename?: 'BillingPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, billing: { __typename?: 'Billing', id: string, patientPaymentType: PatientPaymentType, onsetDateType: OnsetDateType, onsetDate?: string | null, otherDateType: OtherDateType, employment?: boolean | null, autoAccident?: boolean | null, otherAccident?: boolean | null, otherDate?: string | null, amount?: string | null, serviceDate?: string | null, claimDate?: string | null, claimNo?: string | null, uncoveredAmount?: string | null, to?: string | null, from?: string | null, pos?: string | null, facility?: { __typename?: 'Facility', id: string, name: string, practice?: { __typename?: 'Practice', id: string, name: string } | null } | null, claimStatus?: { __typename?: 'ClaimStatus', id: string, statusName?: string | null, statusId?: string | null } | null, servicingProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, renderingProvider?: { __typename?: 'Doctor', id: string, firstName?: string | null, lastName?: string | null } | null, feeSchedule?: { __typename?: 'FeeSchedule', id: string, name?: string | null } | null, codes?: Array<{ __typename?: 'Code', id: string, code?: string | null, description?: string | null, price?: string | null, codeType: CodeType, m1?: string | null, m2?: string | null, m3?: string | null, m4?: string | null, unit?: string | null, diagPointer?: string | null }> | null, claim?: { __typename?: 'Claim', id: string } | null } } };
 
+export type GetBillingsQueryVariables = Exact<{
+  fetchBillingInput: FetchBillingInput;
+}>;
+
+
+export type GetBillingsQuery = { __typename?: 'Query', getBillings: { __typename?: 'BillingsPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, billings: Array<{ __typename?: 'Billing', id: string, claimNo?: string | null, facility?: { __typename?: 'Facility', id: string, name: string } | null, appointment?: { __typename?: 'Appointment', appointmentDate?: string | null, appointmentType?: { __typename?: 'Service', name: string } | null, upFrontPayment?: { __typename?: 'UpFrontPayment', totalCharges?: string | null, expected?: string | null, balance?: string | null, paid?: string | null, UpFrontPaymentTypes?: Array<{ __typename?: 'UpFrontPaymentType', paymentType?: string | null, amount?: string | null, type?: string | null }> | null } | null } | null, patient?: { __typename?: 'Patient', firstName?: string | null, lastName?: string | null } | null }>, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null } | null } };
+
 export type CreateClaimMutationVariables = Exact<{
   createClaimInput: CreateClaimInput;
 }>;
@@ -9280,14 +9306,14 @@ export type CreateUpFrontPaymentMutationVariables = Exact<{
 }>;
 
 
-export type CreateUpFrontPaymentMutation = { __typename?: 'Mutation', createUpFrontPayment: { __typename?: 'UpFrontPaymentPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, upFrontPayment: { __typename?: 'UpFrontPayment', id: string } } };
+export type CreateUpFrontPaymentMutation = { __typename?: 'Mutation', createUpFrontPayment: { __typename?: 'UpFrontPaymentPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, upFrontPayment?: { __typename?: 'UpFrontPayment', id: string } | null } };
 
 export type FetchUpFrontPaymentDetailsByAppointmentIdQueryVariables = Exact<{
   appointmentId: Scalars['String'];
 }>;
 
 
-export type FetchUpFrontPaymentDetailsByAppointmentIdQuery = { __typename?: 'Query', fetchUpFrontPaymentDetailsByAppointmentId: { __typename?: 'UpFrontPaymentPayload', response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, upFrontPayment: { __typename?: 'UpFrontPayment', id: string, totalCharges?: string | null, paid?: string | null, adjustments?: string | null, balance?: string | null, expected?: string | null, UpFrontPaymentTypes?: Array<{ __typename?: 'UpFrontPaymentType', id: string, paymentType?: string | null, amount?: string | null, type?: string | null, notes?: string | null, copayType?: string | null }> | null } } };
+export type FetchUpFrontPaymentDetailsByAppointmentIdQuery = { __typename?: 'Query', fetchUpFrontPaymentDetailsByAppointmentId: { __typename?: 'UpFrontPaymentPayload', previous?: number | null, response?: { __typename?: 'Response', status?: number | null, message?: string | null } | null, upFrontPayment?: { __typename?: 'UpFrontPayment', id: string, totalCharges?: string | null, paid?: string | null, adjustments?: string | null, balance?: string | null, expected?: string | null, UpFrontPaymentTypes?: Array<{ __typename?: 'UpFrontPaymentType', id: string, paymentType?: string | null, amount?: string | null, type?: string | null, notes?: string | null, copayType?: string | null }> | null } | null } };
 
 export type FindAllPatientAllergiesQueryVariables = Exact<{
   patientAllergyInput: PatientAllergyInput;
@@ -13851,6 +13877,76 @@ export function useFetchBillingDetailsByAppointmentIdLazyQuery(baseOptions?: Apo
 export type FetchBillingDetailsByAppointmentIdQueryHookResult = ReturnType<typeof useFetchBillingDetailsByAppointmentIdQuery>;
 export type FetchBillingDetailsByAppointmentIdLazyQueryHookResult = ReturnType<typeof useFetchBillingDetailsByAppointmentIdLazyQuery>;
 export type FetchBillingDetailsByAppointmentIdQueryResult = Apollo.QueryResult<FetchBillingDetailsByAppointmentIdQuery, FetchBillingDetailsByAppointmentIdQueryVariables>;
+export const GetBillingsDocument = gql`
+    query GetBillings($fetchBillingInput: FetchBillingInput!) {
+  getBillings(fetchBillingInput: $fetchBillingInput) {
+    response {
+      status
+      message
+    }
+    billings {
+      id
+      claimNo
+      facility {
+        id
+        name
+      }
+      appointment {
+        appointmentDate
+        appointmentType {
+          name
+        }
+        upFrontPayment {
+          totalCharges
+          expected
+          balance
+          paid
+          UpFrontPaymentTypes {
+            paymentType
+            amount
+            type
+          }
+        }
+      }
+      patient {
+        firstName
+        lastName
+      }
+    }
+    pagination {
+      totalPages
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetBillingsQuery__
+ *
+ * To run a query within a React component, call `useGetBillingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBillingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBillingsQuery({
+ *   variables: {
+ *      fetchBillingInput: // value for 'fetchBillingInput'
+ *   },
+ * });
+ */
+export function useGetBillingsQuery(baseOptions: Apollo.QueryHookOptions<GetBillingsQuery, GetBillingsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetBillingsQuery, GetBillingsQueryVariables>(GetBillingsDocument, options);
+      }
+export function useGetBillingsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBillingsQuery, GetBillingsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetBillingsQuery, GetBillingsQueryVariables>(GetBillingsDocument, options);
+        }
+export type GetBillingsQueryHookResult = ReturnType<typeof useGetBillingsQuery>;
+export type GetBillingsLazyQueryHookResult = ReturnType<typeof useGetBillingsLazyQuery>;
+export type GetBillingsQueryResult = Apollo.QueryResult<GetBillingsQuery, GetBillingsQueryVariables>;
 export const CreateClaimDocument = gql`
     mutation CreateClaim($createClaimInput: CreateClaimInput!) {
   createClaim(createClaimInput: $createClaimInput) {
@@ -14491,6 +14587,7 @@ export const FetchUpFrontPaymentDetailsByAppointmentIdDocument = gql`
         copayType
       }
     }
+    previous
   }
 }
     `;

@@ -1107,6 +1107,7 @@ export type CreateUpFrontPayment = {
   balance: string
   paid: string
   adjustments: string
+  previous: string
 }
 
 export interface CreateLabTestProviderProps {
@@ -2020,6 +2021,10 @@ export type UpdateAttachmentDataInputs = Pick<UpdateAttachmentInput, 'attachment
 
 export type DocumentInputProps = UpdateAttachmentDataInputs
   & { provider: SelectorOption } & { date: string } & { patientName: string }
+
+export type ReceivablesTableProps= {
+  patientSpecific?: boolean
+}
 
 export interface PatientNoteModalProps {
   patientStates: PatientState;
