@@ -172,10 +172,10 @@ const CheckInComponent = (): JSX.Element => {
       if (response) {
         const { status: aptStatus } = appointment || {}
         if (aptStatus === AppointmentStatus.Arrived) {
-          await fetchPatientInsurances()
+          // await fetchPatientInsurances()
         }
 
-        await fetchAppointment()
+        // await fetchAppointment()
       }
     }
   });
@@ -282,12 +282,8 @@ const CheckInComponent = (): JSX.Element => {
         return <ChecKInStep isCheckIn={false} />
       case 1:
         return <ChecKInStep isCheckIn={true} />
-      // case 2:
-      //   return <Insurance />
       case 2:
         return <Chart />
-      // case 3:
-      //   return <LabOrders appointmentInfo={appointmentInfo} handleStep={() => handleStep(4)} shouldDisableEdit={shouldDisableEdit} />
       case 3:
         return <Exam />
       case 4:
@@ -305,42 +301,42 @@ const CheckInComponent = (): JSX.Element => {
   }
 
   // 1- PATIENT-INFO
-  const ChecKInStep = ({ isCheckIn = false }) =>
-    <>
-      {
-        isCheckIn ? <>
-          <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
-            <Typography variant="h4">{PATIENT_INFO}</Typography>
+  const ChecKInStep = ({ isCheckIn = false }) => {
+    
+    if (isCheckIn) {
+      return (<>
+        <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
+          <Typography variant="h4">{PATIENT_INFO}</Typography>
 
-            <Button variant="contained" color="primary" onClick={handlePatientUpdate}>
-              {/* {isFrontDeskUser ? TO_LAB_ORDERS : TO_CHART} */}
-              {DONE_CHECK_IN}
-              <ChevronRight />
-            </Button>
-          </Box>
+          <Button variant="contained" color="primary" onClick={handlePatientUpdate}>
+            {DONE_CHECK_IN}
+            <ChevronRight />
+          </Button>
+        </Box>
 
-          <Box p={3}>
-            <PatientForm
-              id={patientId}
-              isEdit
-              isAppointment
-              shouldShowBread={false}
-              ref={patientRef}
-              refetch={fetchPatientInsurances}
-              shouldDisableEdit={shouldDisableChartingEdit}
-            />
-          </Box>
-        </> :
-          <CheckIn
-            appointmentState={state}
-            appointmentDispatcher={dispatch}
-            handleStep={handleStep}
+        <Box p={3}>
+          <PatientForm
+            id={patientId}
+            isEdit
+            isAppointment
+            shouldShowBread={false}
+            ref={patientRef}
+            refetch={fetchPatientInsurances}
             shouldDisableEdit={shouldDisableChartingEdit}
-            activeStep={activeStep}
-            handleProceed={activeStep > 0 ? () => setShouldProceed(true) : undefined}
           />
-      }
-    </>
+        </Box>
+      </>)
+    }
+
+    return (
+      <CheckIn
+        handleStep={handleStep}
+        activeStep={activeStep}
+        shouldDisableEdit={shouldDisableChartingEdit}
+        handleProceed={activeStep > 0 ? () => setShouldProceed(true) : undefined}
+      />
+    )
+  }
 
   // 3- CHART
   const Chart = () =>

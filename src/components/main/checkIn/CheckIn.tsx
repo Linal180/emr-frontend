@@ -1,29 +1,51 @@
 //packages import
-import { Box, Button, Card, colors, Grid, Typography } from "@material-ui/core";
+import { useParams } from "react-router";
 import { ChevronRight } from "@material-ui/icons";
-import { FC, useContext } from "react";
+import { FC, useCallback, useContext, useEffect, useState } from "react";
+import { Box, Button, Card, colors, Grid, Typography } from "@material-ui/core";
+//components
+import TableLoader from "../../common/TableLoader";
 //constants, interfaces, utils, types
 import { isBiller } from "../../../utils";
 import { AuthContext } from "../../../context";
-import { CheckInComponentProps } from "../../../interfacesTypes";
+import { CheckInComponentProps, ParamsType } from "../../../interfacesTypes";
 import {
   APPOINTMENT_INFO, APPOINTMENT_TYPE, CHECK_IN_AT_TEXT, DONE_CHECK_IN, FACILITY_LOCATION, N_A, PRIMARY_INSURANCE,
   PROVIDER_NAME, REASON, SELF_CHECK_IN, SIGN_OFF, START_CHECK_IN, TO_CHECKOUT, TO_EXAM, TO_INTAKE
 } from "../../../constants";
+import { AppointmentPayload, useGetAppointmentCheckInLazyQuery } from "../../../generated/graphql";
 
-const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep, shouldDisableEdit, activeStep, handleProceed }) => {
+const CheckIn: FC<CheckInComponentProps> = ({ handleStep, activeStep, handleProceed }) => {
+  const { appointmentId } = useParams<ParamsType>()
   const { user } = useContext(AuthContext)
   const { roles } = user || {}
   const isBillerUser = isBiller(roles);
 
+  const [appointment, setAppointment] = useState<AppointmentPayload['appointment']>(undefined)
 
-  const { appointment, primaryInsurance } = appointmentState;
-  const { appointmentType, provider, facility, reason, checkedInAt, selfCheckIn } = appointment ?? {}
+  const { appointmentType, provider, facility, reason, checkedInAt, selfCheckIn, primaryInsurance } = appointment ?? {}
   const { firstName, lastName } = provider ?? {}
   const { name: facilityName } = facility ?? {}
   const { name: serviceName } = appointmentType ?? {}
 
-  const fullName = firstName && lastName ? `${firstName} ${lastName}` : N_A
+  const fullName = firstName && lastName ? `${firstName} ${lastName}` : N_A;
+
+  const [getAppointment, { loading }] = useGetAppointmentCheckInLazyQuery({
+    onCompleted: (data) => {
+      const { getAppointment } = data || {}
+      const { appointment, response } = getAppointment || {}
+      const { status } = response || {}
+
+      if (status === 200) {
+        appointment && setAppointment(appointment as AppointmentPayload['appointment'])
+      } else {
+        setAppointment(undefined)
+      }
+    },
+    onError: () => {
+      setAppointment(undefined)
+    }
+  })
 
   const getProceedBtnTitle = () => {
     if (isBillerUser) {
@@ -53,7 +75,6 @@ const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep, shou
     }
   }
 
-
   const handleNextStep = () => {
     if (activeStep === 0) {
       return isBillerUser ? handleStep(4) : handleStep(0, true)
@@ -65,6 +86,17 @@ const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep, shou
 
     isBillerUser ? handleStep(4) : handleStep(0, true)
   }
+
+  const fetchAppointment = useCallback(async () => {
+    try {
+      await getAppointment({ variables: { getAppointment: { id: appointmentId || '' } } })
+    } catch (e) { }
+  }, [getAppointment, appointmentId])
+
+  useEffect(() => {
+    appointmentId && fetchAppointment()
+  }, [fetchAppointment, appointmentId])
+
 
   return (
     <>
@@ -81,71 +113,70 @@ const CheckIn: FC<CheckInComponentProps> = ({ appointmentState, handleStep, shou
             {getProceedBtnTitle()}
           </Button>
         </Box>
+        {loading ? <TableLoader numberOfColumns={2} numberOfRows={6} /> :
+          <Box p={2}>
+            <Grid container spacing={0}>
+              <Grid item md={6} sm={12} xs={12}>
+                <Box my={2}>
+                  <Typography variant="body2">{APPOINTMENT_TYPE}</Typography>
+                  <Box p={0.2} />
+                  <Typography variant="body1">{serviceName}</Typography>
+                </Box>
+              </Grid>
 
-        <Box p={2}>
-          <Grid container spacing={0}>
-            <Grid item md={6} sm={12} xs={12}>
-              <Box my={2}>
-                <Typography variant="body2">{APPOINTMENT_TYPE}</Typography>
-                <Box p={0.2} />
-                <Typography variant="body1">{serviceName}</Typography>
-              </Box>
-            </Grid>
+              <Grid item md={6} sm={12} xs={12}>
+                <Box my={2}>
+                  <Typography variant="body2">{FACILITY_LOCATION}</Typography>
+                  <Box p={0.2} />
+                  <Typography variant="body1">{facilityName}</Typography>
+                </Box>
+              </Grid>
 
-            <Grid item md={6} sm={12} xs={12}>
-              <Box my={2}>
-                <Typography variant="body2">{FACILITY_LOCATION}</Typography>
-                <Box p={0.2} />
-                <Typography variant="body1">{facilityName}</Typography>
-              </Box>
-            </Grid>
+              <Grid item md={6} sm={12} xs={12}>
+                <Box my={2}>
+                  <Typography variant="body2">{PROVIDER_NAME}</Typography>
+                  <Box p={0.2} />
+                  <Typography variant="body1">{fullName}</Typography>
+                </Box>
+              </Grid>
 
-            <Grid item md={6} sm={12} xs={12}>
-              <Box my={2}>
-                <Typography variant="body2">{PROVIDER_NAME}</Typography>
-                <Box p={0.2} />
-                <Typography variant="body1">{fullName}</Typography>
-              </Box>
-            </Grid>
+              <Grid item md={6} sm={12} xs={12}>
+                <Box my={2}>
+                  <Typography variant="body2">{REASON}</Typography>
+                  <Box p={0.2} />
+                  <Typography variant="body1">{reason}</Typography>
+                </Box>
+              </Grid>
 
-            <Grid item md={6} sm={12} xs={12}>
-              <Box my={2}>
-                <Typography variant="body2">{REASON}</Typography>
-                <Box p={0.2} />
-                <Typography variant="body1">{reason}</Typography>
-              </Box>
-            </Grid>
+              <Grid item md={6} sm={12} xs={12}>
+                <Box my={2}>
+                  <Typography variant="body2">{CHECK_IN_AT_TEXT}</Typography>
+                  <Box p={0.2} />
+                  <Typography variant="body1">{checkedInAt || N_A}</Typography>
+                </Box>
+              </Grid>
 
-            <Grid item md={6} sm={12} xs={12}>
-              <Box my={2}>
-                <Typography variant="body2">{CHECK_IN_AT_TEXT}</Typography>
-                <Box p={0.2} />
-                <Typography variant="body1">{checkedInAt || N_A}</Typography>
-              </Box>
-            </Grid>
+              <Grid item md={6} sm={12} xs={12}>
+                <Box my={2}>
+                  <Typography variant="body2">{SELF_CHECK_IN}</Typography>
+                  <Box p={0.2} />
+                  <Typography variant="body1">{selfCheckIn ? 'Yes' : 'No' ?? N_A}</Typography>
+                </Box>
+              </Grid>
 
-            <Grid item md={6} sm={12} xs={12}>
-              <Box my={2}>
-                <Typography variant="body2">{SELF_CHECK_IN}</Typography>
-                <Box p={0.2} />
-                <Typography variant="body1">{selfCheckIn ? 'Yes' : 'No' ?? N_A}</Typography>
-              </Box>
+              <Grid item md={6} sm={12} xs={12}>
+                <Box my={2}>
+                  <Typography variant="body2">{PRIMARY_INSURANCE}</Typography>
+                  <Box p={0.2} />
+                  <Typography variant="body1">{primaryInsurance || N_A}</Typography>
+                </Box>
+              </Grid>
             </Grid>
-
-            <Grid item md={6} sm={12} xs={12}>
-              <Box my={2}>
-                <Typography variant="body2">{PRIMARY_INSURANCE}</Typography>
-                <Box p={0.2} />
-                <Typography variant="body1">{primaryInsurance || N_A}</Typography>
-              </Box>
-            </Grid>
-          </Grid>
-        </Box>
+          </Box>}
       </Card>
 
       <Box p={2} />
 
-      {/* {(activeStep || 0) === 0 && <UpFrontPayment handleStep={handleStep} shouldDisableEdit={shouldDisableEdit} />} */}
     </>
   )
 }

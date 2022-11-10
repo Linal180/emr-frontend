@@ -1024,8 +1024,8 @@ export interface PolicyCardProps extends GeneralFormProps {
 }
 
 export interface CheckInComponentProps {
-  appointmentState: AppointmentState,
-  appointmentDispatcher: Dispatch<AppointmentAction>
+  appointmentState?: AppointmentState,
+  appointmentDispatcher?: Dispatch<AppointmentAction>
   handleStep: Function
   shouldDisableEdit?: boolean
   activeStep?: number
@@ -2608,3 +2608,5 @@ export type AddDiagnoseType = 'medication' | 'test' | 'imaging';
 export type AppointmentRoomProps = {
   appointmentId: string
 }
+
+export type RosType = 'section' | 'template'

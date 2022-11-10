@@ -9036,6 +9036,13 @@ export type GetAppointmentRoomQueryVariables = Exact<{
 
 export type GetAppointmentRoomQuery = { __typename?: 'Query', getAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null, appointment?: { __typename?: 'Appointment', id: string, room?: { __typename?: 'Room', id: string, name?: string | null, number?: string | null } | null } | null } };
 
+export type GetAppointmentCheckInQueryVariables = Exact<{
+  getAppointment: GetAppointment;
+}>;
+
+
+export type GetAppointmentCheckInQuery = { __typename?: 'Query', getAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null, appointment?: { __typename?: 'Appointment', id: string, reason?: string | null, selfCheckIn?: boolean | null, checkedInAt?: string | null, primaryInsurance?: string | null, provider?: { __typename?: 'Doctor', id: string, lastName?: string | null, firstName?: string | null } | null, facility?: { __typename?: 'Facility', name: string } | null, appointmentType?: { __typename?: 'Service', name: string } | null } | null } };
+
 export type GetAttachmentsQueryVariables = Exact<{
   getAttachment: GetAttachment;
 }>;
@@ -12605,6 +12612,61 @@ export function useGetAppointmentRoomLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GetAppointmentRoomQueryHookResult = ReturnType<typeof useGetAppointmentRoomQuery>;
 export type GetAppointmentRoomLazyQueryHookResult = ReturnType<typeof useGetAppointmentRoomLazyQuery>;
 export type GetAppointmentRoomQueryResult = Apollo.QueryResult<GetAppointmentRoomQuery, GetAppointmentRoomQueryVariables>;
+export const GetAppointmentCheckInDocument = gql`
+    query GetAppointmentCheckIn($getAppointment: GetAppointment!) {
+  getAppointment(getAppointment: $getAppointment) {
+    response {
+      status
+    }
+    appointment {
+      id
+      reason
+      selfCheckIn
+      checkedInAt
+      primaryInsurance
+      provider {
+        id
+        lastName
+        firstName
+      }
+      facility {
+        name
+      }
+      appointmentType {
+        name
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAppointmentCheckInQuery__
+ *
+ * To run a query within a React component, call `useGetAppointmentCheckInQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAppointmentCheckInQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAppointmentCheckInQuery({
+ *   variables: {
+ *      getAppointment: // value for 'getAppointment'
+ *   },
+ * });
+ */
+export function useGetAppointmentCheckInQuery(baseOptions: Apollo.QueryHookOptions<GetAppointmentCheckInQuery, GetAppointmentCheckInQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAppointmentCheckInQuery, GetAppointmentCheckInQueryVariables>(GetAppointmentCheckInDocument, options);
+      }
+export function useGetAppointmentCheckInLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAppointmentCheckInQuery, GetAppointmentCheckInQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAppointmentCheckInQuery, GetAppointmentCheckInQueryVariables>(GetAppointmentCheckInDocument, options);
+        }
+export type GetAppointmentCheckInQueryHookResult = ReturnType<typeof useGetAppointmentCheckInQuery>;
+export type GetAppointmentCheckInLazyQueryHookResult = ReturnType<typeof useGetAppointmentCheckInLazyQuery>;
+export type GetAppointmentCheckInQueryResult = Apollo.QueryResult<GetAppointmentCheckInQuery, GetAppointmentCheckInQueryVariables>;
 export const GetAttachmentsDocument = gql`
     query GetAttachments($getAttachment: GetAttachment!) {
   getAttachments(getAttachment: $getAttachment) {
