@@ -147,8 +147,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
     if (id) {
       navigator.clipboard.writeText(
         `${process.env.REACT_APP_URL}${PUBLIC_FORM_BUILDER_ROUTE}/${id}`
-      ).then(()=>console.log("Successfully Copied"))
-      .catch(()=>console.log("Something went wrong"))
+      )
       dispatch({ type: ActionType.SET_COPIED, copied: true })
     }
   };
