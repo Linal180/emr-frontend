@@ -545,7 +545,7 @@ const PatientForm = forwardRef<FormForwardRef | undefined, PatientFormProps>((
           shouldShowBread={shouldShowBread}
           getPatientLoading={getPatientLoading}
           shouldDisableEdit={shouldDisableEdit}
-          refetch={refetch}
+          // refetch={refetch}
         />
       </form>
     </FormProvider>

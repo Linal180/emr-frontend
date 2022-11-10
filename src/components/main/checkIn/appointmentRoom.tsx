@@ -14,6 +14,7 @@ const AppointmentRoom: FC<AppointmentRoomProps> = ({ appointmentId }): JSX.Eleme
     const { id: roomId } = option || {}
     associateRoom({ variables: { associateRoomToAppointmentInput: { appointmentId: appointmentId || '', roomId: roomId || '' } } })
   }
+  
   return (
     <Box>
       <Typography variant="h5" color="textPrimary">{PATIENT_LOCATION_TEXT}</Typography>

@@ -1,7 +1,7 @@
 //packages Import
-import { forwardRef, Reducer, useCallback, useEffect, useImperativeHandle, useReducer, useRef } from "react";
 import { useParams } from "react-router";
 import { Box, Button, Grid, IconButton, Typography } from "@material-ui/core";
+import { forwardRef, Reducer, useCallback, useEffect, useImperativeHandle, useReducer, useRef } from "react";
 //components Import
 import Alert from "../../../../common/Alert";
 import DropzoneImage from "../../../../common/DropZoneImage";
@@ -15,9 +15,8 @@ import {
   Action, ActionType, insuranceReducer, initialState, State
 } from "../../../../../reducers/insuranceReducer";
 import {
-  ATTACHMENT_TITLES, DELETE_POLICY_CARD_ATTACHMENT_DESCRIPTION, INSURANCE_CARD,
+  ATTACHMENT_TITLES, DELETE_POLICY_CARD_ATTACHMENT_DESCRIPTION, INSURANCE_CARD, USER_NOT_FOUND_EXCEPTION_MESSAGE,
   INSURANCE_CARD_DELETED, NOT_FOUND_EXCEPTION, OPEN_CAMERA, PATIENT_INSURANCE, TAKE_A_PICTURE_OF_INSURANCE,
-  USER_NOT_FOUND_EXCEPTION_MESSAGE
 } from "../../../../../constants";
 import {
   AttachmentType, AttachmentWithPreSignedUrlPayload, useFetchDocumentTypeByNameLazyQuery,
@@ -29,8 +28,8 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(
     const { id: patientId } = useParams<ParamsType>()
     const dropZoneRef = useRef<FormForwardRef>(null);
 
-    const [{ documentTypeId, openDelete, policyAttachmentId, attachments, cameraOpen, isPolicyAttachmentFetch }, insuranceDispatch] =
-      useReducer<Reducer<State, Action>>(insuranceReducer, initialState)
+    const [state, insuranceDispatch] = useReducer<Reducer<State, Action>>(insuranceReducer, initialState)
+    const { documentTypeId, openDelete, policyAttachmentId, attachments, cameraOpen, isPolicyAttachmentFetch } = state
 
     const [fetchDocumentType] = useFetchDocumentTypeByNameLazyQuery({
       notifyOnNetworkStatusChange: true,
@@ -153,8 +152,6 @@ const PolicyAttachments = forwardRef<FormForwardRef, PolicyAttachmentProps>(
         })
       }
     }
-
-
 
     return (
       <Box minWidth="100%">

@@ -87,6 +87,7 @@ const PolicyCard: FC<PolicyCardProps> = ({
           dispatch({ type: ActionType.SET_POLICY_ID, policyId: policy?.id })
           policyAttachmentRef.current?.submit()
           handleReload && handleReload()
+          refetch && refetch()
         }
       }
     }
@@ -109,6 +110,7 @@ const PolicyCard: FC<PolicyCardProps> = ({
           policyAttachmentRef.current?.submit()
           dispatch({ type: ActionType.SET_POLICY_ID, policyId: policy?.id })
           handleReload && handleReload()
+          refetch && refetch()
         }
       }
     }
@@ -272,6 +274,7 @@ const PolicyCard: FC<PolicyCardProps> = ({
   };
 
   const onSubmit: SubmitHandler<InsuranceCreateInput> = async (values) => {
+    debugger
     if (numberOfFiles) {
       const { address, addressCTD, certificationNumber, city, coInsurancePercentage, copayFields,
         dob, employer, expirationDate, firstName, insuranceId, issueDate, lastName, middleName,
@@ -322,7 +325,7 @@ const PolicyCard: FC<PolicyCardProps> = ({
 
         setPolicyToEdit && setPolicyToEdit('')
       } else {
-        createPolicy({
+      await  createPolicy({
           variables: {
             createPolicyInput: {
               coinsurancePercentage: coInsurancePercentage, patientId: patientId,
@@ -346,8 +349,6 @@ const PolicyCard: FC<PolicyCardProps> = ({
         })
       }
     } else Alert.error(INSURANCE_CARD_ERROR_MESSAGE)
-
-    refetch && refetch()
   }
 
   const loading = isEdit && isFormLoaded
@@ -391,7 +392,8 @@ const PolicyCard: FC<PolicyCardProps> = ({
 
       case 2:
         return <Box p={3}>
-          <PolicyAttachments handleReload={() => { }}
+          <PolicyAttachments
+            handleReload={() => { }}
             dispatch={dispatch}
             policyId={policyId}
             ref={policyAttachmentRef}
