@@ -138,15 +138,16 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
 
   const onSubmit: SubmitHandler<any> = async (values) => {
     try {
-      const { hpiTemplates } = values
-      const templateIds = hpiTemplates.map((hpiTemplate: multiOptionType) => hpiTemplate.value)
-      const answerResponses = Object.keys(values).reduce((acc, key) => {
+      const { hpiTemplates = [] } = values || {}
+      const templateIds = hpiTemplates?.map((hpiTemplate: multiOptionType) => hpiTemplate?.value)
+
+      const answerResponses = Object?.keys(values)?.reduce((acc, key) => {
         const value = values[key]
         if (key === 'hpiTemplates') {
           return acc
         }
 
-        if (value.select === true) {
+        if (value?.select === true) {
           acc.push({
             answerId: key,
             value: value?.value?.id ? value?.value?.id : value?.value
@@ -181,17 +182,15 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
     if (rosType === 'section') {
       if (answerIds?.length > 0) {
         setQSections((prev) => ({ ...prev, [index]: [] }))
-        if (answerIds) {
-          answerIds.forEach((answerId) => {
-            const value = values[answerId]
-            setValue(answerId, {
-              ...(value || {}),
-              select: false
-            })
+        answerIds.forEach((answerId) => {
+          const value = values[answerId]
+          setValue(answerId, {
+            ...(value || {}),
+            select: false
           })
-          reset()
-          handleSubmit(onSubmit)()
-        }
+        })
+        reset()
+        handleSubmit(onSubmit)()
       }
     }
     else if (rosType === 'template') {
