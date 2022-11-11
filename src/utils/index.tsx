@@ -2480,8 +2480,8 @@ export const emailRegex = (value: string) => {
 export const dateFormateForEmail = (dateTime: string) => {
 
   if (dateTime) {
-    const date = moment(dateTime).format("DD-MM-YYYY")
-    const time = moment(dateTime).format("hh:mm A")
+    const date = moment(parseInt(dateTime)).format("DD-MM-YYYY")
+    const time = moment(parseInt(dateTime)).format("hh:mm A")
     return { date: date, time: time }
   }
   return { date: '', time: '' }
