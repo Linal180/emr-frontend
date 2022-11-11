@@ -11,11 +11,10 @@ import { Action, ActionType, initialState, patientHistoryReducer, State } from "
 import { renderMultiTemplates, requiredLabel } from "../../../utils";
 
 const ChartingTemplateSelector: FC<ChartingTemplateSelectorProps> = ({
-  name, label, disabled, isRequired, templateType, onSelect, isEdit, defaultValues, onRemove
+  name, label, disabled, isRequired, templateType, onSelect, onRemove
 }): JSX.Element => {
   const { control, setValue } = useFormContext()
   const [options, setOptions] = useState<multiOptionType[]>([])
-  const [, setValues] = useState<multiOptionType[]>([])
   const [state, dispatch,] = useReducer<Reducer<State, Action>>(patientHistoryReducer, initialState)
   const { page, searchQuery } = state;
 
@@ -55,18 +54,9 @@ const ChartingTemplateSelector: FC<ChartingTemplateSelectorProps> = ({
   }, [page, searchQuery, fetchPatientChartingTemplates]);
 
   const updateValues = (newValues: multiOptionType[]) => {
-    setValue('hpiTemplates', newValues)
-    setValues(newValues as multiOptionType[])
+    setValue(name, newValues)
+    setOptions(newValues as multiOptionType[])
   }
-
-  useEffect(() => {
-    if (isEdit) {
-      if (defaultValues) {
-        // setOptions(defaultValues)
-        setValues(defaultValues)
-      }
-    }
-  }, [defaultValues, isEdit, setValue])
 
   return (
     <Controller
