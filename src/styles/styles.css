@@ -1027,3 +1027,7 @@ input[type=number] {
   height: 40px;
   margin-top: 5px;
 }
+
+.pointer-cursor:hover{
+  cursor: pointer;
+}

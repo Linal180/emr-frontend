@@ -5,8 +5,8 @@ import Selector from '../../../../common/Selector'
 import InputController from '../../../../../controller'
 //constants, graphql, interfaces
 import { QuestionType } from '../../../../../constants'
-import { QuestionAnswers } from '../../../../../generated/graphql'
 import { AnswerChipsProps } from '../../../../../interfacesTypes'
+import { QuestionAnswers } from '../../../../../generated/graphql'
 
 function AnswerChips({ answers, colors, handleSubmit, shouldDisableEdit }: AnswerChipsProps) {
   const methods = useFormContext()
@@ -20,18 +20,18 @@ function AnswerChips({ answers, colors, handleSubmit, shouldDisableEdit }: Answe
       case QuestionType.NUMBER:
         const [first, second] = name?.split("fill") || []
         return <>
-          <Box onClick={() => handleAnswers(id)}>{first}</Box>
+          <Box className='pointer-cursor' onClick={() => handleAnswers(id)}>{first}</Box>
           &nbsp;
           <Box width={100}>
             <InputController
               fieldType='number'
               controllerName={`${id}.value`}
               controllerLabel=""
-              onChange={()=>handleSubmit && handleSubmit()}
+              onChange={() => handleSubmit && handleSubmit()}
             />
           </Box>
           &nbsp;
-          <Box onClick={() => handleAnswers(id)}>{second}</Box>
+          <Box className='pointer-cursor' onClick={() => handleAnswers(id)}>{second}</Box>
         </>
 
       case QuestionType.SELECT:
@@ -43,20 +43,20 @@ function AnswerChips({ answers, colors, handleSubmit, shouldDisableEdit }: Answe
           }
         })
         return <Box display="flex" alignItems="center">
-          <Box onClick={() => handleAnswers(id)}>{firstSelect}</Box>
+          <Box className='pointer-cursor' onClick={() => handleAnswers(id)}>{firstSelect}</Box>
           <Box width={100} height={60} mt={-2}>
             <Selector
               label=''
               name={`${id}.value`}
               options={transformedOptions || []}
-              onSelect={()=>handleSubmit && handleSubmit()}
+              onSelect={() => handleSubmit && handleSubmit()}
             />
           </Box>
-          <Box onClick={() => handleAnswers(id)}>{secondSelect}</Box>
+          <Box className='pointer-cursor' onClick={() => handleAnswers(id)}>{secondSelect}</Box>
         </Box>
 
       default:
-        return <Box onClick={() => handleAnswers(id)}>{name}</Box>
+        return <Box className='pointer-cursor' onClick={() => handleAnswers(id)}>{name}</Box>
     }
   }
 
@@ -70,7 +70,8 @@ function AnswerChips({ answers, colors, handleSubmit, shouldDisableEdit }: Answe
     setValue(`${id}.select`, true)
     handleSubmit && handleSubmit()
   }
-  
+
+
   return (
     <>
       {
@@ -79,7 +80,6 @@ function AnswerChips({ answers, colors, handleSubmit, shouldDisableEdit }: Answe
           return (
             <Chip
               label={getTransformedName(answer)}
-              clickable
               disabled={shouldDisableEdit}
               style={{
                 background: answerValues[id]?.select ? firstColor : 'white',

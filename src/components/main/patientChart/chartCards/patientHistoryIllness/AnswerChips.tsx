@@ -1,6 +1,6 @@
 import { Box, Chip } from '@material-ui/core'
 import { useFormContext } from 'react-hook-form'
-//components
+//component
 import Selector from '../../../../common/Selector'
 import InputController from '../../../../../controller'
 //constants, graphql, interfaces
@@ -8,7 +8,7 @@ import { QuestionType } from '../../../../../constants'
 import { AnswerChipsProps } from '../../../../../interfacesTypes'
 import { QuestionAnswers } from '../../../../../generated/graphql'
 
-function AnswerChips({ answers, colors, handleSubmit, shouldDisableEdit = false }: AnswerChipsProps) {
+function AnswerChips({ answers, colors, handleSubmit, shouldDisableEdit }: AnswerChipsProps) {
   const methods = useFormContext()
   const [firstColor] = colors || []
   const { setValue, watch } = methods
@@ -20,9 +20,9 @@ function AnswerChips({ answers, colors, handleSubmit, shouldDisableEdit = false 
       case QuestionType.NUMBER:
         const [first, second] = name?.split("fill") || []
         return <>
-          <Box onClick={() => handleAnswers(id)}>{first}</Box>
+          <Box className='pointer-cursor' onClick={() => handleAnswers(id)}>{first}</Box>
           &nbsp;
-          <Box width={100} height={60} mt={-2}>
+          <Box width={100}>
             <InputController
               fieldType='number'
               controllerName={`${id}.value`}
@@ -31,7 +31,7 @@ function AnswerChips({ answers, colors, handleSubmit, shouldDisableEdit = false 
             />
           </Box>
           &nbsp;
-          <Box onClick={() => handleAnswers(id)}>{second}</Box>
+          <Box className='pointer-cursor' onClick={() => handleAnswers(id)}>{second}</Box>
         </>
 
       case QuestionType.SELECT:
@@ -43,9 +43,8 @@ function AnswerChips({ answers, colors, handleSubmit, shouldDisableEdit = false 
           }
         })
         return <Box display="flex" alignItems="center">
-          <Box onClick={() => handleAnswers(id)}>{firstSelect}</Box>
-          &nbsp;
-          <Box width={120}>
+          <Box className='pointer-cursor' onClick={() => handleAnswers(id)}>{firstSelect}</Box>
+          <Box width={100} height={60} mt={-2}>
             <Selector
               label=''
               name={`${id}.value`}
@@ -53,12 +52,11 @@ function AnswerChips({ answers, colors, handleSubmit, shouldDisableEdit = false 
               onSelect={() => handleSubmit && handleSubmit()}
             />
           </Box>
-          &nbsp;
-          <Box onClick={() => handleAnswers(id)}>{secondSelect}</Box>
+          <Box className='pointer-cursor' onClick={() => handleAnswers(id)}>{secondSelect}</Box>
         </Box>
 
       default:
-        return <Box onClick={() => handleAnswers(id)}>{name}</Box>
+        return <Box className='pointer-cursor' onClick={() => handleAnswers(id)}>{name}</Box>
     }
   }
 
@@ -82,7 +80,6 @@ function AnswerChips({ answers, colors, handleSubmit, shouldDisableEdit = false 
           return (
             <Chip
               label={getTransformedName(answer)}
-              clickable
               disabled={shouldDisableEdit}
               style={{
                 background: answerValues[id]?.select ? firstColor : 'white',
