@@ -700,3 +700,15 @@ query GetAppointmentCheckIn($getAppointment: GetAppointment!) {
     }
   }
 }
+
+query GetAppointmentIntakeSteps($getAppointment: GetAppointment!) {
+  getAppointment(getAppointment: $getAppointment) {
+    response {
+      status
+    }
+
+    appointment {
+      intakeSteps
+    }
+  }
+}
