@@ -101,8 +101,8 @@ export const BloodPressureIcon = () => (
 
 export const CloseIcon = () => (
   <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M9 1L1 9" stroke="#5E6278" stroke-linecap="round" stroke-linejoin="round" />
-    <path d="M1 1L9 9" stroke="#5E6278" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M9 1L1 9" stroke="#5E6278" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M1 1L9 9" stroke="#5E6278" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 )
 
@@ -494,7 +494,7 @@ export const LinkIcon = () => (
 
 export const TrashOutlinedIcon = () => (
   <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M1 5H17M16 5L15.133 17.142C15.0971 17.6466 14.8713 18.1188 14.5011 18.4636C14.1309 18.8083 13.6439 19 13.138 19H4.862C4.35614 19 3.86907 18.8083 3.49889 18.4636C3.1287 18.1188 2.90292 17.6466 2.867 17.142L2 5H16ZM7 9V15V9ZM11 9V15V9ZM12 5V2C12 1.73478 11.8946 1.48043 11.7071 1.29289C11.5196 1.10536 11.2652 1 11 1H7C6.73478 1 6.48043 1.10536 6.29289 1.29289C6.10536 1.48043 6 1.73478 6 2V5H12Z" stroke="#5E6278" strokeWidth="2" strokeLinecap="round" stroke-linejoin="round" />
+    <path d="M1 5H17M16 5L15.133 17.142C15.0971 17.6466 14.8713 18.1188 14.5011 18.4636C14.1309 18.8083 13.6439 19 13.138 19H4.862C4.35614 19 3.86907 18.8083 3.49889 18.4636C3.1287 18.1188 2.90292 17.6466 2.867 17.142L2 5H16ZM7 9V15V9ZM11 9V15V9ZM12 5V2C12 1.73478 11.8946 1.48043 11.7071 1.29289C11.5196 1.10536 11.2652 1 11 1H7C6.73478 1 6.48043 1.10536 6.29289 1.29289C6.10536 1.48043 6 1.73478 6 2V5H12Z" stroke="#5E6278" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 )
 
@@ -512,8 +512,8 @@ export const EditOutlinedIcon = () => (
 
 export const DeleteSmallIcon = () => (
   <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M8.65237 1L0.953125 9" stroke="#5E6278" strokeLinecap="round" stroke-linejoin="round" />
-    <path d="M0.953125 1L8.65237 9" stroke="#5E6278" strokeLinecap="round" stroke-linejoin="round" />
+    <path d="M8.65237 1L0.953125 9" stroke="#5E6278" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M0.953125 1L8.65237 9" stroke="#5E6278" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 )
 
@@ -609,7 +609,7 @@ export const BillingCardIcon = () => (
 
 export const MessageIcon = () => (
   <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M26 13.3334C26.0046 15.0932 25.5934 16.8292 24.8 18.4C23.8592 20.2824 22.413 21.8656 20.6233 22.9724C18.8335 24.0792 16.771 24.6659 14.6667 24.6667C12.9068 24.6713 11.1708 24.2601 9.6 23.4667L2 26L4.53333 18.4C3.73991 16.8292 3.32875 15.0932 3.33333 13.3334C3.33415 11.229 3.92082 9.16651 5.02763 7.37677C6.13444 5.58704 7.71767 4.14079 9.6 3.20004C11.1708 2.40661 12.9068 1.99545 14.6667 2.00004H15.3333C18.1125 2.15336 20.7374 3.32639 22.7055 5.29452C24.6737 7.26265 25.8467 9.88757 26 12.6667V13.3334Z" stroke="#5E6278" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M26 13.3334C26.0046 15.0932 25.5934 16.8292 24.8 18.4C23.8592 20.2824 22.413 21.8656 20.6233 22.9724C18.8335 24.0792 16.771 24.6659 14.6667 24.6667C12.9068 24.6713 11.1708 24.2601 9.6 23.4667L2 26L4.53333 18.4C3.73991 16.8292 3.32875 15.0932 3.33333 13.3334C3.33415 11.229 3.92082 9.16651 5.02763 7.37677C6.13444 5.58704 7.71767 4.14079 9.6 3.20004C11.1708 2.40661 12.9068 1.99545 14.6667 2.00004H15.3333C18.1125 2.15336 20.7374 3.32639 22.7055 5.29452C24.6737 7.26265 25.8467 9.88757 26 12.6667V13.3334Z" stroke="#5E6278" stroke-width="3" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 )
 
@@ -965,13 +965,13 @@ export const DeleteAppointmentIcon = () => (
 
 export const CancelAppointmentIcon = () => (
   <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M1 1L9 9" stroke="#5E6278" strokeLinecap="round" stroke-linejoin="round" />
+    <path d="M1 1L9 9" stroke="#5E6278" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 )
 
 export const InvoiceAppointmentIcon = () => (
   <svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M6.66927 10.3333H8.0026M9.33594 13H2.66927C2.31565 13 1.97651 12.8595 1.72646 12.6095C1.47641 12.3594 1.33594 12.0203 1.33594 11.6667V2.33333C1.33594 1.97971 1.47641 1.64057 1.72646 1.39052C1.97651 1.14048 2.31565 1 2.66927 1H7.33594L10.6693 4.33333V11.6667C10.6693 12.0203 10.5288 12.3594 10.2787 12.6095C10.0287 12.8595 9.68956 13 9.33594 13ZM4.0026 3.66667H4.66927H4.0026ZM4.0026 7.66667H8.0026H4.0026Z" stroke="#5E6278" strokeWidth="1.33333" strokeLinecap="round" stroke-linejoin="round" />
+    <path d="M6.66927 10.3333H8.0026M9.33594 13H2.66927C2.31565 13 1.97651 12.8595 1.72646 12.6095C1.47641 12.3594 1.33594 12.0203 1.33594 11.6667V2.33333C1.33594 1.97971 1.47641 1.64057 1.72646 1.39052C1.97651 1.14048 2.31565 1 2.66927 1H7.33594L10.6693 4.33333V11.6667C10.6693 12.0203 10.5288 12.3594 10.2787 12.6095C10.0287 12.8595 9.68956 13 9.33594 13ZM4.0026 3.66667H4.66927H4.0026ZM4.0026 7.66667H8.0026H4.0026Z" stroke="#5E6278" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 )
 
