@@ -11,7 +11,7 @@ import { Action, ActionType, initialState, patientHistoryReducer, State } from "
 import { renderMultiTemplates, requiredLabel } from "../../../utils";
 
 const ChartingTemplateSelector: FC<ChartingTemplateSelectorProps> = ({
-  name, label, disabled, isRequired, addEmpty, templateType, onSelect, isEdit, defaultValues, onRemove
+  name, label, disabled, isRequired, templateType, onSelect, isEdit, defaultValues, onRemove
 }): JSX.Element => {
   const { control, setValue } = useFormContext()
   const [options, setOptions] = useState<multiOptionType[]>([])

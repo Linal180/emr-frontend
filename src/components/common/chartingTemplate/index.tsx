@@ -11,15 +11,15 @@ import ChartingTemplateSelector from "../Selector/ChartingTemplateSelector";
 //constants
 import { renderMultiTemplates } from "../../../utils";
 import { useChartingStyles } from '../../../styles/chartingStyles';
-import { ALL_NORMAL, CLEAR_TEXT, NORMAL, PE_TEMPLATES } from "../../../constants";
+import { ALL_NORMAL, CLEAR_TEXT, NORMAL } from "../../../constants";
 import { multiOptionType, ChartingTemplateProps, RosType } from "../../../interfacesTypes";
 
 
 const ChartingTemplate: FC<ChartingTemplateProps> = (props): JSX.Element => {
-  const { shouldDisableEdit = false, onSubmit, templateType, loading = false, fetchChartingTemplates, itemId, templates, notes, setItemId } = props
+  const { shouldDisableEdit = false, onSubmit, templateType, loading = false, fetchChartingTemplates, itemId, templates, notes, setItemId, label } = props
 
   const methods = useFormContext();
-  const { setValue, watch } = methods;
+  const { setValue, watch, handleSubmit } = methods;
   const values = watch()
   const chartingClasses = useChartingStyles();
 
@@ -43,7 +43,7 @@ const ChartingTemplate: FC<ChartingTemplateProps> = (props): JSX.Element => {
               select: true
             })
           })
-          onSubmit()
+          handleSubmit(onSubmit)()
         }
       }
     }
@@ -57,7 +57,7 @@ const ChartingTemplate: FC<ChartingTemplateProps> = (props): JSX.Element => {
             select: true
           })
         })
-        onSubmit()
+        handleSubmit(onSubmit)()
       }
     }
   }
@@ -73,9 +73,9 @@ const ChartingTemplate: FC<ChartingTemplateProps> = (props): JSX.Element => {
             ...(value || {}),
             select: false
           })
-          setValue(`${answerId}.value`, '');
+          // setValue(`${answerId}.value`, '');
         })
-        onSubmit()
+        handleSubmit(onSubmit)()
       }
     }
     else if (rosType === 'template') {
@@ -88,9 +88,9 @@ const ChartingTemplate: FC<ChartingTemplateProps> = (props): JSX.Element => {
             ...(value || {}),
             select: false,
           })
-          setValue(`${answerId}.value`, '');
+          // setValue(`${answerId}.value`, '');
         })
-        onSubmit()
+        handleSubmit(onSubmit)()
       }
     }
   }
@@ -101,7 +101,7 @@ const ChartingTemplate: FC<ChartingTemplateProps> = (props): JSX.Element => {
   }
 
   const onRemove = () => {
-    onSubmit()
+    handleSubmit(onSubmit)()
   }
 
   return (
@@ -111,12 +111,12 @@ const ChartingTemplate: FC<ChartingTemplateProps> = (props): JSX.Element => {
           <ChartingTemplateSelector
             isEdit
             addEmpty
+            label={label}
             name="hpiTemplates"
             onRemove={onRemove}
-            label={PE_TEMPLATES}
             onSelect={selectHandler}
-            disabled={shouldDisableEdit}
             templateType={templateType}
+            disabled={shouldDisableEdit}
             defaultValues={renderMultiTemplates(templates)}
           />
         </Box>
@@ -228,7 +228,7 @@ const ChartingTemplate: FC<ChartingTemplateProps> = (props): JSX.Element => {
                                 <QuestionCard
                                   key={`${index}-${id}`}
                                   question={question}
-                                  handleSubmit={onSubmit}
+                                  handleSubmit={handleSubmit(onSubmit)}
                                   shouldDisableEdit={shouldDisableEdit}
                                 />
                                 <Box mt={2} />

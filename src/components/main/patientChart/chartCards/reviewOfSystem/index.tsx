@@ -8,7 +8,7 @@ import ChartingTemplate from "../../../../common/chartingTemplate";
 //constants
 import { renderMultiTemplates } from "../../../../../utils";
 import { multiOptionType, ParamsType, PatientHistoryProps } from "../../../../../interfacesTypes";
-import { NEXT, QuestionType, REVIEW_OF_SYSTEM_TEXT, TemplateType } from "../../../../../constants";
+import { NEXT, QuestionType, REVIEW_OF_SYSTEM_TEXT, ROS_TEMPLATES, TemplateType } from "../../../../../constants";
 import { Action, ActionType, initialState, patientHistoryReducer, State } from "../../../../../reducers/patientHistoryReducer";
 import { QuestionTemplate, useCreateReviewOfSystemHistoryMutation, useGetPatientChartingTemplateLazyQuery, useReviewOfSystemLazyQuery } from '../../../../../generated/graphql';
 
@@ -158,7 +158,6 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
         }
       })
     } catch (error) { }
-
   }
 
   const loading = findPatientChartingTemplateLoading || getLoading;
@@ -181,14 +180,16 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <ChartingTemplate
-            loading={loading}
-            fetchChartingTemplates={fetchPatientChartingTemplates}
-            itemId={itemId}
             notes={notes}
-            onSubmit={handleSubmit(onSubmit)}
-            templateType={TemplateType.REVIEW_OF_SYSTEM}
+            itemId={itemId}
+            loading={loading}
+            onSubmit={onSubmit}
+            label={ROS_TEMPLATES}
             templates={templates}
             shouldDisableEdit={shouldDisableEdit}
+            key={`ChartingTemplate-REVIEW_OF_SYSTEM`}
+            templateType={TemplateType.REVIEW_OF_SYSTEM}
+            fetchChartingTemplates={fetchPatientChartingTemplates}
             setItemId={(item: string) => dispatch({ itemId: item, type: ActionType.SET_ITEM_ID })}
           />
         </form>

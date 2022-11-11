@@ -7,7 +7,7 @@ import Alert from "../../../../common/Alert";
 import ChartingTemplate from "../../../../common/chartingTemplate";
 //constants
 import { renderMultiTemplates } from "../../../../../utils";
-import { NEXT, PHYSICAL_EXAM_TEXT, QuestionType, TemplateType } from "../../../../../constants";
+import { NEXT, PE_TEMPLATES, PHYSICAL_EXAM_TEXT, QuestionType, TemplateType } from "../../../../../constants";
 import { multiOptionType, ParamsType, PatientHistoryProps } from "../../../../../interfacesTypes";
 import { Action, ActionType, initialState, patientHistoryReducer, State } from "../../../../../reducers/patientHistoryReducer";
 import {
@@ -186,14 +186,16 @@ const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, hand
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <ChartingTemplate
-            loading={loading}
-            fetchChartingTemplates={fetchPatientChartingTemplates}
-            itemId={itemId}
             notes={notes}
-            onSubmit={handleSubmit(onSubmit)}
-            templateType={TemplateType.PHYSICAL_EXAM}
+            itemId={itemId}
+            loading={loading}
+            onSubmit={onSubmit}
+            label={PE_TEMPLATES}
             templates={templates}
             shouldDisableEdit={shouldDisableEdit}
+            key={`ChartingTemplate-PHYSICAL_EXAM`}
+            templateType={TemplateType.PHYSICAL_EXAM}
+            fetchChartingTemplates={fetchPatientChartingTemplates}
             setItemId={(item: string) => dispatch({ itemId: item, type: ActionType.SET_ITEM_ID })}
           />
         </form>

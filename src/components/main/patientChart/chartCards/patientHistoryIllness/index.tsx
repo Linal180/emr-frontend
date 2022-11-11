@@ -8,7 +8,7 @@ import ChartingTemplate from '../../../../common/chartingTemplate'
 //constants
 import { renderMultiTemplates, setRecord } from "../../../../../utils";
 import { multiOptionType, ParamsType, PatientHistoryProps } from "../../../../../interfacesTypes";
-import { NEXT, PATIENT_HISTORY_ILLNESS_TEXT, QuestionType, TemplateType } from "../../../../../constants";
+import { HPI_TEMPLATES, NEXT, PATIENT_HISTORY_ILLNESS_TEXT, QuestionType, TemplateType } from "../../../../../constants";
 import { Action, ActionType, initialState, patientHistoryReducer, State } from "../../../../../reducers/patientHistoryReducer";
 import {
   QuestionTemplate, useCreatePatientIllnessHistoryMutation, useGetPatientChartingTemplateLazyQuery,
@@ -21,7 +21,7 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
 
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientHistoryReducer, initialState);
   const { itemId, templates, notes } = state;
-  const { handleSubmit, setValue } = methods;
+  const { setValue } = methods;
 
   const [createIllnessHistory] = useCreatePatientIllnessHistoryMutation({
     onCompleted: (data) => {
@@ -146,7 +146,7 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
         return acc
       }, [] as { answerId: string, value?: string }[])
 
-      createIllnessHistory({
+      await createIllnessHistory({
         variables: {
           createPatientIllnessHistoryInput: {
             answerResponses: answerResponses,
@@ -181,16 +181,18 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
       </Box>
 
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={onSubmit}>
           <ChartingTemplate
-            loading={loading}
-            fetchChartingTemplates={fetchPatientChartingTemplates}
-            itemId={itemId}
             notes={notes}
-            onSubmit={handleSubmit(onSubmit)}
-            templateType={TemplateType.HPI}
+            itemId={itemId}
+            loading={loading}
+            onSubmit={onSubmit}
+            label={HPI_TEMPLATES}
             templates={templates}
+            key={`ChartingTemplate-HPI`}
+            templateType={TemplateType.HPI}
             shouldDisableEdit={shouldDisableEdit}
+            fetchChartingTemplates={fetchPatientChartingTemplates}
             setItemId={(item: string) => dispatch({ itemId: item, type: ActionType.SET_ITEM_ID })}
           />
         </form>

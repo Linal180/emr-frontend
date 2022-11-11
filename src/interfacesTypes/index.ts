@@ -5,7 +5,7 @@ import { AutocompleteRenderInputParams } from "@material-ui/lab";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { ChangeEventHandler, ComponentType, Dispatch, ElementType, ReactNode } from "react";
 import {
-  Control, ControllerFieldState, ControllerRenderProps, FieldValues, UseFormReturn,
+  Control, ControllerFieldState, ControllerRenderProps, FieldValues, SubmitHandler, UseFormReturn,
   ValidationRule
 } from "react-hook-form";
 import { RouteProps } from "react-router-dom";
@@ -2458,13 +2458,14 @@ export type PatientHistoryProps = {
 }
 
 export type ChartingTemplateProps = {
+  label: string
   notes: string
   itemId: string
   loading?: boolean
-  onSubmit: Function
   setItemId: Function
   templateType: TemplateType
   shouldDisableEdit?: boolean
+  onSubmit: SubmitHandler<any>
   templates: QuestionTemplate[]
   fetchChartingTemplates: (arr: string[]) => void
 }
