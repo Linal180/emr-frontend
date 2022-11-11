@@ -36,7 +36,7 @@ const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, hand
 
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientHistoryReducer, initialState);
   const { itemId, templates, notes } = state;
-  const { handleSubmit, setValue, watch, reset } = methods;
+  const { handleSubmit, setValue, watch } = methods;
   const values = watch()
 
   const [createPhysicalExam] = useCreatePhysicalExamHistoryMutation({
@@ -222,7 +222,6 @@ const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, hand
             select: false
           })
         })
-        reset()
         handleSubmit(onSubmit)()
       }
     }
@@ -236,7 +235,6 @@ const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, hand
             select: false
           })
         })
-        reset()
         handleSubmit(onSubmit)()
       }
     }
@@ -348,13 +346,13 @@ const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, hand
                         {sections?.map((section, index) => {
                           const { id, name, questions } = section || {}
 
-                          const answerIds = questions?.reduce<string[]>((acc, question) => {
+                          const clearSectionAnswerIds = questions?.reduce<string[]>((acc, question) => {
                             const answerValues = question?.answers?.map((answer) => answer.id || '') || []
                             acc.push(...answerValues)
                             return acc
                           }, [])
 
-                          const normalAnswerIds = questions?.reduce<string[]>((acc, question) => {
+                          const normalSectionAnswerIds = questions?.reduce<string[]>((acc, question) => {
                             const answerValues = question?.answers?.map((answer) => answer.answerType === 'normal' ? answer.id : '')?.filter(value => !!value) || []
                             acc.push(...answerValues)
                             return acc
@@ -372,13 +370,13 @@ const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, hand
                                 <Typography variant="h4" color="textPrimary">{name}</Typography>
                                 <Box display="flex" alignItems="center">
                                   <Box mx={1}>
-                                    <Button color="primary" onClick={() => handleNormal(normalAnswerIds || [], 'section', index)}>
+                                    <Button color="primary" onClick={() => handleNormal(normalSectionAnswerIds || [], 'section', index)}>
                                       {NORMAL}
                                     </Button>
                                   </Box>
 
                                   <Box mx={1}>
-                                    <Button className="danger" onClick={() => handleClear(answerIds || [], 'section', index)}>
+                                    <Button className="danger" onClick={() => handleClear(clearSectionAnswerIds || [], 'section', index)}>
                                       {CLEAR_TEXT}
                                     </Button>
                                   </Box>

@@ -288,7 +288,7 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
             {templates?.map((template, i) => {
               const { id, sections, name } = template || {}
 
-              const clearAnswerIds = sections?.reduce<string[]>((acc, section) => {
+              const clearSectionAnswerIds = sections?.reduce<string[]>((acc, section) => {
                 const { questions } = section || {}
                 const answers = questions?.reduce<string[]>((acc, question) => {
                   const answerValues = question?.answers?.map((answer) => answer.id || '') || []
@@ -299,7 +299,7 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
                 return acc
               }, [])
 
-              const normalAnswerIds = sections?.reduce<string[]>((acc, section) => {
+              const normalSectionAnswerIds = sections?.reduce<string[]>((acc, section) => {
                 const { questions } = section || {}
                 const answers = questions?.reduce<string[]>((acc, question) => {
                   const answerValues = question?.answers?.map((answer) => answer.answerType === 'normal' ? answer.id : '')?.filter(value => !!value) || []
@@ -325,13 +325,13 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
                         <Typography variant="h4" color="textPrimary">{name}</Typography>
                         <Box display="flex" alignItems="center">
                           <Box mx={1}>
-                            <Button color="primary" onClick={() => handleNormal(normalAnswerIds || [], "template", i)}>
+                            <Button color="primary" onClick={() => handleNormal(normalSectionAnswerIds || [], "template", i)}>
                               {ALL_NORMAL}
                             </Button>
                           </Box>
 
                           <Box mx={1}>
-                            <Button className="danger" onClick={() => handleClear(clearAnswerIds || [], 'template', i)}>
+                            <Button className="danger" onClick={() => handleClear(clearSectionAnswerIds || [], 'template', i)}>
                               {CLEAR_TEXT}
                             </Button>
                           </Box>
