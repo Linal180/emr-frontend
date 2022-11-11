@@ -151,7 +151,7 @@ const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, hand
         value?: string
       }[])
 
-      createPhysicalExam({
+     await createPhysicalExam({
         variables: {
           createPhysicalExamInput: {
             answerResponses: answerResponses,
