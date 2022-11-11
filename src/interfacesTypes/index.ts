@@ -5,7 +5,7 @@ import { AutocompleteRenderInputParams } from "@material-ui/lab";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { ChangeEventHandler, ComponentType, Dispatch, ElementType, ReactNode } from "react";
 import {
-  Control, ControllerFieldState, ControllerRenderProps, FieldValues, UseFormReturn,
+  Control, ControllerFieldState, ControllerRenderProps, FieldValues, SubmitHandler, UseFormReturn,
   ValidationRule
 } from "react-hook-form";
 import { RouteProps } from "react-router-dom";
@@ -21,7 +21,7 @@ import {
   Doctor, DoctorPatient, FacilitiesPayload, FamilyHistory, FetchBillingClaimStatusesInput, FieldsInputs,
   FormElement, FormTabsInputs, IcdCodes, IcdCodesWithSnowMedCode, ImagingTest, LabTests, LabTestsPayload, LoginUserInput,
   LoincCodePayload, LoincCodes, Medications, Patient, PatientAllergies, PatientIllnessHistoryPayload, PatientMedication,
-  PatientPayload, PatientProblems, PatientProviderPayload, PatientsPayload, PatientVitals, PermissionsPayload, PhysicalExamPayload, PolicyEligibilityWithPatientPayload, Practice, PracticePayload, QuestionAnswers, Questions, ReactionsPayload,
+  PatientPayload, PatientProblems, PatientProviderPayload, PatientsPayload, PatientVitals, PermissionsPayload, PhysicalExamPayload, PolicyEligibilityWithPatientPayload, Practice, PracticePayload, QuestionAnswers, Questions, QuestionTemplate, ReactionsPayload,
   ResponsePayloadResponse, ReviewOfSystemPayload, RolesPayload, Schedule, SectionQuestions, SectionsInputs, ServicesPayload,
   SingleScheduleInput, Staff, SurgicalHistory, TriageNotes, TriageNotesPayload, TwoFactorInput, UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, User, UsersFormsElements, VaccineProduct, VerifyCodeInput
 } from "../generated/graphql";
@@ -444,6 +444,7 @@ export interface FacilitySelectorProps extends SelectorProps {
 export type ChartingTemplateSelectorProps = ReactionSelectorInterface & {
   templateType?: string
   onSelect?: Function
+  onRemove?: Function
   addEmpty?: boolean
   disabled?: boolean
 }
@@ -2022,7 +2023,7 @@ export type UpdateAttachmentDataInputs = Pick<UpdateAttachmentInput, 'attachment
 export type DocumentInputProps = UpdateAttachmentDataInputs
   & { provider: SelectorOption } & { date: string } & { patientName: string }
 
-export type ReceivablesTableProps= {
+export type ReceivablesTableProps = {
   patientSpecific?: boolean
 }
 
@@ -2455,6 +2456,20 @@ export type PatientHistoryProps = {
   shouldDisableEdit?: boolean
   handleStep?: Function
 }
+
+export type ChartingTemplateProps = {
+  label: string
+  notes: string
+  itemId: string
+  loading?: boolean
+  setItemId: Function
+  templateType: TemplateType
+  shouldDisableEdit?: boolean
+  onSubmit: SubmitHandler<any>
+  templates: QuestionTemplate[]
+  fetchChartingTemplates: (arr: string[]) => void
+}
+
 
 
 export type LatestVitalCardProps = {

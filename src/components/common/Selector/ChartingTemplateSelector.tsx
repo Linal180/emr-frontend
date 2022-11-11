@@ -11,12 +11,10 @@ import { Action, ActionType, initialState, patientHistoryReducer, State } from "
 import { renderMultiTemplates, requiredLabel } from "../../../utils";
 
 const ChartingTemplateSelector: FC<ChartingTemplateSelectorProps> = ({
-  name, label, disabled, isRequired, addEmpty, templateType, onSelect, isEdit, defaultValues
+  name, label, disabled, isRequired, templateType, onSelect, onRemove
 }): JSX.Element => {
   const { control, setValue } = useFormContext()
   const [options, setOptions] = useState<multiOptionType[]>([])
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [values, setValues] = useState<multiOptionType[]>([])
   const [state, dispatch,] = useReducer<Reducer<State, Action>>(patientHistoryReducer, initialState)
   const { page, searchQuery } = state;
 
@@ -56,18 +54,9 @@ const ChartingTemplateSelector: FC<ChartingTemplateSelectorProps> = ({
   }, [page, searchQuery, fetchPatientChartingTemplates]);
 
   const updateValues = (newValues: multiOptionType[]) => {
-    setValue('hpiTemplates', newValues)
-    setValues(newValues as multiOptionType[])
+    setValue(name, newValues)
+    setOptions(newValues as multiOptionType[])
   }
-
-  useEffect(() => {
-    if (isEdit) {
-      if (defaultValues) {
-        // setOptions(defaultValues)
-        setValues(defaultValues)
-      }
-    }
-  }, [defaultValues, isEdit, setValue])
 
   return (
     <Controller
@@ -75,9 +64,9 @@ const ChartingTemplateSelector: FC<ChartingTemplateSelectorProps> = ({
       name={name}
       control={control}
       // defaultValue={options}
-      render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
+      render={({ field, fieldState: { error: { message } = {} } }) => {
         return (
-          <FormControl fullWidth margin={'normal'} error={Boolean(invalid)} >
+          <FormControl fullWidth margin={'normal'} error={Boolean(message)} >
             <Box position="relative">
               <InputLabel id={`${name}-autocomplete`} shrink>
                 {isRequired ? requiredLabel(label) : label}
@@ -94,10 +83,15 @@ const ChartingTemplateSelector: FC<ChartingTemplateSelectorProps> = ({
               // value={values}
               isLoading={findPatientChartingTemplatesLoading}
               components={{ LoadingIndicator: () => <CircularProgress color="inherit" size={20} style={{ marginRight: 5, }} /> }}
-              onChange={(newValue) => {
+              onChange={(newValue, { action }) => {
+                field.onChange(newValue)
                 updateValues(newValue as multiOptionType[])
-                onSelect && onSelect(newValue)
-                return field.onChange(newValue)
+                if (action === 'remove-value' || action === 'clear') {
+                  onRemove && onRemove()
+                  return;
+                } else if (action === 'select-option') {
+                  onSelect && onSelect(newValue)
+                }
               }}
               onInputChange={(query: string) => {
                 (query.length > 2 || query.length === 0) && dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
@@ -105,7 +99,7 @@ const ChartingTemplateSelector: FC<ChartingTemplateSelectorProps> = ({
               className={message ? `selectorClassTwoError diagnosesSelectorClass` : `selectorClassTwo diagnosesSelectorClass`}
             />
 
-            <FormHelperText>{invalid && message}</FormHelperText>
+            <FormHelperText>{!!message && message}</FormHelperText>
           </FormControl>
         );
       }}
