@@ -9043,6 +9043,13 @@ export type GetAppointmentCheckInQueryVariables = Exact<{
 
 export type GetAppointmentCheckInQuery = { __typename?: 'Query', getAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null, appointment?: { __typename?: 'Appointment', id: string, reason?: string | null, selfCheckIn?: boolean | null, checkedInAt?: string | null, primaryInsurance?: string | null, provider?: { __typename?: 'Doctor', id: string, lastName?: string | null, firstName?: string | null } | null, facility?: { __typename?: 'Facility', name: string } | null, appointmentType?: { __typename?: 'Service', name: string } | null } | null } };
 
+export type GetAppointmentIntakeStepsQueryVariables = Exact<{
+  getAppointment: GetAppointment;
+}>;
+
+
+export type GetAppointmentIntakeStepsQuery = { __typename?: 'Query', getAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null, appointment?: { __typename?: 'Appointment', intakeSteps?: Array<string> | null } | null } };
+
 export type GetAttachmentsQueryVariables = Exact<{
   getAttachment: GetAttachment;
 }>;
@@ -12667,6 +12674,46 @@ export function useGetAppointmentCheckInLazyQuery(baseOptions?: Apollo.LazyQuery
 export type GetAppointmentCheckInQueryHookResult = ReturnType<typeof useGetAppointmentCheckInQuery>;
 export type GetAppointmentCheckInLazyQueryHookResult = ReturnType<typeof useGetAppointmentCheckInLazyQuery>;
 export type GetAppointmentCheckInQueryResult = Apollo.QueryResult<GetAppointmentCheckInQuery, GetAppointmentCheckInQueryVariables>;
+export const GetAppointmentIntakeStepsDocument = gql`
+    query GetAppointmentIntakeSteps($getAppointment: GetAppointment!) {
+  getAppointment(getAppointment: $getAppointment) {
+    response {
+      status
+    }
+    appointment {
+      intakeSteps
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAppointmentIntakeStepsQuery__
+ *
+ * To run a query within a React component, call `useGetAppointmentIntakeStepsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAppointmentIntakeStepsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAppointmentIntakeStepsQuery({
+ *   variables: {
+ *      getAppointment: // value for 'getAppointment'
+ *   },
+ * });
+ */
+export function useGetAppointmentIntakeStepsQuery(baseOptions: Apollo.QueryHookOptions<GetAppointmentIntakeStepsQuery, GetAppointmentIntakeStepsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAppointmentIntakeStepsQuery, GetAppointmentIntakeStepsQueryVariables>(GetAppointmentIntakeStepsDocument, options);
+      }
+export function useGetAppointmentIntakeStepsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAppointmentIntakeStepsQuery, GetAppointmentIntakeStepsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAppointmentIntakeStepsQuery, GetAppointmentIntakeStepsQueryVariables>(GetAppointmentIntakeStepsDocument, options);
+        }
+export type GetAppointmentIntakeStepsQueryHookResult = ReturnType<typeof useGetAppointmentIntakeStepsQuery>;
+export type GetAppointmentIntakeStepsLazyQueryHookResult = ReturnType<typeof useGetAppointmentIntakeStepsLazyQuery>;
+export type GetAppointmentIntakeStepsQueryResult = Apollo.QueryResult<GetAppointmentIntakeStepsQuery, GetAppointmentIntakeStepsQueryVariables>;
 export const GetAttachmentsDocument = gql`
     query GetAttachments($getAttachment: GetAttachment!) {
   getAttachments(getAttachment: $getAttachment) {

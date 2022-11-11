@@ -2,7 +2,7 @@
 import { Box, Button, Card, colors, Grid, Tab, Typography } from "@material-ui/core";
 import { ChevronRight, PrintOutlined } from "@material-ui/icons";
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
-import { ChangeEvent, FC, ReactElement, Reducer, useContext, useEffect, useMemo, useReducer, useState } from 'react';
+import { ChangeEvent, FC, ReactElement, Reducer, useCallback, useContext, useEffect, useMemo, useReducer, useState } from 'react';
 import { useParams } from "react-router";
 // components block
 import Alert from "../../../common/Alert";
@@ -37,7 +37,7 @@ import {
   PATIENT_CHARTING_MENU, PATIENT_CHARTING_TABS, PATIENT_DISCHARGED, PATIENT_DISCHARGED_SUCCESS, PRINT_CHART, REASON_FOR_VISIT_OPTION, SIGN_OFF, TRIAGE_NOTE_OPTION, VISIT_OPTION
 } from "../../../../constants";
 import { AuthContext, ChartContextProvider } from '../../../../context';
-import { AppointmentStatus, useUpdateAppointmentMutation, useUpdateAppointmentStatusMutation } from "../../../../generated/graphql";
+import { AppointmentStatus, useGetAppointmentIntakeStepsLazyQuery, useUpdateAppointmentMutation, useUpdateAppointmentStatusMutation } from "../../../../generated/graphql";
 import { ChartComponentProps, ParamsType } from "../../../../interfacesTypes";
 import { Action, ActionType, initialState, patientReducer, State } from "../../../../reducers/patientReducer";
 import { useChartingStyles } from "../../../../styles/chartingStyles";
@@ -47,17 +47,7 @@ import { isAdmin, isOnlyDoctor } from "../../../../utils";
 
 const ChartCards: FC<ChartComponentProps> = ({ appointmentState, shouldDisableEdit, status, appointmentInfo, fetchAppointment, labOrderHandler, isInTake }): JSX.Element => {
   const classes = useChartingStyles();
-
-  const { appointment } = appointmentState || {}
-  const { appointmentType, intakeSteps } = appointment ?? {}
-  const { name: serviceName } = appointmentType ?? {}
-
-  useEffect(() => {
-    const transformedInTakeSteps = intakeSteps?.map((value) => Number(value || '')) || []
-    setStepArray(transformedInTakeSteps)
-    dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: transformedInTakeSteps[transformedInTakeSteps.length - 1] || 0 })
-  }, [intakeSteps])
-
+  const [intakeSteps, setIntakeSteps] = useState<string[]>([])
   const patientClasses = useExternalPatientStyles();
   const { user } = useContext(AuthContext);
   const { roles } = user || {}
@@ -71,6 +61,37 @@ const ChartCards: FC<ChartComponentProps> = ({ appointmentState, shouldDisableEd
   const [stepArray, setStepArray] = useState<number[]>([0])
   const [{ activeStep, tabValue, shouldRefetchLatestVitals }, dispatch] =
     useReducer<Reducer<State, Action>>(patientReducer, initialState)
+
+  const { appointment } = appointmentState || {}
+  const { appointmentType } = appointment ?? {}
+  const { name: serviceName } = appointmentType ?? {}
+
+  const [getAppointmentIntakeSteps] = useGetAppointmentIntakeStepsLazyQuery({
+    onCompleted: (data) => {
+      const { getAppointment } = data || {}
+      const { appointment, response } = getAppointment || {}
+      const { intakeSteps } = appointment || {}
+      const { status } = response || {}
+
+      if (status === 200) {
+        intakeSteps && setIntakeSteps(intakeSteps)
+      } else {
+        setIntakeSteps([])
+      }
+    },
+    onError: () => {
+      setIntakeSteps([])
+    }
+  })
+  const fetchAppointmentIntakeSteps = useCallback(async () => {
+    try {
+      await getAppointmentIntakeSteps({ variables: { getAppointment: { id: appointmentId || '' } } })
+    } catch (e) { }
+  }, [getAppointmentIntakeSteps, appointmentId])
+
+  useEffect(() => {
+    appointmentId && fetchAppointmentIntakeSteps()
+  }, [appointmentId, fetchAppointmentIntakeSteps])
 
   const handleChange = (_: ChangeEvent<{}>, newValue: string) =>
     dispatch({ type: ActionType.SET_TAB_VALUE, tabValue: newValue })
@@ -123,7 +144,7 @@ const ChartCards: FC<ChartComponentProps> = ({ appointmentState, shouldDisableEd
     } catch (error) { }
   }
 
-  const updateAppointmentHandler = async (intakeSteps: string[]) => {
+  const updateAppointmentHandler = useCallback(async (intakeSteps: string[]) => {
     try {
       await updateAppointment({
         variables: {
@@ -134,7 +155,14 @@ const ChartCards: FC<ChartComponentProps> = ({ appointmentState, shouldDisableEd
         }
       })
     } catch (error) { }
-  }
+  }, [appointmentId, updateAppointment])
+
+  useEffect(() => {
+    const transformedInTakeSteps = intakeSteps?.map((value) => Number(value || ''))
+    setStepArray(transformedInTakeSteps.length ? transformedInTakeSteps : [0])
+    transformedInTakeSteps.length === 1 && transformedInTakeSteps[0] === 0 && updateAppointmentHandler(['0'])
+    dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: transformedInTakeSteps[transformedInTakeSteps.length - 1] || 0 })
+  }, [intakeSteps, updateAppointmentHandler])
 
   const stepperDataWithIndicator = useMemo(() => {
     return PATIENT_CHARTING_MENU.map((menu, index) => {
