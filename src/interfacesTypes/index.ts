@@ -21,7 +21,7 @@ import {
   Doctor, DoctorPatient, FacilitiesPayload, FamilyHistory, FetchBillingClaimStatusesInput, FieldsInputs,
   FormElement, FormTabsInputs, IcdCodes, IcdCodesWithSnowMedCode, ImagingTest, LabTests, LabTestsPayload, LoginUserInput,
   LoincCodePayload, LoincCodes, Medications, Patient, PatientAllergies, PatientIllnessHistoryPayload, PatientMedication,
-  PatientPayload, PatientProblems, PatientProviderPayload, PatientsPayload, PatientVitals, PermissionsPayload, PhysicalExamPayload, PolicyEligibilityWithPatientPayload, Practice, PracticePayload, QuestionAnswers, Questions, ReactionsPayload,
+  PatientPayload, PatientProblems, PatientProviderPayload, PatientsPayload, PatientVitals, PermissionsPayload, PhysicalExamPayload, PolicyEligibilityWithPatientPayload, Practice, PracticePayload, QuestionAnswers, Questions, QuestionTemplate, ReactionsPayload,
   ResponsePayloadResponse, ReviewOfSystemPayload, RolesPayload, Schedule, SectionQuestions, SectionsInputs, ServicesPayload,
   SingleScheduleInput, Staff, SurgicalHistory, TriageNotes, TriageNotesPayload, TwoFactorInput, UpdateAttachmentInput, UpdateContactInput, UpdateFacilityItemInput, UpdateFacilityTimeZoneInput, User, UsersFormsElements, VaccineProduct, VerifyCodeInput
 } from "../generated/graphql";
@@ -2023,7 +2023,7 @@ export type UpdateAttachmentDataInputs = Pick<UpdateAttachmentInput, 'attachment
 export type DocumentInputProps = UpdateAttachmentDataInputs
   & { provider: SelectorOption } & { date: string } & { patientName: string }
 
-export type ReceivablesTableProps= {
+export type ReceivablesTableProps = {
   patientSpecific?: boolean
 }
 
@@ -2456,6 +2456,19 @@ export type PatientHistoryProps = {
   shouldDisableEdit?: boolean
   handleStep?: Function
 }
+
+export type ChartingTemplateProps = {
+  notes: string
+  itemId: string
+  loading?: boolean
+  onSubmit: Function
+  setItemId: Function
+  templateType: TemplateType
+  shouldDisableEdit?: boolean
+  templates: QuestionTemplate[]
+  fetchChartingTemplates: (arr: string[]) => void
+}
+
 
 
 export type LatestVitalCardProps = {
