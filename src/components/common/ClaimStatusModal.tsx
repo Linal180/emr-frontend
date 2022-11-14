@@ -1,21 +1,21 @@
 // packages block
+import { FC, useCallback, useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import {
   Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Typography
 } from "@material-ui/core";
-import { FC, useCallback, useEffect } from "react";
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 // components block
-import InputController from "../../controller";
 import Alert from "./Alert";
+import InputController from "../../controller";
 // interfaces/types block, theme, svgs and constants
-import {
-  CANCEL, CREATE_CLAIM_STATUS, EMAIL_OR_USERNAME_ALREADY_EXISTS,
-  FORBIDDEN_EXCEPTION, STATUS_NAME, UPDATE_CLAIM_STATUS
-} from "../../constants";
-import { useCreateClaimStatusMutation, useFindClaimStatusLazyQuery, useUpdateClaimStatusMutation } from "../../generated/graphql";
-import { ClaimStatusFields, ClaimStatusModalProps } from "../../interfacesTypes";
 import { createClaimStatusSchema } from "../../validationSchemas";
+import { ClaimStatusFields, ClaimStatusModalProps } from "../../interfacesTypes";
+import { useCreateClaimStatusMutation, useFindClaimStatusLazyQuery, useUpdateClaimStatusMutation } from "../../generated/graphql";
+import {
+  CANCEL, CREATE_CLAIM_STATUS, EMAIL_OR_USERNAME_ALREADY_EXISTS, FORBIDDEN_EXCEPTION, STATUS_NAME,
+  UPDATE_CLAIM_STATUS
+} from "../../constants";
 
 const ClaimStatusModal: FC<ClaimStatusModalProps> = ({ isOpen, setIsOpen, id, setEditId, refetch }): JSX.Element => {
   const methods = useForm<ClaimStatusFields>({
@@ -40,9 +40,17 @@ const ClaimStatusModal: FC<ClaimStatusModalProps> = ({ isOpen, setIsOpen, id, se
     },
 
     onCompleted(data) {
-      if (data) {
-        setIsOpen(false)
+      const { createClaimStatus } = data;
+      const { claimStatus, response } = createClaimStatus || {}
+      const { status, message } = response || {}
+      const { id } = claimStatus || {}
+      if (status === 200 && id) {
+        message && Alert.success(message);
         refetch()
+        setIsOpen(false)
+      }
+      else {
+        message && Alert.error(message);
       }
     }
   });
@@ -56,11 +64,20 @@ const ClaimStatusModal: FC<ClaimStatusModalProps> = ({ isOpen, setIsOpen, id, se
     },
 
     onCompleted(data) {
-      if (data) {
-        setIsOpen(false)
+      const { updateClaimStatus } = data;
+      const { claimStatus, response } = updateClaimStatus || {}
+      const { status, message } = response || {}
+      const { id } = claimStatus || {}
+      if (status === 200 && id) {
+        message && Alert.success(message);
         setEditId('')
         refetch()
+        setIsOpen(false)
       }
+      else {
+        message && Alert.error(message);
+      }
+
     }
   });
 
@@ -83,14 +100,14 @@ const ClaimStatusModal: FC<ClaimStatusModalProps> = ({ isOpen, setIsOpen, id, se
   });
 
   const onSubmit: SubmitHandler<ClaimStatusFields> = async (inputs) => {
-    !id ? createClaimStatus({
+    !id ? await createClaimStatus({
       variables: {
         createClaimStatusInput: {
           statusName: inputs.statusName
         }
       }
     }) :
-      updateClaimStatus({
+      await updateClaimStatus({
         variables: {
           updateClaimStatusInput: {
             id: id,
@@ -100,9 +117,9 @@ const ClaimStatusModal: FC<ClaimStatusModalProps> = ({ isOpen, setIsOpen, id, se
       })
   }
 
-  const fetchClaimStatus = useCallback(() => {
+  const fetchClaimStatus = useCallback(async () => {
     try {
-      getClaimStatus({
+      await getClaimStatus({
         variables: {
           id: id || ''
         }
