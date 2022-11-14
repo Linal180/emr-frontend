@@ -23,7 +23,7 @@ function AnswerChips({ answers, colors, handleSubmit, shouldDisableEdit }: Answe
         return <>
           <Box className='pointer-cursor' onClick={() => handleAnswers(id)}>{first}</Box>
           &nbsp;
-          <Box width={100}>
+          <Box width={100} height={32} mt={-5.3} mx={1}>
             <InputController
               fieldType='number'
               controllerName={`${id}.value`}
@@ -43,9 +43,9 @@ function AnswerChips({ answers, colors, handleSubmit, shouldDisableEdit }: Answe
             name: option.name
           }
         })
-        return <Box display="flex" alignItems="center">
+        return <Box display="flex" alignItems="center" flexWrap="wrap" textAlign="left">
           <Box className='pointer-cursor' onClick={() => handleAnswers(id)}>{firstSelect}</Box>
-          <Box width={100} height={60} mt={-2}>
+          <Box width={100} height={32} mt={-5.3} mx={1}>
             <Selector
               label=''
               name={`${id}.value`}

@@ -266,7 +266,7 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisabl
                               </TableCell>
                               <TableCell scope="row">{convertDateFromUnix(createdAt, 'MM-DD-YYYY')}</TableCell>
                               <TableCell scope="row">
-                                {isEdit && orderNum === orderNumber ? <>
+                                {isEdit && orderNum === orderNumber ? <Box minWidth={100}>
                                   <Selector
                                     name="status"
                                     label=""
@@ -275,7 +275,7 @@ const LabOrdersTable: FC<LabOrdersTableProps> = ({ appointmentInfo, shouldDisabl
                                     onSelect={({ id }: SelectorOption) => onSelectStatus(id)}
                                     onOutsideClick={clearEdit}
                                   />
-                                </>
+                                </Box>
                                   :
                                   <Box className={classes.status} component='span' color={textColor}
                                     onClick={() => handleEdit(orderNumber || '', labTestStatus || '', (labOrders)?.map((labOrder: LabTestPayload['labTest']) => labOrder?.id || ''))}
