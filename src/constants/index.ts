@@ -803,6 +803,7 @@ export const RELATIONSHIP_WITH_PATIENT = "Relationship With Patient";
 export const PRIMARY_PROVIDER_DESCRIPTION = "Are you sure to change your primary provider ";
 export const NPI = "NPI";
 export const NPI_MESSAGE = "NPI should match LUHN Pattern";
+export const BY_ORAL_ROUTE = "by oral route";
 export const GROUP_NPI = "Group NPI ID";
 export const HASH = "#";
 export const N_A = "N/A";

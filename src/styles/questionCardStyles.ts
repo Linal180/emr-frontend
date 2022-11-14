@@ -9,7 +9,7 @@ export const questionCardStyles = makeStyles((theme) => ({
       margin: theme.spacing(1),
     },
     '& .MuiChip-root': {
-      height: '30px !important',
+      height: 'auto !important',
       borderRadius: '4px !important',
       '& .MuiAutocomplete-inputRoot, .MuiOutlinedInput-root': {
         height: '24px !important',
