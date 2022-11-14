@@ -1055,9 +1055,9 @@ export enum CopayType {
   NonFormularyDrug = 'NON_FORMULARY_DRUG',
   NurseVisit = 'NURSE_VISIT',
   ObGyn = 'OB_GYN',
-  OfficeVisirNew = 'OFFICE_VISIR_NEW',
   OfficeVisit = 'OFFICE_VISIT',
   OfficeVisitFu = 'OFFICE_VISIT_FU',
+  OfficeVisitNew = 'OFFICE_VISIT_NEW',
   OutOfNetwork = 'OUT_OF_NETWORK',
   PhysiciansAssistant = 'PHYSICIANS_ASSISTANT',
   Podiatry = 'PODIATRY',
@@ -1443,6 +1443,7 @@ export type CreateImagingOrderInput = {
 };
 
 export type CreateImagingTestInput = {
+  active?: Maybe<Scalars['Boolean']>;
   name: Scalars['String'];
 };
 
@@ -2360,6 +2361,7 @@ export type FindAllImagingOrderPayload = {
 };
 
 export type FindAllImagingTestInput = {
+  active?: Maybe<Scalars['Boolean']>;
   paginationOptions: PaginationInput;
   searchQuery?: Maybe<Scalars['String']>;
 };
@@ -2947,6 +2949,7 @@ export type ImagingOrderTest = {
 
 export type ImagingTest = {
   __typename?: 'ImagingTest';
+  active?: Maybe<Scalars['Boolean']>;
   createdAt?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   name?: Maybe<Scalars['String']>;
@@ -8114,6 +8117,7 @@ export type UpdateImagingOrderInput = {
 };
 
 export type UpdateImagingTestInput = {
+  active?: Maybe<Scalars['Boolean']>;
   id: Scalars['String'];
   name?: Maybe<Scalars['String']>;
 };
