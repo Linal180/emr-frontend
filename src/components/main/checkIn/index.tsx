@@ -302,16 +302,17 @@ const CheckInComponent = (): JSX.Element => {
 
   // 1- PATIENT-INFO
   const ChecKInStep = ({ isCheckIn = false }) => {
-    
+
     if (isCheckIn) {
       return (<>
-        <Box p={2} display="flex" justifyContent="space-between" alignItems="center" borderBottom={`1px solid ${colors.grey[300]}`}>
+        <Box px={2} pt={1} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" borderBottom={`1px solid ${colors.grey[300]}`}>
           <Typography variant="h4">{PATIENT_INFO}</Typography>
 
-          <Button variant="contained" color="primary" onClick={handlePatientUpdate}>
-            {DONE_CHECK_IN}
-            <ChevronRight />
-          </Button>
+          <Box my={2}>
+            <Button variant="contained" color="primary" onClick={handlePatientUpdate} endIcon={<ChevronRight />}>
+              {DONE_CHECK_IN}
+            </Button>
+          </Box>
         </Box>
 
         <Box p={3}>

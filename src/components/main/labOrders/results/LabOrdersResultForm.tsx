@@ -26,7 +26,7 @@ import {
   SelectorOption
 } from "../../../../interfacesTypes";
 import { GREY, GREY_THREE } from '../../../../theme';
-import { getFormatDateString, renderItem, setRecord } from '../../../../utils';
+import { formatValue, getFormatDateString, renderItem, setRecord } from '../../../../utils';
 import { PatientPrimaryProvider } from '../../../common/renderItem/PatientPrimaryProvider';
 import ConfirmModal from "../../../common/ConfirmModal";
 
@@ -210,7 +210,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
               normalRangeUnits: normalRangeUnit ?? '',
               abnormalFlag: {
                 id: abnormalFlag ?? '',
-                name: abnormalFlag ?? ''
+                name: formatValue(abnormalFlag ?? '') 
               }
             }
           })

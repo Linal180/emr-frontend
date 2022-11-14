@@ -1,22 +1,15 @@
 import { useParams } from "react-router-dom";
-import { ExpandMore } from "@material-ui/icons";
+import { Box, Button, colors, Typography } from "@material-ui/core";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { FC, Reducer, useCallback, useEffect, useReducer, useState } from "react";
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Card, colors, Typography } from "@material-ui/core";
+import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 //components
-import QuestionCard from "./QuestionCard";
 import Alert from "../../../../common/Alert";
-import TableLoader from "../../../../common/TableLoader";
-import MacroView from "../../../../common/Macro/MacroView";
-import ChartingTemplateSelector from "../../../../common/Selector/ChartingTemplateSelector";
+import ChartingTemplate from '../../../../common/chartingTemplate'
 //constants
 import { renderMultiTemplates, setRecord } from "../../../../../utils";
-import { useChartingStyles } from '../../../../../styles/chartingStyles';
-import { multiOptionType, ParamsType, PatientHistoryProps, RosType } from "../../../../../interfacesTypes";
+import { multiOptionType, ParamsType, PatientHistoryProps } from "../../../../../interfacesTypes";
+import { HPI_TEMPLATES, NEXT, PATIENT_HISTORY_ILLNESS_TEXT, QuestionType, TemplateType } from "../../../../../constants";
 import { Action, ActionType, initialState, patientHistoryReducer, State } from "../../../../../reducers/patientHistoryReducer";
-import {
-  ALL_NORMAL, CLEAR_TEXT, HPI_TEMPLATES, NEXT, NORMAL, PATIENT_HISTORY_ILLNESS_TEXT, QuestionType, TemplateType
-} from "../../../../../constants";
 import {
   QuestionTemplate, useCreatePatientIllnessHistoryMutation, useGetPatientChartingTemplateLazyQuery,
   usePatientIllnessHistoryLazyQuery
@@ -24,21 +17,11 @@ import {
 
 const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, handleStep }): JSX.Element => {
   const methods = useForm();
-  const chartingClasses = useChartingStyles();
   const { id: patientId, appointmentId } = useParams<ParamsType>()
 
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientHistoryReducer, initialState);
   const { itemId, templates, notes } = state;
-  const { handleSubmit, setValue, watch, reset } = methods;
-  const values = watch()
-
-  const [expanded, setExpanded] = useState<string | boolean>('panel1');
-  const [qSections, setQSections] = useState<{ [key: number]: string[] }>({});
-  const [rosTemplate, setRosTemplate] = useState<{ [key: number]: string[] }>({});
-
-  const handleChange = (panel: string) => {
-    setExpanded(expanded === panel ? '' : panel)
-  };
+  const { setValue } = methods;
 
   const [createIllnessHistory] = useCreatePatientIllnessHistoryMutation({
     onCompleted: (data) => {
@@ -143,15 +126,16 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
 
   const onSubmit: SubmitHandler<any> = async (values) => {
     try {
-      const { hpiTemplates } = values
-      const templateIds = hpiTemplates.map((hpiTemplate: multiOptionType) => hpiTemplate.value)
-      const answerResponses = Object.keys(values).reduce((acc, key) => {
+      const { hpiTemplates = [] } = values || {}
+      const templateIds = hpiTemplates?.map((hpiTemplate: multiOptionType) => hpiTemplate?.value);
+
+      const answerResponses = Object.keys(values)?.reduce((acc, key) => {
         const value = values[key]
         if (key === 'hpiTemplates') {
           return acc
         }
 
-        if (value.select === true) {
+        if (value?.select === true) {
           acc.push({
             answerId: key,
             value: value?.value?.id ? value?.value?.id : value?.value
@@ -160,12 +144,9 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
         }
 
         return acc
-      }, [] as {
-        answerId: string
-        value?: string
-      }[])
+      }, [] as { answerId: string, value?: string }[])
 
-      createIllnessHistory({
+      await createIllnessHistory({
         variables: {
           createPatientIllnessHistoryInput: {
             answerResponses: answerResponses,
@@ -178,70 +159,6 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
       })
     } catch (error) { }
 
-  }
-
-  const handleClear = (answerIds: string[], rosType: RosType, index: number) => {
-    if (rosType === 'section') {
-      if (answerIds?.length > 0) {
-        setQSections((prev) => ({ ...prev, [index]: [] }))
-        if (answerIds) {
-          answerIds.forEach((answerId) => {
-            const value = values[answerId]
-            setValue(answerId, {
-              ...(value || {}),
-              select: false
-            })
-          })
-          reset()
-          handleSubmit(onSubmit)()
-        }
-      }
-    }
-    else if (rosType === 'template') {
-      if (answerIds?.length > 0) {
-        setRosTemplate((prev) => ({ ...prev, [index]: [] }))
-        answerIds.forEach((answerId) => {
-          const value = values[answerId]
-          setValue(answerId, {
-            ...(value || {}),
-            select: false
-          })
-        })
-        reset()
-        handleSubmit(onSubmit)()
-      }
-    }
-  }
-
-  const handleNormal = (answerIds: string[], rosType: RosType, index: number) => {
-    if (rosType === 'section') {
-      if (!(qSections?.[index]?.length) && answerIds?.length > 0) {
-        setQSections((prev) => ({ ...prev, [index]: answerIds }))
-        if (answerIds) {
-          answerIds.forEach((answerId) => {
-            const value = values[answerId]
-            setValue(answerId, {
-              ...(value || {}),
-              select: true
-            })
-          })
-          handleSubmit(onSubmit)()
-        }
-      }
-    }
-    else if (rosType === 'template') {
-      if (!(rosTemplate?.[index]?.length) && answerIds?.length > 0) {
-        setRosTemplate((prev) => ({ ...prev, [index]: answerIds }))
-        answerIds.forEach((answerId) => {
-          const value = values[answerId]
-          setValue(answerId, {
-            ...(value || {}),
-            select: true
-          })
-        })
-        handleSubmit(onSubmit)()
-      }
-    }
   }
 
   const loading = findPatientChartingTemplateLoading || getLoading;
@@ -259,153 +176,25 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
             onClick={() => handleStep()}
           >
             {NEXT}
-          </Button></Box>}
+          </Button>
+        </Box>}
       </Box>
 
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          {!loading ? <>
-            <Box px={2} mt={3}>
-              <ChartingTemplateSelector
-                label={HPI_TEMPLATES}
-                name="hpiTemplates"
-                addEmpty
-                isEdit
-                disabled={shouldDisableEdit}
-                defaultValues={renderMultiTemplates(templates as QuestionTemplate[])}
-                templateType={TemplateType.HPI}
-                onSelect={(multiOption: multiOptionType[]) => fetchPatientChartingTemplates(multiOption.map(value => value.value))}
-              />
-            </Box>
-
-            <MacroView
-              itemId={itemId}
-              setItemId={(itemId: string) => dispatch({ type: ActionType.SET_ITEM_ID, itemId })}
-              notes={notes}
-              type={TemplateType.HPI}
-            />
-
-            {templates?.map((template, i) => {
-              const { sections, name } = template || {}
-
-              const clearAnswerIds = sections?.reduce<string[]>((acc, section) => {
-                const { questions } = section || {}
-                const answers = questions?.reduce<string[]>((acc, question) => {
-                  const answerValues = question?.answers?.map((answer) => answer.id || '') || []
-                  acc.push(...answerValues)
-                  return acc
-                }, []) || []
-                acc.push(...answers)
-                return acc
-              }, [])
-
-              const normalAnswerIds = sections?.reduce<string[]>((acc, section) => {
-                const { questions } = section || {}
-                const answers = questions?.reduce<string[]>((acc, question) => {
-                  const answerValues = question?.answers?.map((answer) => answer.answerType === 'normal' ? answer.id : '')?.filter(value => !!value) || []
-                  acc.push(...answerValues)
-                  return acc
-                }, []) || []
-                acc.push(...answers)
-                return acc
-              }, [])
-
-              return (
-                <Box px={1}>
-                  <Accordion expanded={expanded === `panel${i + 1}`} className={chartingClasses.accordion}>
-                    <AccordionSummary
-                      expandIcon={<ExpandMore />}
-                      aria-controls="panel1a-content"
-                      id="panel1a-header"
-                      IconButtonProps={{
-                        onClick: () => handleChange(`panel${i + 1}`)
-                      }}
-                    >
-                      <Box width="100%" display="flex" justifyContent="space-between" alignItems="center">
-                        <Typography variant="h4" color="textPrimary">{name}</Typography>
-                        <Box display="flex" alignItems="center">
-                          <Box mx={1}>
-                            <Button color="primary" onClick={() => handleNormal(normalAnswerIds || [], 'template', i)}>
-                              {ALL_NORMAL}
-                            </Button>
-                          </Box>
-
-                          <Box mx={1}>
-                            <Button className="danger" onClick={() => handleClear(clearAnswerIds || [], 'template', i)}>
-                              {CLEAR_TEXT}
-                            </Button>
-                          </Box>
-                        </Box>
-                      </Box>
-                    </AccordionSummary>
-
-                    <AccordionDetails>
-                      {/* <Box maxHeight="calc(100vh - 180px)" className="overflowY-auto"></Box> */}
-                      <Box maxHeight="calc(100vh - 180px)" className="overflowY-auto">
-                        {sections?.map((section, index) => {
-                          const { id, name, questions } = section || {}
-
-                          const answerIds = questions?.reduce<string[]>((acc, question) => {
-                            const answerValues = question?.answers?.map((answer) => answer.id || '') || []
-                            acc.push(...answerValues)
-                            return acc
-                          }, [])
-
-                          const normalAnswerIds = questions?.reduce<string[]>((acc, question) => {
-                            const answerValues = question?.answers?.map((answer) => answer.answerType === 'normal' ? answer.id : '')?.filter(value => !!value) || []
-                            acc.push(...answerValues)
-                            return acc
-                          }, [])
-
-                          return (
-                            <Card key={`${index}-${id}`}>
-                              <Box
-                                width="100%" pr={3} mb={3}
-                                display="flex"
-                                justifyContent="space-between"
-                                alignItems="center"
-                                borderBottom={`1px solid ${colors.grey[300]}`}
-                              >
-                                <Typography variant="h4" color="textPrimary">{name}</Typography>
-                                <Box display="flex" alignItems="center">
-                                  <Box mx={1}>
-                                    <Button color="primary" onClick={() => handleNormal(normalAnswerIds || [], 'section', index)}>
-                                      {NORMAL}
-                                    </Button>
-                                  </Box>
-
-                                  <Box mx={1}>
-                                    <Button className="danger" onClick={() => handleClear(answerIds || [], 'section', index)}>
-                                      {CLEAR_TEXT}
-                                    </Button>
-                                  </Box>
-                                </Box>
-                              </Box>
-                              {/* // <CardComponent cardTitle={name || ''} key={id}> */}
-                              {questions?.map((question, index) => {
-                                return (
-                                  <>
-                                    <QuestionCard
-                                      key={`${index}-${id}`}
-                                      question={question}
-                                      handleSubmit={handleSubmit(onSubmit)}
-                                      shouldDisableEdit={shouldDisableEdit}
-                                    />
-                                    <Box mt={2} />
-                                  </>
-                                )
-                              })}
-                              {/* // </CardComponent> */}
-                            </Card>
-                          )
-                        })}
-                      </Box>
-                    </AccordionDetails>
-                  </Accordion>
-                </Box>
-              )
-            })}
-          </> : <TableLoader numberOfColumns={1} numberOfRows={10} />}
+        <form onSubmit={onSubmit}>
+          <ChartingTemplate
+            notes={notes}
+            itemId={itemId}
+            loading={loading}
+            onSubmit={onSubmit}
+            label={HPI_TEMPLATES}
+            templates={templates}
+            key={`ChartingTemplate-HPI`}
+            templateType={TemplateType.HPI}
+            shouldDisableEdit={shouldDisableEdit}
+            fetchChartingTemplates={fetchPatientChartingTemplates}
+            setItemId={(item: string) => dispatch({ itemId: item, type: ActionType.SET_ITEM_ID })}
+          />
         </form>
       </FormProvider>
     </>

@@ -101,17 +101,19 @@ const CheckIn: FC<CheckInComponentProps> = ({ handleStep, activeStep, handleProc
   return (
     <>
       <Card>
-        <Box p={2} display="flex" flexWrap="wrap" justifyContent="space-between" alignItems="center"
+        <Box px={2} pt={1} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap"
           borderBottom={`1px solid ${colors.grey[300]}`}
         >
           <Typography variant="h4">{APPOINTMENT_INFO}</Typography>
 
-          <Button
-            variant="contained" color="primary"
-            endIcon={<Box width={20}><ChevronRight /></Box>}
-            onClick={() => handleNextStep()}>
-            {getProceedBtnTitle()}
-          </Button>
+          <Box my={2}>
+            <Button
+              variant="contained" color="primary"
+              endIcon={<ChevronRight />}
+              onClick={() => handleNextStep()}>
+              {getProceedBtnTitle()}
+            </Button>
+          </Box>
         </Box>
         {loading ? <TableLoader numberOfColumns={2} numberOfRows={6} /> :
           <Box p={2}>
