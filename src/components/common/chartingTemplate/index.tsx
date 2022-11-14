@@ -162,7 +162,7 @@ const ChartingTemplate: FC<ChartingTemplateProps> = (props): JSX.Element => {
                     onClick: () => handleChange(`panel${i + 1}`)
                   }}
                 >
-                  <Box width="100%" display="flex" justifyContent="space-between" alignItems="center">
+                  <Box width="100%" display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
                     <Typography variant="h4" color="textPrimary">{name}</Typography>
                     <Box display="flex" alignItems="center">
                       <Box mx={1}>
@@ -201,10 +201,8 @@ const ChartingTemplate: FC<ChartingTemplateProps> = (props): JSX.Element => {
                         <Card key={`${id}-${index}`}>
                           <Box
                             width="100%" pr={3.5} mb={3}
-                            display="flex"
-                            justifyContent="space-between"
-                            alignItems="center"
-                            borderBottom={`1px solid ${colors.grey[300]}`}
+                            display="flex" justifyContent="space-between" alignItems="center"
+                            flexWrap="wrap" borderBottom={`1px solid ${colors.grey[300]}`}
                           >
                             <Typography variant="h4" color="textPrimary">{name}</Typography>
                             <Box display="flex" alignItems="center">
