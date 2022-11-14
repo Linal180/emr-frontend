@@ -199,6 +199,10 @@ export const useExternalPatientStyles = makeStyles({
       width:15,
       height:15
     },
+
+    "& .MuiButtonBase-root": {
+      paddingTop: 2,
+    },
   },
 
   privacyLabelNewDescription: {
