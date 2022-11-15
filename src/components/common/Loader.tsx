@@ -54,7 +54,7 @@ const Loader: FC<PropsType> = ({ isSmallLoader, filerZIndex, loaderText }) => {
       flexDirection="column"
       left={0}
       top={0}
-      zIndex={filerZIndex ? 0 : 99}
+      zIndex={filerZIndex ? 0 : 1400}
       className={classes.loaderContainer}
     >
       <CircularProgress className={classes.progress} />
