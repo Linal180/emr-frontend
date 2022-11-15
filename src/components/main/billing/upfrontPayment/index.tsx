@@ -32,6 +32,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
   const { appointmentId, id } = useParams<ParamsType>()
   const [isInsurance, setIsInsurance] = useState(true)
   const [copays, setCopays] = useState<Copay[]>([])
+
   const methods = useForm<CreateUpFrontPayment>({
     defaultValues: {
       Additional: [{ ...UPFRONT_INITIAL_VALUES, paymentType: UPFRONT_PAYMENT_TYPES.Additional }],
@@ -94,7 +95,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
         setValue('paid', paid || '')
         setValue('previous', String(accPrevious || 0))
 
-        accPrevious &&  setValue(`${UPFRONT_PAYMENT_TYPES.Previous}.0.amount`, String(accPrevious) as never)
+        accPrevious && setValue(`${UPFRONT_PAYMENT_TYPES.Previous}.0.amount`, String(accPrevious) as never)
 
         const transformedUpFrontPayments = UpFrontPaymentTypes?.map((UpFrontPaymentType) => {
           const { amount, notes, paymentType, type, copayType } = UpFrontPaymentType
@@ -110,7 +111,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
         const additional = transformedUpFrontPayments?.filter((UpFrontPaymentType) => UpFrontPaymentType.paymentType === UPFRONT_PAYMENT_TYPES.Additional) || []
         const copay = transformedUpFrontPayments?.filter((UpFrontPaymentType) => UpFrontPaymentType.paymentType === UPFRONT_PAYMENT_TYPES.Copay) || []
         const previous = transformedUpFrontPayments?.filter((UpFrontPaymentType) => UpFrontPaymentType.paymentType === UPFRONT_PAYMENT_TYPES.Previous) || []
-
+        
         additional?.forEach((value, index) => {
           setValue(`${value.paymentType as UPFRONT_PAYMENT_TYPES}.${index}.amount`, value?.amount as never)
           setValue(`${value.paymentType as UPFRONT_PAYMENT_TYPES}.${index}.notes`, value?.notes as never)
@@ -134,15 +135,15 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
           setValue(`${value.paymentType as UPFRONT_PAYMENT_TYPES}.${index}.paymentType`, value?.paymentType as never)
           setValue(`${value.paymentType as UPFRONT_PAYMENT_TYPES}.${index}.copayType`, value?.copayType as never)
         })
-       
-        
+
+
       }
     },
   });
 
-  const fetchUpFrontPayments = useCallback(() => {
+  const fetchUpFrontPayments = useCallback(async () => {
     try {
-      appointmentId && getUpFrontPaymentDetails({
+      appointmentId && await getUpFrontPaymentDetails({
         variables: {
           appointmentId: appointmentId
         }
@@ -239,11 +240,18 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
     } catch (error) { }
   }, [fetchPatientInsurances, id])
 
-  useEffect(() => {
-    getPatientInsurances()
-    fetchUpFrontPayments()
-    findInsuranceStatus()
+  const fetchData = useCallback(async () => {
+    try {
+      await getPatientInsurances()
+      await fetchUpFrontPayments()
+      await findInsuranceStatus()
+    }
+    catch (e) { }
   }, [fetchUpFrontPayments, findInsuranceStatus, getPatientInsurances])
+
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
 
   useImperativeHandle(ref, () => ({
     async submit() {
