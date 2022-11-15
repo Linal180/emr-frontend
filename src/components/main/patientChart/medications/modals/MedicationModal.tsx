@@ -1,22 +1,24 @@
 // packages block
-import { yupResolver } from '@hookform/resolvers/yup';
 import {
   Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography
 } from '@material-ui/core';
-import { FC, useCallback, useEffect } from 'react';
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useParams } from 'react-router-dom';
+import { FC, useCallback, useEffect } from 'react';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 // component block
-import InputController from '../../../../../controller';
 import Alert from '../../../../common/Alert';
-import CheckboxController from '../../../../common/CheckboxController';
+import Selector from '../../../../common/Selector';
 import DatePicker from '../../../../common/DatePicker';
 import TextLoader from '../../../../common/TextLoader';
-import Selector from '../../../../common/Selector';
+import InputController from '../../../../../controller';
+import CheckboxController from '../../../../common/CheckboxController';
 // constants block
 import { PageBackIcon } from '../../../../../assets/svgs';
 import {
-  ACTIVE, ADD, ADD_MEDICATION, BY_ORAL_ROUTE, CANCEL, NOTES, ORAL_ROUTE_OPTIONS, PATIENT_MEDICATION_ADD, PATIENT_MEDICATION_UPDATED, SIG, START_DATE, STATUS, STOP_DATE, STOP_REASON, STOP_REASON_OPTIONS, STRUCTURED, TABLET_UNIT_OPTIONS, TAKE, TIME_DURATION_OPTIONS, UPDATE, UPDATE_MEDICATION
+  ACTIVE, ADD, ADD_MEDICATION, BY_ORAL_ROUTE, CANCEL, COMMENTS, ORAL_ROUTE_OPTIONS, PATIENT_MEDICATION_ADD,
+  PATIENT_MEDICATION_UPDATED, SIG, START_DATE, STATUS, STOP_DATE, STOP_REASON, STOP_REASON_OPTIONS, STRUCTURED,
+  TABLET_UNIT_OPTIONS, TAKE, TIME_DURATION_OPTIONS, UPDATE, UPDATE_MEDICATION
 } from '../../../../../constants';
 import {
   Medications, ProblemType, useAddPatientMedicationMutation,
@@ -25,10 +27,10 @@ import {
 import {
   AddModalProps, ParamsType, PatientMedicationInputs
 } from '../../../../../interfacesTypes';
-import { ActionType } from '../../../../../reducers/chartReducer';
-import { useChartingStyles } from '../../../../../styles/chartingStyles';
-import { GRAY_SIX, GREEN, GREY_TWO, WHITE } from '../../../../../theme';
 import { renderLoading, setRecord } from '../../../../../utils';
+import { ActionType } from '../../../../../reducers/chartReducer';
+import { GRAY_SIX, GREEN, GREY_TWO, WHITE } from '../../../../../theme';
+import { useChartingStyles } from '../../../../../styles/chartingStyles';
 import { patientMedicationSchema } from '../../../../../validationSchemas';
 
 const MedicationModal: FC<AddModalProps> = ({
@@ -405,7 +407,7 @@ const MedicationModal: FC<AddModalProps> = ({
 
             <Grid container alignContent='center' alignItems='center'>
               <Grid item md={3} sm={12} xs={12}>
-                <Typography variant='body1'>{NOTES}</Typography>
+                <Typography variant='body1'>{COMMENTS}</Typography>
               </Grid>
 
               <Grid item md={5} sm={12} xs={12}>

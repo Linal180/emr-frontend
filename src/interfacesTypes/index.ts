@@ -467,6 +467,7 @@ export type ImagingTestSelectorProps = Pick<SelectorProps, 'name' | 'label' | 'd
 
 export type RoomSelectorProps = Pick<SelectorProps, 'name' | 'label' | 'disabled' | 'isRequired' | 'addEmpty' | 'onSelect' | 'loading' | 'margin'> & {
   placeHolder?: string;
+  facilityId: string
 }
 
 
@@ -2622,6 +2623,7 @@ export type AddDiagnoseType = 'medication' | 'test' | 'imaging';
 
 export type AppointmentRoomProps = {
   appointmentId: string
+  facilityId: string
 }
 
 export type RosType = 'section' | 'template'
