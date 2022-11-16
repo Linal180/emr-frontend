@@ -15,6 +15,7 @@ query FindAllPractices($practiceInput: PracticeInput!){
       id
       name
       phone
+      active
       createdAt
     }
   }  	
@@ -109,6 +110,21 @@ mutation RemovePractice($removePractice: RemovePractice!){
       error
       status
       message
+    }
+  }
+}
+
+
+query GetAllPracticeCount{
+  getAllPractices{
+    response {
+      status
+    }
+
+    practices {
+      total
+      active
+      inactive
     }
   }
 }

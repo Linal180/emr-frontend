@@ -74,7 +74,8 @@ const CheckInComponent = (): JSX.Element => {
   const [, mediaDispatcher] = useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
   const [, patientDispatcher] = useReducer<Reducer<PatientState, PatientAction>>(patientReducer, patientInitialState)
   const { appointment, activeStep } = state
-  const { appointmentType, scheduleStartDateTime, checkInActiveStep, status } = appointment ?? {}
+  const { appointmentType, scheduleStartDateTime, checkInActiveStep, status, facility } = appointment ?? {}
+  const { id: facilityId } = facility || {}
 
   const { setValue } = methods
 
@@ -456,7 +457,7 @@ const CheckInComponent = (): JSX.Element => {
 
         <Box className={checkInClasses.checkInProfileBox}>
           <FormProvider {...methods}>
-            <AppointmentRoom appointmentId={appointmentId || ''} />
+            <AppointmentRoom appointmentId={appointmentId || ''} facilityId={facilityId || ''} />
           </FormProvider>
         </Box>
 

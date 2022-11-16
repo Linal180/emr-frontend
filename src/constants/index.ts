@@ -4712,7 +4712,9 @@ export const LIFE_STYLE_MAPPED = [
 export enum CONFIRMATION_MODAL_TYPE {
   DELETE = 'delete',
   CANCEL = 'cancel',
-  DISCHARGE = 'discharge'
+  ACTIVE = 'active',
+  IN_ACTIVE = 'in_active',
+  DISCHARGE = 'discharge',
 }
 
 export const VACCINE_UNITS_MAPPED = [

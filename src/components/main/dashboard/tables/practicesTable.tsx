@@ -10,12 +10,8 @@ import { useTableStyles } from "../../../../styles/tableStyles";
 import { PracticesTableProps } from "../../../../interfacesTypes";
 import { formatPhone, getFormattedDate, isSuperAdmin, renderTh } from "../../../../utils";
 import { PracticesPayload, useFindAllPracticesLazyQuery } from "../../../../generated/graphql";
-import {
-  PHONE, PRACTICE_NAME, REGISTERED_ON, INITIAL_PAGE_LIMIT,
-} from "../../../../constants";
-import {
-  practiceReducer, Action, initialState, State, ActionType
-} from "../../../../reducers/practiceReducer";
+import { PHONE, PRACTICE_NAME, REGISTERED_ON, INITIAL_PAGE_LIMIT, } from "../../../../constants";
+import { practiceReducer, Action, initialState, State, ActionType } from "../../../../reducers/practiceReducer";
 
 const PracticesTableComponent: FC<PracticesTableProps> = ({ dispatch }): JSX.Element => {
   const classes = useTableStyles();
@@ -36,7 +32,7 @@ const PracticesTableComponent: FC<PracticesTableProps> = ({ dispatch }): JSX.Ele
     fetchPolicy: "network-only",
 
     onError() {
-      dispatch({ type: ActionType.SET_PRACTICES, practices: [] })
+      dispatch && dispatch({ type: ActionType.SET_PRACTICES, practices: [] })
       dispatcher({ type: ActionType.SET_PRACTICES, practices: [] })
     },
 
@@ -48,12 +44,12 @@ const PracticesTableComponent: FC<PracticesTableProps> = ({ dispatch }): JSX.Ele
           const { practices } = findAllPractices
 
           if (practices) {
-            dispatch({ type: ActionType.SET_PRACTICES, practices: practices as PracticesPayload['practices'] })
+            dispatch && dispatch({ type: ActionType.SET_PRACTICES, practices: practices as PracticesPayload['practices'] })
             dispatcher({ type: ActionType.SET_PRACTICES, practices: practices as PracticesPayload['practices'] })
           }
         }
       } else {
-        dispatch({ type: ActionType.SET_PRACTICES, practices: [] })
+        dispatch && dispatch({ type: ActionType.SET_PRACTICES, practices: [] })
         dispatcher({ type: ActionType.SET_PRACTICES, practices: [] })
       }
     }
