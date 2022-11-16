@@ -62,7 +62,6 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
         return
       }
       shouldCheckout && history.push(`${VIEW_APPOINTMENTS_ROUTE}`)
-      // !shouldSubmitPayment && fetchBillingDetails()
     }
   });
 
@@ -286,7 +285,6 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
 
     }
   })
-
 
   const [fetchBillingDetailsByAppointmentId, { loading: fetchBillingDetailsLoading }] = useFetchBillingDetailsByAppointmentIdLazyQuery({
     onCompleted: async (data) => {
@@ -522,7 +520,6 @@ const BillingComponent: FC<BillingComponentProps> = ({ shouldDisableEdit, submit
       })
     } catch (error) { }
   }, [appointmentId, findAppointmentInsuranceStatus])
-
 
   const onSubmit: SubmitHandler<CreateBillingProps> = async (values) => {
     if (shouldDisableEdit) {

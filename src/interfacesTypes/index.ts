@@ -467,6 +467,7 @@ export type ImagingTestSelectorProps = Pick<SelectorProps, 'name' | 'label' | 'd
 
 export type RoomSelectorProps = Pick<SelectorProps, 'name' | 'label' | 'disabled' | 'isRequired' | 'addEmpty' | 'onSelect' | 'loading' | 'margin'> & {
   placeHolder?: string;
+  facilityId: string
 }
 
 
@@ -2032,11 +2033,12 @@ export interface PatientNoteModalProps {
   dispatcher: Dispatch<PatientAction>;
 }
 export interface PracticesTableProps {
-  dispatch: Dispatch<PracticeAction>
+  dispatch?: Dispatch<PracticeAction>
 }
 
 export interface PieChartProps {
-  practices?: number
+  inactivePractices?: number
+  activePractices?: number
 }
 
 export interface CalenderProps {
@@ -2622,6 +2624,12 @@ export type AddDiagnoseType = 'medication' | 'test' | 'imaging';
 
 export type AppointmentRoomProps = {
   appointmentId: string
+  facilityId: string
 }
 
 export type RosType = 'section' | 'template'
+
+export type SwitchButtonProps = {
+  value: boolean;
+  onChange?: (open: boolean) => void
+}

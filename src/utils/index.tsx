@@ -488,6 +488,7 @@ export const isCurrentDay = (date: string) => {
 };
 
 export const deleteRecordTitle = (recordType: string) => `Delete ${recordType} Record`;
+export const recordTitle = (recordModule: string, type: string) => `${type} ${recordModule} Record`;
 export const cancelRecordTitle = (recordType: string) => `Cancel ${recordType} Record`;
 export const UpdateRecordTitle = (recordType: string) => `Update ${recordType}`;
 export const aboutToDelete = (recordType: string) =>

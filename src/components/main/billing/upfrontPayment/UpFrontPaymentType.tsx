@@ -1,14 +1,16 @@
-import { Box, TableCell, TableRow, Typography } from "@material-ui/core";
 import { FC } from "react";
 import { useFormContext } from "react-hook-form";
+import { Box, TableCell, TableRow, Typography } from "@material-ui/core";
+//components
+import Selector from "../../../common/Selector";
+import InputController from "../../../../controller";
+//constants, styles, interfaces, theme
+import { GREY } from "../../../../theme";
+import { useTableStyles } from "../../../../styles/tableStyles";
+import { CreateUpFrontPayment, SelectorOption, UpFrontPaymentTypeCompProps } from "../../../../interfacesTypes";
 import {
   ADDITIONAL, COPAY_TEXT, MAPPED_COPAY_TYPE, PREVIOUS, UPFRONT_PAYMENT_TYPES, UPFRONT_TYPE_OPTIONS
 } from "../../../../constants";
-import InputController from "../../../../controller";
-import { CreateUpFrontPayment, SelectorOption, UpFrontPaymentTypeCompProps } from "../../../../interfacesTypes";
-import { useTableStyles } from "../../../../styles/tableStyles";
-import { GREY } from "../../../../theme";
-import Selector from "../../../common/Selector";
 
 const UpFrontPaymentType: FC<UpFrontPaymentTypeCompProps> = ({ moduleName, shouldDisableEdit, copays }) => {
   const classes = useTableStyles();
