@@ -16,10 +16,11 @@ function AnswerChips({ answers, colors, handleSubmit, shouldDisableEdit }: Answe
 
   const getTransformedName = (answer: QuestionAnswers) => {
     const { name, options, questionType, id } = answer
-  
+    const transformedName = name?.includes('fill') ? name : name?.replace(':', '')
+
     switch (questionType) {
       case QuestionType.NUMBER:
-        const [first, second] = name?.split("fill") || []
+        const [first, second] = transformedName?.split("fill") || []
         return <>
           <Box className='pointer-cursor' onClick={() => handleAnswers(id)}>{first}</Box>
           &nbsp;
@@ -36,7 +37,7 @@ function AnswerChips({ answers, colors, handleSubmit, shouldDisableEdit }: Answe
         </>
 
       case QuestionType.SELECT:
-        const [firstSelect, secondSelect] = name?.split("fill") || []
+        const [firstSelect, secondSelect] = transformedName?.split("fill") || []
         const transformedOptions = options?.map((option) => {
           return {
             id: option.id || '',
@@ -57,7 +58,7 @@ function AnswerChips({ answers, colors, handleSubmit, shouldDisableEdit }: Answe
         </Box>
 
       case QuestionType.INPUT:
-        const [firstInput, secondInput] = name?.split("fill") || []
+        const [firstInput, secondInput] = transformedName?.split("fill") || []
         return <>
           <Box className='pointer-cursor' onClick={() => handleAnswers(id)}>{firstInput}</Box>
           &nbsp;
@@ -73,7 +74,7 @@ function AnswerChips({ answers, colors, handleSubmit, shouldDisableEdit }: Answe
         </>
 
       default:
-        return <Box className='pointer-cursor' onClick={() => handleAnswers(id)}>{name}</Box>
+        return <Box className='pointer-cursor' onClick={() => handleAnswers(id)}>{transformedName}</Box>
     }
   }
 

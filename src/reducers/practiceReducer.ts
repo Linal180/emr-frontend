@@ -11,6 +11,9 @@ export interface State {
   deletePracticeId: string;
   practice: PracticePayload['practice'];
   practices: PracticesPayload['practices'];
+  totalPractices: number;
+  activePractices: number;
+  inactivePractices: number;
 }
 
 export const initialState: State = {
@@ -24,6 +27,9 @@ export const initialState: State = {
   openModal: false,
   openDelete: false,
   deletePracticeId: '',
+  totalPractices: 0,
+  activePractices: 0,
+  inactivePractices: 0,
 }
 
 export enum ActionType {
@@ -36,7 +42,10 @@ export enum ActionType {
   SET_OPEN_DELETE = 'setOpenDelete',
   SET_TOTAL_PAGES = 'setTotalPages',
   SET_SEARCH_QUERY = 'setSearchQuery',
+  SET_TOTAL_PRACTICES = 'setTotalPractices',
+  SET_ACTIVE_PRACTICES = 'setActivePractices',
   SET_DELETE_PRACTICE_ID = 'setDeletePracticeId',
+  SET_INACTIVE_PRACTICES = 'setInactivePractices',
 }
 
 export type Action =
@@ -47,6 +56,9 @@ export type Action =
   | { type: ActionType.SET_PRACTICE_ID; practiceId: string }
   | { type: ActionType.SET_OPEN_DELETE; openDelete: boolean }
   | { type: ActionType.SET_SEARCH_QUERY; searchQuery: string }
+  | { type: ActionType.SET_TOTAL_PRACTICES; totalPractices: number }
+  | { type: ActionType.SET_ACTIVE_PRACTICES; activePractices: number }
+  | { type: ActionType.SET_INACTIVE_PRACTICES; inactivePractices: number }
   | { type: ActionType.SET_DELETE_PRACTICE_ID; deletePracticeId: string }
   | { type: ActionType.SET_PRACTICE; practice: PracticePayload['practice'] }
   | { type: ActionType.SET_PRACTICES; practices: PracticesPayload['practices'] }
@@ -111,6 +123,24 @@ export const practiceReducer = (state: State, action: Action): State => {
       return {
         ...state,
         deletePracticeId: action.deletePracticeId
+      }
+
+    case ActionType.SET_TOTAL_PRACTICES:
+      return {
+        ...state,
+        totalPractices: action.totalPractices
+      }
+
+    case ActionType.SET_ACTIVE_PRACTICES:
+      return {
+        ...state,
+        activePractices: action.activePractices
+      }
+
+    case ActionType.SET_INACTIVE_PRACTICES:
+      return {
+        ...state,
+        inactivePractices: action.inactivePractices
       }
   }
 };

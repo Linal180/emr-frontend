@@ -1,32 +1,24 @@
 // packages block
-import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
-import { FC, useCallback, useContext, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
+import { Box, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
 // components block
 import AutocompleteTextField from "../AutocompleteTextField";
 // utils and interfaces/types block
-import { AuthContext } from "../../../context";
-import { isPracticeAdmin, isSuperAdmin, renderAllRooms, requiredLabel } from "../../../utils";
+import { renderAllRooms, requiredLabel } from "../../../utils";
 import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
 import { RoomSelectorProps, SelectorOption } from "../../../interfacesTypes";
 import { FindAllRoomPayload, useSearchAllRoomLazyQuery } from "../../../generated/graphql";
 
 const RoomSelector: FC<RoomSelectorProps> = ({
-  name, label, disabled, isRequired, addEmpty, onSelect, placeHolder, loading, margin
+  name, label, disabled, isRequired, addEmpty, onSelect, placeHolder, loading, margin, facilityId
 }): JSX.Element => {
 
   const { control } = useFormContext()
-  const { user } = useContext(AuthContext)
 
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [allRooms, setAllRooms] = useState<FindAllRoomPayload['rooms']>([])
-
-  const { roles, facilityId, facility } = user || {};
-  const { practiceId } = facility || {}
-
-  const isSuper = isSuperAdmin(roles)
-  const isPraAdmin = isPracticeAdmin(roles)
 
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderAllRooms(allRooms ?? [])] : [...renderAllRooms(allRooms ?? [])]
 
@@ -54,12 +46,11 @@ const RoomSelector: FC<RoomSelectorProps> = ({
   const fetchAllRooms = useCallback(async () => {
     try {
       const pageInputs = { paginationOptions: { page: 1, limit: DROPDOWN_PAGE_LIMIT } }
-      const inputs = isSuper ? {} : isPraAdmin ? { practiceId } : { facilityId }
-      await searchAllRooms({
-        variables: { findAllRoomInput: { ...pageInputs, searchString: searchQuery, ...inputs } }
+      facilityId && await searchAllRooms({
+        variables: { findAllRoomInput: { ...pageInputs, searchString: searchQuery, facilityId } }
       })
     } catch (error) { }
-  }, [facilityId, isPraAdmin, isSuper, practiceId, searchAllRooms, searchQuery])
+  }, [facilityId, searchAllRooms, searchQuery])
 
   useEffect(() => {
     if (!searchQuery.length || searchQuery.length > 2) {
