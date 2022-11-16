@@ -2033,11 +2033,12 @@ export interface PatientNoteModalProps {
   dispatcher: Dispatch<PatientAction>;
 }
 export interface PracticesTableProps {
-  dispatch: Dispatch<PracticeAction>
+  dispatch?: Dispatch<PracticeAction>
 }
 
 export interface PieChartProps {
-  practices?: number
+  inactivePractices?: number
+  activePractices?: number
 }
 
 export interface CalenderProps {
@@ -2627,3 +2628,8 @@ export type AppointmentRoomProps = {
 }
 
 export type RosType = 'section' | 'template'
+
+export type SwitchButtonProps = {
+  value: boolean;
+  onChange?: (open: boolean) => void
+}

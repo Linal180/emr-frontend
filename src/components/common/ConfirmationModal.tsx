@@ -9,9 +9,9 @@ import Signature from "./signature";
 // interfaces/types block/theme/svgs/constants
 import { DeleteWarningIcon } from "../../assets/svgs";
 import { ConfirmationTypes } from "../../interfacesTypes";
-import { aboutToCancel, aboutToDelete, aboutToDischarge, aboutToSign, cancelRecordTitle, deleteRecordTitle } from "../../utils";
+import { aboutToCancel, aboutToDelete, aboutToDischarge, aboutToSign, cancelRecordTitle, deleteRecordTitle, recordTitle } from "../../utils";
 import {
-  DELETE_RECORD, DELETE_RECORD_LEARN_MORE_TEXT, CANCEL, SIGN_RECORD_LEARN_MORE_TEXT, SIGN_PATIENT_DOCUMENT, CANCEL_RECORD_LEARN_MORE_TEXT, CONFIRMATION_MODAL_TYPE, DISCHARGE_MODAL_PATIENT_DESCRIPTION
+  DELETE_RECORD, DELETE_RECORD_LEARN_MORE_TEXT, CANCEL, SIGN_RECORD_LEARN_MORE_TEXT, SIGN_PATIENT_DOCUMENT, CANCEL_RECORD_LEARN_MORE_TEXT, CONFIRMATION_MODAL_TYPE, DISCHARGE_MODAL_PATIENT_DESCRIPTION, ACTIVE_TEXT, INACTIVE
 } from "../../constants";
 
 const ConfirmationModal: FC<ConfirmationTypes> = ({
@@ -58,6 +58,10 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({
       return cancelRecordTitle(title || '')
     else if (modalType === CONFIRMATION_MODAL_TYPE.DISCHARGE)
       return title
+    else if (modalType === CONFIRMATION_MODAL_TYPE.ACTIVE)
+      return recordTitle(title || '', ACTIVE_TEXT)
+    else if (modalType === CONFIRMATION_MODAL_TYPE.IN_ACTIVE)
+      return recordTitle(title || '', INACTIVE)
     else
       return deleteRecordTitle(title || '')
   }
@@ -70,6 +74,8 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({
     else if (shouldDisplayCancel)
       return CANCEL_RECORD_LEARN_MORE_TEXT
     else if (modalType === CONFIRMATION_MODAL_TYPE.DISCHARGE)
+      return DISCHARGE_MODAL_PATIENT_DESCRIPTION
+    else if (modalType === CONFIRMATION_MODAL_TYPE.ACTIVE)
       return DISCHARGE_MODAL_PATIENT_DESCRIPTION
     else
       return DELETE_RECORD_LEARN_MORE_TEXT
