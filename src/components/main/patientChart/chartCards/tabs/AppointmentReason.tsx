@@ -143,9 +143,10 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
       const { addPatientProblem: { response } } = data;
 
       if (response) {
-        const { status } = response
+        const { status, message } = response
 
         if (status && status === 200) {
+          message && Alert.success(message)
           fetchProblems && fetchProblems()
         }
       }
