@@ -4,7 +4,7 @@
 */
 
 // packages block
-import { FC, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import Highcharts from "highcharts";
 import { Box } from "@material-ui/core";
 import HighchartsReact from "highcharts-react-official";
@@ -12,7 +12,7 @@ import HighchartsReact from "highcharts-react-official";
 import { PRACTICES } from "../../../constants";
 import { PieChartProps } from "../../../interfacesTypes";
 
-const PieChart: FC<PieChartProps> = ({ practices }): JSX.Element => {
+const PieChart: FC<PieChartProps> = ({ activePractices, inactivePractices }): JSX.Element => {
   const [pieChart1, setPieChart1] = useState(
     {
       tooltip: { enabled: false },
@@ -86,26 +86,26 @@ const PieChart: FC<PieChartProps> = ({ practices }): JSX.Element => {
       }],
     });
 
-  useEffect(() => {
-    if (practices) {
-
-      setPieChart1({
-        ...pieChart1,
-        series: [{
-          ...pieChart1.series, data: [['active', practices],
-          ['inactive', 0],], showInLegend: false,
-          type: 'pie',
-          name: 'Practices',
-          innerSize: '85%', states: {
-            hover: {
-              enabled: false
-            }
+  const setPieChartValue = useCallback(() => {
+    setPieChart1((prev) => ({
+      ...prev,
+      series: [{
+        ...prev.series, data: [['active', activePractices ?? 0],
+        ['inactive', inactivePractices ?? ""],], showInLegend: false,
+        type: 'pie',
+        name: 'Practices',
+        innerSize: '85%', states: {
+          hover: {
+            enabled: false
           }
-        }],
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [practices])
+        }
+      }],
+    }))
+  }, [activePractices, inactivePractices])
+
+  useEffect(() => {
+    setPieChartValue()
+  }, [setPieChartValue])
 
   return (
     <Box className="chartContainer">

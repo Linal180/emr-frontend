@@ -1677,6 +1677,7 @@ export type CreatePracticeInput = {
 };
 
 export type CreatePracticeItemInput = {
+  active?: Maybe<Scalars['Boolean']>;
   champus?: Maybe<Scalars['String']>;
   ein?: Maybe<Scalars['String']>;
   fax?: Maybe<Scalars['String']>;
@@ -2776,6 +2777,7 @@ export type GetPermission = {
 };
 
 export type GetPractice = {
+  active?: Maybe<Scalars['Boolean']>;
   id?: Maybe<Scalars['String']>;
 };
 
@@ -5400,6 +5402,12 @@ export type Practice = {
   upin?: Maybe<Scalars['String']>;
 };
 
+export type PracticeCountPayload = {
+  __typename?: 'PracticeCountPayload';
+  practices?: Maybe<TotalPractices>;
+  response?: Maybe<ResponsePayload>;
+};
+
 export type PracticeFacilities = {
   __typename?: 'PracticeFacilities';
   facility?: Maybe<Scalars['Float']>;
@@ -5648,6 +5656,7 @@ export type Query = {
   generateClaimNo: ClaimNumberPayload;
   getActiveInactivePractices: ActiveInactivePracticesPayload;
   getAllInvoices: InvoicesPayload;
+  getAllPractices: PracticeCountPayload;
   getAllRoles: RolesPayload;
   getAppointment: AppointmentPayload;
   getAppointmentWithToken: AppointmentPayload;
@@ -6762,6 +6771,7 @@ export type RemovePermission = {
 };
 
 export type RemovePractice = {
+  active?: Maybe<Scalars['Boolean']>;
   id?: Maybe<Scalars['String']>;
 };
 
@@ -7604,6 +7614,13 @@ export type TestSpecimens = {
   updatedAt?: Maybe<Scalars['String']>;
 };
 
+export type TotalPractices = {
+  __typename?: 'TotalPractices';
+  active?: Maybe<Scalars['Int']>;
+  inactive?: Maybe<Scalars['Int']>;
+  total?: Maybe<Scalars['Int']>;
+};
+
 export type TransactionPayload = {
   __typename?: 'TransactionPayload';
   response?: Maybe<ResponsePayload>;
@@ -8395,6 +8412,7 @@ export type UpdatePracticeInput = {
 };
 
 export type UpdatePracticeItemInput = {
+  active?: Maybe<Scalars['Boolean']>;
   champus?: Maybe<Scalars['String']>;
   ein?: Maybe<Scalars['String']>;
   fax?: Maybe<Scalars['String']>;
@@ -10725,7 +10743,7 @@ export type FindAllPracticesQueryVariables = Exact<{
 }>;
 
 
-export type FindAllPracticesQuery = { __typename?: 'Query', findAllPractices: { __typename?: 'PracticesPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, practices?: Array<{ __typename?: 'Practice', id: string, name: string, phone?: string | null, createdAt?: string | null } | null> | null } };
+export type FindAllPracticesQuery = { __typename?: 'Query', findAllPractices: { __typename?: 'PracticesPayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null, pagination?: { __typename?: 'PaginationPayload', page?: number | null, totalPages?: number | null } | null, practices?: Array<{ __typename?: 'Practice', id: string, name: string, phone?: string | null, active?: boolean | null, createdAt?: string | null } | null> | null } };
 
 export type GetPracticeQueryVariables = Exact<{
   getPractice: GetPractice;
@@ -10754,6 +10772,11 @@ export type RemovePracticeMutationVariables = Exact<{
 
 
 export type RemovePracticeMutation = { __typename?: 'Mutation', removePractice: { __typename?: 'PracticePayload', response?: { __typename?: 'ResponsePayload', error?: string | null, status?: number | null, message?: string | null } | null } };
+
+export type GetAllPracticeCountQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllPracticeCountQuery = { __typename?: 'Query', getAllPractices: { __typename?: 'PracticeCountPayload', response?: { __typename?: 'ResponsePayload', status?: number | null } | null, practices?: { __typename?: 'TotalPractices', total?: number | null, active?: number | null, inactive?: number | null } | null } };
 
 export type SearchIcdCodesQueryVariables = Exact<{
   searchIcdCodesInput: SearchIcdCodesInput;
@@ -24886,6 +24909,7 @@ export const FindAllPracticesDocument = gql`
       id
       name
       phone
+      active
       createdAt
     }
   }
@@ -25116,6 +25140,47 @@ export function useRemovePracticeMutation(baseOptions?: Apollo.MutationHookOptio
 export type RemovePracticeMutationHookResult = ReturnType<typeof useRemovePracticeMutation>;
 export type RemovePracticeMutationResult = Apollo.MutationResult<RemovePracticeMutation>;
 export type RemovePracticeMutationOptions = Apollo.BaseMutationOptions<RemovePracticeMutation, RemovePracticeMutationVariables>;
+export const GetAllPracticeCountDocument = gql`
+    query GetAllPracticeCount {
+  getAllPractices {
+    response {
+      status
+    }
+    practices {
+      total
+      active
+      inactive
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllPracticeCountQuery__
+ *
+ * To run a query within a React component, call `useGetAllPracticeCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllPracticeCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllPracticeCountQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllPracticeCountQuery(baseOptions?: Apollo.QueryHookOptions<GetAllPracticeCountQuery, GetAllPracticeCountQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllPracticeCountQuery, GetAllPracticeCountQueryVariables>(GetAllPracticeCountDocument, options);
+      }
+export function useGetAllPracticeCountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllPracticeCountQuery, GetAllPracticeCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllPracticeCountQuery, GetAllPracticeCountQueryVariables>(GetAllPracticeCountDocument, options);
+        }
+export type GetAllPracticeCountQueryHookResult = ReturnType<typeof useGetAllPracticeCountQuery>;
+export type GetAllPracticeCountLazyQueryHookResult = ReturnType<typeof useGetAllPracticeCountLazyQuery>;
+export type GetAllPracticeCountQueryResult = Apollo.QueryResult<GetAllPracticeCountQuery, GetAllPracticeCountQueryVariables>;
 export const SearchIcdCodesDocument = gql`
     query SearchIcdCodes($searchIcdCodesInput: SearchIcdCodesInput!) {
   searchIcdCodes(searchIcdCodesInput: $searchIcdCodesInput) {
