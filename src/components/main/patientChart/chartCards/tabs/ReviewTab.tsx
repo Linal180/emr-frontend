@@ -133,7 +133,7 @@ function ReviewTab({ shouldShowCheckout, handleStepChange, shouldDisableEdit, sh
   const fetchPhysicalExam = useCallback(async () => {
     appointmentId && await getPhysicalExam({
       variables: {
-      physicalExamInput: {
+        physicalExamInput: {
           appointmentId: appointmentId
         }
       }
@@ -161,6 +161,29 @@ function ReviewTab({ shouldShowCheckout, handleStepChange, shouldDisableEdit, sh
 
   const latestPatientVitals = patientVitals?.sort((a, b) => Number(b?.createdAt || 0) - Number(a?.createdAt || 0))?.[0] || {}
 
+  const getVitalLabel = (value: string) => {
+    switch (value) {
+      case 'patientTemperature':
+        return 'Patient Temperature'
+
+      case 'systolicBloodPressure':
+        return 'Systolic Blood Pressure'
+
+      case 'diastolicBloodPressure':
+        return 'Diastolic Blood Pressure'
+
+      case 'respiratoryRate':
+        return 'Respiratory Rate'
+
+      case 'PatientBMI':
+        return 'Patient BMI'
+
+
+      default:
+        return ''
+    }
+  }
+
   return (
     <div>
       <AppointmentReason shouldShowAdd={shouldShowAdd} shouldShowCheckout={shouldShowCheckout} handleStepChange={handleStepChange} shouldDisableEdit={shouldDisableEdit} />
@@ -182,7 +205,7 @@ function ReviewTab({ shouldShowCheckout, handleStepChange, shouldDisableEdit, sh
               if (['patientTemperature', 'systolicBloodPressure', 'diastolicBloodPressure', 'respiratoryRate', 'PatientBMI'].includes(vital)) {
                 return (
                   <Box display="flex" alignItems="center">
-                    <Typography variant='body1'>{vital}</Typography>
+                    <Typography variant='body1'>{getVitalLabel(vital)}</Typography>
                     <Box p={2} />
                     <Typography variant='body2'>{(latestPatientVitals as PatientVitals)[vital as keyof PatientVitals] || DASHES}</Typography>
                   </Box>
