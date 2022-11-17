@@ -12,7 +12,7 @@ import AppointmentReasonModal from '../AppointmentReason/AppointmentReasonModal'
 import { BLUE } from '../../../../../theme'
 import {
   ADD, APPOINTMENT_CHIEF_COMPLAINT_DELETED, CHIEF_COMPLAINT, DELETE_CHIEF_COMPLAINT_DESCRIPTION, NEXT,
-  REACTION_PAGE_LIMIT, TO_CHECKOUT
+  REACTION_PAGE_LIMIT, TO_CHECKOUT, ADD_CHIEF_COMPLAINT
 } from '../../../../../constants'
 import {
   AllCptCodePayload, PatientProblemsPayload, ProblemSeverity, ProblemType, useAddPatientProblemMutation,
@@ -143,10 +143,10 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
       const { addPatientProblem: { response } } = data;
 
       if (response) {
-        const { status, message } = response
+        const { status } = response
 
         if (status && status === 200) {
-          message && Alert.success(message)
+          Alert.success(ADD_CHIEF_COMPLAINT)
           fetchProblems && fetchProblems()
         }
       }
