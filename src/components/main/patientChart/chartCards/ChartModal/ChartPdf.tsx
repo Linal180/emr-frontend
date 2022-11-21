@@ -151,6 +151,9 @@ const styles = StyleSheet.create({
   ml10: {
     marginLeft: '10px',
   },
+  h10: {
+    height: '10px',
+  }
 });
 
 const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: PatientChartingInfo | null, modulesToPrint: string[] }) => {
@@ -252,7 +255,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
 
               {/* 2.1-row */}
               <View style={styles.tableRow}>
-                <View style={[styles.w50]}>
+                <View style={[styles.w60]}>
                   <View style={styles.fieldRow3}>
                     <Text style={[styles.fieldTitle, styles.w100px]}>{FIRST_NAME}</Text>
                     <Text style={styles.fieldText}>{firstName}</Text>
@@ -269,7 +272,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                   </View>
                 </View>
 
-                <View style={[styles.w50]}>
+                <View style={[styles.w40]}>
                   <View style={styles.fieldRow3}>
                     <Text style={[styles.fieldTitle, styles.w100px]}>{PATIENT_ID}</Text>
                     <Text style={styles.fieldText}>{patientRecord}</Text>
@@ -748,7 +751,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                     }) : <Text style={[styles.fieldTitle]}> </Text>}
                   </View>
 
-                  <View style={[styles.w30]}>
+                  <View style={[styles.w20]}>
                     <Text style={[styles.fieldTitle2,]}>{TEMPERATURE_TEXT}</Text>
                     {patientVitals?.length ? patientVitals?.map((patientVital) => {
                       const { patientTemperature } = patientVital || {}
@@ -764,7 +767,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                     }) : <Text style={[styles.fieldTitle]}> </Text>}
                   </View>
 
-                  <View style={[styles.w20]}>
+                  <View style={[styles.w30]}>
                     <Text style={[styles.fieldTitle2,]}>{RESPIRATORY_RATE_TEXT}</Text>
                     {patientVitals?.length ? patientVitals?.map((patientVital) => {
                       const { respiratoryRate } = patientVital || {}
@@ -976,7 +979,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                 const [first, second] = name?.split('fill') || []
 
                 return (
-                  <View style={[styles.tableRow, styles.ml10]}>
+                  <View style={[styles.tableRow]}>
                     <View style={[styles.w100]}>
                       <View style={styles.fieldRow3}>
                         <Text style={styles.fieldText}>{`${first} ${value || ''} ${second || ''}`}</Text>
@@ -985,11 +988,17 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                   </View>
                 )
               }) : <View style={[styles.w100]}>
-                <View style={styles.fieldRow3}>
+                <View style={[styles.fieldRow3]}>
                   <Text style={styles.fieldText}>{NO_DATA_FOUND}</Text>
                 </View>
               </View>}
-            </> : <View></View>}
+            </> : <View style={{ height: '10px' }}></View>}
+
+          {/* spacing-row */}
+          <View style={styles.tableRow}>
+            <View style={{ height: '10px' }}>
+            </View>
+          </View>
 
           {modulesToPrint.includes('HPI') ?
             <>
@@ -1013,7 +1022,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                 const [first, second] = name?.split('fill') || []
 
                 return (
-                  <View style={[styles.tableRow, styles.ml10]}>
+                  <View style={[styles.tableRow]}>
                     <View style={[styles.w100]}>
                       <View style={styles.fieldRow3}>
                         <Text style={styles.fieldText}>{`${first} ${value || ''} ${second || ''}`}</Text>
@@ -1023,10 +1032,16 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                 )
               }) : <View style={[styles.w100]}>
                 <View style={styles.fieldRow3}>
-                  <Text style={styles.fieldText}>{NO_DATA_FOUND}</Text>
+                  <Text style={[styles.fieldText]}>{NO_DATA_FOUND}</Text>
                 </View>
               </View>}
             </> : <View></View>}
+
+          {/* spacing-row */}
+          <View style={styles.tableRow}>
+            <View style={{ height: '10px' }}>
+            </View>
+          </View>
 
           {modulesToPrint.includes('PE') ?
             <>
@@ -1050,7 +1065,7 @@ const ChartPdf = ({ patientChartInfo, modulesToPrint }: { patientChartInfo: Pati
                 const [first, second] = name?.split('fill') || []
 
                 return (
-                  <View style={[styles.tableRow, styles.ml10]}>
+                  <View style={[styles.tableRow]}>
                     <View style={[styles.w100]}>
                       <View style={styles.fieldRow3}>
                         <Text style={styles.fieldText}>{`${first} ${value || ''} ${second || ''}`}</Text>

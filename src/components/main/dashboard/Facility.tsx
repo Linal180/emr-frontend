@@ -384,7 +384,7 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
             <Box px={4} pb={3} display='flex' alignItems='center'>
               <Grid container spacing={2}>
                 <Grid item md={6} sm={12} xs={12}>
-                  <Box display='flex' alignItems='center' flexWrap='wrap'>
+                  <Box display='flex' alignItems='center'>
                     <Box
                       bgcolor={GREY_NINE} borderRadius={4} width={45} height={45} p={1} mr={2}
                       display="flex" justifyContent="center" alignItems="center"
@@ -403,7 +403,7 @@ const FacilityDashboardComponent: FC = (): JSX.Element => {
                 </Grid>
 
                 <Grid item md={6} sm={12} xs={12}>
-                  <Box display='flex' alignItems='center' flexWrap='wrap'>
+                  <Box display='flex' alignItems='center'>
                     <Box
                       bgcolor={GREY_NINE} borderRadius={4} width={45} height={45} p={1} mr={2}
                       display="flex" justifyContent="center" alignItems="center"

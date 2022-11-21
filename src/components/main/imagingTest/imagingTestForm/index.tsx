@@ -14,8 +14,13 @@ import { ADD, CANCEL, EDIT, IMAGING_TEST_TEXT, SOMETHING_WENT_WRONG, SUBMIT, NAM
 import { useCreateImagingTestMutation, useGetImagingTestLazyQuery, useUpdateImagingTestMutation } from '../../../../generated/graphql';
 
 const ImagingTestForm: FC<ImagingTestFormProps> = ({ open, fetch, isEdit, id, handleClose, dispatcher }): JSX.Element => {
-  const methods = useForm<ImagingTestFormType>({ resolver: yupResolver(ImagingTestSchema) });
-  const { handleSubmit, setValue, } = methods;
+  const methods = useForm<ImagingTestFormType>({
+    resolver: yupResolver(ImagingTestSchema), defaultValues: {
+      name: ""
+    }
+  });
+  const { handleSubmit, setValue, watch } = methods;
+  watch()
 
   const [createImagingTest, { loading: createLoading }] = useCreateImagingTestMutation({
 
@@ -132,7 +137,7 @@ const ImagingTestForm: FC<ImagingTestFormProps> = ({ open, fetch, isEdit, id, ha
               <Grid container spacing={3}>
 
                 <Grid item xs={12}>
-                  <InputController controllerName='name' disabled={loading} controllerLabel={NAME} isRequired />
+                  <InputController key="imaging-testing" controllerName='name' disabled={loading} controllerLabel={NAME} isRequired />
                 </Grid>
 
               </Grid>
