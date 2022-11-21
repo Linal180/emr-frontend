@@ -585,7 +585,7 @@ export const appointmentSchema = (adminUser: boolean) => yup.object({
 
 export const scheduleSchema = (isDoctor: boolean, shouldHaveRecursion: boolean) => yup.object({
   ...scheduleTimeSchema,
-  recurringEndDate: !shouldHaveRecursion ? yup.string().required(requiredMessage(DATE)).test('', 'Invalid Date', (val) => !!val ? new Date(val) >= new Date() : true) : yup.string().optional(),
+  recurringEndDate: !shouldHaveRecursion ? yup.string().required(requiredMessage(DATE)).test('', 'Invalid Date', (val) => !!val ? new Date(val) > new Date() : true) : yup.string().optional(),
   serviceId: yup.array().of(
     multiOptionSchema(APPOINTMENT)
   ).test('', requiredMessage(APPOINTMENT), (value: any) => isDoctor ? !!value && value.length > 0 : true)

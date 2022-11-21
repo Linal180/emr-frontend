@@ -1108,6 +1108,12 @@ export const getDayFromTimestamps = (timestamp: string) => {
   return new Date(parseInt(timestamp)).toLocaleString('en-us', { weekday: 'long' })
 }
 
+export const getDateFromTimestamps = (timestamp: string) => {
+  if (!timestamp) return "";
+
+  return moment(new Date(parseInt(timestamp))).format()
+}
+
 export const getDaySchedules = (schedules: SchedulesPayload['schedules']): DaySchedule[] => {
   const daySchedules: DaySchedule[] = [
     { day: DAYS.Monday, slots: [] },
