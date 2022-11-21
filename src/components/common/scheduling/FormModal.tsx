@@ -1,7 +1,8 @@
 // packages block
-import { FC, useCallback, useContext, useEffect } from "react";
+import moment from "moment";
 import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { FC, useCallback, useContext, useEffect } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import {
   Box, Button, Checkbox, CircularProgress, Dialog, FormControl, FormControlLabel, FormGroup,
@@ -27,7 +28,7 @@ import {
   multiOptionType, ParamsType, ScheduleFormProps, ScheduleInputProps
 } from "../../../interfacesTypes";
 import {
-  checkPermission, getDayFromTimestamps, getTime24String, invalidMessage, renderItem,
+  checkPermission, getDateFromTimestamps, getDayFromTimestamps, getTime24String, invalidMessage, renderItem,
   renderLoading, setTimeDay, timeValidation
 } from "../../../utils";
 import {
@@ -114,7 +115,7 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
 
           endAt && setValue('endAt', getTime24String(endAt))
           startAt && setValue('startAt', getTime24String(startAt))
-          recurringEndDate && setValue('recurringEndDate', recurringEndDate)
+          recurringEndDate && setValue('recurringEndDate', getDateFromTimestamps(recurringEndDate))
 
           scheduleDispatch && scheduleDispatch({
             type: ActionType.SET_SCHEDULE_RECURSION,
@@ -220,7 +221,7 @@ const ScheduleModal: FC<ScheduleFormProps> = ({
       return {
         ...recordId, servicesIds: isDoctor ? selectedServices : [], day: dayValue,
         startAt: setTimeDay(startAt, dayValue), endAt: setTimeDay(endAt, dayValue),
-        recurringEndDate: !scheduleRecursion ? recurringEndDate : null
+        recurringEndDate: !scheduleRecursion ? moment(recurringEndDate).format() : null
       }
     })
 
