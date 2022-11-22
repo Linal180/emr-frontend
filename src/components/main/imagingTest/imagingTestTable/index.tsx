@@ -15,7 +15,7 @@ import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from '../../..
 import { State, Action, ActionType, initialState, imagingTestReducer } from '../../../../reducers/imagingTestReducer';
 import { FindAllImagingTestPayload, useFindAllImagingTestLazyQuery, useRemoveImagingTestMutation } from '../../../../generated/graphql';
 import {
-  ACTIONS, ADD_NEW_TEXT, DASHES, DELETE_IMAGING_TEST_DESCRIPTION, EIGHT_PAGE_LIMIT, NAME, IMAGING_TEST_TEXT, PAGE_LIMIT
+  ADD_NEW_TEXT, DASHES, DELETE_IMAGING_TEST_DESCRIPTION, EIGHT_PAGE_LIMIT, NAME, IMAGING_TEST_TEXT, PAGE_LIMIT, ACTION
 } from '../../../../constants';
 
 const ImagingTestTable: FC = (): JSX.Element => {
@@ -142,7 +142,7 @@ const ImagingTestTable: FC = (): JSX.Element => {
                 <TableHead>
                   <TableRow>
                     {renderTh(NAME)}
-                    {renderTh(ACTIONS)}
+                    {renderTh(ACTION, "center")}
                   </TableRow>
                 </TableHead>
 
@@ -162,8 +162,7 @@ const ImagingTestTable: FC = (): JSX.Element => {
                         </TableCell>
 
                         <TableCell scope="row">
-                          <Box display='flex' alignItems='center'>
-
+                          <Box display='flex' alignItems='center' justifyContent='center'>
                             <Box className={`${classes.iconsBackground}`}>
                               <Button onClick={() => id && handleEdit(id)}>
                                 <EditOutlinedIcon />
