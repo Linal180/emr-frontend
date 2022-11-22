@@ -93,6 +93,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
         setValue('expected', expected || '')
         setValue('totalCharges', totalCharges || '')
         setValue('paid', paid || '')
+        setPrice && setPrice(paid || '')
         setValue('previous', String(accPrevious || 0))
 
         accPrevious && setValue(`${UPFRONT_PAYMENT_TYPES.Previous}.0.amount`, String(accPrevious) as never)
@@ -111,7 +112,7 @@ const UpFrontPayment = forwardRef<FormForwardRef | undefined, UpFrontPaymentProp
         const additional = transformedUpFrontPayments?.filter((UpFrontPaymentType) => UpFrontPaymentType.paymentType === UPFRONT_PAYMENT_TYPES.Additional) || []
         const copay = transformedUpFrontPayments?.filter((UpFrontPaymentType) => UpFrontPaymentType.paymentType === UPFRONT_PAYMENT_TYPES.Copay) || []
         const previous = transformedUpFrontPayments?.filter((UpFrontPaymentType) => UpFrontPaymentType.paymentType === UPFRONT_PAYMENT_TYPES.Previous) || []
-        
+
         additional?.forEach((value, index) => {
           setValue(`${value.paymentType as UPFRONT_PAYMENT_TYPES}.${index}.amount`, value?.amount as never)
           setValue(`${value.paymentType as UPFRONT_PAYMENT_TYPES}.${index}.notes`, value?.notes as never)

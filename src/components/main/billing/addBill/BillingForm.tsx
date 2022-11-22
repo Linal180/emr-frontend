@@ -506,7 +506,7 @@ const BillingForm: FC<BillingFormProps> = ({
               <TabPanel value="2">
                 <Box>
                   {/* <Card> */}
-                  <InsuranceComponent shouldDisableEdit={shouldDisableEdit} refetch={refetch}/>
+                  <InsuranceComponent shouldDisableEdit={shouldDisableEdit} refetch={refetch} />
                   {/* </Card> */}
                 </Box>
               </TabPanel>
@@ -519,7 +519,7 @@ const BillingForm: FC<BillingFormProps> = ({
         <UpFrontPayment
           cptCodes={cptFeeSchedule ?? []}
           ref={billingRef}
-          setPrice={(price) => price && dispatch({ type: ActionType.SET_TOTAL_PRICE, totalPrice: price })}
+          setPrice={(price) => dispatch({ type: ActionType.SET_TOTAL_PRICE, totalPrice: price || '' })}
           shouldDisableEdit={shouldDisableEdit}
         />
       </form>

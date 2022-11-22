@@ -435,6 +435,7 @@ const FamilyHistoryForm: FC<FamilyHistoryFormProps> = ({
                                       controllerName={`familyRelative.${index}.died`}
                                       key={`familyRelative.${index}.died`}
                                       controllerLabel={DIED_TEXT}
+                                      fieldType="number"
                                     />
                                   </Grid>
                                   <Grid item xs={12}>

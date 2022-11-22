@@ -1,18 +1,18 @@
-import { Reducer, useCallback, useEffect, useReducer } from 'react'
+import moment from 'moment'
 import { useParams } from 'react-router'
-import { BLUE } from '../../../../../theme'
+import { Reducer, useCallback, useEffect, useReducer } from 'react'
 import { ChevronRight, RemoveCircleOutline } from '@material-ui/icons'
 import { Box, Button, Card, Chip, colors, IconButton, Typography } from '@material-ui/core'
 //component block
-import moment from 'moment'
 import Alert from '../../../../common/Alert'
 import ConfirmationModal from '../../../../common/ConfirmationModal'
 import NoDataFoundComponent from '../../../../common/NoDataFoundComponent'
 import AppointmentReasonModal from '../AppointmentReason/AppointmentReasonModal'
 //constants, interfaces, styles, reducers, graphql
+import { BLUE } from '../../../../../theme'
 import {
   ADD, APPOINTMENT_CHIEF_COMPLAINT_DELETED, CHIEF_COMPLAINT, DELETE_CHIEF_COMPLAINT_DESCRIPTION, NEXT,
-  REACTION_PAGE_LIMIT, TO_CHECKOUT
+  REACTION_PAGE_LIMIT, TO_CHECKOUT, ADD_CHIEF_COMPLAINT
 } from '../../../../../constants'
 import {
   AllCptCodePayload, PatientProblemsPayload, ProblemSeverity, ProblemType, useAddPatientProblemMutation,
@@ -146,6 +146,7 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
         const { status } = response
 
         if (status && status === 200) {
+          Alert.success(ADD_CHIEF_COMPLAINT)
           fetchProblems && fetchProblems()
         }
       }
@@ -236,15 +237,15 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
 
           <Box mt={2}>
             {transformedProblems?.map((chiefComplaintProblem) => {
-              const { isSelected, value, problemId } = chiefComplaintProblem || {}
+              const { isSelected, value } = chiefComplaintProblem || {}
               const { description, id: icdCodeId } = value || {}
               return (
                 <Box m={1} display='inline-flex' flexDirection='row' flexWrap='wrap'>
                   <Chip
                     label={description}
-                    clickable
-                    disabled={shouldDisableEdit}
-                    onClick={() => isSelected ? onDeleteClick(problemId || '') : handleAddReason(icdCodeId || '')}
+                    clickable={!isSelected}
+                    disabled={shouldDisableEdit || isSelected}
+                    onClick={() => !isSelected && handleAddReason(icdCodeId || '')}
                     className={classes.problemChip}
                     style={{
                       background: isSelected ? `${BLUE}` : 'white',

@@ -82,7 +82,7 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({
   }
 
   return (
-    <Dialog open={isOpen} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" maxWidth="sm" fullWidth>
+    <Dialog open={isOpen} onClose={() => !isLoading && handleClose()} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" maxWidth="sm" fullWidth>
       <DialogTitle id="alert-dialog-title">
         {getTitle()}
       </DialogTitle>
@@ -123,7 +123,7 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({
         </Box>}
 
       <DialogActions>
-        <Button onClick={handleClose} color="default" variant="text">
+        <Button onClick={handleClose} disabled={isLoading} color="default" variant="text">
           {cancelText || CANCEL}
         </Button>
 

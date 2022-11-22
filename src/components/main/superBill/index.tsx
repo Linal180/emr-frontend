@@ -144,6 +144,9 @@ const styles = StyleSheet.create({
   textRight: {
     textAlign: 'right',
   },
+  height21: {
+    minHeight: '21px',
+  }
 });
 
 const SuperBillComponent = (): JSX.Element => {
@@ -326,12 +329,12 @@ const SuperBillComponent = (): JSX.Element => {
               </View>
 
               {/* codes-row */}
-              <View style={[styles.tableColumn,]}>
+              <View style={[styles.tableColumn]}>
                 {transformedCptCodes?.map((cptCodes) => {
                   return (
                     <>
                       <View style={[styles.w30]}>
-                        <View style={[styles.mt20, styles.bgLightGrey, styles.textCenter, styles.borderStyle, styles.borderTopWidth, styles.borderBottomWidth]}>
+                        <View style={[styles.mt20, styles.height21, styles.bgLightGrey, styles.textCenter, styles.borderStyle, styles.borderTopWidth, styles.borderBottomWidth]}>
                           <Text style={[styles.fieldTitle]}>{NAME}</Text>
                         </View>
                         {cptCodes?.slice(0, 25)?.map((code) => {
@@ -345,7 +348,7 @@ const SuperBillComponent = (): JSX.Element => {
 
                       </View>
                       <View style={[styles.w20]}>
-                        <View style={[styles.mt20, styles.bgLightGrey, styles.textCenter, styles.borderStyle, styles.borderTopWidth, styles.borderBottomWidth]}>
+                        <View style={[styles.mt20, styles.height21, styles.bgLightGrey, styles.textCenter, styles.borderStyle, styles.borderTopWidth, styles.borderBottomWidth]}>
                           <Text style={styles.fieldTitle}>{CODE}</Text>
                         </View>
                         {cptCodes?.slice(0, 25)?.map((code) => {
