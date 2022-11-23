@@ -11,6 +11,7 @@ import { EXAM_TABS } from "../../../../../constants";
 import { ChartComponentProps } from "../../../../../interfacesTypes";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
 import PhysicalExam from "../physicalExam";
+import { WHITE } from "../../../../../theme";
 
 const ExamTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
 
@@ -21,51 +22,54 @@ const ExamTab: FC<ChartComponentProps> = ({ shouldDisableEdit }) => {
 
   return (
     <>
-      <Grid container spacing={3}>
-        <Grid item md={12} sm={12} xs={12}>
-          <TabContext value={tabValue}>
-            <Box mb={1}>
-              <TabList className={classes.tabList}
-                orientation='horizontal'
-                onChange={handleChange}
-                aria-label="exam tabs"
-              >
-                {EXAM_TABS.map(item => {
-                  const { title, value } = item
+      <Box bgcolor={WHITE} px={2} className={classes.cardBox}>
+        <Grid container spacing={3}>
+          <Grid item md={12} sm={12} xs={12}>
+            <TabContext value={tabValue}>
+              <Box mb={1}>
+                {/* <TabList className={classes.tabList} */}
+                <TabList
+                  orientation='horizontal'
+                  onChange={handleChange}
+                  aria-label="exam tabs"
+                >
+                  {EXAM_TABS.map(item => {
+                    const { title, value } = item
 
-                  return <Tab className={classes.tab}
-                    key={`${title}-${value}`}
-                    label={title}
-                    value={value}
-                  />
-                })}
-              </TabList>
-            </Box>
+                    return <Tab className={classes.tab}
+                      key={`${title}-${value}`}
+                      label={title}
+                      value={value}
+                    />
+                  })}
+                </TabList>
+              </Box>
 
-            <Box className={classes.cardBox}>
-              <TabPanel value="1">
-                <ReviewTab shouldDisableEdit={shouldDisableEdit} shouldShowAdd={true} shouldShowExamDetails={true} />
-              </TabPanel>
+              <Box className={classes.cardBox}>
+                <TabPanel value="1">
+                  <ReviewTab shouldDisableEdit={shouldDisableEdit} shouldShowAdd={true} shouldShowExamDetails={true} />
+                </TabPanel>
 
-              <TabPanel value="2">
-                <PatientHistory shouldDisableEdit={shouldDisableEdit} />
-              </TabPanel>
+                <TabPanel value="2">
+                  <PatientHistory shouldDisableEdit={shouldDisableEdit} />
+                </TabPanel>
 
-              <TabPanel value="3">
-                <ReviewOfSystem shouldDisableEdit={shouldDisableEdit} />
-              </TabPanel>
+                <TabPanel value="3">
+                  <ReviewOfSystem shouldDisableEdit={shouldDisableEdit} />
+                </TabPanel>
 
-              <TabPanel value="4">
-                <PhysicalExam shouldDisableEdit={shouldDisableEdit} />
-              </TabPanel>
+                <TabPanel value="4">
+                  <PhysicalExam shouldDisableEdit={shouldDisableEdit} />
+                </TabPanel>
 
-              <TabPanel value="5">
-                <AssessmentPlanTab shouldDisableEdit={shouldDisableEdit} />
-              </TabPanel>
-            </Box>
-          </TabContext>
+                <TabPanel value="5">
+                  <AssessmentPlanTab shouldDisableEdit={shouldDisableEdit} />
+                </TabPanel>
+              </Box>
+            </TabContext>
+          </Grid>
         </Grid>
-      </Grid>
+      </Box>
     </>
   )
 }

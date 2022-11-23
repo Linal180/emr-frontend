@@ -327,5 +327,18 @@ export const useChartingStyles = makeStyles((theme) => ({
     "& .MuiFormControlLabel-root": {
       marginRight: 0,
     }
+  },
+  intakeTab: {
+    backgroundColor: GREY,
+    borderRadius: 4,
+    padding: '5px 10px',
+    cursor: 'pointer',
+  },
+  activeTab: {
+    backgroundColor: GREEN,
+    color: WHITE,
+    borderRadius: 4,
+    padding: 5,
+    cursor: 'pointer',
   }
 }));
