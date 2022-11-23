@@ -1,15 +1,14 @@
 import moment from 'moment'
 import { useParams } from 'react-router'
 import { Reducer, useCallback, useEffect, useReducer } from 'react'
-import { ChevronRight, RemoveCircleOutline } from '@material-ui/icons'
-import { Box, Button, Card, Chip, colors, IconButton, Typography } from '@material-ui/core'
+import { ChevronRight } from '@material-ui/icons'
+import { Box, Button, Card, Checkbox, Chip, colors, FormControlLabel, FormGroup, Typography } from '@material-ui/core'
 //component block
 import Alert from '../../../../common/Alert'
 import ConfirmationModal from '../../../../common/ConfirmationModal'
 import NoDataFoundComponent from '../../../../common/NoDataFoundComponent'
 import AppointmentReasonModal from '../AppointmentReason/AppointmentReasonModal'
 //constants, interfaces, styles, reducers, graphql
-import { BLUE } from '../../../../../theme'
 import {
   ADD, APPOINTMENT_CHIEF_COMPLAINT_DELETED, CHIEF_COMPLAINT, DELETE_CHIEF_COMPLAINT_DESCRIPTION, NEXT,
   REACTION_PAGE_LIMIT, TO_CHECKOUT, ADD_CHIEF_COMPLAINT
@@ -173,7 +172,6 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
     })
   }
 
-
   const handleDelete = async () => {
     problemDeleteId && await removePatientProblem({
       variables: { removeProblem: { id: problemDeleteId } }
@@ -241,7 +239,7 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
               const { description, id: icdCodeId } = value || {}
               return (
                 <Box m={1} display='inline-flex' flexDirection='row' flexWrap='wrap'>
-                  <Chip
+                  {/* <Chip
                     label={description}
                     clickable={!isSelected}
                     disabled={shouldDisableEdit || isSelected}
@@ -251,7 +249,28 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
                       background: isSelected ? `${BLUE}` : 'white',
                       color: isSelected ? 'white' : `${BLUE}`
                     }}
-                  />
+                  /> */}
+
+                  {/* <Box p={2} /> */}
+
+                  {/* new-code */}
+
+                  <FormGroup>
+                    <FormControlLabel
+                      control={
+                        <Box mr={1}>
+                          <Checkbox
+                            color="primary"
+                            checked={!!isSelected}
+                            disabled={shouldDisableEdit || isSelected}
+                            onClick={() => !isSelected && handleAddReason(icdCodeId || '')}
+                          />
+                        </Box>
+                      }
+
+                      label={<Typography variant="h6">{description}</Typography>}
+                    />
+                  </FormGroup>
                 </Box>
               )
             })}
@@ -262,12 +281,22 @@ function AppointmentReason({ shouldShowAdd, isInTake, handleStep, shouldDisableE
           <Box p={2} borderTop={`1px solid ${colors.grey[300]}`}>
             {singlePatientProblems?.map((value) => {
               const { id, ICDCode } = value || {}
-              return <Box display="flex" flexDirection="row" justifyContent="space-between">
+              return <>
+                {/* <Box display="flex" flexDirection="row" justifyContent="space-between">
                 <Typography variant='inherit'>{ICDCode?.description}</Typography>
                 {!shouldDisableEdit && shouldShowAdd && <IconButton onClick={() => id && onDeleteClick(id)}>
                   <RemoveCircleOutline />
                 </IconButton>}
-              </Box>
+              </Box> */}
+
+                <Box display='inline-flex' flexWrap="wrap" m={1}>
+                  {!shouldDisableEdit && shouldShowAdd ?
+                    <Chip label={ICDCode?.description} onDelete={() => id && onDeleteClick(id)} variant="outlined" color='secondary' />
+                    :
+                    <Chip label={ICDCode?.description} color="secondary" variant="outlined" />
+                  }
+                </Box>
+              </>
             })}
           </Box>
 
