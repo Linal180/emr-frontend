@@ -1,5 +1,8 @@
-import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
+import { Document, Image, Link, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import JsBarcode from "jsbarcode";
+import QRCode from 'qrcode'
+import { useEffect, useState } from "react";
+
 import { ADD_TEST_SPECIMEN_ROUTE, COLLECTED_DATE, DOB_TEXT, NAME, TEST } from "../../../../constants";
 import { LabTestPayload } from "../../../../generated/graphql";
 import { getFormatDateString } from "../../../../utils";
@@ -138,16 +141,28 @@ const styles = StyleSheet.create({
 });
 
 const StickerDoc = ({ labTest }: { labTest: LabTestPayload['labTest'] }) => {
+  const [qrCodeUrl, setQrCodeUrl] = useState('')
+
   const { patient, test, testDate } = labTest || {}
   const { firstName, lastName, dob, id } = patient || {}
   const patientFullName = `${firstName} ${lastName}`
   const canvas = document.createElement('canvas');
-  JsBarcode(canvas, `${process.env.REACT_APP_URL}${ADD_TEST_SPECIMEN_ROUTE}/${id}/${labTest?.id}`);
+  const link = `${process.env.REACT_APP_URL}${ADD_TEST_SPECIMEN_ROUTE}/${id}/${labTest?.id}`
+  JsBarcode(canvas, link);
   const barcode = canvas.toDataURL();
+  useEffect(() => {
+    QRCode.toDataURL(link, function (err, uri) {
+      if (!err) {
+        setQrCodeUrl(uri)
+      }
+    });
+  }, [link])
+
+
 
   return (
     <Document title={`test_${test?.component}`}>
-      <Page style={styles.page} size="A3" wrap>
+      <Page style={styles.page} size="A4" wrap>
         <View style={styles.table}>
           {/* 2nd-row */}
           <View style={styles.tableRow}>
@@ -171,10 +186,21 @@ const StickerDoc = ({ labTest }: { labTest: LabTestPayload['labTest'] }) => {
                 <Text style={styles.fieldTitle}>{COLLECTED_DATE}</Text>
                 <Text style={styles.fieldText}>{testDate}</Text>
               </View>
+              <View style={styles.fieldRow1}>
+                <Text style={styles.fieldTitle}>You can upload specimen by using this <Link src={link} style={{marginRight: 2}}>
+                  link
+                </Link>
+                or by scanning the QR or Bar code.
+                </Text>
+              </View>
             </View>
           </View>
 
+          <Image src={qrCodeUrl} style={[styles.w20, styles.mt15]} />
+
           <Image src={barcode} />
+
+
         </View>
       </Page>
     </Document>
