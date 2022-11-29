@@ -174,7 +174,12 @@ const AssessmentPlanProblems: FC<AssessmentPlanProblemsProps> = ({
 
           <Box display='flex' alignItems='center'>
             <Box m={1}>
-              <Button variant='contained' color='secondary' disabled={addProblemLoading || !numberOfOrders || isSigned} onClick={handleAssessment}>
+              <Button
+                color='secondary'
+                variant='contained'
+                onClick={handleAssessment}
+                disabled={addProblemLoading || !numberOfOrders || isSigned}
+              >
                 {'Sign Orders'}
                 <Typography variant="body1" color="inherit">({numberOfOrders})</Typography>
               </Button>
