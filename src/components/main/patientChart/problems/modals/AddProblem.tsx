@@ -1,6 +1,6 @@
 // packages block
 import { Add as AddIcon } from '@material-ui/icons';
-import { FC, Reducer, useCallback, useEffect, useReducer, useRef } from "react";
+import { FC, Fragment, Reducer, useCallback, useEffect, useReducer, useRef } from "react";
 import {
   Box, Button, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton, InputBase, Typography
 } from "@material-ui/core";
@@ -119,7 +119,7 @@ const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
       }
     });
     if (node) observer.current.observe(node);
-  },[searchIcdCodesLoading, page, totalPages, handleICDSearch, searchQuery]);
+  }, [searchIcdCodesLoading, page, totalPages, handleICDSearch, searchQuery]);
 
   const renderSearchData = useCallback(() => {
     return (
@@ -199,7 +199,7 @@ const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
     dispatch({ type: ActionType.SET_IS_SUB_MODAL_OPEN, isSubModalOpen: true })
   }
 
-  return (
+  return (<Fragment>
     <Dialog fullWidth maxWidth="sm" open={isOpen} onClose={handleModalClose}>
       <DialogTitle>
         <Typography variant="h4">{ADD_PROBLEM}</Typography>
@@ -227,24 +227,24 @@ const AddProblem: FC<AddAllergyModalProps> = ({ isOpen = false, handleModalClose
 
         {renderSearchData()}
       </DialogContent>
-
-      {isSubModalOpen && <ProblemModal
-        dispatcher={dispatch}
-        item={selectedItem}
-        fetch={fetch ? () => fetch() : () => { }}
-        isOpen={isSubModalOpen}
-        handleClose={closeSearchMenu}
-      />}
-
-      <ICD10Form
-        open={isIcdFormOpen}
-        searchItem={newRecord}
-        isEdit={false}
-        handleClose={() => dispatch({ type: ActionType.SET_ICD_FORM_OPEN, isIcdFormOpen: false })}
-        fetch={() => { }}
-        handleReload={(item: IcdCodes) => handleNewProblemAdd(item)}
-      />
     </Dialog>
+    {isSubModalOpen && <ProblemModal
+      dispatcher={dispatch}
+      item={selectedItem}
+      fetch={fetch ? () => fetch() : () => { }}
+      isOpen={isSubModalOpen}
+      handleClose={closeSearchMenu}
+    />}
+
+    {isIcdFormOpen && <ICD10Form
+      open={isIcdFormOpen}
+      searchItem={newRecord}
+      isEdit={false}
+      handleClose={() => dispatch({ type: ActionType.SET_ICD_FORM_OPEN, isIcdFormOpen: false })}
+      fetch={() => { }}
+      handleReload={(item: IcdCodes) => handleNewProblemAdd(item)}
+    />}
+  </Fragment>
   )
 }
 

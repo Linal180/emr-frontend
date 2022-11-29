@@ -5,10 +5,7 @@ import { LESS_INFO, MORE_INFO, PATIENT_VITAL_TEXT, VITAL_LABELS } from '../../..
 import { PatientVitalPayload, useGetPatientLatestVitalLazyQuery } from '../../../../generated/graphql';
 import { LatestVitalCardProps } from '../../../../interfacesTypes';
 import { useProfileDetailsStyles } from '../../../../styles/profileDetails';
-import { 
-  getAppointmentDateWithDay, isAbnormalBloodPressureRate, isAbnormalOxygenSaturation, isAbnormalPain, 
-  isAbnormalPulseRate, isAbnormalRespiratoryRate, isAbnormalTemperature, renderLoading 
-} from '../../../../utils';
+import { getAppointmentDateWithDay, isAbnormalBloodPressureRate, isAbnormalOxygenSaturation, isAbnormalPain, isAbnormalPulseRate, isAbnormalRespiratoryRate, isAbnormalTemperature, renderLoading } from '../../../../utils';
 
 const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId, shouldRefetch, setShouldRefetch }): JSX.Element => {
 
@@ -64,7 +61,6 @@ const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId, shouldRefetch, s
       <Box p={2} display='flex' justifyContent='space-between' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`}>
         <Box>
           <Typography variant="h4">{PATIENT_VITAL_TEXT}</Typography>
-
           <Typography>{vitalCreationDate || '---'}</Typography>
         </Box>
 
@@ -77,8 +73,8 @@ const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId, shouldRefetch, s
       </Box>
 
       <Collapse in={openMoreInfo} mountOnEnter unmountOnExit>
-        <Box width="100%" py={2} px={2}>
-          <Box>
+        <Box display="flex" width="100%" py={3} px={4} flexWrap="wrap">
+          <Box className={classes.profileAdditionalInfo}>
             <Box className={classes.profileInfoHeading}>{VITAL_LABELS.patientTemperature}</Box>
 
             {loading ? renderLoading('') : <Box className={classes.profileInfoItem}>
@@ -91,7 +87,7 @@ const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId, shouldRefetch, s
             </Box>}
           </Box>
 
-          <Box>
+          <Box className={classes.profileAdditionalInfo}>
             <Box className={classes.profileInfoHeading}>{VITAL_LABELS.bloodPressure}</Box>
 
             {loading ? renderLoading('') : <Box className={classes.profileInfoItem}>
@@ -104,7 +100,7 @@ const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId, shouldRefetch, s
             </Box>}
           </Box>
 
-          <Box>
+          <Box className={classes.profileAdditionalInfo}>
             <Box className={classes.profileInfoHeading}>{VITAL_LABELS.oxygenSaturation}</Box>
 
             {loading ? renderLoading('') : <Box className={classes.profileInfoItem}>
@@ -117,7 +113,7 @@ const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId, shouldRefetch, s
             </Box>}
           </Box>
 
-          <Box>
+          <Box className={classes.profileAdditionalInfo}>
             <Box className={classes.profileInfoHeading}>{VITAL_LABELS.pulseRate}</Box>
 
             {loading ? renderLoading('') : <Box className={classes.profileInfoItem}>
@@ -130,7 +126,7 @@ const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId, shouldRefetch, s
             </Box>}
           </Box>
 
-          <Box>
+          <Box className={classes.profileAdditionalInfo}>
             <Box className={classes.profileInfoHeading}>{VITAL_LABELS.respiratoryRate}</Box>
 
             {loading ? renderLoading('') : <Box className={classes.profileInfoItem}>
@@ -143,7 +139,7 @@ const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId, shouldRefetch, s
             </Box>}
           </Box>
 
-          <Box>
+          <Box className={classes.profileAdditionalInfo}>
             <Box className={classes.profileInfoHeading}>{VITAL_LABELS.PainRange}</Box>
 
             {loading ? renderLoading('') : <Box className={classes.profileInfoItem}>
@@ -155,6 +151,7 @@ const LatestVitalCard: FC<LatestVitalCardProps> = ({ patientId, shouldRefetch, s
               </Typography>
             </Box>}
           </Box>
+
         </Box>
       </Collapse>
     </Card>

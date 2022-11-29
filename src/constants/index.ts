@@ -4012,45 +4012,58 @@ export const EXAM_OPTION = {
 export const PATIENT_CHARTING_MENU = [
   {
     title: "Chief Complaint",
+    value: "chief_complaint"
   },
   // {
   //   title: "Triage Notes",
   // },
   {
     title: "Vitals",
+    value: 'vitals'
   },
   {
     title: "Problems",
+    value: 'problems'
   },
   {
     title: "Allergies",
+    value: 'allergies'
   },
   {
     title: "Medication",
+    value: "medication",
   },
   {
     title: "Family History",
+    value: 'family_history'
   },
   {
     title: "Surgical History",
+    value: 'surgical_history'
   },
   {
     title: "Social History",
+    value: 'social_history'
   },
   {
     title: "Lab Orders",
+    value: 'lab_orders'
   },
   {
     title: "Vaccines",
+    value: 'vaccines'
   },
   {
-    title: "History of Present Illness",
+    title: "HPI",
+    value: "history_of_present_illness"
   },
   {
-    title: "Review Of System",
+    title: "ROS",
+    value: "review_of_system"
   },
   {
-    title: "Physical Exam",
+    title: "PE",
+    value: "physical_exam"
   },
   // {
   //   title: "Orders And Diagnoses",

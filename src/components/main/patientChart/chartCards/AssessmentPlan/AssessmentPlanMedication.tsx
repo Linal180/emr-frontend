@@ -7,9 +7,9 @@ import Alert from '../../../../common/Alert';
 import DiagnosesModal from './DiagnosesModal';
 import MacroView from '../../../../common/Macro/MacroView';
 //svgs, constants, 
-import { generateString } from '../../../../../utils';
+import { generateString, successMessage } from '../../../../../utils';
 import { CrossIcon } from '../../../../../assets/svgs';
-import { IMAGING_TEST_TEXT, LAB_TESTS, MEDICATIONS_TEXT, TemplateType } from '../../../../../constants';
+import { ASSESSMENT_PLAN, IMAGING_TEST_TEXT, LAB_TESTS, MEDICATIONS_TEXT, TemplateType } from '../../../../../constants';
 import { AddDiagnoseType, AssessmentPlanMedicationProps, ParamsType } from '../../../../../interfacesTypes';
 import { Action, ActionType, chartReducer, initialState, State } from '../../../../../reducers/chartReducer';
 import {
@@ -423,7 +423,9 @@ const AssessmentPlanMedication: FC<AssessmentPlanMedicationProps> = ({ index, pr
       if (response) {
         const { status } = response
 
-        if (status && status === 200) { }
+        if (status && status === 200) {
+          Alert.success(successMessage(ASSESSMENT_PLAN, 'del'))
+        }
       }
     }
   });

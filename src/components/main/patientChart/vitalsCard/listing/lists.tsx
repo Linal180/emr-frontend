@@ -179,7 +179,7 @@ export const VitalListingTable = ({
 
                 return <TableCell key={`${id}-PainRange-${i}-${PainRange}`} scope="row">
                   <Typography variant='body1' className={`h-24 ${isAbnormalPain(PainRange || '') ? 'danger' : ''}`}>
-                    {PainRange || DASHES}
+                    {roundOffUpto2Decimal(PainRange) || DASHES}
                   </Typography>
                 </TableCell>
               })}

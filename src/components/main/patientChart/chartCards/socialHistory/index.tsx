@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Box, Button, Typography } from "@material-ui/core";
+import { Box, Button, Card, Typography } from "@material-ui/core";
 import { FC, Reducer, useCallback, useEffect, useMemo, useReducer } from "react";
 //components
 import QuestionCard from "./QuestionCard";
@@ -12,6 +12,7 @@ import { getSocialHistoryFormValues } from "../../../../../utils";
 import { ParamsType, SocialHistoryProps } from "../../../../../interfacesTypes";
 import { NEXT, PAGE_LIMIT, QuestionType, SOCIAL_HISTORY_TEXT, SUBMIT } from "../../../../../constants";
 import { socialHistoryReducer, ActionType, State, initialState, Action } from "../../../../../reducers/socialHistoryReducer";
+import { useChartingStyles } from "../../../../../styles/chartingStyles";
 import {
   SocialAnswer, SocialDependentAnswer, useCreatePatientSocialHistoryMutation, useFindAllSectionsLazyQuery,
   usePatientSocialHistoryLazyQuery
@@ -20,6 +21,7 @@ import {
 
 const SocialHistory: FC<SocialHistoryProps> = ({ shouldDisableEdit = false, handleStep }): JSX.Element => {
 
+  const classes = useChartingStyles();
   const methods = useForm();
   const { id: patientId } = useParams<ParamsType>()
 
@@ -233,45 +235,49 @@ const SocialHistory: FC<SocialHistoryProps> = ({ shouldDisableEdit = false, hand
   }
 
   return (
+    <>
+      <Card>
+        <Box className={classes.cardBox}>
+          <FormProvider {...methods}>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
 
-    <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Box px={2} py={2} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
+                <Typography variant='h3'>
+                  {SOCIAL_HISTORY_TEXT}
+                </Typography>
 
-          <Typography variant='h3'>
-            {SOCIAL_HISTORY_TEXT}
-          </Typography>
+                <Box display='flex' alignItems='center' justifyContent="space-between">
+                  {!shouldDisableEdit && <Button type="submit" variant="contained" color="primary">
+                    {SUBMIT}
+                  </Button>}
+                  {handleStep && <Box ml={1}>
+                    <Button
+                      variant='contained'
+                      color='secondary'
+                      // size="large"
+                      onClick={() => handleStep()}
+                    >
+                      {NEXT}
+                    </Button></Box>}
+                </Box>
+              </Box>
 
-          <Box display='flex' alignItems='center' justifyContent="space-between">
-            {!shouldDisableEdit && <Button type="submit" variant="contained" color="primary">
-              {SUBMIT}
-            </Button>}
-            {handleStep && <Box ml={1}>
-              <Button
-                variant='contained'
-                color='secondary'
-                // size="large"
-                onClick={() => handleStep()}
-              >
-                {NEXT}
-              </Button></Box>}
-          </Box>
+              <Box maxHeight="calc(100vh - 200px)" className="overflowY-auto">
+                {sections?.map((section) => {
+                  const { id, name, questions } = section || {}
+                  return (
+                    <CardComponent cardTitle={name || ''} key={id}>
+                      {questions?.map((question, index) => <QuestionCard key={`${index}-${id}`} question={question} />)}
+                    </CardComponent>
+                  )
+                })}
+              </Box>
+
+            </form>
+          </FormProvider>
         </Box>
-
-        <Box maxHeight="calc(100vh - 200px)" className="overflowY-auto">
-          {sections?.map((section) => {
-            const { id, name, questions } = section || {}
-            return (
-              <CardComponent cardTitle={name || ''} key={id}>
-                {questions?.map((question, index) => <QuestionCard key={`${index}-${id}`} question={question} />)}
-              </CardComponent>
-            )
-          })}
-        </Box>
-
-      </form>
-    </FormProvider>
-
+      </Card>
+    </>
   )
 }
 
