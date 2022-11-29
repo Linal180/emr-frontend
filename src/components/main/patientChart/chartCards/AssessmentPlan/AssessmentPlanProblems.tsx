@@ -9,7 +9,7 @@ import AssessmentPlanMedication from './AssessmentPlanMedication';
 import NoDataFoundComponent from '../../../../common/NoDataFoundComponent';
 import AppointmentReasonModal from '../AppointmentReason/AppointmentReasonModal';
 //constants, interfaces, reducer, styles
-import { ASSESSMENT_PLAN } from '../../../../../constants';
+import { ADD_CHIEF_COMPLAINT, ASSESSMENT_PLAN } from '../../../../../constants';
 import { useChartingStyles } from '../../../../../styles/chartingStyles';
 import { Action, ActionType, chartReducer, initialState, State } from '../../../../../reducers/chartReducer';
 import { AssessmentMedication, AssessmentPlanProblemsProps, ParamsType } from '../../../../../interfacesTypes';
@@ -42,6 +42,8 @@ const AssessmentPlanProblems: FC<AssessmentPlanProblemsProps> = ({
         const { status } = response
 
         if (status && status === 200) {
+
+          Alert.success(ADD_CHIEF_COMPLAINT);
           const { id } = patientProblem || {}
           const transformedProblems = problems?.map((problem, index) => {
             const { icdCodes, isSigned, problemId, medications } = problem
@@ -172,7 +174,12 @@ const AssessmentPlanProblems: FC<AssessmentPlanProblemsProps> = ({
 
           <Box display='flex' alignItems='center'>
             <Box m={1}>
-              <Button variant='contained' color='secondary' disabled={addProblemLoading || !numberOfOrders || isSigned} onClick={handleAssessment}>
+              <Button
+                color='secondary'
+                variant='contained'
+                onClick={handleAssessment}
+                disabled={addProblemLoading || !numberOfOrders || isSigned}
+              >
                 {'Sign Orders'}
                 <Typography variant="body1" color="inherit">({numberOfOrders})</Typography>
               </Button>

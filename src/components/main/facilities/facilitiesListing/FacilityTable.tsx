@@ -27,7 +27,7 @@ import {
 import {
   CANT_DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION, FACILITY, SERVICES, PRACTICE,
   ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, STATE,
-  FACILITY_SERVICES_ROUTE, USER_PERMISSIONS,
+  FACILITY_SERVICES_ROUTE, USER_PERMISSIONS, N_A,
 } from "../../../../constants";
 
 const FacilityTable: FC = (): JSX.Element => {
@@ -191,13 +191,13 @@ const FacilityTable: FC = (): JSX.Element => {
 
                   return (
                     <TableRow key={id}>
-                      <TableCell scope="row">{name}</TableCell>
+                      <TableCell scope="row">{name || N_A}</TableCell>
                       {isSuper && <TableCell scope="row">{practiceName}</TableCell>}
-                      <TableCell scope="row">{city}</TableCell>
-                      <TableCell scope="row">{state}</TableCell>
-                      <TableCell scope="row">{zipCode}</TableCell>
+                      <TableCell scope="row">{city || N_A}</TableCell>
+                      <TableCell scope="row">{state || N_A}</TableCell>
+                      <TableCell scope="row">{zipCode || N_A}</TableCell>
                       <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
-                      <TableCell scope="row">{email}</TableCell>
+                      <TableCell scope="row">{email || N_A}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                           <DetailTooltip title={SERVICES}>

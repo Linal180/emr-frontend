@@ -2633,3 +2633,5 @@ export type SwitchButtonProps = {
   value: boolean;
   onChange?: (open: boolean) => void
 }
+
+export type MessageType = 'del' | 'create' | 'update' | 'fetch'
