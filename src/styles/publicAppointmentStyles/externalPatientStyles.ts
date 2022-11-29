@@ -134,6 +134,13 @@ export const useExternalPatientStyles = makeStyles({
     },
   },
 
+  intakeStepper: {
+    position: 'relative',
+    padding: '10px 5px !important', 
+    display: 'flex', 
+    flexWrap: 'wrap',
+  },
+
   agreementContainer: {
     "& h3": {
       fontSize: 26,

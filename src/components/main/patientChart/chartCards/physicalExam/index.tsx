@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { Box, Button, colors, Typography } from "@material-ui/core";
+import { Box, Button, Card, colors, Typography } from "@material-ui/core";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 //components
@@ -9,14 +9,15 @@ import ChartingTemplate from "../../../../common/chartingTemplate";
 import { renderMultiTemplates } from "../../../../../utils";
 import { NEXT, PE_TEMPLATES, PHYSICAL_EXAM_TEXT, QuestionType, TemplateType } from "../../../../../constants";
 import { multiOptionType, ParamsType, PatientHistoryProps } from "../../../../../interfacesTypes";
+import { useChartingStyles } from "../../../../../styles/chartingStyles";
 import { Action, ActionType, initialState, patientHistoryReducer, State } from "../../../../../reducers/patientHistoryReducer";
 import {
   QuestionTemplate, useCreatePhysicalExamHistoryMutation, useGetPatientChartingTemplateLazyQuery,
   usePhysicalExamLazyQuery
 } from '../../../../../generated/graphql';
 
-
 const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, handleStep }): JSX.Element => {
+  const classes = useChartingStyles();
   const methods = useForm();
   const { id: patientId, appointmentId } = useParams<ParamsType>()
 
@@ -151,7 +152,7 @@ const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, hand
         value?: string
       }[])
 
-     await createPhysicalExam({
+      await createPhysicalExam({
         variables: {
           createPhysicalExamInput: {
             answerResponses: answerResponses,
@@ -170,36 +171,41 @@ const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, hand
 
   return (
     <>
-      <Box p={2} display='flex' justifyContent='space-between' alignItems='center' flexWrap="wrap" borderBottom={`1px solid ${colors.grey[300]}`}>
-        <Typography variant='h3'>
-          {PHYSICAL_EXAM_TEXT}
-        </Typography>
-        {handleStep && <Box ml={1}>
-          <Button
-            variant='contained'
-            color='secondary'
-            onClick={() => handleStep()}
-          >
-            {NEXT}
-          </Button></Box>}
-      </Box>
-      <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <ChartingTemplate
-            notes={notes}
-            itemId={itemId}
-            loading={loading}
-            onSubmit={onSubmit}
-            label={PE_TEMPLATES}
-            templates={templates}
-            shouldDisableEdit={shouldDisableEdit}
-            key={`ChartingTemplate-PHYSICAL_EXAM`}
-            templateType={TemplateType.PHYSICAL_EXAM}
-            fetchChartingTemplates={fetchPatientChartingTemplates}
-            setItemId={(item: string) => dispatch({ itemId: item, type: ActionType.SET_ITEM_ID })}
-          />
-        </form>
-      </FormProvider>
+      <Card>
+        <Box className={classes.cardBox}>
+          <Box p={2} display='flex' justifyContent='space-between' alignItems='center' flexWrap="wrap" borderBottom={`1px solid ${colors.grey[300]}`}>
+            <Typography variant='h3'>
+              {PHYSICAL_EXAM_TEXT}
+            </Typography>
+            {handleStep && <Box ml={1}>
+              <Button
+                variant='contained'
+                color='secondary'
+                onClick={() => handleStep()}
+              >
+                {NEXT}
+              </Button></Box>}
+          </Box>
+
+          <FormProvider {...methods}>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <ChartingTemplate
+                notes={notes}
+                itemId={itemId}
+                loading={loading}
+                onSubmit={onSubmit}
+                label={PE_TEMPLATES}
+                templates={templates}
+                shouldDisableEdit={shouldDisableEdit}
+                key={`ChartingTemplate-PHYSICAL_EXAM`}
+                templateType={TemplateType.PHYSICAL_EXAM}
+                fetchChartingTemplates={fetchPatientChartingTemplates}
+                setItemId={(item: string) => dispatch({ itemId: item, type: ActionType.SET_ITEM_ID })}
+              />
+            </form>
+          </FormProvider>
+        </Box>
+      </Card>
     </>
   )
 }

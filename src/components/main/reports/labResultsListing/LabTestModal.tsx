@@ -1,10 +1,12 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core'
 import { PDFViewer } from '@react-pdf/renderer'
 import { FormProvider, useForm } from 'react-hook-form'
+//components
+import Selector from '../../../common/Selector'
+import StickerDoc from '../labResult/StickerDoc';
+// constants, interface
 import { CLOSE, LAB_TEST_STICKERS } from '../../../../constants'
 import { LabModalProps } from '../../../../interfacesTypes'
-import Selector from '../../../common/Selector'
-import StickerDoc from '../labResult/StickerDoc'
 
 function LabTestModal({ handleClose, isOpen, labTests }: LabModalProps) {
   const methods = useForm()
@@ -20,7 +22,7 @@ function LabTestModal({ handleClose, isOpen, labTests }: LabModalProps) {
 
   return (
     <Dialog
-      maxWidth="sm"
+      maxWidth="md"
       fullWidth
       open={isOpen}
       onClose={handleClose}

@@ -7,7 +7,6 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 import InputController from "../../../../../controller";
 import DatePicker from "../../../../common/DatePicker";
 import Selector from "../../../../common/Selector";
-import DoctorSelector from "../../../../common/Selector/DoctorSelector";
 // constants, types, interfaces, utils block
 import {
   ADD_COPAY_AMOUNT, COINSURANCE_PERCENTAGE, COPAY_AMOUNTS_TOOLTIP, COPAY_TYPE, EMPTY_OPTION,
@@ -18,12 +17,14 @@ import {
 } from "../../../../../constants";
 import { PolicyHolderRelationshipType } from "../../../../../generated/graphql";
 import { GeneralFormProps, InsuranceCreateInput } from "../../../../../interfacesTypes";
-import { formatValue, setRecord } from "../../../../../utils";
+import { formatValue, renderItem, setRecord } from "../../../../../utils";
 
 const PolicyDetails: FC<GeneralFormProps> = ({ isEdit, loading }) => {
-  const { control } = useFormContext<InsuranceCreateInput>()
+  const { control, watch } = useFormContext<InsuranceCreateInput>()
   const { fields: copayFields, remove: removeCopayField, append: appendCopayField } =
     useFieldArray({ control: control, name: "copayFields" });
+
+  const { primaryCareProvider, referringProvider } = watch()
 
   return (
     <Box minWidth="100%" pt={3}>
@@ -132,7 +133,7 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit, loading }) => {
           <Grid container justifyContent="flex-end">
             <Grid item md={12} sm={12} xs={12}>
               <Box pb={1} display="flex" alignItems="center" justifyContent="flex-end">
-                <Button 
+                <Button
                   onClick={() => appendCopayField(INITIAL_COPAY_VALUE)}
                 >
                   <AddCircleOutline color='secondary' />
@@ -155,23 +156,25 @@ const PolicyDetails: FC<GeneralFormProps> = ({ isEdit, loading }) => {
         </Grid>
 
         <Grid item md={12} sm={12} xs={12}>
-          <DoctorSelector
+        {renderItem(REFERRING_PROVIDER, referringProvider?.name)}
+          {/* <DoctorSelector
             addEmpty
             loading={loading}
             shouldOmitFacilityId
             label={REFERRING_PROVIDER}
             name="referringProvider"
-          />
+          /> */}
         </Grid>
 
         <Grid item md={12} sm={12} xs={12}>
-          <DoctorSelector
+          {renderItem(PRIMARY_CARE_PROVIDER, primaryCareProvider?.name)}
+          {/* <DoctorSelector
             addEmpty
             loading={loading}
             shouldOmitFacilityId
             name="primaryCareProvider"
             label={PRIMARY_CARE_PROVIDER}
-          />
+          /> */}
         </Grid>
 
         <Grid item md={12} sm={12} xs={12}>

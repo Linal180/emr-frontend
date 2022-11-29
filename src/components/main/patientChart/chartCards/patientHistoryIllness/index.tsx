@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { Box, Button, colors, Typography } from "@material-ui/core";
+import { Box, Button, Card, colors, Typography } from "@material-ui/core";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 //components
@@ -14,8 +14,10 @@ import {
   QuestionTemplate, useCreatePatientIllnessHistoryMutation, useGetPatientChartingTemplateLazyQuery,
   usePatientIllnessHistoryLazyQuery
 } from '../../../../../generated/graphql';
+import { useChartingStyles } from "../../../../../styles/chartingStyles";
 
 const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, handleStep }): JSX.Element => {
+  const classes = useChartingStyles();
   const methods = useForm();
   const { id: patientId, appointmentId } = useParams<ParamsType>()
 
@@ -165,38 +167,42 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
 
   return (
     <>
-      <Box p={2} display='flex' justifyContent='space-between' alignItems='center' flexWrap="wrap" borderBottom={`1px solid ${colors.grey[300]}`}>
-        <Typography variant='h3'>
-          {PATIENT_HISTORY_ILLNESS_TEXT}
-        </Typography>
-        {handleStep && <Box ml={1}>
-          <Button
-            variant='contained'
-            color='secondary'
-            onClick={() => handleStep()}
-          >
-            {NEXT}
-          </Button>
-        </Box>}
-      </Box>
+      <Card>
+        <Box className={classes.cardBox}>
+          <Box p={2} display='flex' justifyContent='space-between' alignItems='center' flexWrap="wrap" borderBottom={`1px solid ${colors.grey[300]}`}>
+            <Typography variant='h3'>
+              {PATIENT_HISTORY_ILLNESS_TEXT}
+            </Typography>
+            {handleStep && <Box ml={1}>
+              <Button
+                variant='contained'
+                color='secondary'
+                onClick={() => handleStep()}
+              >
+                {NEXT}
+              </Button>
+            </Box>}
+          </Box>
 
-      <FormProvider {...methods}>
-        <form onSubmit={onSubmit}>
-          <ChartingTemplate
-            notes={notes}
-            itemId={itemId}
-            loading={loading}
-            onSubmit={onSubmit}
-            label={HPI_TEMPLATES}
-            templates={templates}
-            key={`ChartingTemplate-HPI`}
-            templateType={TemplateType.HPI}
-            shouldDisableEdit={shouldDisableEdit}
-            fetchChartingTemplates={fetchPatientChartingTemplates}
-            setItemId={(item: string) => dispatch({ itemId: item, type: ActionType.SET_ITEM_ID })}
-          />
-        </form>
-      </FormProvider>
+          <FormProvider {...methods}>
+            <form onSubmit={onSubmit}>
+              <ChartingTemplate
+                notes={notes}
+                itemId={itemId}
+                loading={loading}
+                onSubmit={onSubmit}
+                label={HPI_TEMPLATES}
+                templates={templates}
+                key={`ChartingTemplate-HPI`}
+                templateType={TemplateType.HPI}
+                shouldDisableEdit={shouldDisableEdit}
+                fetchChartingTemplates={fetchPatientChartingTemplates}
+                setItemId={(item: string) => dispatch({ itemId: item, type: ActionType.SET_ITEM_ID })}
+              />
+            </form>
+          </FormProvider>
+        </Box>
+      </Card>
     </>
   )
 }

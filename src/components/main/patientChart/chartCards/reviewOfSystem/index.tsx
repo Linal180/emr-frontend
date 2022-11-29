@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { Box, Button, colors, Typography } from "@material-ui/core";
+import { Box, Button, Card, colors, Typography } from "@material-ui/core";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 //components
@@ -9,10 +9,12 @@ import ChartingTemplate from "../../../../common/chartingTemplate";
 import { renderMultiTemplates } from "../../../../../utils";
 import { multiOptionType, ParamsType, PatientHistoryProps } from "../../../../../interfacesTypes";
 import { NEXT, QuestionType, REVIEW_OF_SYSTEM_TEXT, ROS_TEMPLATES, TemplateType } from "../../../../../constants";
+import { useChartingStyles } from "../../../../../styles/chartingStyles";
 import { Action, ActionType, initialState, patientHistoryReducer, State } from "../../../../../reducers/patientHistoryReducer";
 import { QuestionTemplate, useCreateReviewOfSystemHistoryMutation, useGetPatientChartingTemplateLazyQuery, useReviewOfSystemLazyQuery } from '../../../../../generated/graphql';
 
 const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, handleStep }): JSX.Element => {
+  const classes = useChartingStyles();
   const methods = useForm();
   const { id: patientId, appointmentId } = useParams<ParamsType>()
 
@@ -164,36 +166,41 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
 
   return (
     <>
-      <Box p={2} display='flex' justifyContent='space-between' alignItems='center' flexWrap="wrap" borderBottom={`1px solid ${colors.grey[300]}`}>
-        <Typography variant='h3'>
-          {REVIEW_OF_SYSTEM_TEXT}
-        </Typography>
-        {handleStep && <Box ml={1}>
-          <Button
-            variant='contained'
-            color='secondary'
-            onClick={() => handleStep()}
-          >
-            {NEXT}
-          </Button></Box>}
-      </Box>
-      <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <ChartingTemplate
-            notes={notes}
-            itemId={itemId}
-            loading={loading}
-            onSubmit={onSubmit}
-            label={ROS_TEMPLATES}
-            templates={templates}
-            shouldDisableEdit={shouldDisableEdit}
-            key={`ChartingTemplate-REVIEW_OF_SYSTEM`}
-            templateType={TemplateType.REVIEW_OF_SYSTEM}
-            fetchChartingTemplates={fetchPatientChartingTemplates}
-            setItemId={(item: string) => dispatch({ itemId: item, type: ActionType.SET_ITEM_ID })}
-          />
-        </form>
-      </FormProvider>
+      <Card>
+        <Box className={classes.cardBox}>
+          <Box p={2} display='flex' justifyContent='space-between' alignItems='center' flexWrap="wrap" borderBottom={`1px solid ${colors.grey[300]}`}>
+            <Typography variant='h3'>
+              {REVIEW_OF_SYSTEM_TEXT}
+            </Typography>
+            {handleStep && <Box ml={1}>
+              <Button
+                variant='contained'
+                color='secondary'
+                onClick={() => handleStep()}
+              >
+                {NEXT}
+              </Button></Box>}
+          </Box>
+
+          <FormProvider {...methods}>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <ChartingTemplate
+                notes={notes}
+                itemId={itemId}
+                loading={loading}
+                onSubmit={onSubmit}
+                label={ROS_TEMPLATES}
+                templates={templates}
+                shouldDisableEdit={shouldDisableEdit}
+                key={`ChartingTemplate-REVIEW_OF_SYSTEM`}
+                templateType={TemplateType.REVIEW_OF_SYSTEM}
+                fetchChartingTemplates={fetchPatientChartingTemplates}
+                setItemId={(item: string) => dispatch({ itemId: item, type: ActionType.SET_ITEM_ID })}
+              />
+            </form>
+          </FormProvider>
+        </Box>
+      </Card>
     </>
   )
 }

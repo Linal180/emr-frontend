@@ -17,7 +17,7 @@ import client from "../apollo";
 import history from "../history";
 import {
   AsyncSelectorOption, CptCodeSelectorOption, DaySchedule, FormAttachmentPayload, ItemSelectorOption,
-  LoaderProps, ModifiersSelectorOption, multiOptionType, Order, SelectorOption, StageStatusType,
+  LoaderProps, MessageType, ModifiersSelectorOption, multiOptionType, Order, SelectorOption, StageStatusType,
   TableAlignType, TableCodesProps, UserFormType
 } from "../interfacesTypes";
 import {
@@ -2741,4 +2741,21 @@ export const isAbnormalTemperature = (temperature: string) => {
 
 export const isAbnormalOxygenSaturation = (oxygenSaturation: string) => {
   return oxygenSaturation ? Number(oxygenSaturation) > 95 : false
+}
+
+export const successMessage = (str: string, type: MessageType) => {
+  switch (type) {
+    case "create":
+      return `${str} created successfully.`
+    case "del":
+      return `${str} deleted successfully.`
+
+    case "fetch":
+      return `${str} fetch successfully.`
+
+    case "update":
+      return `${str} update successfully.`
+    default:
+      return `${str}`
+  }
 }
