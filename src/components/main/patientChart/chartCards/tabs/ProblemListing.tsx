@@ -33,7 +33,7 @@ import {
 const ProblemTab: FC<ProblemTabProps> = ({ shouldDisableEdit, handleStep }) => {
   const classes = useChartingStyles();
   const classesTable = useTableStyles()
-  const { id } = useParams<ParamsType>()
+  const { id, appointmentId } = useParams<ParamsType>()
 
   const [state, dispatch] =
     useReducer<Reducer<State, Action>>(chartReducer, initialState)
@@ -83,12 +83,12 @@ const ProblemTab: FC<ProblemTabProps> = ({ shouldDisableEdit, handleStep }) => {
         variables: {
           patientProblemInput: {
             patientId: id, paginationOptions: { page, limit: EIGHT_PAGE_LIMIT },
-            // ...(appointmentId ? { appointmentId } : {})
+            ...(appointmentId ? { appointmentId } : {})
           }
         },
       })
     } catch (error) { }
-  }, [findAllPatientProblems, id, page]);
+  }, [appointmentId, findAllPatientProblems, id, page]);
 
   useEffect(() => {
     id && fetchProblems()
@@ -192,14 +192,15 @@ const ProblemTab: FC<ProblemTabProps> = ({ shouldDisableEdit, handleStep }) => {
                     {patientProblems?.map((patientProblem) => {
                       const { problemSeverity, ICDCode, problemType, note, problemStartDate, id, appointment } = patientProblem ?? {}
                       const { appointmentDate } = appointment || {}
+                      const { code, description } = ICDCode || {}
                       return (
                         <TableRow>
                           <TableCell scope="row">
-                            <Typography>{ICDCode?.code ?? DASHES}</Typography>
+                            <Typography>{code ?? DASHES}</Typography>
                           </TableCell>
 
                           <TableCell scope="row">
-                            <Typography>{ICDCode?.description ?? DASHES}</Typography>
+                            <Typography>{description ?? DASHES}</Typography>
                           </TableCell>
 
                           <TableCell scope="row">
