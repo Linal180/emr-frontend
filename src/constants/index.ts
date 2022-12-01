@@ -4895,8 +4895,8 @@ export const SCRIBE_TABS = ['Doctors', 'Staff']
 
 export enum InsuranceRadioTypes {
   INSURANCE = "insurance",
-  NO_INSURANCE = 'noInsurance',
-  INTERNATIONAL_TRAVELER = 'internationalTraveler',
+  NO_INSURANCE = 'no_insurance',
+  INTERNATIONAL_TRAVELER = 'international_traveler',
   CONTRACT = 'contract'
 }
 
