@@ -13,7 +13,7 @@ import {
   Ethnicity, FieldOptionsInputType, FormType, Gender, Genderidentity, HeadCircumferenceType, Homebound, LabTestStatus,
   Maritialstatus, OnsetDateType, OrderOfBenefitType, OtherDateType, PatientPaymentType, PaymentType,
   PolicyHolderRelationshipType, Policy_Holder_Gender_Identity, PracticeType, PricingProductType, Pronouns, Race,
-  RelationshipType, ServiceCode, Sexualorientation, SmokingStatus, Speciality, TempUnitType, UnitType, WeightType
+  RelationshipType, ServiceCode, Sexualorientation, SmokingStatus, Speciality, TemplateType, TempUnitType, UnitType, WeightType
 } from "../generated/graphql";
 import {
   ColumnTypes, FormBuilderFormInitial,
@@ -2754,13 +2754,6 @@ export enum ITEM_MODULE {
   taxonomies = 'taxonomies',
 }
 
-export enum TemplateType {
-  HPI = 'hpi',
-  REVIEW_OF_SYSTEM = 'reviewOfSystem',
-  PHYSICAL_EXAM = "physicalExam",
-  ASSESSMENT_PLAN = "assessmentPlan"
-}
-
 export enum TABLE_SELECTOR_MODULES {
   icdCodes = 'IcdCodes',
   cptCode = 'CPTCode',
@@ -2927,20 +2920,20 @@ export const APPOINTMENT_SETTINGS_ITEMS = [
 
 export const MAPPED_SECTION = [
   {
-    label: getTemplateLabel(TemplateType.HPI),
-    value: TemplateType.HPI
+    label: getTemplateLabel(TemplateType.Hpi),
+    value: TemplateType.Hpi
   },
   {
-    label: getTemplateLabel(TemplateType.PHYSICAL_EXAM),
-    value: TemplateType.PHYSICAL_EXAM
+    label: getTemplateLabel(TemplateType.PhysicalExam),
+    value: TemplateType.PhysicalExam
   },
   {
-    label: getTemplateLabel(TemplateType.REVIEW_OF_SYSTEM),
-    value: TemplateType.REVIEW_OF_SYSTEM
+    label: getTemplateLabel(TemplateType.ReviewOfSystem),
+    value: TemplateType.ReviewOfSystem
   },
   {
-    label: getTemplateLabel(TemplateType.ASSESSMENT_PLAN),
-    value: TemplateType.ASSESSMENT_PLAN
+    label: getTemplateLabel(TemplateType.AssessmentPlan),
+    value: TemplateType.AssessmentPlan
   },
 ]
 

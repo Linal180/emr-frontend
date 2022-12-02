@@ -32,7 +32,8 @@ import {
   LOCK_ROUTE, LOGIN_ROUTE, MISSING, N_A, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, ROUTE,
   SUPER_ADMIN, TABLE_SELECTOR_MODULES, TOKEN, USER_FORM_IMAGE_UPLOAD_URL, VIEW_APPOINTMENTS_ROUTE,
   ACCEPTABLE_FILES, ACCEPTABLE_ONLY_IMAGES_FILES, ASC, CALENDAR_ROUTE, SYSTEM_ROLES, LAB_RESULTS_ROUTE,
-  CLAIM_FEED_ROUTE, CREATE_CLAIM, UPDATE_CLAIM, SUBMIT_CLAIM, CLAIM_STATUS_ROUTE, areaChartOne, areaChartTwo, BLOOD_PRESSURE_RANGES, Heart_RATE_RANGES, CANCEL_TIME_EXPIRED_MESSAGE, TemplateType
+  CLAIM_FEED_ROUTE, CREATE_CLAIM, UPDATE_CLAIM, SUBMIT_CLAIM, CLAIM_STATUS_ROUTE, areaChartOne, areaChartTwo,
+  BLOOD_PRESSURE_RANGES, Heart_RATE_RANGES, CANCEL_TIME_EXPIRED_MESSAGE
 } from "../constants";
 import {
   AllDoctorPayload, AllergySeverity, AppointmentCreateType, AppointmentsPayload, AppointmentStatus,
@@ -42,7 +43,9 @@ import {
   ServicesPayload, SlotsPayload, SnoMedCodes, TempUnitType, TestSpecimenTypesPayload, UserForms,
   AttachmentType, AttachmentsPayload, UsersPayload, UnitType, PracticeType, SchedulesPayload,
   WeightType, ClaimStatus, AllCptCodePayload, AllModifiersPayload, FeeSchedule, CptFeeSchedule,
-  AllCptFeeSchedulesPayload, Taxonomy, TaxonomyPayload, FindAllNdcPayload, FindAllMvxPayload, FindAllQuestionTemplatesPayload, FindAllNdcVaccineProductsPayload, QuestionTemplate, FindAllCvxPayload, FindAllImagingTestPayload, FindAllRoomPayload,
+  AllCptFeeSchedulesPayload, Taxonomy, TaxonomyPayload, FindAllNdcPayload, FindAllMvxPayload,
+  FindAllQuestionTemplatesPayload, FindAllNdcVaccineProductsPayload, QuestionTemplate, FindAllCvxPayload,
+  FindAllImagingTestPayload, FindAllRoomPayload, TemplateType
 } from "../generated/graphql";
 
 export const handleLogout = () => {
@@ -2694,16 +2697,16 @@ export const getMacroTextInitialValue = (strValue: string) => {
 
 export const getTemplateLabel = (labelValue: TemplateType) => {
   switch (labelValue) {
-    case TemplateType.HPI:
+    case TemplateType.Hpi:
       return 'Hpi'
 
-    case TemplateType.PHYSICAL_EXAM:
+    case TemplateType.PhysicalExam:
       return 'Physical Exam'
 
-    case TemplateType.REVIEW_OF_SYSTEM:
+    case TemplateType.ReviewOfSystem:
       return 'Review Of System'
 
-    case TemplateType.ASSESSMENT_PLAN:
+    case TemplateType.AssessmentPlan:
       return 'Assessment & Plan'
 
     default:
