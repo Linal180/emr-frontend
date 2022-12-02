@@ -9,9 +9,10 @@ import TableLoader from '../../../common/TableLoader';
 import MultiSelector from '../../../common/Selector/MultiSelector';
 //interfaces, constants, schema, graphql
 import {
-  ADD, CANCEL, EDIT, EMPTY_MULTISELECT_OPTION, MACRO, MACRO_TEXT, MAPPED_SECTION, SECTION, SHORT_CUT, SOMETHING_WENT_WRONG, SUBMIT, TemplateType
+  ADD, CANCEL, EDIT, EMPTY_MULTISELECT_OPTION, MACRO, MACRO_TEXT, MAPPED_SECTION, SECTION,
+  SHORT_CUT, SOMETHING_WENT_WRONG, SUBMIT,
 } from '../../../../constants';
-import { useCreateMacroMutation, useGetMacroLazyQuery, useUpdateMacroMutation } from '../../../../generated/graphql';
+import { useCreateMacroMutation, useGetMacroLazyQuery, useUpdateMacroMutation, TemplateType } from '../../../../generated/graphql';
 import { MacroFormProps, MacroFormType, SideDrawerCloseReason } from '../../../../interfacesTypes';
 import { ActionType } from '../../../../reducers/cptCodeReducer';
 import { macroSchema } from '../../../../validationSchemas';

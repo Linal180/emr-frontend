@@ -11,9 +11,10 @@ import MacroForm from '../MacroForm';
 //constants, styles, svgs
 import { AddWhiteIcon, EditOutlinedIcon, TrashOutlinedSmallIcon } from '../../../../assets/svgs';
 import {
-  ACTIONS, ADD_NEW_TEXT, DASHES, DELETE_MACRO_DESCRIPTION, DESCRIPTION, EIGHT_PAGE_LIMIT, MACRO, NAME, PAGE_LIMIT, SECTION, TemplateType
+  ACTIONS, ADD_NEW_TEXT, DASHES, DELETE_MACRO_DESCRIPTION, DESCRIPTION, EIGHT_PAGE_LIMIT, MACRO, NAME, PAGE_LIMIT,
+  SECTION,
 } from '../../../../constants';
-import { MacrosPayload, useFetchAllMacrosLazyQuery, useRemoveMacroMutation } from '../../../../generated/graphql';
+import { MacrosPayload, useFetchAllMacrosLazyQuery, useRemoveMacroMutation, TemplateType } from '../../../../generated/graphql';
 import { Action, ActionType, initialState, macrosReducer, State } from '../../../../reducers/macrosReducer';
 import { useTableStyles } from '../../../../styles/tableStyles';
 import { getPageNumber, getTemplateLabel, isLast, renderTh } from '../../../../utils';
