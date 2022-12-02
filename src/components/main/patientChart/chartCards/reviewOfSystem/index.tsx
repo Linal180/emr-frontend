@@ -8,10 +8,13 @@ import ChartingTemplate from "../../../../common/chartingTemplate";
 //constants
 import { renderMultiTemplates } from "../../../../../utils";
 import { multiOptionType, ParamsType, PatientHistoryProps } from "../../../../../interfacesTypes";
-import { NEXT, QuestionType, REVIEW_OF_SYSTEM_TEXT, ROS_TEMPLATES, TemplateType } from "../../../../../constants";
+import { NEXT, QuestionType, REVIEW_OF_SYSTEM_TEXT, ROS_TEMPLATES } from "../../../../../constants";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
 import { Action, ActionType, initialState, patientHistoryReducer, State } from "../../../../../reducers/patientHistoryReducer";
-import { QuestionTemplate, useCreateReviewOfSystemHistoryMutation, useGetPatientChartingTemplateLazyQuery, useReviewOfSystemLazyQuery } from '../../../../../generated/graphql';
+import {
+  QuestionTemplate, useCreateReviewOfSystemHistoryMutation, useGetPatientChartingTemplateLazyQuery,
+  useReviewOfSystemLazyQuery, TemplateType
+} from '../../../../../generated/graphql';
 
 const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, handleStep }): JSX.Element => {
   const classes = useChartingStyles();
@@ -193,7 +196,7 @@ const ReviewOfSystem: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
                 templates={templates}
                 shouldDisableEdit={shouldDisableEdit}
                 key={`ChartingTemplate-REVIEW_OF_SYSTEM`}
-                templateType={TemplateType.REVIEW_OF_SYSTEM}
+                templateType={TemplateType.ReviewOfSystem}
                 fetchChartingTemplates={fetchPatientChartingTemplates}
                 setItemId={(item: string) => dispatch({ itemId: item, type: ActionType.SET_ITEM_ID })}
               />

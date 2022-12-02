@@ -7,13 +7,13 @@ import Alert from "../../../../common/Alert";
 import ChartingTemplate from "../../../../common/chartingTemplate";
 //constants
 import { renderMultiTemplates } from "../../../../../utils";
-import { NEXT, PE_TEMPLATES, PHYSICAL_EXAM_TEXT, QuestionType, TemplateType } from "../../../../../constants";
+import { NEXT, PE_TEMPLATES, PHYSICAL_EXAM_TEXT, QuestionType,  } from "../../../../../constants";
 import { multiOptionType, ParamsType, PatientHistoryProps } from "../../../../../interfacesTypes";
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
 import { Action, ActionType, initialState, patientHistoryReducer, State } from "../../../../../reducers/patientHistoryReducer";
 import {
   QuestionTemplate, useCreatePhysicalExamHistoryMutation, useGetPatientChartingTemplateLazyQuery,
-  usePhysicalExamLazyQuery
+  usePhysicalExamLazyQuery, TemplateType
 } from '../../../../../generated/graphql';
 
 const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, handleStep }): JSX.Element => {
@@ -198,7 +198,7 @@ const PhysicalExam: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, hand
                 templates={templates}
                 shouldDisableEdit={shouldDisableEdit}
                 key={`ChartingTemplate-PHYSICAL_EXAM`}
-                templateType={TemplateType.PHYSICAL_EXAM}
+                templateType={TemplateType.PhysicalExam}
                 fetchChartingTemplates={fetchPatientChartingTemplates}
                 setItemId={(item: string) => dispatch({ itemId: item, type: ActionType.SET_ITEM_ID })}
               />

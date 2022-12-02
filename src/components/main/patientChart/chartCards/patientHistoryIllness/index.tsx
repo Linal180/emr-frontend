@@ -8,11 +8,11 @@ import ChartingTemplate from '../../../../common/chartingTemplate'
 //constants
 import { renderMultiTemplates, setRecord } from "../../../../../utils";
 import { multiOptionType, ParamsType, PatientHistoryProps } from "../../../../../interfacesTypes";
-import { HPI_TEMPLATES, NEXT, PATIENT_HISTORY_ILLNESS_TEXT, QuestionType, TemplateType } from "../../../../../constants";
+import { HPI_TEMPLATES, NEXT, PATIENT_HISTORY_ILLNESS_TEXT, QuestionType } from "../../../../../constants";
 import { Action, ActionType, initialState, patientHistoryReducer, State } from "../../../../../reducers/patientHistoryReducer";
 import {
   QuestionTemplate, useCreatePatientIllnessHistoryMutation, useGetPatientChartingTemplateLazyQuery,
-  usePatientIllnessHistoryLazyQuery
+  usePatientIllnessHistoryLazyQuery, TemplateType
 } from '../../../../../generated/graphql';
 import { useChartingStyles } from "../../../../../styles/chartingStyles";
 
@@ -194,7 +194,7 @@ const PatientHistory: FC<PatientHistoryProps> = ({ shouldDisableEdit = false, ha
                 label={HPI_TEMPLATES}
                 templates={templates}
                 key={`ChartingTemplate-HPI`}
-                templateType={TemplateType.HPI}
+                templateType={TemplateType.Hpi}
                 shouldDisableEdit={shouldDisableEdit}
                 fetchChartingTemplates={fetchPatientChartingTemplates}
                 setItemId={(item: string) => dispatch({ itemId: item, type: ActionType.SET_ITEM_ID })}

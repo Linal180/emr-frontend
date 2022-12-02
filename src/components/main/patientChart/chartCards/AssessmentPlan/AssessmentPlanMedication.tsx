@@ -9,13 +9,14 @@ import MacroView from '../../../../common/Macro/MacroView';
 //svgs, constants, 
 import { generateString, successMessage } from '../../../../../utils';
 import { CrossIcon } from '../../../../../assets/svgs';
-import { ASSESSMENT_PLAN, IMAGING_TEST_TEXT, LAB_TESTS, MEDICATIONS_TEXT, TemplateType } from '../../../../../constants';
+import { ASSESSMENT_PLAN, IMAGING_TEST_TEXT, LAB_TESTS, MEDICATIONS_TEXT } from '../../../../../constants';
 import { AddDiagnoseType, AssessmentPlanMedicationProps, ParamsType } from '../../../../../interfacesTypes';
 import { Action, ActionType, chartReducer, initialState, State } from '../../../../../reducers/chartReducer';
 import {
   LabTestStatus, Medications, useAddPatientMedicationMutation, useCreateLabTestMutation,
   useRemoveLabTestMutation, useRemovePatientMedicationMutation, useRemovePatientProblemMutation,
-  useUpdatePatientProblemNotesMutation, ImagingTest, LoincCodes, useCreateImagingOrderMutation, useRemoveImagingOrderMutation, ImagingOrderStatus,
+  useUpdatePatientProblemNotesMutation, ImagingTest, LoincCodes, useCreateImagingOrderMutation, 
+  useRemoveImagingOrderMutation, ImagingOrderStatus, TemplateType
 } from '../../../../../generated/graphql'
 
 const AssessmentPlanMedication: FC<AssessmentPlanMedicationProps> = ({ index, problem, setAssessmentProblems, assessmentProblems, shouldDisableEdit, isSigned }): JSX.Element => {
@@ -491,7 +492,7 @@ const AssessmentPlanMedication: FC<AssessmentPlanMedicationProps> = ({ index, pr
       notes={apNotes || ''}
       itemId=''
       setItemId={() => { }}
-      type={TemplateType.ASSESSMENT_PLAN}
+      type={TemplateType.AssessmentPlan}
       handleNotesUpdate={handleNotesUpdate}
     />
 
