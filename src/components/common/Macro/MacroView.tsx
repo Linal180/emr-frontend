@@ -4,8 +4,11 @@ import { useParams } from "react-router";
 import { createEditor, Editor, Element as SlateElement, Point, Range, Transforms } from "slate";
 import { withHistory } from "slate-history";
 import { Editable, ReactEditor, Slate, useSlateStatic, withReact } from "slate-react";
-import { TemplateType } from "../../../constants";
-import { MacroPayload, MacrosPayload, useFetchAllMacrosLazyQuery, useUpdateHpiNotesMutation, useUpdatePeNotesMutation, useUpdateRosNotesMutation } from "../../../generated/graphql";
+//interfaces, graphql
+import {
+  MacroPayload, MacrosPayload, useFetchAllMacrosLazyQuery, useUpdateHpiNotesMutation, useUpdatePeNotesMutation,
+  useUpdateRosNotesMutation, TemplateType
+} from "../../../generated/graphql";
 import { MacroViewTypes, ParamsType } from "../../../interfacesTypes";
 import { GREY } from "../../../theme";
 import { getMacroTextInitialValue } from "../../../utils";
@@ -124,7 +127,7 @@ const MacroView: FC<MacroViewTypes> = ({ itemId, setItemId, notes, type, handleN
 
   const handleNotesSave = useCallback((value) => {
     try {
-      if (type === TemplateType.REVIEW_OF_SYSTEM) {
+      if (type === TemplateType.ReviewOfSystem) {
         updateRosNotes({
           variables: {
             updateNotes: {
@@ -135,7 +138,7 @@ const MacroView: FC<MacroViewTypes> = ({ itemId, setItemId, notes, type, handleN
             }
           }
         })
-      } else if (type === TemplateType.HPI) {
+      } else if (type === TemplateType.Hpi) {
         updateHpiNotes({
           variables: {
             updateNotes: {
@@ -146,7 +149,7 @@ const MacroView: FC<MacroViewTypes> = ({ itemId, setItemId, notes, type, handleN
             }
           }
         })
-      } else if (type === TemplateType.PHYSICAL_EXAM) {
+      } else if (type === TemplateType.PhysicalExam) {
         updatePeNotes({
           variables: {
             updateNotes: {
